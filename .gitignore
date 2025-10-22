@@ -21,3 +21,6 @@ tsconfig.tsbuildinfo
 *.njsproj
 *.sln
 *.sw?
+
+# Reference repositories (not part of our project)
+myphysicslab/
