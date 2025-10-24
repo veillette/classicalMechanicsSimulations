@@ -137,8 +137,8 @@ export class DoublePendulumScreenView extends ScreenView {
     );
 
     // Link model to view
-    this.model.angle1Property.link(this.updateVisualization.bind(this));
-    this.model.angle2Property.link(this.updateVisualization.bind(this));
+    // Note: We update visualization in step() to avoid inconsistent intermediate states
+    // Only listen to length changes to clear trail and update immediately
     this.model.length1Property.link(() => {
       this.updateVisualization();
       this.clearTrail();
@@ -340,5 +340,8 @@ export class DoublePendulumScreenView extends ScreenView {
 
   public override step(dt: number): void {
     this.model.step(dt);
+    // Update visualization after physics step completes
+    // This ensures all state variables are updated consistently before drawing
+    this.updateVisualization();
   }
 }
