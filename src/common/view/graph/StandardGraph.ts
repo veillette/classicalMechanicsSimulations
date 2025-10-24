@@ -11,7 +11,7 @@ import {
 } from 'scenerystack/bamboo';
 import { Range, Bounds2 } from 'scenerystack/dot';
 import { Orientation } from 'scenerystack/phet-core';
-import { Node, Text, VBox } from 'scenerystack/scenery';
+import { Node, Text} from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
 import { Shape } from 'scenerystack/kite';
 import GraphDataSet from './GraphDataSet';
