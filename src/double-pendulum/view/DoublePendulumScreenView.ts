@@ -12,6 +12,7 @@ import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
 import { StringManager } from "../../i18n/StringManager.js";
+import { ModelViewTransform2 } from "scenerystack/phetcommon";
 
 export class DoublePendulumScreenView extends ScreenView {
   private readonly model: DoublePendulumModel;
@@ -22,7 +23,7 @@ export class DoublePendulumScreenView extends ScreenView {
   private readonly pivotNode: Circle;
   private readonly trailPath: Path;
   private readonly pivotPoint: Vector2;
-  private readonly scale: number = 100; // pixels per meter
+  private readonly modelViewTransform: ModelViewTransform2;
   private readonly trailPoints: Vector2[] = [];
   private readonly maxTrailPoints: number = 500;
 
@@ -35,6 +36,14 @@ export class DoublePendulumScreenView extends ScreenView {
     this.pivotPoint = new Vector2(
       this.layoutBounds.centerX,
       this.layoutBounds.minY + 100
+    );
+
+    // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
+    // Maps model origin (0, 0) to the pivot point, with 100 pixels per meter
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
+      Vector2.ZERO,
+      this.pivotPoint,
+      100 // pixels per meter
     );
 
     // Trail for chaotic motion visualization
@@ -110,13 +119,14 @@ export class DoublePendulumScreenView extends ScreenView {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           // Calculate position of bob 1 first
           const angle1 = this.model.angle1Property.value;
-          const length1 = this.model.length1Property.value * this.scale;
-          const bob1X = this.pivotPoint.x + length1 * Math.sin(angle1);
-          const bob1Y = this.pivotPoint.y + length1 * Math.cos(angle1);
-          const bob1Pos = new Vector2(bob1X, bob1Y);
+          const length1 = this.model.length1Property.value;
+          const bob1ModelX = length1 * Math.sin(angle1);
+          const bob1ModelY = length1 * Math.cos(angle1);
+          const bob1ModelPos = new Vector2(bob1ModelX, bob1ModelY);
+          const bob1ViewPos = this.modelViewTransform.modelToViewPosition(bob1ModelPos);
 
           // Calculate angle for bob 2 relative to bob 1
-          const delta = parentPoint.minus(bob1Pos);
+          const delta = parentPoint.minus(bob1ViewPos);
           const angle = Math.atan2(delta.x, delta.y);
           this.model.angle2Property.value = angle;
           this.model.angularVelocity2Property.value = 0;
@@ -229,35 +239,41 @@ export class DoublePendulumScreenView extends ScreenView {
   private updateVisualization(): void {
     const angle1 = this.model.angle1Property.value;
     const angle2 = this.model.angle2Property.value;
-    const length1 = this.model.length1Property.value * this.scale;
-    const length2 = this.model.length2Property.value * this.scale;
+    const length1 = this.model.length1Property.value;
+    const length2 = this.model.length2Property.value;
 
-    // Calculate bob 1 position
-    const bob1X = this.pivotPoint.x + length1 * Math.sin(angle1);
-    const bob1Y = this.pivotPoint.y + length1 * Math.cos(angle1);
-    const bob1Pos = new Vector2(bob1X, bob1Y);
+    // Calculate bob 1 position in model coordinates
+    const bob1ModelX = length1 * Math.sin(angle1);
+    const bob1ModelY = length1 * Math.cos(angle1);
+    const bob1ModelPos = new Vector2(bob1ModelX, bob1ModelY);
 
-    // Calculate bob 2 position
-    const bob2X = bob1X + length2 * Math.sin(angle2);
-    const bob2Y = bob1Y + length2 * Math.cos(angle2);
-    const bob2Pos = new Vector2(bob2X, bob2Y);
+    // Convert bob 1 to view coordinates
+    const bob1ViewPos = this.modelViewTransform.modelToViewPosition(bob1ModelPos);
+
+    // Calculate bob 2 position in model coordinates (relative to bob 1)
+    const bob2ModelX = bob1ModelX + length2 * Math.sin(angle2);
+    const bob2ModelY = bob1ModelY + length2 * Math.cos(angle2);
+    const bob2ModelPos = new Vector2(bob2ModelX, bob2ModelY);
+
+    // Convert bob 2 to view coordinates
+    const bob2ViewPos = this.modelViewTransform.modelToViewPosition(bob2ModelPos);
 
     // Update bob positions
-    this.bob1Node.center = bob1Pos;
-    this.bob2Node.center = bob2Pos;
+    this.bob1Node.center = bob1ViewPos;
+    this.bob2Node.center = bob2ViewPos;
 
     // Update rods
     this.rod1Node.setLine(
       this.pivotPoint.x,
       this.pivotPoint.y,
-      bob1X,
-      bob1Y
+      bob1ViewPos.x,
+      bob1ViewPos.y
     );
 
-    this.rod2Node.setLine(bob1X, bob1Y, bob2X, bob2Y);
+    this.rod2Node.setLine(bob1ViewPos.x, bob1ViewPos.y, bob2ViewPos.x, bob2ViewPos.y);
 
     // Update trail (track second bob for chaotic motion visualization)
-    this.addTrailPoint(bob2Pos);
+    this.addTrailPoint(bob2ViewPos);
   }
 
   private addTrailPoint(point: Vector2): void {

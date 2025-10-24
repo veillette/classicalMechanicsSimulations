@@ -12,6 +12,7 @@ import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
+import { ModelViewTransform2 } from "scenerystack/phetcommon";
 
 export class DoubleSpringScreenView extends ScreenView {
   private readonly model: DoubleSpringModel;
@@ -20,7 +21,7 @@ export class DoubleSpringScreenView extends ScreenView {
   private readonly spring1Node: SpringNode;
   private readonly spring2Node: SpringNode;
   private readonly fixedPoint: Vector2;
-  private readonly scale: number = 50; // pixels per meter
+  private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
     super(options);
@@ -29,6 +30,14 @@ export class DoubleSpringScreenView extends ScreenView {
 
     // Fixed point for spring attachment
     this.fixedPoint = new Vector2(100, this.layoutBounds.centerY);
+
+    // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
+    // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
+      Vector2.ZERO,
+      this.fixedPoint,
+      50 // pixels per meter
+    );
 
     // Wall
     const wall = new Line(
@@ -89,8 +98,8 @@ export class DoubleSpringScreenView extends ScreenView {
         translateNode: false,
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const newPosition = (parentPoint.x - this.fixedPoint.x) / this.scale;
-          this.model.position1Property.value = newPosition;
+          const modelPosition = this.modelViewTransform.viewToModelPosition(parentPoint);
+          this.model.position1Property.value = modelPosition.x;
           this.model.velocity1Property.value = 0;
         }
       })
@@ -101,8 +110,8 @@ export class DoubleSpringScreenView extends ScreenView {
         translateNode: false,
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const newPosition = (parentPoint.x - this.fixedPoint.x) / this.scale;
-          this.model.position2Property.value = newPosition;
+          const modelPosition = this.modelViewTransform.viewToModelPosition(parentPoint);
+          this.model.position2Property.value = modelPosition.x;
           this.model.velocity2Property.value = 0;
         }
       })
@@ -193,23 +202,25 @@ export class DoubleSpringScreenView extends ScreenView {
   }
 
   private updateVisualization(): void {
-    const mass1X = this.fixedPoint.x + this.model.position1Property.value * this.scale;
-    const mass2X = this.fixedPoint.x + this.model.position2Property.value * this.scale;
-    const y = this.fixedPoint.y;
+    // Convert model positions to view coordinates
+    const mass1ModelPos = new Vector2(this.model.position1Property.value, 0);
+    const mass2ModelPos = new Vector2(this.model.position2Property.value, 0);
+    const mass1ViewPos = this.modelViewTransform.modelToViewPosition(mass1ModelPos);
+    const mass2ViewPos = this.modelViewTransform.modelToViewPosition(mass2ModelPos);
 
     // Update mass positions
-    this.mass1Node.center = new Vector2(mass1X, y);
-    this.mass2Node.center = new Vector2(mass2X, y);
+    this.mass1Node.center = mass1ViewPos;
+    this.mass2Node.center = mass2ViewPos;
 
     // Update spring endpoints
     this.spring1Node.setEndpoints(
       this.fixedPoint,
-      new Vector2(mass1X - 20, y)
+      new Vector2(mass1ViewPos.x - 20, mass1ViewPos.y)
     );
 
     this.spring2Node.setEndpoints(
-      new Vector2(mass1X + 20, y),
-      new Vector2(mass2X - 20, y)
+      new Vector2(mass1ViewPos.x + 20, mass1ViewPos.y),
+      new Vector2(mass2ViewPos.x - 20, mass2ViewPos.y)
     );
   }
 

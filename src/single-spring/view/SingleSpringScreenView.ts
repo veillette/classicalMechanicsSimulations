@@ -13,13 +13,14 @@ import { SpringNode } from "../../common/view/SpringNode.js";
 import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
+import { ModelViewTransform2 } from "scenerystack/phetcommon";
 
 export class SingleSpringScreenView extends ScreenView {
   private readonly model: SingleSpringModel;
   private readonly massNode: Rectangle;
   private readonly springNode: SpringNode;
   private readonly fixedPoint: Vector2;
-  private readonly scale: number = 50; // pixels per meter
+  private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(options);
@@ -28,6 +29,14 @@ export class SingleSpringScreenView extends ScreenView {
 
     // Fixed point for spring attachment (left side of screen)
     this.fixedPoint = new Vector2(150, this.layoutBounds.centerY);
+
+    // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
+    // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
+      Vector2.ZERO,
+      this.fixedPoint,
+      50 // pixels per meter
+    );
 
     // Wall visualization
     const wall = new Line(
@@ -68,8 +77,8 @@ export class SingleSpringScreenView extends ScreenView {
         translateNode: false,
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const newPosition = (parentPoint.x - this.fixedPoint.x) / this.scale;
-          this.model.positionProperty.value = newPosition;
+          const modelPosition = this.modelViewTransform.viewToModelPosition(parentPoint);
+          this.model.positionProperty.value = modelPosition.x;
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
         }
@@ -158,16 +167,16 @@ export class SingleSpringScreenView extends ScreenView {
    */
   private updateVisualization(position: number): void {
     // Convert model position to view coordinates
-    const massX = this.fixedPoint.x + position * this.scale;
-    const massY = this.fixedPoint.y;
+    const modelPosition = new Vector2(position, 0);
+    const viewPosition = this.modelViewTransform.modelToViewPosition(modelPosition);
 
     // Update mass position
-    this.massNode.center = new Vector2(massX, massY);
+    this.massNode.center = viewPosition;
 
     // Update spring endpoints
     this.springNode.setEndpoints(
       this.fixedPoint,
-      new Vector2(massX - 25, massY) // Connect to left edge of mass
+      new Vector2(viewPosition.x - 25, viewPosition.y) // Connect to left edge of mass
     );
   }
 

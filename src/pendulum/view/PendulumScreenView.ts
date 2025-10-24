@@ -11,6 +11,7 @@ import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
+import { ModelViewTransform2 } from "scenerystack/phetcommon";
 
 export class PendulumScreenView extends ScreenView {
   private readonly model: PendulumModel;
@@ -18,7 +19,7 @@ export class PendulumScreenView extends ScreenView {
   private readonly rodNode: Line;
   private readonly pivotNode: Circle;
   private readonly pivotPoint: Vector2;
-  private readonly scale: number = 100; // pixels per meter
+  private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(options);
@@ -29,6 +30,14 @@ export class PendulumScreenView extends ScreenView {
     this.pivotPoint = new Vector2(
       this.layoutBounds.centerX,
       this.layoutBounds.minY + 100
+    );
+
+    // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
+    // Maps model origin (0, 0) to the pivot point, with 100 pixels per meter
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
+      Vector2.ZERO,
+      this.pivotPoint,
+      100 // pixels per meter
     );
 
     // Pivot
@@ -157,21 +166,25 @@ export class PendulumScreenView extends ScreenView {
 
   private updateVisualization(): void {
     const angle = this.model.angleProperty.value;
-    const length = this.model.lengthProperty.value * this.scale;
+    const length = this.model.lengthProperty.value;
 
-    // Calculate bob position (angle is from vertical)
-    const bobX = this.pivotPoint.x + length * Math.sin(angle);
-    const bobY = this.pivotPoint.y + length * Math.cos(angle);
+    // Calculate bob position in model coordinates (angle is from vertical)
+    const modelBobX = length * Math.sin(angle);
+    const modelBobY = length * Math.cos(angle);
+    const modelBobPosition = new Vector2(modelBobX, modelBobY);
+
+    // Convert to view coordinates
+    const viewBobPosition = this.modelViewTransform.modelToViewPosition(modelBobPosition);
 
     // Update bob position
-    this.bobNode.center = new Vector2(bobX, bobY);
+    this.bobNode.center = viewBobPosition;
 
     // Update rod
     this.rodNode.setLine(
       this.pivotPoint.x,
       this.pivotPoint.y,
-      bobX,
-      bobY
+      viewBobPosition.x,
+      viewBobPosition.y
     );
   }
 
