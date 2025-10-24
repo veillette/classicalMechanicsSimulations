@@ -26,6 +26,7 @@ export class PendulumModel {
   // State variables
   public readonly angleProperty: NumberProperty;
   public readonly angularVelocityProperty: NumberProperty;
+  public readonly timeProperty: NumberProperty;
 
   // Physics parameters
   public readonly lengthProperty: NumberProperty;
@@ -39,12 +40,12 @@ export class PendulumModel {
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
   private readonly solver: RungeKuttaSolver;
-  private time: number = 0;
 
   public constructor() {
     // Initialize state (start at 45 degrees)
     this.angleProperty = new NumberProperty(Math.PI / 4); // radians
     this.angularVelocityProperty = new NumberProperty(0.0); // rad/s
+    this.timeProperty = new NumberProperty(0.0); // seconds
 
     // Initialize parameters
     this.lengthProperty = new NumberProperty(2.0); // meters
@@ -82,11 +83,11 @@ export class PendulumModel {
   public reset(): void {
     this.angleProperty.reset();
     this.angularVelocityProperty.reset();
+    this.timeProperty.reset();
     this.lengthProperty.reset();
     this.massProperty.reset();
     this.gravityProperty.reset();
     this.dampingProperty.reset();
-    this.time = 0;
   }
 
   public step(dt: number): void {
@@ -96,13 +97,12 @@ export class PendulumModel {
       this.angularVelocityProperty.value,
     ];
 
-    this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
+    this.solver.step(state, this.getDerivatives.bind(this), this.timeProperty.value, dt);
 
     // Update properties
     this.angleProperty.value = state[0];
     this.angularVelocityProperty.value = state[1];
-
-    this.time += dt;
+    this.timeProperty.value += dt;
   }
 
   /**

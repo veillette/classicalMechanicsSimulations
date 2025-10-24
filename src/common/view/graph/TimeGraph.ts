@@ -9,10 +9,11 @@ import {
   TickMarkSet,
   AxisLine,
 } from 'scenerystack/bamboo';
-import { Range } from 'scenerystack/dot';
+import { Range, Bounds2 } from 'scenerystack/dot';
 import { Orientation } from 'scenerystack/phet-core';
 import { Node, Text, HBox, Line } from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
+import { Shape } from 'scenerystack/kite';
 import GraphDataSet from './GraphDataSet';
 
 /**
@@ -85,12 +86,13 @@ export default class TimeGraph extends Panel {
       lineWidth: 1,
     });
 
-    // Create tick labels
+    // Create tick labels with maxWidth to prevent overflow
     const xTickLabels = new TickLabelSet(chartTransform, Orientation.HORIZONTAL, 1, {
       createLabel: (value: number) =>
         new Text(value.toFixed(1), {
           fontSize: 12,
           fill: 'black',
+          maxWidth: 40,
         }),
     });
     const yTickLabels = new TickLabelSet(chartTransform, Orientation.VERTICAL, 0.5, {
@@ -98,10 +100,11 @@ export default class TimeGraph extends Panel {
         new Text(value.toFixed(2), {
           fontSize: 12,
           fill: 'black',
+          maxWidth: 45,
         }),
     });
 
-    // Create line plots for each data set
+    // Create line plots for each data set - wrapped in a clipped node
     const linePlots: LinePlot[] = [];
     for (const dataSet of dataSets) {
       const linePlot = new LinePlot(chartTransform, dataSet.getDataPoints(), {
@@ -110,6 +113,12 @@ export default class TimeGraph extends Panel {
       });
       linePlots.push(linePlot);
     }
+
+    // Wrap line plots in a clipped container to prevent overflow beyond chart
+    const clippedPlots = new Node({
+      children: linePlots,
+      clipArea: Shape.rect(0, 0, width, height),
+    });
 
     // Create labels
     const xLabelText = new Text(xLabel, { fontSize: 14, fill: 'black' });
@@ -146,7 +155,7 @@ export default class TimeGraph extends Panel {
         gridLineSet,
         xAxis,
         yAxis,
-        ...linePlots,
+        clippedPlots,  // Use clipped container instead of individual plots
         xTickMarks,
         yTickMarks,
         xTickLabels,
@@ -154,23 +163,30 @@ export default class TimeGraph extends Panel {
       ],
     });
 
-    // Position labels
-    yLabelText.right = chartNode.left - 15;
-    yLabelText.centerY = chartNode.centerY;
+    // Position labels relative to chart origin
+    yLabelText.right = -15;
+    yLabelText.centerY = height / 2;
 
-    xLabelText.centerX = chartNode.centerX;
-    xLabelText.top = chartNode.bottom + 15;
+    xLabelText.centerX = width / 2;
+    xLabelText.top = height + 10;
 
     // Position legend
-    legend.centerX = chartNode.centerX;
-    legend.top = xLabelText.bottom + 5;
+    legend.centerX = width / 2;
+    legend.top = height + 35;
 
-    // Content with labels and legend
+    // Content with labels and legend - use fixed bounds to prevent resizing
     const contentNode = new Node({
       children: [chartNode, xLabelText, yLabelText, legend],
+      // Force fixed local bounds to prevent panel from resizing
+      localBounds: new Bounds2(
+        -50,  // left margin for Y label
+        -10,  // top margin
+        width + 10,  // right margin
+        height + 60  // bottom margin for X label and legend
+      ),
     });
 
-    // Create panel
+    // Create panel with fixed size
     super(contentNode, {
       fill: 'rgb(230, 230, 230)',
       stroke: 'gray',
@@ -178,6 +194,8 @@ export default class TimeGraph extends Panel {
       cornerRadius: 5,
       xMargin: 10,
       yMargin: 10,
+      minWidth: width + 70,
+      minHeight: height + 80,
     });
 
     this.chartTransform = chartTransform;

@@ -9,10 +9,11 @@ import {
   TickMarkSet,
   AxisLine,
 } from 'scenerystack/bamboo';
-import { Range } from 'scenerystack/dot';
+import { Range, Bounds2 } from 'scenerystack/dot';
 import { Orientation } from 'scenerystack/phet-core';
 import { Node, Text, HBox, Line } from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
+import { Shape } from 'scenerystack/kite';
 import GraphDataSet from './GraphDataSet';
 
 /**
@@ -117,12 +118,13 @@ export default class MultiGraph extends Panel {
       edge: 'max', // Right side
     });
 
-    // Create tick labels for X-axis
+    // Create tick labels for X-axis with maxWidth to prevent overflow
     const xTickLabels = new TickLabelSet(chartTransform1, Orientation.HORIZONTAL, 1, {
       createLabel: (value: number) =>
         new Text(value.toFixed(1), {
           fontSize: 12,
           fill: 'black',
+          maxWidth: 40,
         }),
     });
 
@@ -133,6 +135,7 @@ export default class MultiGraph extends Panel {
         new Text(value.toFixed(2), {
           fontSize: 12,
           fill: dataSet1.color,
+          maxWidth: 50,
         }),
     });
 
@@ -142,6 +145,7 @@ export default class MultiGraph extends Panel {
         new Text(value.toFixed(2), {
           fontSize: 12,
           fill: dataSet2.color,
+          maxWidth: 50,
         }),
     });
 
@@ -154,6 +158,12 @@ export default class MultiGraph extends Panel {
     const linePlot2 = new LinePlot(chartTransform2, dataSet2.getDataPoints(), {
       stroke: dataSet2.color,
       lineWidth: dataSet2.lineWidth,
+    });
+
+    // Wrap line plots in a clipped container to prevent overflow beyond chart
+    const clippedPlots = new Node({
+      children: [linePlot1, linePlot2],
+      clipArea: Shape.rect(0, 0, width, height),
     });
 
     // Create labels
@@ -193,8 +203,7 @@ export default class MultiGraph extends Panel {
         xAxis,
         yAxis1,
         yAxis2,
-        linePlot1,
-        linePlot2,
+        clippedPlots,  // Use clipped container instead of individual plots
         xTickMarks,
         yTickMarks1,
         yTickMarks2,
@@ -204,20 +213,28 @@ export default class MultiGraph extends Panel {
       ],
     });
 
-    // Position labels
-    xLabelText.centerX = chartNode.centerX;
-    xLabelText.top = chartNode.bottom + 15;
+    // Position labels relative to chart origin
+    xLabelText.centerX = width / 2;
+    xLabelText.top = height + 10;
 
     // Position legend
-    legend.centerX = chartNode.centerX;
-    legend.top = xLabelText.bottom + 5;
+    legend.centerX = width / 2;
+    legend.top = height + 35;
 
-    // Content with labels and legend
+    // Content with labels and legend - use fixed bounds to prevent resizing
     const contentNode = new Node({
       children: [chartNode, xLabelText, legend],
+      // Force fixed local bounds to prevent panel from resizing
+      // MultiGraph has tick labels on both left and right
+      localBounds: new Bounds2(
+        -60,  // left margin for left Y labels
+        -10,  // top margin
+        width + 60,  // right margin for right Y labels
+        height + 60  // bottom margin for X label and legend
+      ),
     });
 
-    // Create panel
+    // Create panel with fixed size
     super(contentNode, {
       fill: 'rgb(230, 230, 230)',
       stroke: 'gray',
@@ -225,6 +242,8 @@ export default class MultiGraph extends Panel {
       cornerRadius: 5,
       xMargin: 10,
       yMargin: 10,
+      minWidth: width + 140,
+      minHeight: height + 80,
     });
 
     this.chartTransform1 = chartTransform1;

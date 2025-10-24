@@ -12,6 +12,7 @@ import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import { GraphDataSet, TimeGraph, MultiGraph } from "../../common/view/graph/index.js";
 
 export class PendulumScreenView extends ScreenView {
   private readonly model: PendulumModel;
@@ -20,6 +21,14 @@ export class PendulumScreenView extends ScreenView {
   private readonly pivotNode: Circle;
   private readonly pivotPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
+
+  // Graph components
+  private readonly angleDataSet: GraphDataSet;
+  private readonly angularVelocityDataSet: GraphDataSet;
+  private readonly kineticEnergyDataSet: GraphDataSet;
+  private readonly potentialEnergyDataSet: GraphDataSet;
+  private readonly timeGraph: TimeGraph;
+  private readonly energyGraph: MultiGraph;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(options);
@@ -87,6 +96,61 @@ export class PendulumScreenView extends ScreenView {
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
+
+    // Create graph datasets
+    this.angleDataSet = new GraphDataSet(
+      this.model.timeProperty,
+      this.model.angleProperty,
+      'lime',
+      2000
+    );
+
+    this.angularVelocityDataSet = new GraphDataSet(
+      this.model.timeProperty,
+      this.model.angularVelocityProperty,
+      'red',
+      2000
+    );
+
+    this.kineticEnergyDataSet = new GraphDataSet(
+      this.model.timeProperty,
+      this.model.kineticEnergyProperty,
+      'blue',
+      2000
+    );
+
+    this.potentialEnergyDataSet = new GraphDataSet(
+      this.model.timeProperty,
+      this.model.potentialEnergyProperty,
+      'orange',
+      2000
+    );
+
+    // Create time graph showing angle and angular velocity
+    this.timeGraph = new TimeGraph(
+      [this.angleDataSet, this.angularVelocityDataSet],
+      450,  // width
+      200,  // height
+      'Time (s)',
+      'Angle (rad) / Angular Velocity (rad/s)',
+      10    // time window
+    );
+    this.timeGraph.left = this.layoutBounds.minX + 10;
+    this.timeGraph.top = this.layoutBounds.minY + 10;
+    this.addChild(this.timeGraph);
+
+    // Create multi-graph showing kinetic and potential energy with independent scales
+    this.energyGraph = new MultiGraph(
+      this.kineticEnergyDataSet,
+      this.potentialEnergyDataSet,
+      450,  // width
+      200,  // height
+      'Time (s)',
+      10    // time window
+    );
+    this.energyGraph.left = this.layoutBounds.minX + 10;
+    this.energyGraph.top = this.timeGraph.bottom + 10;
+    this.addChild(this.energyGraph);
 
     // Reset button
     const resetButton = new ResetAllButton({
@@ -207,9 +271,25 @@ export class PendulumScreenView extends ScreenView {
 
   public reset(): void {
     // Reset view-specific state
+    this.angleDataSet.clear();
+    this.angularVelocityDataSet.clear();
+    this.kineticEnergyDataSet.clear();
+    this.potentialEnergyDataSet.clear();
+    this.timeGraph.clear();
+    this.energyGraph.clear();
   }
 
   public override step(dt: number): void {
     this.model.step(dt);
+
+    // Update graph data
+    this.angleDataSet.addDataPoint();
+    this.angularVelocityDataSet.addDataPoint();
+    this.kineticEnergyDataSet.addDataPoint();
+    this.potentialEnergyDataSet.addDataPoint();
+
+    // Update graph visualizations
+    this.timeGraph.update(this.model.timeProperty.value);
+    this.energyGraph.update(this.model.timeProperty.value);
   }
 }

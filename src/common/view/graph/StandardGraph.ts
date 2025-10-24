@@ -9,10 +9,11 @@ import {
   TickMarkSet,
   AxisLine,
 } from 'scenerystack/bamboo';
-import { Range } from 'scenerystack/dot';
+import { Range, Bounds2 } from 'scenerystack/dot';
 import { Orientation } from 'scenerystack/phet-core';
 import { Node, Text, VBox } from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
+import { Shape } from 'scenerystack/kite';
 import GraphDataSet from './GraphDataSet';
 
 /**
@@ -83,12 +84,13 @@ export default class StandardGraph extends Panel {
       lineWidth: 1,
     });
 
-    // Create tick labels
+    // Create tick labels with maxWidth to prevent overflow
     const xTickLabels = new TickLabelSet(chartTransform, Orientation.HORIZONTAL, 1, {
       createLabel: (value: number) =>
         new Text(value.toFixed(1), {
           fontSize: 12,
           fill: 'black',
+          maxWidth: 40,
         }),
     });
     const yTickLabels = new TickLabelSet(chartTransform, Orientation.VERTICAL, 1, {
@@ -96,13 +98,19 @@ export default class StandardGraph extends Panel {
         new Text(value.toFixed(1), {
           fontSize: 12,
           fill: 'black',
+          maxWidth: 45,
         }),
     });
 
-    // Create line plot
+    // Create line plot wrapped in a clipped container to prevent overflow beyond chart
     const linePlot = new LinePlot(chartTransform, dataSet.getDataPoints(), {
       stroke: dataSet.color,
       lineWidth: dataSet.lineWidth,
+    });
+
+    const clippedPlot = new Node({
+      children: [linePlot],
+      clipArea: Shape.rect(0, 0, width, height),
     });
 
     // Create labels
@@ -121,7 +129,7 @@ export default class StandardGraph extends Panel {
         gridLineSet,
         xAxis,
         yAxis,
-        linePlot,
+        clippedPlot,  // Use clipped container instead of raw linePlot
         xTickMarks,
         yTickMarks,
         xTickLabels,
@@ -129,19 +137,26 @@ export default class StandardGraph extends Panel {
       ],
     });
 
-    // Position labels
-    yLabelText.right = chartNode.left - 15;
-    yLabelText.centerY = chartNode.centerY;
+    // Position labels relative to chart
+    yLabelText.right = -15;
+    yLabelText.centerY = height / 2;
 
-    xLabelText.centerX = chartNode.centerX;
-    xLabelText.top = chartNode.bottom + 15;
+    xLabelText.centerX = width / 2;
+    xLabelText.top = height + 10;
 
-    // Content with labels
+    // Content with labels - use fixed bounds to prevent resizing
     const contentNode = new Node({
       children: [chartNode, xLabelText, yLabelText],
+      // Force fixed local bounds to prevent panel from resizing
+      localBounds: new Bounds2(
+        -50,  // left margin for Y label
+        -10,  // top margin
+        width + 10,  // right margin
+        height + 40  // bottom margin for X label
+      ),
     });
 
-    // Create panel
+    // Create panel with fixed size
     super(contentNode, {
       fill: 'rgb(230, 230, 230)',
       stroke: 'gray',
@@ -149,6 +164,8 @@ export default class StandardGraph extends Panel {
       cornerRadius: 5,
       xMargin: 10,
       yMargin: 10,
+      minWidth: width + 70,
+      minHeight: height + 60,
     });
 
     this.chartTransform = chartTransform;
