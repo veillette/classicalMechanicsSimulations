@@ -22,5 +22,7 @@ tsconfig.tsbuildinfo
 *.sln
 *.sw?
 
+*.md
+
 # Reference repositories (not part of our project)
 myphysicslab/
