@@ -15,7 +15,11 @@
  * - angularVelocity (ω) - angular velocity in rad/s
  */
 
-import { NumberProperty, DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
+import {
+  NumberProperty,
+  DerivedProperty,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
 
 export class PendulumModel {
@@ -52,19 +56,24 @@ export class PendulumModel {
     // KE = (1/2) * I * ω² = (1/2) * m * L² * ω²
     this.kineticEnergyProperty = new DerivedProperty(
       [this.angularVelocityProperty, this.massProperty, this.lengthProperty],
-      (omega, m, L) => 0.5 * m * L * L * omega * omega
+      (omega, m, L) => 0.5 * m * L * L * omega * omega,
     );
 
     // PE = m * g * h, where h = L * (1 - cos(θ))
     // Taking PE = 0 at the bottom (θ = 0)
     this.potentialEnergyProperty = new DerivedProperty(
-      [this.angleProperty, this.massProperty, this.gravityProperty, this.lengthProperty],
-      (theta, m, g, L) => m * g * L * (1 - Math.cos(theta))
+      [
+        this.angleProperty,
+        this.massProperty,
+        this.gravityProperty,
+        this.lengthProperty,
+      ],
+      (theta, m, g, L) => m * g * L * (1 - Math.cos(theta)),
     );
 
     this.totalEnergyProperty = new DerivedProperty(
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
-      (ke, pe) => ke + pe
+      (ke, pe) => ke + pe,
     );
 
     this.solver = new RungeKuttaSolver();
@@ -84,7 +93,7 @@ export class PendulumModel {
     // State vector: [angle, angularVelocity]
     const state = [
       this.angleProperty.value,
-      this.angularVelocityProperty.value
+      this.angularVelocityProperty.value,
     ];
 
     this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
@@ -101,7 +110,11 @@ export class PendulumModel {
    * θ' = ω
    * ω' = -(g/L)*sin(θ) - (b/mL²)*ω
    */
-  private getDerivatives(state: number[], derivatives: number[], _time: number): void {
+  private getDerivatives(
+    state: number[],
+    derivatives: number[],
+    _time: number,
+  ): void {
     const theta = state[0];
     const omega = state[1];
 

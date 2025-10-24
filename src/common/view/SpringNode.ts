@@ -39,7 +39,7 @@ export class SpringNode extends Node {
       stroke: backColor,
       lineWidth: lineWidth,
       lineCap: "round",
-      lineJoin: "round"
+      lineJoin: "round",
     });
 
     // Front part of spring (goes in front)
@@ -47,7 +47,7 @@ export class SpringNode extends Node {
       stroke: frontColor,
       lineWidth: lineWidth,
       lineCap: "round",
-      lineJoin: "round"
+      lineJoin: "round",
     });
 
     this.addChild(this.backPath);
@@ -89,7 +89,7 @@ export class SpringNode extends Node {
 
       // Alternate between front and back
       const wasfront = isFront;
-      isFront = (i % pointsPerLoop === 1 || i % pointsPerLoop === 2);
+      isFront = i % pointsPerLoop === 1 || i % pointsPerLoop === 2;
 
       if (isFront) {
         if (!wasfront && i > 1) {

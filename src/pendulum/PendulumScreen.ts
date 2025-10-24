@@ -11,7 +11,7 @@ export class PendulumScreen extends Screen<PendulumModel, PendulumScreenView> {
     super(
       () => new PendulumModel(),
       (model) => new PendulumScreenView(model),
-      options
+      options,
     );
   }
 }

@@ -35,7 +35,7 @@ export class SingleSpringScreenView extends ScreenView {
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
       Vector2.ZERO,
       this.fixedPoint,
-      50 // pixels per meter
+      50, // pixels per meter
     );
 
     // Wall visualization
@@ -46,8 +46,8 @@ export class SingleSpringScreenView extends ScreenView {
       this.layoutBounds.maxY,
       {
         stroke: "#666",
-        lineWidth: 4
-      }
+        lineWidth: 4,
+      },
     );
     this.addChild(wall);
 
@@ -57,7 +57,7 @@ export class SingleSpringScreenView extends ScreenView {
       radius: 15,
       frontColor: "#888",
       backColor: "#444",
-      lineWidth: 3
+      lineWidth: 3,
     });
     this.addChild(this.springNode);
 
@@ -67,7 +67,7 @@ export class SingleSpringScreenView extends ScreenView {
       stroke: "#2E5C8A",
       lineWidth: 2,
       cornerRadius: 3,
-      cursor: "pointer"
+      cursor: "pointer",
     });
     this.addChild(this.massNode);
 
@@ -77,12 +77,13 @@ export class SingleSpringScreenView extends ScreenView {
         translateNode: false,
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const modelPosition = this.modelViewTransform.viewToModelPosition(parentPoint);
+          const modelPosition =
+            this.modelViewTransform.viewToModelPosition(parentPoint);
           this.model.positionProperty.value = modelPosition.x;
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
-        }
-      })
+        },
+      }),
     );
 
     // Link model position to view
@@ -99,7 +100,7 @@ export class SingleSpringScreenView extends ScreenView {
         this.reset();
       },
       right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10
+      bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
 
@@ -114,38 +115,50 @@ export class SingleSpringScreenView extends ScreenView {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
 
-    const massControl = new NumberControl(controlLabels.massStringProperty, this.model.massProperty,
-      new Range(0.1, 5.0), {
+    const massControl = new NumberControl(
+      controlLabels.massStringProperty,
+      this.model.massProperty,
+      new Range(0.1, 5.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} kg"
-        }
-      });
+          valuePattern: "{0} kg",
+        },
+      },
+    );
 
-    const springControl = new NumberControl(controlLabels.springConstantStringProperty, this.model.springConstantProperty,
-      new Range(1.0, 50.0), {
+    const springControl = new NumberControl(
+      controlLabels.springConstantStringProperty,
+      this.model.springConstantProperty,
+      new Range(1.0, 50.0),
+      {
         delta: 1.0,
         numberDisplayOptions: {
           decimalPlaces: 0,
-          valuePattern: "{0} N/m"
-        }
-      });
+          valuePattern: "{0} N/m",
+        },
+      },
+    );
 
-    const dampingControl = new NumberControl(controlLabels.dampingStringProperty, this.model.dampingProperty,
-      new Range(0.0, 2.0), {
+    const dampingControl = new NumberControl(
+      controlLabels.dampingStringProperty,
+      this.model.dampingProperty,
+      new Range(0.0, 2.0),
+      {
         delta: 0.05,
         numberDisplayOptions: {
           decimalPlaces: 2,
-          valuePattern: "{0} N·s/m"
-        }
-      });
+          valuePattern: "{0} N·s/m",
+        },
+      },
+    );
 
     const panel = new Panel(
       new VBox({
         spacing: 15,
         align: "left",
-        children: [massControl, springControl, dampingControl]
+        children: [massControl, springControl, dampingControl],
       }),
       {
         xMargin: 10,
@@ -155,8 +168,8 @@ export class SingleSpringScreenView extends ScreenView {
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10
-      }
+        top: this.layoutBounds.minY + 10,
+      },
     );
 
     return panel;
@@ -168,7 +181,8 @@ export class SingleSpringScreenView extends ScreenView {
   private updateVisualization(position: number): void {
     // Convert model position to view coordinates
     const modelPosition = new Vector2(position, 0);
-    const viewPosition = this.modelViewTransform.modelToViewPosition(modelPosition);
+    const viewPosition =
+      this.modelViewTransform.modelToViewPosition(modelPosition);
 
     // Update mass position
     this.massNode.center = viewPosition;
@@ -176,7 +190,7 @@ export class SingleSpringScreenView extends ScreenView {
     // Update spring endpoints
     this.springNode.setEndpoints(
       this.fixedPoint,
-      new Vector2(viewPosition.x - 25, viewPosition.y) // Connect to left edge of mass
+      new Vector2(viewPosition.x - 25, viewPosition.y), // Connect to left edge of mass
     );
   }
 

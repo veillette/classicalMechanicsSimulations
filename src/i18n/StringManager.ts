@@ -53,10 +53,14 @@ export class StringManager {
    */
   public getScreenNames() {
     return {
-      singleSpringStringProperty: this.stringProperties.screens.singleSpringStringProperty,
-      doubleSpringStringProperty: this.stringProperties.screens.doubleSpringStringProperty,
-      pendulumStringProperty: this.stringProperties.screens.pendulumStringProperty,
-      doublePendulumStringProperty: this.stringProperties.screens.doublePendulumStringProperty,
+      singleSpringStringProperty:
+        this.stringProperties.screens.singleSpringStringProperty,
+      doubleSpringStringProperty:
+        this.stringProperties.screens.doubleSpringStringProperty,
+      pendulumStringProperty:
+        this.stringProperties.screens.pendulumStringProperty,
+      doublePendulumStringProperty:
+        this.stringProperties.screens.doublePendulumStringProperty,
     };
   }
 
@@ -68,16 +72,25 @@ export class StringManager {
       massStringProperty: this.stringProperties.controls.massStringProperty,
       mass1StringProperty: this.stringProperties.controls.mass1StringProperty,
       mass2StringProperty: this.stringProperties.controls.mass2StringProperty,
-      springConstantStringProperty: this.stringProperties.controls.springConstantStringProperty,
-      springConstant1StringProperty: this.stringProperties.controls.springConstant1StringProperty,
-      springConstant2StringProperty: this.stringProperties.controls.springConstant2StringProperty,
-      dampingStringProperty: this.stringProperties.controls.dampingStringProperty,
-      damping1StringProperty: this.stringProperties.controls.damping1StringProperty,
-      damping2StringProperty: this.stringProperties.controls.damping2StringProperty,
+      springConstantStringProperty:
+        this.stringProperties.controls.springConstantStringProperty,
+      springConstant1StringProperty:
+        this.stringProperties.controls.springConstant1StringProperty,
+      springConstant2StringProperty:
+        this.stringProperties.controls.springConstant2StringProperty,
+      dampingStringProperty:
+        this.stringProperties.controls.dampingStringProperty,
+      damping1StringProperty:
+        this.stringProperties.controls.damping1StringProperty,
+      damping2StringProperty:
+        this.stringProperties.controls.damping2StringProperty,
       lengthStringProperty: this.stringProperties.controls.lengthStringProperty,
-      length1StringProperty: this.stringProperties.controls.length1StringProperty,
-      length2StringProperty: this.stringProperties.controls.length2StringProperty,
-      gravityStringProperty: this.stringProperties.controls.gravityStringProperty,
+      length1StringProperty:
+        this.stringProperties.controls.length1StringProperty,
+      length2StringProperty:
+        this.stringProperties.controls.length2StringProperty,
+      gravityStringProperty:
+        this.stringProperties.controls.gravityStringProperty,
     };
   }
 
@@ -86,12 +99,17 @@ export class StringManager {
    */
   public getUnitStrings() {
     return {
-      kilogramsStringProperty: this.stringProperties.units.kilogramsStringProperty,
-      newtonsPerMeterStringProperty: this.stringProperties.units.newtonsPerMeterStringProperty,
-      newtonSecondsPerMeterStringProperty: this.stringProperties.units.newtonSecondsPerMeterStringProperty,
-      newtonMeterSecondsStringProperty: this.stringProperties.units.newtonMeterSecondsStringProperty,
+      kilogramsStringProperty:
+        this.stringProperties.units.kilogramsStringProperty,
+      newtonsPerMeterStringProperty:
+        this.stringProperties.units.newtonsPerMeterStringProperty,
+      newtonSecondsPerMeterStringProperty:
+        this.stringProperties.units.newtonSecondsPerMeterStringProperty,
+      newtonMeterSecondsStringProperty:
+        this.stringProperties.units.newtonMeterSecondsStringProperty,
       metersStringProperty: this.stringProperties.units.metersStringProperty,
-      metersPerSecondSquaredStringProperty: this.stringProperties.units.metersPerSecondSquaredStringProperty,
+      metersPerSecondSquaredStringProperty:
+        this.stringProperties.units.metersPerSecondSquaredStringProperty,
     };
   }
 

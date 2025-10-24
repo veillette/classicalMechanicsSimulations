@@ -14,7 +14,11 @@
  * of the relative angle (θ2 - θ1).
  */
 
-import { NumberProperty, DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
+import {
+  NumberProperty,
+  DerivedProperty,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
 
 export class DoublePendulumModel {
@@ -64,13 +68,14 @@ export class DoublePendulumModel {
         this.mass2Property,
         this.length1Property,
         this.length2Property,
-        this.gravityProperty
+        this.gravityProperty,
       ],
       (theta1, theta2, omega1, omega2, m1, m2, L1, L2, g) => {
         // Kinetic energy (complex due to coupling)
         const ke1 = 0.5 * (m1 + m2) * L1 * L1 * omega1 * omega1;
         const ke2 = 0.5 * m2 * L2 * L2 * omega2 * omega2;
-        const ke_coupling = m2 * L1 * L2 * omega1 * omega2 * Math.cos(theta1 - theta2);
+        const ke_coupling =
+          m2 * L1 * L2 * omega1 * omega2 * Math.cos(theta1 - theta2);
         const ke = ke1 + ke2 + ke_coupling;
 
         // Potential energy
@@ -79,7 +84,7 @@ export class DoublePendulumModel {
         const pe = (m1 + m2) * g * y1 + m2 * g * y2;
 
         return ke + pe;
-      }
+      },
     );
 
     this.solver = new RungeKuttaSolver();
@@ -105,7 +110,7 @@ export class DoublePendulumModel {
       this.angle1Property.value,
       this.angularVelocity1Property.value,
       this.angle2Property.value,
-      this.angularVelocity2Property.value
+      this.angularVelocity2Property.value,
     ];
 
     this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
@@ -123,7 +128,11 @@ export class DoublePendulumModel {
    * Compute derivatives for the double pendulum system.
    * These are the coupled nonlinear equations derived from Lagrangian mechanics.
    */
-  private getDerivatives(state: number[], derivatives: number[], _time: number): void {
+  private getDerivatives(
+    state: number[],
+    derivatives: number[],
+    _time: number,
+  ): void {
     const theta1 = state[0];
     const omega1 = state[1];
     const theta2 = state[2];

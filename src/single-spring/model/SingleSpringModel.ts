@@ -11,7 +11,11 @@
  * - velocity (v)
  */
 
-import { NumberProperty, DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
+import {
+  NumberProperty,
+  DerivedProperty,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
 
 export class SingleSpringModel {
@@ -45,17 +49,17 @@ export class SingleSpringModel {
     // Computed energies
     this.kineticEnergyProperty = new DerivedProperty(
       [this.velocityProperty, this.massProperty],
-      (v, m) => 0.5 * m * v * v
+      (v, m) => 0.5 * m * v * v,
     );
 
     this.potentialEnergyProperty = new DerivedProperty(
       [this.positionProperty, this.springConstantProperty],
-      (x, k) => 0.5 * k * x * x
+      (x, k) => 0.5 * k * x * x,
     );
 
     this.totalEnergyProperty = new DerivedProperty(
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
-      (ke, pe) => ke + pe
+      (ke, pe) => ke + pe,
     );
 
     this.solver = new RungeKuttaSolver();
@@ -79,10 +83,7 @@ export class SingleSpringModel {
    */
   public step(dt: number): void {
     // State vector: [position, velocity]
-    const state = [
-      this.positionProperty.value,
-      this.velocityProperty.value
-    ];
+    const state = [this.positionProperty.value, this.velocityProperty.value];
 
     // Use RK4 solver
     this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
@@ -98,7 +99,11 @@ export class SingleSpringModel {
    * Compute derivatives for the ODE solver.
    * Implements: x' = v, v' = (-k*x - b*v) / m
    */
-  private getDerivatives(state: number[], derivatives: number[], _time: number): void {
+  private getDerivatives(
+    state: number[],
+    derivatives: number[],
+    _time: number,
+  ): void {
     const x = state[0];
     const v = state[1];
 

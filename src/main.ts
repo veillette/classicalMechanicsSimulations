@@ -18,20 +18,20 @@ onReadyToLaunch(() => {
   const screens = [
     new SingleSpringScreen({
       name: screenNames.singleSpringStringProperty,
-      tandem: Tandem.ROOT.createTandem("singleSpringScreen")
+      tandem: Tandem.ROOT.createTandem("singleSpringScreen"),
     }),
     new DoubleSpringScreen({
       name: screenNames.doubleSpringStringProperty,
-      tandem: Tandem.ROOT.createTandem("doubleSpringScreen")
+      tandem: Tandem.ROOT.createTandem("doubleSpringScreen"),
     }),
     new PendulumScreen({
       name: screenNames.pendulumStringProperty,
-      tandem: Tandem.ROOT.createTandem("pendulumScreen")
+      tandem: Tandem.ROOT.createTandem("pendulumScreen"),
     }),
     new DoublePendulumScreen({
       name: screenNames.doublePendulumStringProperty,
-      tandem: Tandem.ROOT.createTandem("doublePendulumScreen")
-    })
+      tandem: Tandem.ROOT.createTandem("doublePendulumScreen"),
+    }),
   ];
 
   const sim = new Sim(stringManager.getTitleStringProperty(), screens);

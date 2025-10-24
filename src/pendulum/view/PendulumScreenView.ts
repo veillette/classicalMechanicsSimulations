@@ -29,7 +29,7 @@ export class PendulumScreenView extends ScreenView {
     // Pivot point (top center of screen)
     this.pivotPoint = new Vector2(
       this.layoutBounds.centerX,
-      this.layoutBounds.minY + 100
+      this.layoutBounds.minY + 100,
     );
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
@@ -37,14 +37,14 @@ export class PendulumScreenView extends ScreenView {
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
       Vector2.ZERO,
       this.pivotPoint,
-      100 // pixels per meter
+      100, // pixels per meter
     );
 
     // Pivot
     this.pivotNode = new Circle(8, {
       fill: "#333",
       stroke: "#000",
-      lineWidth: 2
+      lineWidth: 2,
     });
     this.pivotNode.center = this.pivotPoint;
     this.addChild(this.pivotNode);
@@ -53,7 +53,7 @@ export class PendulumScreenView extends ScreenView {
     this.rodNode = new Line(0, 0, 0, 0, {
       stroke: "#666",
       lineWidth: 4,
-      lineCap: "round"
+      lineCap: "round",
     });
     this.addChild(this.rodNode);
 
@@ -62,7 +62,7 @@ export class PendulumScreenView extends ScreenView {
       fill: "#E67E22",
       stroke: "#D35400",
       lineWidth: 2,
-      cursor: "pointer"
+      cursor: "pointer",
     });
     this.addChild(this.bobNode);
 
@@ -76,8 +76,8 @@ export class PendulumScreenView extends ScreenView {
           const angle = Math.atan2(delta.x, delta.y); // angle from vertical
           this.model.angleProperty.value = angle;
           this.model.angularVelocityProperty.value = 0;
-        }
-      })
+        },
+      }),
     );
 
     // Link model to view
@@ -95,7 +95,7 @@ export class PendulumScreenView extends ScreenView {
         this.reset();
       },
       right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10
+      bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
 
@@ -107,47 +107,63 @@ export class PendulumScreenView extends ScreenView {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
 
-    const lengthControl = new NumberControl(controlLabels.lengthStringProperty, this.model.lengthProperty,
-      new Range(0.5, 3.0), {
+    const lengthControl = new NumberControl(
+      controlLabels.lengthStringProperty,
+      this.model.lengthProperty,
+      new Range(0.5, 3.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} m"
-        }
-      });
+          valuePattern: "{0} m",
+        },
+      },
+    );
 
-    const massControl = new NumberControl(controlLabels.massStringProperty, this.model.massProperty,
-      new Range(0.1, 5.0), {
+    const massControl = new NumberControl(
+      controlLabels.massStringProperty,
+      this.model.massProperty,
+      new Range(0.1, 5.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} kg"
-        }
-      });
+          valuePattern: "{0} kg",
+        },
+      },
+    );
 
-    const gravityControl = new NumberControl(controlLabels.gravityStringProperty, this.model.gravityProperty,
-      new Range(0.0, 20.0), {
+    const gravityControl = new NumberControl(
+      controlLabels.gravityStringProperty,
+      this.model.gravityProperty,
+      new Range(0.0, 20.0),
+      {
         delta: 0.5,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} m/s²"
-        }
-      });
+          valuePattern: "{0} m/s²",
+        },
+      },
+    );
 
-    const dampingControl = new NumberControl(controlLabels.dampingStringProperty, this.model.dampingProperty,
-      new Range(0.0, 2.0), {
+    const dampingControl = new NumberControl(
+      controlLabels.dampingStringProperty,
+      this.model.dampingProperty,
+      new Range(0.0, 2.0),
+      {
         delta: 0.05,
         numberDisplayOptions: {
           decimalPlaces: 2,
-          valuePattern: "{0} N·m·s"
-        }
-      });
+          valuePattern: "{0} N·m·s",
+        },
+      },
+    );
 
     const panel = new Panel(
       new VBox({
         spacing: 15,
         align: "left",
-        children: [lengthControl, massControl, gravityControl, dampingControl]
+        children: [lengthControl, massControl, gravityControl, dampingControl],
       }),
       {
         xMargin: 10,
@@ -157,8 +173,8 @@ export class PendulumScreenView extends ScreenView {
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10
-      }
+        top: this.layoutBounds.minY + 10,
+      },
     );
 
     return panel;
@@ -174,7 +190,8 @@ export class PendulumScreenView extends ScreenView {
     const modelBobPosition = new Vector2(modelBobX, modelBobY);
 
     // Convert to view coordinates
-    const viewBobPosition = this.modelViewTransform.modelToViewPosition(modelBobPosition);
+    const viewBobPosition =
+      this.modelViewTransform.modelToViewPosition(modelBobPosition);
 
     // Update bob position
     this.bobNode.center = viewBobPosition;
@@ -184,7 +201,7 @@ export class PendulumScreenView extends ScreenView {
       this.pivotPoint.x,
       this.pivotPoint.y,
       viewBobPosition.x,
-      viewBobPosition.y
+      viewBobPosition.y,
     );
   }
 

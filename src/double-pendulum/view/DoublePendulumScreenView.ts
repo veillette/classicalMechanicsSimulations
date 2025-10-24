@@ -35,7 +35,7 @@ export class DoublePendulumScreenView extends ScreenView {
     // Pivot point (top center)
     this.pivotPoint = new Vector2(
       this.layoutBounds.centerX,
-      this.layoutBounds.minY + 100
+      this.layoutBounds.minY + 100,
     );
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
@@ -43,13 +43,13 @@ export class DoublePendulumScreenView extends ScreenView {
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
       Vector2.ZERO,
       this.pivotPoint,
-      100 // pixels per meter
+      100, // pixels per meter
     );
 
     // Trail for chaotic motion visualization
     this.trailPath = new Path(null, {
       stroke: "rgba(230, 126, 34, 0.3)",
-      lineWidth: 2
+      lineWidth: 2,
     });
     this.addChild(this.trailPath);
 
@@ -57,7 +57,7 @@ export class DoublePendulumScreenView extends ScreenView {
     this.pivotNode = new Circle(8, {
       fill: "#333",
       stroke: "#000",
-      lineWidth: 2
+      lineWidth: 2,
     });
     this.pivotNode.center = this.pivotPoint;
     this.addChild(this.pivotNode);
@@ -66,7 +66,7 @@ export class DoublePendulumScreenView extends ScreenView {
     this.rod1Node = new Line(0, 0, 0, 0, {
       stroke: "#E74C3C",
       lineWidth: 4,
-      lineCap: "round"
+      lineCap: "round",
     });
     this.addChild(this.rod1Node);
 
@@ -74,7 +74,7 @@ export class DoublePendulumScreenView extends ScreenView {
     this.rod2Node = new Line(0, 0, 0, 0, {
       stroke: "#3498DB",
       lineWidth: 4,
-      lineCap: "round"
+      lineCap: "round",
     });
     this.addChild(this.rod2Node);
 
@@ -83,7 +83,7 @@ export class DoublePendulumScreenView extends ScreenView {
       fill: "#E74C3C",
       stroke: "#C0392B",
       lineWidth: 2,
-      cursor: "pointer"
+      cursor: "pointer",
     });
     this.addChild(this.bob1Node);
 
@@ -92,7 +92,7 @@ export class DoublePendulumScreenView extends ScreenView {
       fill: "#3498DB",
       stroke: "#2C3E50",
       lineWidth: 2,
-      cursor: "pointer"
+      cursor: "pointer",
     });
     this.addChild(this.bob2Node);
 
@@ -107,8 +107,8 @@ export class DoublePendulumScreenView extends ScreenView {
           this.model.angle1Property.value = angle;
           this.model.angularVelocity1Property.value = 0;
           this.clearTrail();
-        }
-      })
+        },
+      }),
     );
 
     // Drag listener for bob 2
@@ -123,7 +123,8 @@ export class DoublePendulumScreenView extends ScreenView {
           const bob1ModelX = length1 * Math.sin(angle1);
           const bob1ModelY = length1 * Math.cos(angle1);
           const bob1ModelPos = new Vector2(bob1ModelX, bob1ModelY);
-          const bob1ViewPos = this.modelViewTransform.modelToViewPosition(bob1ModelPos);
+          const bob1ViewPos =
+            this.modelViewTransform.modelToViewPosition(bob1ModelPos);
 
           // Calculate angle for bob 2 relative to bob 1
           const delta = parentPoint.minus(bob1ViewPos);
@@ -131,8 +132,8 @@ export class DoublePendulumScreenView extends ScreenView {
           this.model.angle2Property.value = angle;
           this.model.angularVelocity2Property.value = 0;
           this.clearTrail();
-        }
-      })
+        },
+      }),
     );
 
     // Link model to view
@@ -158,7 +159,7 @@ export class DoublePendulumScreenView extends ScreenView {
         this.reset();
       },
       right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10
+      bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
 
@@ -170,56 +171,82 @@ export class DoublePendulumScreenView extends ScreenView {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
 
-    const length1Control = new NumberControl(controlLabels.length1StringProperty, this.model.length1Property,
-      new Range(0.5, 3.0), {
+    const length1Control = new NumberControl(
+      controlLabels.length1StringProperty,
+      this.model.length1Property,
+      new Range(0.5, 3.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} m"
-        }
-      });
+          valuePattern: "{0} m",
+        },
+      },
+    );
 
-    const length2Control = new NumberControl(controlLabels.length2StringProperty, this.model.length2Property,
-      new Range(0.5, 3.0), {
+    const length2Control = new NumberControl(
+      controlLabels.length2StringProperty,
+      this.model.length2Property,
+      new Range(0.5, 3.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} m"
-        }
-      });
+          valuePattern: "{0} m",
+        },
+      },
+    );
 
-    const mass1Control = new NumberControl(controlLabels.mass1StringProperty, this.model.mass1Property,
-      new Range(0.1, 5.0), {
+    const mass1Control = new NumberControl(
+      controlLabels.mass1StringProperty,
+      this.model.mass1Property,
+      new Range(0.1, 5.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} kg"
-        }
-      });
+          valuePattern: "{0} kg",
+        },
+      },
+    );
 
-    const mass2Control = new NumberControl(controlLabels.mass2StringProperty, this.model.mass2Property,
-      new Range(0.1, 5.0), {
+    const mass2Control = new NumberControl(
+      controlLabels.mass2StringProperty,
+      this.model.mass2Property,
+      new Range(0.1, 5.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} kg"
-        }
-      });
+          valuePattern: "{0} kg",
+        },
+      },
+    );
 
-    const gravityControl = new NumberControl(controlLabels.gravityStringProperty, this.model.gravityProperty,
-      new Range(0.0, 20.0), {
+    const gravityControl = new NumberControl(
+      controlLabels.gravityStringProperty,
+      this.model.gravityProperty,
+      new Range(0.0, 20.0),
+      {
         delta: 0.5,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} m/s²"
-        }
-      });
+          valuePattern: "{0} m/s²",
+        },
+      },
+    );
 
     const panel = new Panel(
       new VBox({
         spacing: 12,
         align: "left",
-        children: [length1Control, length2Control, mass1Control, mass2Control, gravityControl]
+        children: [
+          length1Control,
+          length2Control,
+          mass1Control,
+          mass2Control,
+          gravityControl,
+        ],
       }),
       {
         xMargin: 10,
@@ -229,8 +256,8 @@ export class DoublePendulumScreenView extends ScreenView {
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10
-      }
+        top: this.layoutBounds.minY + 10,
+      },
     );
 
     return panel;
@@ -248,7 +275,8 @@ export class DoublePendulumScreenView extends ScreenView {
     const bob1ModelPos = new Vector2(bob1ModelX, bob1ModelY);
 
     // Convert bob 1 to view coordinates
-    const bob1ViewPos = this.modelViewTransform.modelToViewPosition(bob1ModelPos);
+    const bob1ViewPos =
+      this.modelViewTransform.modelToViewPosition(bob1ModelPos);
 
     // Calculate bob 2 position in model coordinates (relative to bob 1)
     const bob2ModelX = bob1ModelX + length2 * Math.sin(angle2);
@@ -256,7 +284,8 @@ export class DoublePendulumScreenView extends ScreenView {
     const bob2ModelPos = new Vector2(bob2ModelX, bob2ModelY);
 
     // Convert bob 2 to view coordinates
-    const bob2ViewPos = this.modelViewTransform.modelToViewPosition(bob2ModelPos);
+    const bob2ViewPos =
+      this.modelViewTransform.modelToViewPosition(bob2ModelPos);
 
     // Update bob positions
     this.bob1Node.center = bob1ViewPos;
@@ -267,10 +296,15 @@ export class DoublePendulumScreenView extends ScreenView {
       this.pivotPoint.x,
       this.pivotPoint.y,
       bob1ViewPos.x,
-      bob1ViewPos.y
+      bob1ViewPos.y,
     );
 
-    this.rod2Node.setLine(bob1ViewPos.x, bob1ViewPos.y, bob2ViewPos.x, bob2ViewPos.y);
+    this.rod2Node.setLine(
+      bob1ViewPos.x,
+      bob1ViewPos.y,
+      bob2ViewPos.x,
+      bob2ViewPos.y,
+    );
 
     // Update trail (track second bob for chaotic motion visualization)
     this.addTrailPoint(bob2ViewPos);

@@ -8,7 +8,11 @@
  * Where y is the state vector and f is the derivative function.
  */
 
-export type DerivativeFunction = (state: number[], derivatives: number[], time: number) => void;
+export type DerivativeFunction = (
+  state: number[],
+  derivatives: number[],
+  time: number,
+) => void;
 
 export class RungeKuttaSolver {
   // Temporary arrays to avoid reallocation
@@ -25,7 +29,12 @@ export class RungeKuttaSolver {
    * @param time - Current time
    * @param dt - Time step
    */
-  public step(state: number[], derivativeFn: DerivativeFunction, time: number, dt: number): void {
+  public step(
+    state: number[],
+    derivativeFn: DerivativeFunction,
+    time: number,
+    dt: number,
+  ): void {
     const n = state.length;
 
     // Ensure arrays are large enough
@@ -42,13 +51,13 @@ export class RungeKuttaSolver {
 
     // k2 = f(t + dt/2, y + k1*dt/2)
     for (let i = 0; i < n; i++) {
-      this.tempState[i] = state[i] + this.k1[i] * dt / 2;
+      this.tempState[i] = state[i] + (this.k1[i] * dt) / 2;
     }
     derivativeFn(this.tempState, this.k2, time + dt / 2);
 
     // k3 = f(t + dt/2, y + k2*dt/2)
     for (let i = 0; i < n; i++) {
-      this.tempState[i] = state[i] + this.k2[i] * dt / 2;
+      this.tempState[i] = state[i] + (this.k2[i] * dt) / 2;
     }
     derivativeFn(this.tempState, this.k3, time + dt / 2);
 
@@ -60,7 +69,8 @@ export class RungeKuttaSolver {
 
     // y_new = y + (k1 + 2*k2 + 2*k3 + k4) * dt/6
     for (let i = 0; i < n; i++) {
-      state[i] += (this.k1[i] + 2 * this.k2[i] + 2 * this.k3[i] + this.k4[i]) * dt / 6;
+      state[i] +=
+        ((this.k1[i] + 2 * this.k2[i] + 2 * this.k3[i] + this.k4[i]) * dt) / 6;
     }
   }
 }

@@ -36,7 +36,7 @@ export class DoubleSpringScreenView extends ScreenView {
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
       Vector2.ZERO,
       this.fixedPoint,
-      50 // pixels per meter
+      50, // pixels per meter
     );
 
     // Wall
@@ -47,8 +47,8 @@ export class DoubleSpringScreenView extends ScreenView {
       this.layoutBounds.maxY,
       {
         stroke: "#666",
-        lineWidth: 4
-      }
+        lineWidth: 4,
+      },
     );
     this.addChild(wall);
 
@@ -58,7 +58,7 @@ export class DoubleSpringScreenView extends ScreenView {
       radius: 12,
       frontColor: "#E74C3C",
       backColor: "#C0392B",
-      lineWidth: 3
+      lineWidth: 3,
     });
     this.addChild(this.spring1Node);
 
@@ -68,7 +68,7 @@ export class DoubleSpringScreenView extends ScreenView {
       radius: 12,
       frontColor: "#3498DB",
       backColor: "#2C3E50",
-      lineWidth: 3
+      lineWidth: 3,
     });
     this.addChild(this.spring2Node);
 
@@ -78,7 +78,7 @@ export class DoubleSpringScreenView extends ScreenView {
       stroke: "#C0392B",
       lineWidth: 2,
       cornerRadius: 3,
-      cursor: "pointer"
+      cursor: "pointer",
     });
     this.addChild(this.mass1Node);
 
@@ -88,7 +88,7 @@ export class DoubleSpringScreenView extends ScreenView {
       stroke: "#2C3E50",
       lineWidth: 2,
       cornerRadius: 3,
-      cursor: "pointer"
+      cursor: "pointer",
     });
     this.addChild(this.mass2Node);
 
@@ -98,11 +98,12 @@ export class DoubleSpringScreenView extends ScreenView {
         translateNode: false,
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const modelPosition = this.modelViewTransform.viewToModelPosition(parentPoint);
+          const modelPosition =
+            this.modelViewTransform.viewToModelPosition(parentPoint);
           this.model.position1Property.value = modelPosition.x;
           this.model.velocity1Property.value = 0;
-        }
-      })
+        },
+      }),
     );
 
     this.mass2Node.addInputListener(
@@ -110,11 +111,12 @@ export class DoubleSpringScreenView extends ScreenView {
         translateNode: false,
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const modelPosition = this.modelViewTransform.viewToModelPosition(parentPoint);
+          const modelPosition =
+            this.modelViewTransform.viewToModelPosition(parentPoint);
           this.model.position2Property.value = modelPosition.x;
           this.model.velocity2Property.value = 0;
-        }
-      })
+        },
+      }),
     );
 
     // Link model to view
@@ -132,7 +134,7 @@ export class DoubleSpringScreenView extends ScreenView {
         this.reset();
       },
       right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10
+      bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
 
@@ -144,47 +146,63 @@ export class DoubleSpringScreenView extends ScreenView {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
 
-    const mass1Control = new NumberControl(controlLabels.mass1StringProperty, this.model.mass1Property,
-      new Range(0.1, 5.0), {
+    const mass1Control = new NumberControl(
+      controlLabels.mass1StringProperty,
+      this.model.mass1Property,
+      new Range(0.1, 5.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} kg"
-        }
-      });
+          valuePattern: "{0} kg",
+        },
+      },
+    );
 
-    const mass2Control = new NumberControl(controlLabels.mass2StringProperty, this.model.mass2Property,
-      new Range(0.1, 5.0), {
+    const mass2Control = new NumberControl(
+      controlLabels.mass2StringProperty,
+      this.model.mass2Property,
+      new Range(0.1, 5.0),
+      {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1,
-          valuePattern: "{0} kg"
-        }
-      });
+          valuePattern: "{0} kg",
+        },
+      },
+    );
 
-    const spring1Control = new NumberControl(controlLabels.springConstant1StringProperty, this.model.springConstant1Property,
-      new Range(1.0, 50.0), {
+    const spring1Control = new NumberControl(
+      controlLabels.springConstant1StringProperty,
+      this.model.springConstant1Property,
+      new Range(1.0, 50.0),
+      {
         delta: 1.0,
         numberDisplayOptions: {
           decimalPlaces: 0,
-          valuePattern: "{0} N/m"
-        }
-      });
+          valuePattern: "{0} N/m",
+        },
+      },
+    );
 
-    const spring2Control = new NumberControl(controlLabels.springConstant2StringProperty, this.model.springConstant2Property,
-      new Range(1.0, 50.0), {
+    const spring2Control = new NumberControl(
+      controlLabels.springConstant2StringProperty,
+      this.model.springConstant2Property,
+      new Range(1.0, 50.0),
+      {
         delta: 1.0,
         numberDisplayOptions: {
           decimalPlaces: 0,
-          valuePattern: "{0} N/m"
-        }
-      });
+          valuePattern: "{0} N/m",
+        },
+      },
+    );
 
     const panel = new Panel(
       new VBox({
         spacing: 12,
         align: "left",
-        children: [mass1Control, mass2Control, spring1Control, spring2Control]
+        children: [mass1Control, mass2Control, spring1Control, spring2Control],
       }),
       {
         xMargin: 10,
@@ -194,8 +212,8 @@ export class DoubleSpringScreenView extends ScreenView {
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10
-      }
+        top: this.layoutBounds.minY + 10,
+      },
     );
 
     return panel;
@@ -205,8 +223,10 @@ export class DoubleSpringScreenView extends ScreenView {
     // Convert model positions to view coordinates
     const mass1ModelPos = new Vector2(this.model.position1Property.value, 0);
     const mass2ModelPos = new Vector2(this.model.position2Property.value, 0);
-    const mass1ViewPos = this.modelViewTransform.modelToViewPosition(mass1ModelPos);
-    const mass2ViewPos = this.modelViewTransform.modelToViewPosition(mass2ModelPos);
+    const mass1ViewPos =
+      this.modelViewTransform.modelToViewPosition(mass1ModelPos);
+    const mass2ViewPos =
+      this.modelViewTransform.modelToViewPosition(mass2ModelPos);
 
     // Update mass positions
     this.mass1Node.center = mass1ViewPos;
@@ -215,12 +235,12 @@ export class DoubleSpringScreenView extends ScreenView {
     // Update spring endpoints
     this.spring1Node.setEndpoints(
       this.fixedPoint,
-      new Vector2(mass1ViewPos.x - 20, mass1ViewPos.y)
+      new Vector2(mass1ViewPos.x - 20, mass1ViewPos.y),
     );
 
     this.spring2Node.setEndpoints(
       new Vector2(mass1ViewPos.x + 20, mass1ViewPos.y),
-      new Vector2(mass2ViewPos.x - 20, mass2ViewPos.y)
+      new Vector2(mass2ViewPos.x - 20, mass2ViewPos.y),
     );
   }
 

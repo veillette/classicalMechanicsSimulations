@@ -10,7 +10,11 @@
  * - position2 (x2), velocity2 (v2)
  */
 
-import { NumberProperty, DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
+import {
+  NumberProperty,
+  DerivedProperty,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
 
 export class DoubleSpringModel {
@@ -61,7 +65,7 @@ export class DoubleSpringModel {
         this.mass1Property,
         this.mass2Property,
         this.springConstant1Property,
-        this.springConstant2Property
+        this.springConstant2Property,
       ],
       (v1, v2, x1, x2, m1, m2, k1, k2) => {
         const ke1 = 0.5 * m1 * v1 * v1;
@@ -69,7 +73,7 @@ export class DoubleSpringModel {
         const pe1 = 0.5 * k1 * x1 * x1;
         const pe2 = 0.5 * k2 * (x2 - x1) * (x2 - x1);
         return ke1 + ke2 + pe1 + pe2;
-      }
+      },
     );
 
     this.solver = new RungeKuttaSolver();
@@ -95,7 +99,7 @@ export class DoubleSpringModel {
       this.position1Property.value,
       this.velocity1Property.value,
       this.position2Property.value,
-      this.velocity2Property.value
+      this.velocity2Property.value,
     ];
 
     this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
@@ -112,7 +116,11 @@ export class DoubleSpringModel {
   /**
    * Compute derivatives for coupled spring system.
    */
-  private getDerivatives(state: number[], derivatives: number[], _time: number): void {
+  private getDerivatives(
+    state: number[],
+    derivatives: number[],
+    _time: number,
+  ): void {
     const x1 = state[0];
     const v1 = state[1];
     const x2 = state[2];
