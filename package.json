@@ -2,21 +2,53 @@
   "name": "classicalMechanicsSimulations",
   "private": true,
   "version": "0.0.0",
+  "description": "Interactive classical mechanics simulations using SceneryStack.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/veillette/classicalMechanicsSimulations.git"
+  },
+  "bugs": {
+    "url": "https://github.com/veillette/classicalMechanicsSimulations/issues"
+  },
+  "homepage": "https://github.com/veillette/classicalMechanicsSimulations#readme",
   "type": "module",
+  "keywords": [
+    "classical mechanics",
+    "physics",
+    "simulation",
+    "SceneryStack",
+    "interactive",
+    "education",
+    "double pendulum"
+  ],
   "scripts": {
     "start": "npx vite",
-    "build": "npx tsc && npx vite build"
+    "build": "npx tsc && npx vite build",
+    "preview": "npx vite preview",
+    "lint": "npx eslint .",
+    "format": "npx prettier --write .",
+    "fix": "npx eslint --fix . && npx prettier --write .",
+    "release": "npm version patch && git push && git push --tags",
+    "check": "npx tsc --noEmit",
+    "serve": "npx serve -s dist",
+    "watch": "npx tsc --watch",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "scenerystack": "^3.0.0"
   },
   "devDependencies": {
-    "vite": "^5.4.10",
-    "eslint": "^9.17.0",
     "@eslint/js": "^9.17.0",
-    "typescript-eslint": "^8.18.2",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
     "prettier": "^3.4.2",
     "typescript": "~5.7.2",
-    "globals": "^15.14.0"
+    "typescript-eslint": "^8.18.2",
+    "vite": "^5.4.10",
+    "vite-plugin-singlefile": "^2.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
