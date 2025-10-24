@@ -11,6 +11,7 @@ import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { DragListener } from "scenerystack/scenery";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class DoubleSpringScreenView extends ScreenView {
   private readonly model: DoubleSpringModel;
@@ -131,7 +132,10 @@ export class DoubleSpringScreenView extends ScreenView {
   }
 
   private createControlPanel(): Node {
-    const mass1Control = new NumberControl("Mass 1:", this.model.mass1Property,
+    const stringManager = StringManager.getInstance();
+    const controlLabels = stringManager.getControlLabels();
+
+    const mass1Control = new NumberControl(controlLabels.mass1StringProperty, this.model.mass1Property,
       new Range(0.1, 5.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -140,7 +144,7 @@ export class DoubleSpringScreenView extends ScreenView {
         }
       });
 
-    const mass2Control = new NumberControl("Mass 2:", this.model.mass2Property,
+    const mass2Control = new NumberControl(controlLabels.mass2StringProperty, this.model.mass2Property,
       new Range(0.1, 5.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -149,7 +153,7 @@ export class DoubleSpringScreenView extends ScreenView {
         }
       });
 
-    const spring1Control = new NumberControl("Spring 1:", this.model.springConstant1Property,
+    const spring1Control = new NumberControl(controlLabels.springConstant1StringProperty, this.model.springConstant1Property,
       new Range(1.0, 50.0), {
         delta: 1.0,
         numberDisplayOptions: {
@@ -158,7 +162,7 @@ export class DoubleSpringScreenView extends ScreenView {
         }
       });
 
-    const spring2Control = new NumberControl("Spring 2:", this.model.springConstant2Property,
+    const spring2Control = new NumberControl(controlLabels.springConstant2StringProperty, this.model.springConstant2Property,
       new Range(1.0, 50.0), {
         delta: 1.0,
         numberDisplayOptions: {

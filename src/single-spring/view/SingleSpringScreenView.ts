@@ -12,6 +12,7 @@ import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class SingleSpringScreenView extends ScreenView {
   private readonly model: SingleSpringModel;
@@ -101,7 +102,10 @@ export class SingleSpringScreenView extends ScreenView {
    * Create the control panel with parameter sliders.
    */
   private createControlPanel(): Node {
-    const massControl = new NumberControl("Mass:", this.model.massProperty,
+    const stringManager = StringManager.getInstance();
+    const controlLabels = stringManager.getControlLabels();
+
+    const massControl = new NumberControl(controlLabels.massStringProperty, this.model.massProperty,
       new Range(0.1, 5.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -110,7 +114,7 @@ export class SingleSpringScreenView extends ScreenView {
         }
       });
 
-    const springControl = new NumberControl("Spring Constant:", this.model.springConstantProperty,
+    const springControl = new NumberControl(controlLabels.springConstantStringProperty, this.model.springConstantProperty,
       new Range(1.0, 50.0), {
         delta: 1.0,
         numberDisplayOptions: {
@@ -119,7 +123,7 @@ export class SingleSpringScreenView extends ScreenView {
         }
       });
 
-    const dampingControl = new NumberControl("Damping:", this.model.dampingProperty,
+    const dampingControl = new NumberControl(controlLabels.dampingStringProperty, this.model.dampingProperty,
       new Range(0.0, 2.0), {
         delta: 0.05,
         numberDisplayOptions: {

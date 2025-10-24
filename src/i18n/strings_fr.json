@@ -1,0 +1,32 @@
+{
+  "title": "Simulations de Mécanique Classique",
+  "screens": {
+    "singleSpring": "Ressort Simple",
+    "doubleSpring": "Ressort Double",
+    "pendulum": "Pendule",
+    "doublePendulum": "Pendule Double"
+  },
+  "controls": {
+    "mass": "Masse",
+    "mass1": "Masse 1",
+    "mass2": "Masse 2",
+    "springConstant": "Constante du Ressort",
+    "springConstant1": "Ressort 1",
+    "springConstant2": "Ressort 2",
+    "damping": "Amortissement",
+    "damping1": "Amortissement 1",
+    "damping2": "Amortissement 2",
+    "length": "Longueur",
+    "length1": "Longueur 1",
+    "length2": "Longueur 2",
+    "gravity": "Gravité"
+  },
+  "units": {
+    "kilograms": "{{value}} kg",
+    "newtonsPerMeter": "{{value}} N/m",
+    "newtonSecondsPerMeter": "{{value}} N·s/m",
+    "newtonMeterSeconds": "{{value}} N·m·s",
+    "meters": "{{value}} m",
+    "metersPerSecondSquared": "{{value}} m/s²"
+  }
+}

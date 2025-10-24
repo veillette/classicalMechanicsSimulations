@@ -3,37 +3,37 @@
 import "./brand.js";
 
 import { onReadyToLaunch, Sim } from "scenerystack/sim";
-import { StringProperty } from "scenerystack/axon";
 import { Tandem } from "scenerystack/tandem";
 import { SingleSpringScreen } from "./single-spring/SingleSpringScreen.js";
 import { DoubleSpringScreen } from "./double-spring/DoubleSpringScreen.js";
 import { PendulumScreen } from "./pendulum/PendulumScreen.js";
 import { DoublePendulumScreen } from "./double-pendulum/DoublePendulumScreen.js";
+import { StringManager } from "./i18n/StringManager.js";
 
 onReadyToLaunch(() => {
-  // The title, like most string-like things, is a StringProperty that can change to different values (e.g. for
-  // different languages, see localeProperty from scenerystack/joist)
-  const titleStringProperty = new StringProperty("Classical Mechanics Simulations");
+  // Get the string manager instance
+  const stringManager = StringManager.getInstance();
+  const screenNames = stringManager.getScreenNames();
 
   const screens = [
     new SingleSpringScreen({
-      name: new StringProperty("Single Spring"),
+      name: screenNames.singleSpringStringProperty,
       tandem: Tandem.ROOT.createTandem("singleSpringScreen")
     }),
     new DoubleSpringScreen({
-      name: new StringProperty("Double Spring"),
+      name: screenNames.doubleSpringStringProperty,
       tandem: Tandem.ROOT.createTandem("doubleSpringScreen")
     }),
     new PendulumScreen({
-      name: new StringProperty("Pendulum"),
+      name: screenNames.pendulumStringProperty,
       tandem: Tandem.ROOT.createTandem("pendulumScreen")
     }),
     new DoublePendulumScreen({
-      name: new StringProperty("Double Pendulum"),
+      name: screenNames.doublePendulumStringProperty,
       tandem: Tandem.ROOT.createTandem("doublePendulumScreen")
     })
   ];
 
-  const sim = new Sim(titleStringProperty, screens);
+  const sim = new Sim(stringManager.getTitleStringProperty(), screens);
   sim.start();
 });

@@ -10,6 +10,7 @@ import { Panel } from "scenerystack/sun";
 import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class PendulumScreenView extends ScreenView {
   private readonly model: PendulumModel;
@@ -94,7 +95,10 @@ export class PendulumScreenView extends ScreenView {
   }
 
   private createControlPanel(): Node {
-    const lengthControl = new NumberControl("Length:", this.model.lengthProperty,
+    const stringManager = StringManager.getInstance();
+    const controlLabels = stringManager.getControlLabels();
+
+    const lengthControl = new NumberControl(controlLabels.lengthStringProperty, this.model.lengthProperty,
       new Range(0.5, 3.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -103,7 +107,7 @@ export class PendulumScreenView extends ScreenView {
         }
       });
 
-    const massControl = new NumberControl("Mass:", this.model.massProperty,
+    const massControl = new NumberControl(controlLabels.massStringProperty, this.model.massProperty,
       new Range(0.1, 5.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -112,7 +116,7 @@ export class PendulumScreenView extends ScreenView {
         }
       });
 
-    const gravityControl = new NumberControl("Gravity:", this.model.gravityProperty,
+    const gravityControl = new NumberControl(controlLabels.gravityStringProperty, this.model.gravityProperty,
       new Range(0.0, 20.0), {
         delta: 0.5,
         numberDisplayOptions: {
@@ -121,7 +125,7 @@ export class PendulumScreenView extends ScreenView {
         }
       });
 
-    const dampingControl = new NumberControl("Damping:", this.model.dampingProperty,
+    const dampingControl = new NumberControl(controlLabels.dampingStringProperty, this.model.dampingProperty,
       new Range(0.0, 2.0), {
         delta: 0.05,
         numberDisplayOptions: {

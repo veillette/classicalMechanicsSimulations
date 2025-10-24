@@ -1,0 +1,32 @@
+{
+  "title": "Classical Mechanics Simulations",
+  "screens": {
+    "singleSpring": "Single Spring",
+    "doubleSpring": "Double Spring",
+    "pendulum": "Pendulum",
+    "doublePendulum": "Double Pendulum"
+  },
+  "controls": {
+    "mass": "Mass",
+    "mass1": "Mass 1",
+    "mass2": "Mass 2",
+    "springConstant": "Spring Constant",
+    "springConstant1": "Spring 1",
+    "springConstant2": "Spring 2",
+    "damping": "Damping",
+    "damping1": "Damping 1",
+    "damping2": "Damping 2",
+    "length": "Length",
+    "length1": "Length 1",
+    "length2": "Length 2",
+    "gravity": "Gravity"
+  },
+  "units": {
+    "kilograms": "{{value}} kg",
+    "newtonsPerMeter": "{{value}} N/m",
+    "newtonSecondsPerMeter": "{{value}} N·s/m",
+    "newtonMeterSeconds": "{{value}} N·m·s",
+    "meters": "{{value}} m",
+    "metersPerSecondSquared": "{{value}} m/s²"
+  }
+}

@@ -11,6 +11,7 @@ import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class DoublePendulumScreenView extends ScreenView {
   private readonly model: DoublePendulumModel;
@@ -156,7 +157,10 @@ export class DoublePendulumScreenView extends ScreenView {
   }
 
   private createControlPanel(): Node {
-    const length1Control = new NumberControl("Length 1:", this.model.length1Property,
+    const stringManager = StringManager.getInstance();
+    const controlLabels = stringManager.getControlLabels();
+
+    const length1Control = new NumberControl(controlLabels.length1StringProperty, this.model.length1Property,
       new Range(0.5, 3.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -165,7 +169,7 @@ export class DoublePendulumScreenView extends ScreenView {
         }
       });
 
-    const length2Control = new NumberControl("Length 2:", this.model.length2Property,
+    const length2Control = new NumberControl(controlLabels.length2StringProperty, this.model.length2Property,
       new Range(0.5, 3.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -174,7 +178,7 @@ export class DoublePendulumScreenView extends ScreenView {
         }
       });
 
-    const mass1Control = new NumberControl("Mass 1:", this.model.mass1Property,
+    const mass1Control = new NumberControl(controlLabels.mass1StringProperty, this.model.mass1Property,
       new Range(0.1, 5.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -183,7 +187,7 @@ export class DoublePendulumScreenView extends ScreenView {
         }
       });
 
-    const mass2Control = new NumberControl("Mass 2:", this.model.mass2Property,
+    const mass2Control = new NumberControl(controlLabels.mass2StringProperty, this.model.mass2Property,
       new Range(0.1, 5.0), {
         delta: 0.1,
         numberDisplayOptions: {
@@ -192,7 +196,7 @@ export class DoublePendulumScreenView extends ScreenView {
         }
       });
 
-    const gravityControl = new NumberControl("Gravity:", this.model.gravityProperty,
+    const gravityControl = new NumberControl(controlLabels.gravityStringProperty, this.model.gravityProperty,
       new Range(0.0, 20.0), {
         delta: 0.5,
         numberDisplayOptions: {
