@@ -255,6 +255,19 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       },
     );
 
+    const dampingControl = new NumberControl(
+      controlLabels.dampingStringProperty,
+      this.model.dampingProperty,
+      new Range(0.0, 2.0),
+      {
+        delta: 0.05,
+        numberDisplayOptions: {
+          decimalPlaces: 2,
+          valuePattern: "{0} N·m·s",
+        },
+      },
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 12,
@@ -265,6 +278,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           mass1Control,
           mass2Control,
           gravityControl,
+          dampingControl,
         ],
       }),
       {
