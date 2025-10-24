@@ -40,9 +40,12 @@ export class DoublePendulumModel {
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
   private readonly solver: RungeKuttaSolver;
-  private time: number = 0;
+  public readonly timeProperty: NumberProperty;
 
   public constructor() {
+    // Initialize time
+    this.timeProperty = new NumberProperty(0.0); // seconds
+
     // Initialize state (both start at 90 degrees)
     this.angle1Property = new NumberProperty(Math.PI / 2); // radians
     this.angularVelocity1Property = new NumberProperty(0.0); // rad/s
@@ -101,7 +104,7 @@ export class DoublePendulumModel {
     this.mass2Property.reset();
     this.gravityProperty.reset();
     this.dampingProperty.reset();
-    this.time = 0;
+    this.timeProperty.reset();
   }
 
   public step(dt: number): void {
@@ -113,15 +116,35 @@ export class DoublePendulumModel {
       this.angularVelocity2Property.value,
     ];
 
-    this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
+    // Use RK4 solver with automatic sub-stepping
+    const newTime = this.solver.step(
+      state,
+      this.getDerivatives.bind(this),
+      this.timeProperty.value,
+      dt
+    );
 
     // Update properties
     this.angle1Property.value = state[0];
     this.angularVelocity1Property.value = state[1];
     this.angle2Property.value = state[2];
     this.angularVelocity2Property.value = state[3];
+    this.timeProperty.value = newTime;
+  }
 
-    this.time += dt;
+  /**
+   * Set the fixed timestep for the physics solver.
+   * @param dt - Fixed timestep in seconds
+   */
+  public setPhysicsTimeStep(dt: number): void {
+    this.solver.setFixedTimeStep(dt);
+  }
+
+  /**
+   * Get the current physics timestep.
+   */
+  public getPhysicsTimeStep(): number {
+    return this.solver.getFixedTimeStep();
   }
 
   /**

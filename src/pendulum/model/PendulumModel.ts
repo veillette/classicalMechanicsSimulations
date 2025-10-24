@@ -97,12 +97,37 @@ export class PendulumModel {
       this.angularVelocityProperty.value,
     ];
 
-    this.solver.step(state, this.getDerivatives.bind(this), this.timeProperty.value, dt);
+    // The solver will automatically sub-step if dt is larger than the fixed timestep
+    // This ensures accurate physics regardless of frame rate
+    const newTime = this.solver.step(
+      state,
+      this.getDerivatives.bind(this),
+      this.timeProperty.value,
+      dt
+    );
 
     // Update properties
     this.angleProperty.value = state[0];
     this.angularVelocityProperty.value = state[1];
-    this.timeProperty.value += dt;
+    this.timeProperty.value = newTime;
+  }
+
+  /**
+   * Set the fixed timestep for the physics solver.
+   * Smaller values provide more accuracy but require more computation.
+   * Default is 0.01 seconds (10ms).
+   *
+   * @param dt - Fixed timestep in seconds
+   */
+  public setPhysicsTimeStep(dt: number): void {
+    this.solver.setFixedTimeStep(dt);
+  }
+
+  /**
+   * Get the current physics timestep.
+   */
+  public getPhysicsTimeStep(): number {
+    return this.solver.getFixedTimeStep();
   }
 
   /**

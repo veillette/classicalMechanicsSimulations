@@ -38,9 +38,12 @@ export class DoubleSpringModel {
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
   private readonly solver: RungeKuttaSolver;
-  private time: number = 0;
+  public readonly timeProperty: NumberProperty;
 
   public constructor() {
+    // Initialize time
+    this.timeProperty = new NumberProperty(0.0); // seconds
+
     // Initialize state
     this.position1Property = new NumberProperty(1.5); // meters
     this.velocity1Property = new NumberProperty(0.0); // m/s
@@ -90,7 +93,7 @@ export class DoubleSpringModel {
     this.springConstant2Property.reset();
     this.damping1Property.reset();
     this.damping2Property.reset();
-    this.time = 0;
+    this.timeProperty.reset();
   }
 
   public step(dt: number): void {
@@ -102,15 +105,35 @@ export class DoubleSpringModel {
       this.velocity2Property.value,
     ];
 
-    this.solver.step(state, this.getDerivatives.bind(this), this.time, dt);
+    // Use RK4 solver with automatic sub-stepping
+    const newTime = this.solver.step(
+      state,
+      this.getDerivatives.bind(this),
+      this.timeProperty.value,
+      dt
+    );
 
     // Update properties
     this.position1Property.value = state[0];
     this.velocity1Property.value = state[1];
     this.position2Property.value = state[2];
     this.velocity2Property.value = state[3];
+    this.timeProperty.value = newTime;
+  }
 
-    this.time += dt;
+  /**
+   * Set the fixed timestep for the physics solver.
+   * @param dt - Fixed timestep in seconds
+   */
+  public setPhysicsTimeStep(dt: number): void {
+    this.solver.setFixedTimeStep(dt);
+  }
+
+  /**
+   * Get the current physics timestep.
+   */
+  public getPhysicsTimeStep(): number {
+    return this.solver.getFixedTimeStep();
   }
 
   /**
