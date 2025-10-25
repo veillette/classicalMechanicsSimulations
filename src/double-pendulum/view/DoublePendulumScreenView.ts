@@ -3,11 +3,11 @@
  * Displays two connected pendulums that exhibit chaotic motion.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoublePendulumModel } from "../model/DoublePendulumModel.js";
 import { Circle, Line, VBox, Node, Path, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
@@ -15,9 +15,9 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class DoublePendulumScreenView extends ScreenView {
-  private readonly model: DoublePendulumModel;
+export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel> {
   private readonly bob1Node: Circle;
   private readonly bob2Node: Circle;
   private readonly rod1Node: Line;
@@ -31,9 +31,7 @@ export class DoublePendulumScreenView extends ScreenView {
   private readonly trailVisibleProperty: BooleanProperty;
 
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Pivot point (top center)
     this.pivotPoint = new Vector2(
@@ -162,45 +160,20 @@ export class DoublePendulumScreenView extends ScreenView {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
-    // Time controls
-    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
-      timeSpeedProperty: this.model.timeSpeedProperty,
-      playPauseStepButtonOptions: {
-        includeStepForwardButton: true,
-        includeStepBackwardButton: false,
-      },
-      speedRadioButtonGroupPlacement: 'left',
-      centerX: this.layoutBounds.centerX,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(timeControlNode);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
-
-    // Add keyboard shortcuts for accessibility
-    const keyboardListener = new KeyboardListener({
-      keys: ['r', 't'],
+    // Add additional keyboard shortcut for trail toggle
+    const trailKeyboardListener = new KeyboardListener({
+      keys: ['t'],
       fire: (event, keysPressed) => {
-        if (keysPressed === 'r') {
-          // Reset simulation with R key
-          this.model.reset();
-          this.reset();
-        } else if (keysPressed === 't') {
+        if (keysPressed === 't') {
           // Toggle trail visibility with T key
           this.trailVisibleProperty.value = !this.trailVisibleProperty.value;
         }
       }
     });
-    this.addInputListener(keyboardListener);
+    this.addInputListener(trailKeyboardListener);
 
     // Initial visualization
     this.updateVisualization();

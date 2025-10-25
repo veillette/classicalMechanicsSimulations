@@ -3,11 +3,11 @@
  * Displays a mass attached to a spring that can be dragged and oscillates.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
-import { Circle, Rectangle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
+import { Circle, Rectangle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { Vector2 } from "scenerystack/dot";
@@ -15,18 +15,16 @@ import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class SingleSpringScreenView extends ScreenView {
-  private readonly model: SingleSpringModel;
+export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly massNode: Rectangle;
   private readonly springNode: SpringNode;
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Fixed point for spring attachment (left side of screen)
     this.fixedPoint = new Vector2(150, this.layoutBounds.centerY);
@@ -92,42 +90,8 @@ export class SingleSpringScreenView extends ScreenView {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
-    // Time controls
-    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
-      timeSpeedProperty: this.model.timeSpeedProperty,
-      playPauseStepButtonOptions: {
-        includeStepForwardButton: true,
-        includeStepBackwardButton: false,
-      },
-      speedRadioButtonGroupPlacement: 'left',
-      centerX: this.layoutBounds.centerX,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(timeControlNode);
-
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
-
-    // Add keyboard shortcuts for accessibility
-    const keyboardListener = new KeyboardListener({
-      keys: ['r'],
-      fire: (event, keysPressed) => {
-        if (keysPressed === 'r') {
-          // Reset simulation with R key
-          this.model.reset();
-          this.reset();
-        }
-      }
-    });
-    this.addInputListener(keyboardListener);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
     // Initial visualization
     this.updateVisualization(this.model.positionProperty.value);

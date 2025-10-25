@@ -3,20 +3,20 @@
  * Displays a pendulum that can be dragged and swings.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
-import { Circle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
+import { Circle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { GraphDataSet, TimeGraph, MultiGraph } from "../../common/view/graph/index.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class PendulumScreenView extends ScreenView {
-  private readonly model: PendulumModel;
+export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly bobNode: Circle;
   private readonly rodNode: Line;
   private readonly pivotNode: Circle;
@@ -32,9 +32,7 @@ export class PendulumScreenView extends ScreenView {
   private readonly energyGraph: MultiGraph;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Pivot point (top center of screen)
     this.pivotPoint = new Vector2(
@@ -160,42 +158,8 @@ export class PendulumScreenView extends ScreenView {
     this.energyGraph.top = this.timeGraph.bottom + 10;
     this.addChild(this.energyGraph);
 
-    // Time controls
-    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
-      timeSpeedProperty: this.model.timeSpeedProperty,
-      playPauseStepButtonOptions: {
-        includeStepForwardButton: true,
-        includeStepBackwardButton: false,
-      },
-      speedRadioButtonGroupPlacement: 'left',
-      centerX: this.layoutBounds.centerX,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(timeControlNode);
-
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
-
-    // Add keyboard shortcuts for accessibility
-    const keyboardListener = new KeyboardListener({
-      keys: ['r'],
-      fire: (event, keysPressed) => {
-        if (keysPressed === 'r') {
-          // Reset simulation with R key
-          this.model.reset();
-          this.reset();
-        }
-      }
-    });
-    this.addInputListener(keyboardListener);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
     // Initial visualization
     this.updateVisualization();

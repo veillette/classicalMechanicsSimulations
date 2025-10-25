@@ -3,20 +3,20 @@
  * Displays two masses connected by springs.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
-import { Rectangle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
+import { Rectangle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class DoubleSpringScreenView extends ScreenView {
-  private readonly model: DoubleSpringModel;
+export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly mass1Node: Rectangle;
   private readonly mass2Node: Rectangle;
   private readonly spring1Node: SpringNode;
@@ -25,9 +25,7 @@ export class DoubleSpringScreenView extends ScreenView {
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Fixed point for spring attachment
     this.fixedPoint = new Vector2(100, this.layoutBounds.centerY);
@@ -124,42 +122,8 @@ export class DoubleSpringScreenView extends ScreenView {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
-    // Time controls
-    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
-      timeSpeedProperty: this.model.timeSpeedProperty,
-      playPauseStepButtonOptions: {
-        includeStepForwardButton: true,
-        includeStepBackwardButton: false,
-      },
-      speedRadioButtonGroupPlacement: 'left',
-      centerX: this.layoutBounds.centerX,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(timeControlNode);
-
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
-
-    // Add keyboard shortcuts for accessibility
-    const keyboardListener = new KeyboardListener({
-      keys: ['r'],
-      fire: (event, keysPressed) => {
-        if (keysPressed === 'r') {
-          // Reset simulation with R key
-          this.model.reset();
-          this.reset();
-        }
-      }
-    });
-    this.addInputListener(keyboardListener);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
     // Initial visualization
     this.updateVisualization();
