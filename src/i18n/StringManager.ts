@@ -114,6 +114,28 @@ export class StringManager {
   }
 
   /**
+   * Get graph label string properties
+   */
+  public getGraphLabels() {
+    return {
+      // Axis labels
+      xStringProperty: this.stringProperties.graph.axis.xStringProperty,
+      yStringProperty: this.stringProperties.graph.axis.yStringProperty,
+      timeStringProperty: this.stringProperties.graph.axis.timeStringProperty,
+      valueStringProperty: this.stringProperties.graph.axis.valueStringProperty,
+
+      // Legend labels
+      line1StringProperty: this.stringProperties.graph.legend.line1StringProperty,
+      line2StringProperty: this.stringProperties.graph.legend.line2StringProperty,
+      line3StringProperty: this.stringProperties.graph.legend.line3StringProperty,
+
+      // Pendulum-specific labels
+      angleAndVelocityStringProperty:
+        this.stringProperties.graph.pendulum.angleAndVelocityStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */

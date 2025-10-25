@@ -14,6 +14,7 @@ import { Orientation } from 'scenerystack/phet-core';
 import { Node, Text} from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
 import { Shape } from 'scenerystack/kite';
+import { ReadOnlyProperty } from 'scenerystack';
 import GraphDataSet from './GraphDataSet';
 
 /**
@@ -30,15 +31,15 @@ export default class StandardGraph extends Panel {
    * @param dataSet - The data to display
    * @param width - Chart width in pixels
    * @param height - Chart height in pixels
-   * @param xLabel - Label for X axis
-   * @param yLabel - Label for Y axis
+   * @param xLabelStringProperty - Translatable string property for X axis label
+   * @param yLabelStringProperty - Translatable string property for Y axis label
    */
   public constructor(
     dataSet: GraphDataSet,
-    width: number = 400,
-    height: number = 300,
-    xLabel: string = 'X',
-    yLabel: string = 'Y'
+    width: number,
+    height: number,
+    xLabelStringProperty: ReadOnlyProperty<string>,
+    yLabelStringProperty: ReadOnlyProperty<string>
   ) {
     // Create chart transform with initial ranges
     const chartTransform = new ChartTransform({
@@ -113,9 +114,9 @@ export default class StandardGraph extends Panel {
       clipArea: Shape.rect(0, 0, width, height),
     });
 
-    // Create labels
-    const xLabelText = new Text(xLabel, { fontSize: 14, fill: 'black' });
-    const yLabelText = new Text(yLabel, {
+    // Create labels with translatable string properties
+    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: 'black' });
+    const yLabelText = new Text(yLabelStringProperty, {
       fontSize: 14,
       fill: 'black',
       rotation: -Math.PI / 2,
