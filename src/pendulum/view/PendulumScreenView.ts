@@ -7,7 +7,7 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -159,6 +159,19 @@ export class PendulumScreenView extends ScreenView {
     this.energyGraph.left = this.layoutBounds.minX + 10;
     this.energyGraph.top = this.timeGraph.bottom + 10;
     this.addChild(this.energyGraph);
+
+    // Time controls
+    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
+      timeSpeedProperty: this.model.timeSpeedProperty,
+      playPauseStepButtonOptions: {
+        includeStepForwardButton: true,
+        includeStepBackwardButton: false,
+      },
+      speedRadioButtonGroupPlacement: 'left',
+      centerX: this.layoutBounds.centerX,
+      bottom: this.layoutBounds.maxY - 10,
+    });
+    this.addChild(timeControlNode);
 
     // Reset button
     const resetButton = new ResetAllButton({

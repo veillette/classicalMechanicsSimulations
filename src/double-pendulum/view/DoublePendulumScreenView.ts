@@ -7,7 +7,7 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { DoublePendulumModel } from "../model/DoublePendulumModel.js";
 import { Circle, Line, VBox, Node, Path, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
@@ -161,6 +161,19 @@ export class DoublePendulumScreenView extends ScreenView {
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
+
+    // Time controls
+    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
+      timeSpeedProperty: this.model.timeSpeedProperty,
+      playPauseStepButtonOptions: {
+        includeStepForwardButton: true,
+        includeStepBackwardButton: false,
+      },
+      speedRadioButtonGroupPlacement: 'left',
+      centerX: this.layoutBounds.centerX,
+      bottom: this.layoutBounds.maxY - 10,
+    });
+    this.addChild(timeControlNode);
 
     // Reset button
     const resetButton = new ResetAllButton({

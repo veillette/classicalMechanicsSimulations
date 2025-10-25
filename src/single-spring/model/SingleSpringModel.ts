@@ -15,8 +15,11 @@ import {
   NumberProperty,
   DerivedProperty,
   type TReadOnlyProperty,
+  BooleanProperty,
+  EnumerationProperty,
 } from "scenerystack/axon";
 import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
+import { TimeSpeed } from "scenerystack/scenery-phet";
 
 export class SingleSpringModel {
   // State variables
@@ -32,6 +35,10 @@ export class SingleSpringModel {
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
   public readonly potentialEnergyProperty: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
+
+  // Time control properties
+  public readonly isPlayingProperty: BooleanProperty;
+  public readonly timeSpeedProperty: EnumerationProperty<TimeSpeed>;
 
   private readonly solver: RungeKuttaSolver;
   public readonly timeProperty: NumberProperty;
@@ -65,6 +72,10 @@ export class SingleSpringModel {
       (ke, pe) => ke + pe,
     );
 
+    // Time control properties
+    this.isPlayingProperty = new BooleanProperty(true);
+    this.timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
+
     this.solver = new RungeKuttaSolver();
   }
 
@@ -78,6 +89,8 @@ export class SingleSpringModel {
     this.springConstantProperty.reset();
     this.dampingProperty.reset();
     this.timeProperty.reset();
+    this.isPlayingProperty.reset();
+    this.timeSpeedProperty.reset();
   }
 
   /**
@@ -86,6 +99,15 @@ export class SingleSpringModel {
    * @param dt - Time step in seconds
    */
   public step(dt: number): void {
+    // Only step if playing
+    if (!this.isPlayingProperty.value) {
+      return;
+    }
+
+    // Apply time speed multiplier
+    const timeSpeedMultiplier = this.getTimeSpeedMultiplier();
+    const adjustedDt = dt * timeSpeedMultiplier;
+
     // State vector: [position, velocity]
     const state = [this.positionProperty.value, this.velocityProperty.value];
 
@@ -94,13 +116,27 @@ export class SingleSpringModel {
       state,
       this.getDerivatives.bind(this),
       this.timeProperty.value,
-      dt
+      adjustedDt
     );
 
     // Update properties
     this.positionProperty.value = state[0];
     this.velocityProperty.value = state[1];
     this.timeProperty.value = newTime;
+  }
+
+  /**
+   * Get the time speed multiplier based on the current time speed setting.
+   */
+  private getTimeSpeedMultiplier(): number {
+    const timeSpeed = this.timeSpeedProperty.value;
+    if (timeSpeed === TimeSpeed.SLOW) {
+      return 0.5;
+    } else if (timeSpeed === TimeSpeed.FAST) {
+      return 2.0;
+    } else {
+      return 1.0; // NORMAL
+    }
   }
 
   /**

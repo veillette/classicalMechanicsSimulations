@@ -7,7 +7,7 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl, ResetAllButton, TimeControlNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { DragListener } from "scenerystack/scenery";
@@ -123,6 +123,19 @@ export class DoubleSpringScreenView extends ScreenView {
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
+
+    // Time controls
+    const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
+      timeSpeedProperty: this.model.timeSpeedProperty,
+      playPauseStepButtonOptions: {
+        includeStepForwardButton: true,
+        includeStepBackwardButton: false,
+      },
+      speedRadioButtonGroupPlacement: 'left',
+      centerX: this.layoutBounds.centerX,
+      bottom: this.layoutBounds.maxY - 10,
+    });
+    this.addChild(timeControlNode);
 
     // Reset button
     const resetButton = new ResetAllButton({
