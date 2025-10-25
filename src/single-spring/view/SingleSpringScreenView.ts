@@ -184,7 +184,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   }
 
   public reset(): void {
-    // Reset any view-specific state if needed
+    // Update visualization to match reset model state
+    this.updateVisualization(this.model.positionProperty.value);
   }
 
   public override step(dt: number): void {

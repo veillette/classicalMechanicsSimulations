@@ -354,7 +354,11 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   }
 
   public reset(): void {
+    // Clear trail
     this.clearTrail();
+
+    // Update visualization to match reset model state
+    this.updateVisualization();
   }
 
   public override step(dt: number): void {

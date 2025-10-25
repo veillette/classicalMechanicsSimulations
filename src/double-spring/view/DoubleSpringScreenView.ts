@@ -232,7 +232,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   }
 
   public reset(): void {
-    // Reset view-specific state
+    // Update visualization to match reset model state
+    this.updateVisualization();
   }
 
   public override step(dt: number): void {
