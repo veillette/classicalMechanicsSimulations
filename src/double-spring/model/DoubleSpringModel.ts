@@ -14,13 +14,10 @@ import {
   NumberProperty,
   DerivedProperty,
   type TReadOnlyProperty,
-  BooleanProperty,
-  EnumerationProperty,
 } from "scenerystack/axon";
-import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
-import { TimeSpeed } from "scenerystack/scenery-phet";
+import { BaseModel } from "../../common/model/BaseModel.js";
 
-export class DoubleSpringModel {
+export class DoubleSpringModel extends BaseModel {
   // State variables for mass 1
   public readonly position1Property: NumberProperty;
   public readonly velocity1Property: NumberProperty;
@@ -40,16 +37,8 @@ export class DoubleSpringModel {
   // Computed values
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
-  // Time control properties
-  public readonly isPlayingProperty: BooleanProperty;
-  public readonly timeSpeedProperty: EnumerationProperty<TimeSpeed>;
-
-  private readonly solver: RungeKuttaSolver;
-  public readonly timeProperty: NumberProperty;
-
   public constructor() {
-    // Initialize time
-    this.timeProperty = new NumberProperty(0.0); // seconds
+    super();
 
     // Initialize state
     this.position1Property = new NumberProperty(1.5); // meters
@@ -85,104 +74,36 @@ export class DoubleSpringModel {
         return ke1 + ke2 + pe1 + pe2;
       },
     );
-
-    // Time control properties
-    this.isPlayingProperty = new BooleanProperty(true);
-    this.timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
-
-    this.solver = new RungeKuttaSolver();
-  }
-
-  public reset(): void {
-    this.position1Property.reset();
-    this.velocity1Property.reset();
-    this.position2Property.reset();
-    this.velocity2Property.reset();
-    this.mass1Property.reset();
-    this.mass2Property.reset();
-    this.springConstant1Property.reset();
-    this.springConstant2Property.reset();
-    this.damping1Property.reset();
-    this.damping2Property.reset();
-    this.timeProperty.reset();
-    this.isPlayingProperty.reset();
-    this.timeSpeedProperty.reset();
   }
 
   /**
-   * Step the simulation forward in time.
-   * @param dt - Time step in seconds (can be negative for backward stepping)
-   * @param forceStep - If true, step even when paused (for manual stepping)
+   * Get the current state vector for physics integration.
+   * @returns [position1, velocity1, position2, velocity2]
    */
-  public step(dt: number, forceStep: boolean = false): void {
-    // Only step if playing (unless forced for manual stepping)
-    if (!this.isPlayingProperty.value && !forceStep) {
-      return;
-    }
-
-    // Apply time speed multiplier (only when auto-playing, not for manual steps)
-    const timeSpeedMultiplier = forceStep
-      ? 1.0
-      : this.getTimeSpeedMultiplier();
-    const adjustedDt = dt * timeSpeedMultiplier;
-
-    // State vector: [x1, v1, x2, v2]
-    const state = [
+  protected getState(): number[] {
+    return [
       this.position1Property.value,
       this.velocity1Property.value,
       this.position2Property.value,
       this.velocity2Property.value,
     ];
+  }
 
-    // Use RK4 solver with automatic sub-stepping
-    const newTime = this.solver.step(
-      state,
-      this.getDerivatives.bind(this),
-      this.timeProperty.value,
-      adjustedDt,
-    );
-
-    // Update properties
+  /**
+   * Update the model's properties from the state vector after integration.
+   * @param state - [position1, velocity1, position2, velocity2]
+   */
+  protected setState(state: number[]): void {
     this.position1Property.value = state[0];
     this.velocity1Property.value = state[1];
     this.position2Property.value = state[2];
     this.velocity2Property.value = state[3];
-    this.timeProperty.value = newTime;
-  }
-
-  /**
-   * Get the time speed multiplier based on the current time speed setting.
-   */
-  private getTimeSpeedMultiplier(): number {
-    const timeSpeed = this.timeSpeedProperty.value;
-    if (timeSpeed === TimeSpeed.SLOW) {
-      return 0.5;
-    } else if (timeSpeed === TimeSpeed.FAST) {
-      return 2.0;
-    } else {
-      return 1.0; // NORMAL
-    }
-  }
-
-  /**
-   * Set the fixed timestep for the physics solver.
-   * @param dt - Fixed timestep in seconds
-   */
-  public setPhysicsTimeStep(dt: number): void {
-    this.solver.setFixedTimeStep(dt);
-  }
-
-  /**
-   * Get the current physics timestep.
-   */
-  public getPhysicsTimeStep(): number {
-    return this.solver.getFixedTimeStep();
   }
 
   /**
    * Compute derivatives for coupled spring system.
    */
-  private getDerivatives(
+  protected getDerivatives(
     state: number[],
     derivatives: number[],
     _: number,
@@ -210,5 +131,22 @@ export class DoubleSpringModel {
 
     // dv2/dt = (-k2*(x2 - x1) - b2*v2) / m2
     derivatives[3] = (-k2 * (x2 - x1) - b2 * v2) / m2;
+  }
+
+  /**
+   * Reset the model to initial conditions.
+   */
+  public reset(): void {
+    this.position1Property.reset();
+    this.velocity1Property.reset();
+    this.position2Property.reset();
+    this.velocity2Property.reset();
+    this.mass1Property.reset();
+    this.mass2Property.reset();
+    this.springConstant1Property.reset();
+    this.springConstant2Property.reset();
+    this.damping1Property.reset();
+    this.damping2Property.reset();
+    this.resetCommon(); // Reset time-related properties from base class
   }
 }
