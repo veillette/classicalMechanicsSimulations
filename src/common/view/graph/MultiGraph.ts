@@ -14,6 +14,7 @@ import { Orientation } from 'scenerystack/phet-core';
 import { Node, Text, HBox, Line } from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
 import { Shape } from 'scenerystack/kite';
+import { ReadOnlyProperty } from 'scenerystack';
 import GraphDataSet from './GraphDataSet';
 
 /**
@@ -35,15 +36,19 @@ export default class MultiGraph extends Panel {
    * @param dataSet2 - Second data set (right Y-axis)
    * @param width - Chart width in pixels
    * @param height - Chart height in pixels
-   * @param xLabel - Label for X axis (typically "Time (s)")
+   * @param xLabelStringProperty - Translatable string property for X axis label
+   * @param legend1StringProperty - Translatable string property for first legend label
+   * @param legend2StringProperty - Translatable string property for second legend label
    * @param timeWindow - Time window to display (default 10s)
    */
   public constructor(
     dataSet1: GraphDataSet,
     dataSet2: GraphDataSet,
-    width: number = 500,
-    height: number = 300,
-    xLabel: string = 'Time (s)',
+    width: number,
+    height: number,
+    xLabelStringProperty: ReadOnlyProperty<string>,
+    legend1StringProperty: ReadOnlyProperty<string>,
+    legend2StringProperty: ReadOnlyProperty<string>,
     timeWindow: number = 10
   ) {
     // Create two chart transforms - they share the same X range but have independent Y ranges
@@ -166,10 +171,10 @@ export default class MultiGraph extends Panel {
       clipArea: Shape.rect(0, 0, width, height),
     });
 
-    // Create labels
-    const xLabelText = new Text(xLabel, { fontSize: 14, fill: 'black' });
+    // Create labels with translatable string properties
+    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: 'black' });
 
-    // Create legend with both lines
+    // Create legend with translatable string properties
     const legendLine1 = new Line(0, 1.5, 20, 1.5, {
       stroke: dataSet1.color,
       lineWidth: dataSet1.lineWidth,
@@ -182,11 +187,11 @@ export default class MultiGraph extends Panel {
     const legend = new HBox({
       children: [
         new HBox({
-          children: [legendLine1, new Text('Line 1', { fontSize: 12, fill: dataSet1.color })],
+          children: [legendLine1, new Text(legend1StringProperty, { fontSize: 12, fill: dataSet1.color })],
           spacing: 5,
         }),
         new HBox({
-          children: [legendLine2, new Text('Line 2', { fontSize: 12, fill: dataSet2.color })],
+          children: [legendLine2, new Text(legend2StringProperty, { fontSize: 12, fill: dataSet2.color })],
           spacing: 5,
         }),
       ],

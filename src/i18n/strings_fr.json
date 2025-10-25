@@ -28,5 +28,21 @@
     "newtonMeterSeconds": "{{value}} N·m·s",
     "meters": "{{value}} m",
     "metersPerSecondSquared": "{{value}} m/s²"
+  },
+  "graph": {
+    "axis": {
+      "x": "X",
+      "y": "Y",
+      "time": "Temps (s)",
+      "value": "Valeur"
+    },
+    "legend": {
+      "line1": "Ligne 1",
+      "line2": "Ligne 2",
+      "line3": "Ligne 3"
+    },
+    "pendulum": {
+      "angleAndVelocity": "Angle (rad) / Vitesse Angulaire (rad/s)"
+    }
   }
 }

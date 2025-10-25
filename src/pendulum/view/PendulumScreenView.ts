@@ -126,13 +126,18 @@ export class PendulumScreenView extends ScreenView {
       2000
     );
 
+    // Get string manager and graph labels
+    const stringManager = StringManager.getInstance();
+    const graphLabels = stringManager.getGraphLabels();
+
     // Create time graph showing angle and angular velocity
     this.timeGraph = new TimeGraph(
       [this.angleDataSet, this.angularVelocityDataSet],
       450,  // width
       200,  // height
-      'Time (s)',
-      'Angle (rad) / Angular Velocity (rad/s)',
+      graphLabels.timeStringProperty,
+      graphLabels.angleAndVelocityStringProperty,
+      [graphLabels.line1StringProperty, graphLabels.line2StringProperty],
       10    // time window
     );
     this.timeGraph.left = this.layoutBounds.minX + 10;
@@ -145,7 +150,9 @@ export class PendulumScreenView extends ScreenView {
       this.potentialEnergyDataSet,
       450,  // width
       200,  // height
-      'Time (s)',
+      graphLabels.timeStringProperty,
+      graphLabels.line1StringProperty,
+      graphLabels.line2StringProperty,
       10    // time window
     );
     this.energyGraph.left = this.layoutBounds.minX + 10;

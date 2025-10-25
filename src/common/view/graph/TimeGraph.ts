@@ -14,6 +14,7 @@ import { Orientation } from 'scenerystack/phet-core';
 import { Node, Text, HBox, Line } from 'scenerystack/scenery';
 import { Panel } from 'scenerystack/sun';
 import { Shape } from 'scenerystack/kite';
+import { ReadOnlyProperty } from 'scenerystack';
 import GraphDataSet from './GraphDataSet';
 
 /**
@@ -30,16 +31,18 @@ export default class TimeGraph extends Panel {
    * @param dataSets - Array of data sets to display (typically 3)
    * @param width - Chart width in pixels
    * @param height - Chart height in pixels
-   * @param xLabel - Label for X axis (typically "Time (s)")
-   * @param yLabel - Label for Y axis
+   * @param xLabelStringProperty - Translatable string property for X axis label
+   * @param yLabelStringProperty - Translatable string property for Y axis label
+   * @param legendLabelsStringProperties - Array of translatable string properties for legend labels
    * @param timeWindow - Time window to display (default 10s)
    */
   public constructor(
     dataSets: GraphDataSet[],
-    width: number = 500,
-    height: number = 300,
-    xLabel: string = 'Time (s)',
-    yLabel: string = 'Value',
+    width: number,
+    height: number,
+    xLabelStringProperty: ReadOnlyProperty<string>,
+    yLabelStringProperty: ReadOnlyProperty<string>,
+    legendLabelsStringProperties: ReadOnlyProperty<string>[],
     timeWindow: number = 10
   ) {
     // Create chart transform with initial ranges
@@ -120,15 +123,15 @@ export default class TimeGraph extends Panel {
       clipArea: Shape.rect(0, 0, width, height),
     });
 
-    // Create labels
-    const xLabelText = new Text(xLabel, { fontSize: 14, fill: 'black' });
-    const yLabelText = new Text(yLabel, {
+    // Create labels with translatable string properties
+    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: 'black' });
+    const yLabelText = new Text(yLabelStringProperty, {
       fontSize: 14,
       fill: 'black',
       rotation: -Math.PI / 2,
     });
 
-    // Create legend
+    // Create legend with translatable string properties
     const legendItems = dataSets.map((dataSet, index) => {
       const legendLine = new Line(0, 1.5, 20, 1.5, {
         stroke: dataSet.color,
@@ -136,7 +139,7 @@ export default class TimeGraph extends Panel {
       });
 
       return new HBox({
-        children: [legendLine, new Text(`Line ${index + 1}`, { fontSize: 12 })],
+        children: [legendLine, new Text(legendLabelsStringProperties[index], { fontSize: 12 })],
         spacing: 5,
       });
     });
