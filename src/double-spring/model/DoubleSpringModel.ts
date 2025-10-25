@@ -109,14 +109,21 @@ export class DoubleSpringModel {
     this.timeSpeedProperty.reset();
   }
 
-  public step(dt: number): void {
-    // Only step if playing
-    if (!this.isPlayingProperty.value) {
+  /**
+   * Step the simulation forward in time.
+   * @param dt - Time step in seconds (can be negative for backward stepping)
+   * @param forceStep - If true, step even when paused (for manual stepping)
+   */
+  public step(dt: number, forceStep: boolean = false): void {
+    // Only step if playing (unless forced for manual stepping)
+    if (!this.isPlayingProperty.value && !forceStep) {
       return;
     }
 
-    // Apply time speed multiplier
-    const timeSpeedMultiplier = this.getTimeSpeedMultiplier();
+    // Apply time speed multiplier (only when auto-playing, not for manual steps)
+    const timeSpeedMultiplier = forceStep
+      ? 1.0
+      : this.getTimeSpeedMultiplier();
     const adjustedDt = dt * timeSpeedMultiplier;
 
     // State vector: [x1, v1, x2, v2]
