@@ -272,13 +272,16 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   }
 
   public reset(): void {
-    // Reset view-specific state
+    // Clear graph data
     this.angleDataSet.clear();
     this.angularVelocityDataSet.clear();
     this.kineticEnergyDataSet.clear();
     this.potentialEnergyDataSet.clear();
     this.timeGraph.clear();
     this.energyGraph.clear();
+
+    // Update visualization to match reset model state
+    this.updateVisualization();
   }
 
   public override step(dt: number): void {
