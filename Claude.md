@@ -1,5 +1,3 @@
-# Membrane Transport Development Guidelines
-
 ## General Architecture
 
 The project is a web-based interactive simulation built with TypeScript. It follows a Model-View-Controller (MVC) like pattern, with clear separation of concerns. The directory structure is well-organized, with distinct folders for source code (`js`), assets (`images`, `sounds`), documentation (`doc`), and build artifacts (`build`).
@@ -29,9 +27,7 @@ This project is developed as part of a PhET monorepo. You can follow import path
 ## Code Style
 - TypeScript with strict typing
 - Follows PhET MVC (Model-View-Controller) pattern
-- Organized by screens: SimpleDiffusion, FacilitatedDiffusion, ActiveTransport, Playground
 - Common code in js/common/, divided into model/ and view/
-- Use MembraneTransportConstants for shared values
 - Follow PhET naming conventions: PascalCase for classes, camelCase for variables
 - JS/TS files do not end with newlines
 - Line comments are preceded by a blank line
@@ -73,9 +69,6 @@ This project is developed as part of a PhET monorepo. You can follow import path
     *   Document expected behaviors in code comments.
 
 ## Internationalization (i18n)
-- **Source of Truth:** All new strings must be added to the `CM-strings_en.yaml` file. 
-- Strings in `CM-strings_en.json` follow a nested structure that must be mirrored in CMStrings.ts
-- A11y strings often need deeper nesting (component > subcomponent > feature > property)
 - When adding new accessibility text, check existing patterns for proper nesting structure
 
   
@@ -83,7 +76,7 @@ This project is developed as part of a PhET monorepo. You can follow import path
 
 ## Learned Conventions and Tricky Workflows
 
-*   **Commit Message Format:** All git commits **must** be a single line and include a full URL to a corresponding GitHub issue at the end of the message. Do not use conventional commit prefixes like "Feat:" or "Refactor:". For example: `git commit -m "Improve performance, see https://github.com/phetsims/membrane-transport/issues/123"`.
+*   **Commit Message Format:** All git commits **must** be a single line and include a full URL to a corresponding GitHub issue at the end of the message. Do not use conventional commit prefixes like "Feat:" or "Refactor:". 
 *   **Asset Renaming Workflow:** Renaming an image asset requires a specific, manual workflow:
     1.  Use `git mv` to rename the asset file (e.g., `images/foo.svg`).
     2.  Use `git mv` to rename the corresponding generated TypeScript module (e.g., `images/foo_svg.ts`).
