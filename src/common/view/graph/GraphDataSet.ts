@@ -1,8 +1,8 @@
 // Copyright 2025. All Rights Reserved.
 
-import { TReadOnlyProperty } from 'scenerystack/axon';
-import { Vector2 } from 'scenerystack/dot';
-import { Color, ReadOnlyProperty } from 'scenerystack';
+import { TReadOnlyProperty } from "scenerystack/axon";
+import { Vector2 } from "scenerystack/dot";
+import { Color, ReadOnlyProperty } from "scenerystack";
 
 /**
  * GraphDataSet collects data from properties over time, storing it as a history
@@ -38,7 +38,7 @@ export default class GraphDataSet {
     xProperty: TReadOnlyProperty<number>,
     yProperty: TReadOnlyProperty<number>,
     colorProperty: ReadOnlyProperty<Color>,
-    maxPoints: number = 2000
+    maxPoints: number = 2000,
   ) {
     this.xProperty = xProperty;
     this.yProperty = yProperty;
@@ -99,7 +99,12 @@ export default class GraphDataSet {
    * Get the X and Y ranges of the data for auto-scaling.
    * Returns null if there's no valid data.
    */
-  public getDataBounds(): { xMin: number; xMax: number; yMin: number; yMax: number } | null {
+  public getDataBounds(): {
+    xMin: number;
+    xMax: number;
+    yMin: number;
+    yMax: number;
+  } | null {
     const validPoints = this.dataPoints.filter((p): p is Vector2 => p !== null);
 
     if (validPoints.length === 0) {

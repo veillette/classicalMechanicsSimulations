@@ -32,8 +32,12 @@ export class SpringNode extends Node {
     this.loops = options?.loops ?? 10;
     this.radius = options?.radius ?? 10;
 
-    const frontColorProperty = options?.frontColorProperty ?? ClassicalMechanicsColors.springFrontColorProperty;
-    const backColorProperty = options?.backColorProperty ?? ClassicalMechanicsColors.springBackColorProperty;
+    const frontColorProperty =
+      options?.frontColorProperty ??
+      ClassicalMechanicsColors.springFrontColorProperty;
+    const backColorProperty =
+      options?.backColorProperty ??
+      ClassicalMechanicsColors.springBackColorProperty;
     const lineWidth = options?.lineWidth ?? 3;
 
     // Back part of spring (goes behind)

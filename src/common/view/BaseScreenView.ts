@@ -18,7 +18,9 @@ export interface TimeControllableModel {
   reset(): void;
 }
 
-export abstract class BaseScreenView<T extends TimeControllableModel> extends ScreenView {
+export abstract class BaseScreenView<
+  T extends TimeControllableModel,
+> extends ScreenView {
   protected readonly model: T;
 
   protected constructor(model: T, options?: ScreenViewOptions) {
@@ -38,7 +40,7 @@ export abstract class BaseScreenView<T extends TimeControllableModel> extends Sc
         includeStepForwardButton: true,
         includeStepBackwardButton: false,
       },
-      speedRadioButtonGroupPlacement: 'left',
+      speedRadioButtonGroupPlacement: "left",
       centerX: this.layoutBounds.centerX,
       bottom: this.layoutBounds.maxY - 10,
     });
@@ -57,14 +59,14 @@ export abstract class BaseScreenView<T extends TimeControllableModel> extends Sc
 
     // Add keyboard shortcuts for accessibility
     const keyboardListener = new KeyboardListener({
-      keys: ['r'],
+      keys: ["r"],
       fire: (event, keysPressed) => {
-        if (keysPressed === 'r') {
+        if (keysPressed === "r") {
           // Reset simulation with R key
           this.model.reset();
           this.reset();
         }
-      }
+      },
     });
     this.addInputListener(keyboardListener);
   }

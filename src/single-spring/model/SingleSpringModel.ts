@@ -116,7 +116,7 @@ export class SingleSpringModel {
       state,
       this.getDerivatives.bind(this),
       this.timeProperty.value,
-      adjustedDt
+      adjustedDt,
     );
 
     // Update properties
@@ -161,7 +161,7 @@ export class SingleSpringModel {
   private getDerivatives(
     state: number[],
     derivatives: number[],
-    _time: number,
+    _: number,
   ): void {
     const x = state[0];
     const v = state[1];

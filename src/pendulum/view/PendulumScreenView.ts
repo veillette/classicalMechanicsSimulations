@@ -12,7 +12,11 @@ import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import { GraphDataSet, TimeGraph, MultiGraph } from "../../common/view/graph/index.js";
+import {
+  GraphDataSet,
+  TimeGraph,
+  MultiGraph,
+} from "../../common/view/graph/index.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
@@ -101,28 +105,28 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       this.model.timeProperty,
       this.model.angleProperty,
       ClassicalMechanicsColors.graphLine1ColorProperty,
-      2000
+      2000,
     );
 
     this.angularVelocityDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.angularVelocityProperty,
       ClassicalMechanicsColors.graphLine2ColorProperty,
-      2000
+      2000,
     );
 
     this.kineticEnergyDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.kineticEnergyProperty,
       ClassicalMechanicsColors.graphLine3ColorProperty,
-      2000
+      2000,
     );
 
     this.potentialEnergyDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.potentialEnergyProperty,
       ClassicalMechanicsColors.graphLine4ColorProperty,
-      2000
+      2000,
     );
 
     // Get string manager and graph labels
@@ -132,12 +136,12 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Create time graph showing angle and angular velocity
     this.timeGraph = new TimeGraph(
       [this.angleDataSet, this.angularVelocityDataSet],
-      450,  // width
-      200,  // height
+      450, // width
+      200, // height
       graphLabels.timeStringProperty,
       graphLabels.angleAndVelocityStringProperty,
       [graphLabels.line1StringProperty, graphLabels.line2StringProperty],
-      10    // time window
+      10, // time window
     );
     this.timeGraph.left = this.layoutBounds.minX + 10;
     this.timeGraph.top = this.layoutBounds.minY + 10;
@@ -147,12 +151,12 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.energyGraph = new MultiGraph(
       this.kineticEnergyDataSet,
       this.potentialEnergyDataSet,
-      450,  // width
-      200,  // height
+      450, // width
+      200, // height
       graphLabels.timeStringProperty,
       graphLabels.line1StringProperty,
       graphLabels.line2StringProperty,
-      10    // time window
+      10, // time window
     );
     this.energyGraph.left = this.layoutBounds.minX + 10;
     this.energyGraph.top = this.timeGraph.bottom + 10;

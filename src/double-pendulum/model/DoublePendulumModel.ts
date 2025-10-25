@@ -143,7 +143,7 @@ export class DoublePendulumModel {
       state,
       this.getDerivatives.bind(this),
       this.timeProperty.value,
-      adjustedDt
+      adjustedDt,
     );
 
     // Update properties
@@ -190,7 +190,7 @@ export class DoublePendulumModel {
   private getDerivatives(
     state: number[],
     derivatives: number[],
-    _time: number,
+    _: number,
   ): void {
     const theta1 = state[0];
     const omega1 = state[1];
