@@ -2,6 +2,7 @@
 
 import { TReadOnlyProperty } from 'scenerystack/axon';
 import { Vector2 } from 'scenerystack/dot';
+import { Color, ReadOnlyProperty } from 'scenerystack';
 
 /**
  * GraphDataSet collects data from properties over time, storing it as a history
@@ -22,7 +23,7 @@ export default class GraphDataSet {
   private readonly maxPoints: number;
 
   // Color for rendering this dataset
-  public color: string;
+  public colorProperty: ReadOnlyProperty<Color>;
 
   // Line width for rendering
   public lineWidth: number;
@@ -30,20 +31,20 @@ export default class GraphDataSet {
   /**
    * @param xProperty - Property for X values
    * @param yProperty - Property for Y values
-   * @param color - Color for rendering this line
+   * @param colorProperty - Color property for rendering this line
    * @param maxPoints - Maximum number of points to store (default 2000)
    */
   public constructor(
     xProperty: TReadOnlyProperty<number>,
     yProperty: TReadOnlyProperty<number>,
-    color: string = 'lime',
+    colorProperty: ReadOnlyProperty<Color>,
     maxPoints: number = 2000
   ) {
     this.xProperty = xProperty;
     this.yProperty = yProperty;
     this.dataPoints = [];
     this.maxPoints = maxPoints;
-    this.color = color;
+    this.colorProperty = colorProperty;
     this.lineWidth = 2;
   }
 

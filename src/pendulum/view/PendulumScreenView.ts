@@ -3,19 +3,20 @@
  * Displays a pendulum that can be dragged and swings.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { GraphDataSet, TimeGraph, MultiGraph } from "../../common/view/graph/index.js";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class PendulumScreenView extends ScreenView {
-  private readonly model: PendulumModel;
+export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly bobNode: Circle;
   private readonly rodNode: Line;
   private readonly pivotNode: Circle;
@@ -31,9 +32,7 @@ export class PendulumScreenView extends ScreenView {
   private readonly energyGraph: MultiGraph;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Pivot point (top center of screen)
     this.pivotPoint = new Vector2(
@@ -51,8 +50,8 @@ export class PendulumScreenView extends ScreenView {
 
     // Pivot
     this.pivotNode = new Circle(8, {
-      fill: "#333",
-      stroke: "#000",
+      fill: ClassicalMechanicsColors.pivotFillColorProperty,
+      stroke: ClassicalMechanicsColors.pivotStrokeColorProperty,
       lineWidth: 2,
     });
     this.pivotNode.center = this.pivotPoint;
@@ -60,7 +59,7 @@ export class PendulumScreenView extends ScreenView {
 
     // Rod
     this.rodNode = new Line(0, 0, 0, 0, {
-      stroke: "#666",
+      stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
       lineWidth: 4,
       lineCap: "round",
     });
@@ -68,8 +67,8 @@ export class PendulumScreenView extends ScreenView {
 
     // Bob
     this.bobNode = new Circle(20, {
-      fill: "#E67E22",
-      stroke: "#D35400",
+      fill: ClassicalMechanicsColors.mass2FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
     });
@@ -101,28 +100,28 @@ export class PendulumScreenView extends ScreenView {
     this.angleDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.angleProperty,
-      'lime',
+      ClassicalMechanicsColors.graphLine1ColorProperty,
       2000
     );
 
     this.angularVelocityDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.angularVelocityProperty,
-      'red',
+      ClassicalMechanicsColors.graphLine2ColorProperty,
       2000
     );
 
     this.kineticEnergyDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.kineticEnergyProperty,
-      'blue',
+      ClassicalMechanicsColors.graphLine3ColorProperty,
       2000
     );
 
     this.potentialEnergyDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.potentialEnergyProperty,
-      'orange',
+      ClassicalMechanicsColors.graphLine4ColorProperty,
       2000
     );
 
@@ -159,16 +158,8 @@ export class PendulumScreenView extends ScreenView {
     this.energyGraph.top = this.timeGraph.bottom + 10;
     this.addChild(this.energyGraph);
 
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
     // Initial visualization
     this.updateVisualization();
@@ -239,8 +230,8 @@ export class PendulumScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,

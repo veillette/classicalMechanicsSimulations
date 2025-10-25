@@ -3,19 +3,20 @@
  * Displays two masses connected by springs.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class DoubleSpringScreenView extends ScreenView {
-  private readonly model: DoubleSpringModel;
+export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly mass1Node: Rectangle;
   private readonly mass2Node: Rectangle;
   private readonly spring1Node: SpringNode;
@@ -24,9 +25,7 @@ export class DoubleSpringScreenView extends ScreenView {
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Fixed point for spring attachment
     this.fixedPoint = new Vector2(100, this.layoutBounds.centerY);
@@ -46,7 +45,7 @@ export class DoubleSpringScreenView extends ScreenView {
       this.fixedPoint.x - 20,
       this.layoutBounds.maxY,
       {
-        stroke: "#666",
+        stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
       },
     );
@@ -56,8 +55,6 @@ export class DoubleSpringScreenView extends ScreenView {
     this.spring1Node = new SpringNode({
       loops: 10,
       radius: 12,
-      frontColor: "#E74C3C",
-      backColor: "#C0392B",
       lineWidth: 3,
     });
     this.addChild(this.spring1Node);
@@ -66,16 +63,14 @@ export class DoubleSpringScreenView extends ScreenView {
     this.spring2Node = new SpringNode({
       loops: 10,
       radius: 12,
-      frontColor: "#3498DB",
-      backColor: "#2C3E50",
       lineWidth: 3,
     });
     this.addChild(this.spring2Node);
 
     // Mass 1
     this.mass1Node = new Rectangle(-20, -20, 40, 40, {
-      fill: "#E74C3C",
-      stroke: "#C0392B",
+      fill: ClassicalMechanicsColors.mass1FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
@@ -84,8 +79,8 @@ export class DoubleSpringScreenView extends ScreenView {
 
     // Mass 2
     this.mass2Node = new Rectangle(-20, -20, 40, 40, {
-      fill: "#3498DB",
-      stroke: "#2C3E50",
+      fill: ClassicalMechanicsColors.mass2FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
@@ -127,16 +122,8 @@ export class DoubleSpringScreenView extends ScreenView {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
     // Initial visualization
     this.updateVisualization();
@@ -207,8 +194,8 @@ export class DoubleSpringScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,

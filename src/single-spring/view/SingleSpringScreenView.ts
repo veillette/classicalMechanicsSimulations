@@ -3,29 +3,28 @@
  * Displays a mass attached to a spring that can be dragged and oscillates.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Circle, Rectangle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class SingleSpringScreenView extends ScreenView {
-  private readonly model: SingleSpringModel;
+export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly massNode: Rectangle;
   private readonly springNode: SpringNode;
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Fixed point for spring attachment (left side of screen)
     this.fixedPoint = new Vector2(150, this.layoutBounds.centerY);
@@ -45,7 +44,7 @@ export class SingleSpringScreenView extends ScreenView {
       this.fixedPoint.x - 20,
       this.layoutBounds.maxY,
       {
-        stroke: "#666",
+        stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
       },
     );
@@ -55,16 +54,14 @@ export class SingleSpringScreenView extends ScreenView {
     this.springNode = new SpringNode({
       loops: 12,
       radius: 15,
-      frontColor: "#888",
-      backColor: "#444",
       lineWidth: 3,
     });
     this.addChild(this.springNode);
 
     // Mass block
     this.massNode = new Rectangle(-25, -25, 50, 50, {
-      fill: "#4A90E2",
-      stroke: "#2E5C8A",
+      fill: ClassicalMechanicsColors.mass1FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
@@ -93,16 +90,8 @@ export class SingleSpringScreenView extends ScreenView {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(resetButton);
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
 
     // Initial visualization
     this.updateVisualization(this.model.positionProperty.value);
@@ -163,8 +152,8 @@ export class SingleSpringScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,

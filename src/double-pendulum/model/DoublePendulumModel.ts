@@ -18,8 +18,11 @@ import {
   NumberProperty,
   DerivedProperty,
   type TReadOnlyProperty,
+  BooleanProperty,
+  EnumerationProperty,
 } from "scenerystack/axon";
 import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
+import { TimeSpeed } from "scenerystack/scenery-phet";
 
 export class DoublePendulumModel {
   // State variables
@@ -38,6 +41,10 @@ export class DoublePendulumModel {
 
   // Computed values
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
+
+  // Time control properties
+  public readonly isPlayingProperty: BooleanProperty;
+  public readonly timeSpeedProperty: EnumerationProperty<TimeSpeed>;
 
   private readonly solver: RungeKuttaSolver;
   public readonly timeProperty: NumberProperty;
@@ -90,6 +97,10 @@ export class DoublePendulumModel {
       },
     );
 
+    // Time control properties
+    this.isPlayingProperty = new BooleanProperty(true);
+    this.timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
+
     this.solver = new RungeKuttaSolver();
   }
 
@@ -105,9 +116,20 @@ export class DoublePendulumModel {
     this.gravityProperty.reset();
     this.dampingProperty.reset();
     this.timeProperty.reset();
+    this.isPlayingProperty.reset();
+    this.timeSpeedProperty.reset();
   }
 
   public step(dt: number): void {
+    // Only step if playing
+    if (!this.isPlayingProperty.value) {
+      return;
+    }
+
+    // Apply time speed multiplier
+    const timeSpeedMultiplier = this.getTimeSpeedMultiplier();
+    const adjustedDt = dt * timeSpeedMultiplier;
+
     // State vector: [θ1, ω1, θ2, ω2]
     const state = [
       this.angle1Property.value,
@@ -121,7 +143,7 @@ export class DoublePendulumModel {
       state,
       this.getDerivatives.bind(this),
       this.timeProperty.value,
-      dt
+      adjustedDt
     );
 
     // Update properties
@@ -130,6 +152,20 @@ export class DoublePendulumModel {
     this.angle2Property.value = state[2];
     this.angularVelocity2Property.value = state[3];
     this.timeProperty.value = newTime;
+  }
+
+  /**
+   * Get the time speed multiplier based on the current time speed setting.
+   */
+  private getTimeSpeedMultiplier(): number {
+    const timeSpeed = this.timeSpeedProperty.value;
+    if (timeSpeed === TimeSpeed.SLOW) {
+      return 0.5;
+    } else if (timeSpeed === TimeSpeed.FAST) {
+      return 2.0;
+    } else {
+      return 1.0; // NORMAL
+    }
   }
 
   /**

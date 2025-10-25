@@ -16,6 +16,7 @@ import { Panel } from 'scenerystack/sun';
 import { Shape } from 'scenerystack/kite';
 import { ReadOnlyProperty } from 'scenerystack';
 import GraphDataSet from './GraphDataSet';
+import ClassicalMechanicsColors from '../../../ClassicalMechanicsColors.js';
 
 /**
  * TimeGraph displays multiple GraphDataSets (typically 3) with a common X-axis (typically time)
@@ -55,37 +56,37 @@ export default class TimeGraph extends Panel {
 
     // Create background rectangle
     const chartRectangle = new ChartRectangle(chartTransform, {
-      fill: 'white',
-      stroke: 'black',
+      fill: ClassicalMechanicsColors.graphBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.graphBorderColorProperty,
     });
 
     // Create grid lines
     const gridLineSet = new GridLineSet(chartTransform, Orientation.HORIZONTAL, 0.5, {
-      stroke: 'lightgray',
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
     const verticalGridLineSet = new GridLineSet(chartTransform, Orientation.VERTICAL, 1, {
-      stroke: 'lightgray',
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
 
     // Create axes
     const xAxis = new AxisLine(chartTransform, Orientation.HORIZONTAL, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
     const yAxis = new AxisLine(chartTransform, Orientation.VERTICAL, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
 
     // Create tick marks
     const xTickMarks = new TickMarkSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
     const yTickMarks = new TickMarkSet(chartTransform, Orientation.VERTICAL, 0.5, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
 
@@ -94,7 +95,7 @@ export default class TimeGraph extends Panel {
       createLabel: (value: number) =>
         new Text(value.toFixed(1), {
           fontSize: 12,
-          fill: 'black',
+          fill: ClassicalMechanicsColors.graphLabelColorProperty,
           maxWidth: 40,
         }),
     });
@@ -102,7 +103,7 @@ export default class TimeGraph extends Panel {
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
           fontSize: 12,
-          fill: 'black',
+          fill: ClassicalMechanicsColors.graphLabelColorProperty,
           maxWidth: 45,
         }),
     });
@@ -111,7 +112,7 @@ export default class TimeGraph extends Panel {
     const linePlots: LinePlot[] = [];
     for (const dataSet of dataSets) {
       const linePlot = new LinePlot(chartTransform, dataSet.getDataPoints(), {
-        stroke: dataSet.color,
+        stroke: dataSet.colorProperty,
         lineWidth: dataSet.lineWidth,
       });
       linePlots.push(linePlot);
@@ -124,17 +125,17 @@ export default class TimeGraph extends Panel {
     });
 
     // Create labels with translatable string properties
-    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: 'black' });
+    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: ClassicalMechanicsColors.graphLabelColorProperty });
     const yLabelText = new Text(yLabelStringProperty, {
       fontSize: 14,
-      fill: 'black',
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
       rotation: -Math.PI / 2,
     });
 
     // Create legend with translatable string properties
     const legendItems = dataSets.map((dataSet, index) => {
       const legendLine = new Line(0, 1.5, 20, 1.5, {
-        stroke: dataSet.color,
+        stroke: dataSet.colorProperty,
         lineWidth: dataSet.lineWidth,
       });
 
@@ -191,8 +192,8 @@ export default class TimeGraph extends Panel {
 
     // Create panel with fixed size
     super(contentNode, {
-      fill: 'rgb(230, 230, 230)',
-      stroke: 'gray',
+      fill: ClassicalMechanicsColors.graphPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.graphPanelStrokeColorProperty,
       lineWidth: 1,
       cornerRadius: 5,
       xMargin: 10,

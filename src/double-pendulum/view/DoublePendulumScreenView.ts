@@ -3,19 +3,21 @@
  * Displays two connected pendulums that exhibit chaotic motion.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoublePendulumModel } from "../model/DoublePendulumModel.js";
-import { Circle, Line, VBox, Node, Path } from "scenerystack/scenery";
+import { Circle, Line, VBox, Node, Path, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
-import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
+import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import { BooleanProperty } from "scenerystack/axon";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 
-export class DoublePendulumScreenView extends ScreenView {
-  private readonly model: DoublePendulumModel;
+export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel> {
   private readonly bob1Node: Circle;
   private readonly bob2Node: Circle;
   private readonly rod1Node: Line;
@@ -26,11 +28,10 @@ export class DoublePendulumScreenView extends ScreenView {
   private readonly modelViewTransform: ModelViewTransform2;
   private readonly trailPoints: Vector2[] = [];
   private readonly maxTrailPoints: number = 500;
+  private readonly trailVisibleProperty: BooleanProperty;
 
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
-    super(options);
-
-    this.model = model;
+    super(model, options);
 
     // Pivot point (top center)
     this.pivotPoint = new Vector2(
@@ -48,15 +49,22 @@ export class DoublePendulumScreenView extends ScreenView {
 
     // Trail for chaotic motion visualization
     this.trailPath = new Path(null, {
-      stroke: "rgba(230, 126, 34, 0.3)",
+      stroke: ClassicalMechanicsColors.mass2FillColorProperty,
       lineWidth: 2,
+      opacity: 0.3,
     });
     this.addChild(this.trailPath);
 
+    // Trail visibility property
+    this.trailVisibleProperty = new BooleanProperty(true);
+    this.trailVisibleProperty.link(visible => {
+      this.trailPath.visible = visible;
+    });
+
     // Pivot
     this.pivotNode = new Circle(8, {
-      fill: "#333",
-      stroke: "#000",
+      fill: ClassicalMechanicsColors.pivotFillColorProperty,
+      stroke: ClassicalMechanicsColors.pivotStrokeColorProperty,
       lineWidth: 2,
     });
     this.pivotNode.center = this.pivotPoint;
@@ -64,7 +72,7 @@ export class DoublePendulumScreenView extends ScreenView {
 
     // Rod 1
     this.rod1Node = new Line(0, 0, 0, 0, {
-      stroke: "#E74C3C",
+      stroke: ClassicalMechanicsColors.mass1FillColorProperty,
       lineWidth: 4,
       lineCap: "round",
     });
@@ -72,7 +80,7 @@ export class DoublePendulumScreenView extends ScreenView {
 
     // Rod 2
     this.rod2Node = new Line(0, 0, 0, 0, {
-      stroke: "#3498DB",
+      stroke: ClassicalMechanicsColors.mass2FillColorProperty,
       lineWidth: 4,
       lineCap: "round",
     });
@@ -80,8 +88,8 @@ export class DoublePendulumScreenView extends ScreenView {
 
     // Bob 1
     this.bob1Node = new Circle(15, {
-      fill: "#E74C3C",
-      stroke: "#C0392B",
+      fill: ClassicalMechanicsColors.mass1FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
     });
@@ -89,8 +97,8 @@ export class DoublePendulumScreenView extends ScreenView {
 
     // Bob 2
     this.bob2Node = new Circle(15, {
-      fill: "#3498DB",
-      stroke: "#2C3E50",
+      fill: ClassicalMechanicsColors.mass2FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
     });
@@ -152,16 +160,20 @@ export class DoublePendulumScreenView extends ScreenView {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
-    // Reset button
-    const resetButton = new ResetAllButton({
-      listener: () => {
-        this.model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - 10,
-      bottom: this.layoutBounds.maxY - 10,
+    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    this.setupCommonControls();
+
+    // Add additional keyboard shortcut for trail toggle
+    const trailKeyboardListener = new KeyboardListener({
+      keys: ['t'],
+      fire: (event, keysPressed) => {
+        if (keysPressed === 't') {
+          // Toggle trail visibility with T key
+          this.trailVisibleProperty.value = !this.trailVisibleProperty.value;
+        }
+      }
     });
-    this.addChild(resetButton);
+    this.addInputListener(trailKeyboardListener);
 
     // Initial visualization
     this.updateVisualization();
@@ -251,8 +263,8 @@ export class DoublePendulumScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,

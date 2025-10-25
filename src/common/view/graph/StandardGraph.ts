@@ -16,6 +16,7 @@ import { Panel } from 'scenerystack/sun';
 import { Shape } from 'scenerystack/kite';
 import { ReadOnlyProperty } from 'scenerystack';
 import GraphDataSet from './GraphDataSet';
+import ClassicalMechanicsColors from '../../../ClassicalMechanicsColors.js';
 
 /**
  * StandardGraph displays a single GraphDataSet as an X-Y plot using bamboo.
@@ -51,37 +52,37 @@ export default class StandardGraph extends Panel {
 
     // Create background rectangle
     const chartRectangle = new ChartRectangle(chartTransform, {
-      fill: 'white',
-      stroke: 'black',
+      fill: ClassicalMechanicsColors.graphBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.graphBorderColorProperty,
     });
 
     // Create grid lines
     const gridLineSet = new GridLineSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      stroke: 'lightgray',
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
     const verticalGridLineSet = new GridLineSet(chartTransform, Orientation.VERTICAL, 1, {
-      stroke: 'lightgray',
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
 
     // Create axes
     const xAxis = new AxisLine(chartTransform, Orientation.HORIZONTAL, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
     const yAxis = new AxisLine(chartTransform, Orientation.VERTICAL, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
 
     // Create tick marks
     const xTickMarks = new TickMarkSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
     const yTickMarks = new TickMarkSet(chartTransform, Orientation.VERTICAL, 1, {
-      stroke: 'black',
+      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
       lineWidth: 1,
     });
 
@@ -90,7 +91,7 @@ export default class StandardGraph extends Panel {
       createLabel: (value: number) =>
         new Text(value.toFixed(1), {
           fontSize: 12,
-          fill: 'black',
+          fill: ClassicalMechanicsColors.graphLabelColorProperty,
           maxWidth: 40,
         }),
     });
@@ -98,14 +99,14 @@ export default class StandardGraph extends Panel {
       createLabel: (value: number) =>
         new Text(value.toFixed(1), {
           fontSize: 12,
-          fill: 'black',
+          fill: ClassicalMechanicsColors.graphLabelColorProperty,
           maxWidth: 45,
         }),
     });
 
     // Create line plot wrapped in a clipped container to prevent overflow beyond chart
     const linePlot = new LinePlot(chartTransform, dataSet.getDataPoints(), {
-      stroke: dataSet.color,
+      stroke: dataSet.colorProperty,
       lineWidth: dataSet.lineWidth,
     });
 
@@ -115,10 +116,10 @@ export default class StandardGraph extends Panel {
     });
 
     // Create labels with translatable string properties
-    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: 'black' });
+    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: ClassicalMechanicsColors.graphLabelColorProperty });
     const yLabelText = new Text(yLabelStringProperty, {
       fontSize: 14,
-      fill: 'black',
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
       rotation: -Math.PI / 2,
     });
 
@@ -159,8 +160,8 @@ export default class StandardGraph extends Panel {
 
     // Create panel with fixed size
     super(contentNode, {
-      fill: 'rgb(230, 230, 230)',
-      stroke: 'gray',
+      fill: ClassicalMechanicsColors.graphPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.graphPanelStrokeColorProperty,
       lineWidth: 1,
       cornerRadius: 5,
       xMargin: 10,
