@@ -5,7 +5,7 @@
 
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
-import { Circle, Rectangle, Line, VBox, Node } from "scenerystack/scenery";
+import { Circle, Rectangle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
 import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
@@ -102,6 +102,19 @@ export class SingleSpringScreenView extends ScreenView {
       bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
+
+    // Add keyboard shortcuts for accessibility
+    const keyboardListener = new KeyboardListener({
+      keys: ['r'],
+      fire: (event, keysPressed) => {
+        if (keysPressed === 'r') {
+          // Reset simulation with R key
+          this.model.reset();
+          this.reset();
+        }
+      }
+    });
+    this.addInputListener(keyboardListener);
 
     // Initial visualization
     this.updateVisualization(this.model.positionProperty.value);

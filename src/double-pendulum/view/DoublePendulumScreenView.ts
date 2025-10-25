@@ -5,7 +5,7 @@
 
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { DoublePendulumModel } from "../model/DoublePendulumModel.js";
-import { Circle, Line, VBox, Node, Path } from "scenerystack/scenery";
+import { Circle, Line, VBox, Node, Path, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
 import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
@@ -13,6 +13,7 @@ import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 export class DoublePendulumScreenView extends ScreenView {
@@ -27,6 +28,7 @@ export class DoublePendulumScreenView extends ScreenView {
   private readonly modelViewTransform: ModelViewTransform2;
   private readonly trailPoints: Vector2[] = [];
   private readonly maxTrailPoints: number = 500;
+  private readonly trailVisibleProperty: BooleanProperty;
 
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
     super(options);
@@ -54,6 +56,12 @@ export class DoublePendulumScreenView extends ScreenView {
       opacity: 0.3,
     });
     this.addChild(this.trailPath);
+
+    // Trail visibility property
+    this.trailVisibleProperty = new BooleanProperty(true);
+    this.trailVisibleProperty.link(visible => {
+      this.trailPath.visible = visible;
+    });
 
     // Pivot
     this.pivotNode = new Circle(8, {
@@ -164,6 +172,22 @@ export class DoublePendulumScreenView extends ScreenView {
       bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
+
+    // Add keyboard shortcuts for accessibility
+    const keyboardListener = new KeyboardListener({
+      keys: ['r', 't'],
+      fire: (event, keysPressed) => {
+        if (keysPressed === 'r') {
+          // Reset simulation with R key
+          this.model.reset();
+          this.reset();
+        } else if (keysPressed === 't') {
+          // Toggle trail visibility with T key
+          this.trailVisibleProperty.value = !this.trailVisibleProperty.value;
+        }
+      }
+    });
+    this.addInputListener(keyboardListener);
 
     // Initial visualization
     this.updateVisualization();

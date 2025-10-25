@@ -5,7 +5,7 @@
 
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
-import { Rectangle, Line, VBox, Node } from "scenerystack/scenery";
+import { Rectangle, Line, VBox, Node, KeyboardListener } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
 import { NumberControl, ResetAllButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
@@ -134,6 +134,19 @@ export class DoubleSpringScreenView extends ScreenView {
       bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
+
+    // Add keyboard shortcuts for accessibility
+    const keyboardListener = new KeyboardListener({
+      keys: ['r'],
+      fire: (event, keysPressed) => {
+        if (keysPressed === 'r') {
+          // Reset simulation with R key
+          this.model.reset();
+          this.reset();
+        }
+      }
+    });
+    this.addInputListener(keyboardListener);
 
     // Initial visualization
     this.updateVisualization();
