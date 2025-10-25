@@ -8,15 +8,15 @@ import {
   TickLabelSet,
   TickMarkSet,
   AxisLine,
-} from 'scenerystack/bamboo';
-import { Range, Bounds2 } from 'scenerystack/dot';
-import { Orientation } from 'scenerystack/phet-core';
-import { Node, Text, HBox, Line } from 'scenerystack/scenery';
-import { Panel } from 'scenerystack/sun';
-import { Shape } from 'scenerystack/kite';
-import { ReadOnlyProperty } from 'scenerystack';
-import GraphDataSet from './GraphDataSet';
-import ClassicalMechanicsColors from '../../../ClassicalMechanicsColors.js';
+} from "scenerystack/bamboo";
+import { Range, Bounds2 } from "scenerystack/dot";
+import { Orientation } from "scenerystack/phet-core";
+import { Node, Text, HBox, Line } from "scenerystack/scenery";
+import { Panel } from "scenerystack/sun";
+import { Shape } from "scenerystack/kite";
+import { ReadOnlyProperty } from "scenerystack";
+import GraphDataSet from "./GraphDataSet";
+import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 
 /**
  * MultiGraph displays two GraphDataSets with independent Y-scales but a common X-axis.
@@ -50,7 +50,7 @@ export default class MultiGraph extends Panel {
     xLabelStringProperty: ReadOnlyProperty<string>,
     legend1StringProperty: ReadOnlyProperty<string>,
     legend2StringProperty: ReadOnlyProperty<string>,
-    timeWindow: number = 10
+    timeWindow: number = 10,
   ) {
     // Create two chart transforms - they share the same X range but have independent Y ranges
     const chartTransform1 = new ChartTransform({
@@ -74,10 +74,15 @@ export default class MultiGraph extends Panel {
     });
 
     // Create grid lines (use first transform)
-    const gridLineSet = new GridLineSet(chartTransform1, Orientation.HORIZONTAL, 0.5, {
-      stroke: ClassicalMechanicsColors.graphGridColorProperty,
-      lineWidth: 0.5,
-    });
+    const gridLineSet = new GridLineSet(
+      chartTransform1,
+      Orientation.HORIZONTAL,
+      0.5,
+      {
+        stroke: ClassicalMechanicsColors.graphGridColorProperty,
+        lineWidth: 0.5,
+      },
+    );
     const verticalGridLineSet = new GridLineSet(
       chartTransform1,
       Orientation.VERTICAL,
@@ -85,7 +90,7 @@ export default class MultiGraph extends Panel {
       {
         stroke: ClassicalMechanicsColors.graphGridColorProperty,
         lineWidth: 0.5,
-      }
+      },
     );
 
     // Create X-axis (shared)
@@ -106,54 +111,84 @@ export default class MultiGraph extends Panel {
     });
 
     // Create tick marks for X-axis
-    const xTickMarks = new TickMarkSet(chartTransform1, Orientation.HORIZONTAL, 1, {
-      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
-      lineWidth: 1,
-    });
+    const xTickMarks = new TickMarkSet(
+      chartTransform1,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphAxisColorProperty,
+        lineWidth: 1,
+      },
+    );
 
     // Create tick marks for Y-axes (in matching colors)
-    const yTickMarks1 = new TickMarkSet(chartTransform1, Orientation.VERTICAL, 0.5, {
-      stroke: dataSet1.colorProperty,
-      lineWidth: 1,
-      edge: 'min', // Left side
-    });
+    const yTickMarks1 = new TickMarkSet(
+      chartTransform1,
+      Orientation.VERTICAL,
+      0.5,
+      {
+        stroke: dataSet1.colorProperty,
+        lineWidth: 1,
+        edge: "min", // Left side
+      },
+    );
 
-    const yTickMarks2 = new TickMarkSet(chartTransform2, Orientation.VERTICAL, 0.5, {
-      stroke: dataSet2.colorProperty,
-      lineWidth: 1,
-      edge: 'max', // Right side
-    });
+    const yTickMarks2 = new TickMarkSet(
+      chartTransform2,
+      Orientation.VERTICAL,
+      0.5,
+      {
+        stroke: dataSet2.colorProperty,
+        lineWidth: 1,
+        edge: "max", // Right side
+      },
+    );
 
     // Create tick labels for X-axis with maxWidth to prevent overflow
-    const xTickLabels = new TickLabelSet(chartTransform1, Orientation.HORIZONTAL, 1, {
-      createLabel: (value: number) =>
-        new Text(value.toFixed(1), {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.graphLabelColorProperty,
-          maxWidth: 40,
-        }),
-    });
+    const xTickLabels = new TickLabelSet(
+      chartTransform1,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        createLabel: (value: number) =>
+          new Text(value.toFixed(1), {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.graphLabelColorProperty,
+            maxWidth: 40,
+          }),
+      },
+    );
 
     // Create tick labels for Y-axes (in matching colors, positioned on left/right)
-    const yTickLabels1 = new TickLabelSet(chartTransform1, Orientation.VERTICAL, 0.5, {
-      edge: 'min',
-      createLabel: (value: number) =>
-        new Text(value.toFixed(2), {
-          fontSize: 12,
-          fill: dataSet1.colorProperty,
-          maxWidth: 50,
-        }),
-    });
+    const yTickLabels1 = new TickLabelSet(
+      chartTransform1,
+      Orientation.VERTICAL,
+      0.5,
+      {
+        edge: "min",
+        createLabel: (value: number) =>
+          new Text(value.toFixed(2), {
+            fontSize: 12,
+            fill: dataSet1.colorProperty,
+            maxWidth: 50,
+          }),
+      },
+    );
 
-    const yTickLabels2 = new TickLabelSet(chartTransform2, Orientation.VERTICAL, 0.5, {
-      edge: 'max',
-      createLabel: (value: number) =>
-        new Text(value.toFixed(2), {
-          fontSize: 12,
-          fill: dataSet2.colorProperty,
-          maxWidth: 50,
-        }),
-    });
+    const yTickLabels2 = new TickLabelSet(
+      chartTransform2,
+      Orientation.VERTICAL,
+      0.5,
+      {
+        edge: "max",
+        createLabel: (value: number) =>
+          new Text(value.toFixed(2), {
+            fontSize: 12,
+            fill: dataSet2.colorProperty,
+            maxWidth: 50,
+          }),
+      },
+    );
 
     // Create line plots
     const linePlot1 = new LinePlot(chartTransform1, dataSet1.getDataPoints(), {
@@ -173,7 +208,10 @@ export default class MultiGraph extends Panel {
     });
 
     // Create labels with translatable string properties
-    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: ClassicalMechanicsColors.graphLabelColorProperty });
+    const xLabelText = new Text(xLabelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
+    });
 
     // Create legend with translatable string properties
     const legendLine1 = new Line(0, 1.5, 20, 1.5, {
@@ -188,16 +226,28 @@ export default class MultiGraph extends Panel {
     const legend = new HBox({
       children: [
         new HBox({
-          children: [legendLine1, new Text(legend1StringProperty, { fontSize: 12, fill: dataSet1.colorProperty })],
+          children: [
+            legendLine1,
+            new Text(legend1StringProperty, {
+              fontSize: 12,
+              fill: dataSet1.colorProperty,
+            }),
+          ],
           spacing: 5,
         }),
         new HBox({
-          children: [legendLine2, new Text(legend2StringProperty, { fontSize: 12, fill: dataSet2.colorProperty })],
+          children: [
+            legendLine2,
+            new Text(legend2StringProperty, {
+              fontSize: 12,
+              fill: dataSet2.colorProperty,
+            }),
+          ],
           spacing: 5,
         }),
       ],
       spacing: 15,
-      align: 'center',
+      align: "center",
     });
 
     // Assemble the chart
@@ -209,7 +259,7 @@ export default class MultiGraph extends Panel {
         xAxis,
         yAxis1,
         yAxis2,
-        clippedPlots,  // Use clipped container instead of individual plots
+        clippedPlots, // Use clipped container instead of individual plots
         xTickMarks,
         yTickMarks1,
         yTickMarks2,
@@ -233,10 +283,10 @@ export default class MultiGraph extends Panel {
       // Force fixed local bounds to prevent panel from resizing
       // MultiGraph has tick labels on both left and right
       localBounds: new Bounds2(
-        -60,  // left margin for left Y labels
-        -10,  // top margin
-        width + 60,  // right margin for right Y labels
-        height + 60  // bottom margin for X label and legend
+        -60, // left margin for left Y labels
+        -10, // top margin
+        width + 60, // right margin for right Y labels
+        height + 60, // bottom margin for X label and legend
       ),
     });
 
@@ -280,7 +330,7 @@ export default class MultiGraph extends Panel {
       const yMargin = Math.max(yRange * extraMargin, minRange);
 
       this.chartTransform1.setModelYRange(
-        new Range(bounds1.yMin - yMargin, bounds1.yMax + yMargin)
+        new Range(bounds1.yMin - yMargin, bounds1.yMax + yMargin),
       );
     }
 
@@ -293,7 +343,7 @@ export default class MultiGraph extends Panel {
       const yMargin = Math.max(yRange * extraMargin, minRange);
 
       this.chartTransform2.setModelYRange(
-        new Range(bounds2.yMin - yMargin, bounds2.yMax + yMargin)
+        new Range(bounds2.yMin - yMargin, bounds2.yMax + yMargin),
       );
     }
 

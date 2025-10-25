@@ -132,7 +132,7 @@ export class DoubleSpringModel {
       state,
       this.getDerivatives.bind(this),
       this.timeProperty.value,
-      adjustedDt
+      adjustedDt,
     );
 
     // Update properties
@@ -178,7 +178,7 @@ export class DoubleSpringModel {
   private getDerivatives(
     state: number[],
     derivatives: number[],
-    _time: number,
+    _: number,
   ): void {
     const x1 = state[0];
     const v1 = state[1];

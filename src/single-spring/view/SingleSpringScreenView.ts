@@ -5,7 +5,7 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
-import { Circle, Rectangle, Line, VBox, Node } from "scenerystack/scenery";
+import { Rectangle, Line, VBox, Node } from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";

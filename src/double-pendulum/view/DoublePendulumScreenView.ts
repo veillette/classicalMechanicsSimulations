@@ -5,7 +5,14 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoublePendulumModel } from "../model/DoublePendulumModel.js";
-import { Circle, Line, VBox, Node, Path, KeyboardListener } from "scenerystack/scenery";
+import {
+  Circle,
+  Line,
+  VBox,
+  Node,
+  Path,
+  KeyboardListener,
+} from "scenerystack/scenery";
 import { Panel } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
@@ -57,7 +64,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Trail visibility property
     this.trailVisibleProperty = new BooleanProperty(true);
-    this.trailVisibleProperty.link(visible => {
+    this.trailVisibleProperty.link((visible) => {
       this.trailPath.visible = visible;
     });
 
@@ -165,13 +172,13 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Add additional keyboard shortcut for trail toggle
     const trailKeyboardListener = new KeyboardListener({
-      keys: ['t'],
+      keys: ["t"],
       fire: (event, keysPressed) => {
-        if (keysPressed === 't') {
+        if (keysPressed === "t") {
           // Toggle trail visibility with T key
           this.trailVisibleProperty.value = !this.trailVisibleProperty.value;
         }
-      }
+      },
     });
     this.addInputListener(trailKeyboardListener);
 

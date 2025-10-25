@@ -8,15 +8,15 @@ import {
   TickLabelSet,
   TickMarkSet,
   AxisLine,
-} from 'scenerystack/bamboo';
-import { Range, Bounds2 } from 'scenerystack/dot';
-import { Orientation } from 'scenerystack/phet-core';
-import { Node, Text, HBox, Line } from 'scenerystack/scenery';
-import { Panel } from 'scenerystack/sun';
-import { Shape } from 'scenerystack/kite';
-import { ReadOnlyProperty } from 'scenerystack';
-import GraphDataSet from './GraphDataSet';
-import ClassicalMechanicsColors from '../../../ClassicalMechanicsColors.js';
+} from "scenerystack/bamboo";
+import { Range, Bounds2 } from "scenerystack/dot";
+import { Orientation } from "scenerystack/phet-core";
+import { Node, Text, HBox, Line } from "scenerystack/scenery";
+import { Panel } from "scenerystack/sun";
+import { Shape } from "scenerystack/kite";
+import { ReadOnlyProperty } from "scenerystack";
+import GraphDataSet from "./GraphDataSet";
+import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 
 /**
  * TimeGraph displays multiple GraphDataSets (typically 3) with a common X-axis (typically time)
@@ -44,7 +44,7 @@ export default class TimeGraph extends Panel {
     xLabelStringProperty: ReadOnlyProperty<string>,
     yLabelStringProperty: ReadOnlyProperty<string>,
     legendLabelsStringProperties: ReadOnlyProperty<string>[],
-    timeWindow: number = 10
+    timeWindow: number = 10,
   ) {
     // Create chart transform with initial ranges
     const chartTransform = new ChartTransform({
@@ -61,14 +61,24 @@ export default class TimeGraph extends Panel {
     });
 
     // Create grid lines
-    const gridLineSet = new GridLineSet(chartTransform, Orientation.HORIZONTAL, 0.5, {
-      stroke: ClassicalMechanicsColors.graphGridColorProperty,
-      lineWidth: 0.5,
-    });
-    const verticalGridLineSet = new GridLineSet(chartTransform, Orientation.VERTICAL, 1, {
-      stroke: ClassicalMechanicsColors.graphGridColorProperty,
-      lineWidth: 0.5,
-    });
+    const gridLineSet = new GridLineSet(
+      chartTransform,
+      Orientation.HORIZONTAL,
+      0.5,
+      {
+        stroke: ClassicalMechanicsColors.graphGridColorProperty,
+        lineWidth: 0.5,
+      },
+    );
+    const verticalGridLineSet = new GridLineSet(
+      chartTransform,
+      Orientation.VERTICAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphGridColorProperty,
+        lineWidth: 0.5,
+      },
+    );
 
     // Create axes
     const xAxis = new AxisLine(chartTransform, Orientation.HORIZONTAL, {
@@ -81,32 +91,52 @@ export default class TimeGraph extends Panel {
     });
 
     // Create tick marks
-    const xTickMarks = new TickMarkSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
-      lineWidth: 1,
-    });
-    const yTickMarks = new TickMarkSet(chartTransform, Orientation.VERTICAL, 0.5, {
-      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
-      lineWidth: 1,
-    });
+    const xTickMarks = new TickMarkSet(
+      chartTransform,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphAxisColorProperty,
+        lineWidth: 1,
+      },
+    );
+    const yTickMarks = new TickMarkSet(
+      chartTransform,
+      Orientation.VERTICAL,
+      0.5,
+      {
+        stroke: ClassicalMechanicsColors.graphAxisColorProperty,
+        lineWidth: 1,
+      },
+    );
 
     // Create tick labels with maxWidth to prevent overflow
-    const xTickLabels = new TickLabelSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      createLabel: (value: number) =>
-        new Text(value.toFixed(1), {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.graphLabelColorProperty,
-          maxWidth: 40,
-        }),
-    });
-    const yTickLabels = new TickLabelSet(chartTransform, Orientation.VERTICAL, 0.5, {
-      createLabel: (value: number) =>
-        new Text(value.toFixed(2), {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.graphLabelColorProperty,
-          maxWidth: 45,
-        }),
-    });
+    const xTickLabels = new TickLabelSet(
+      chartTransform,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        createLabel: (value: number) =>
+          new Text(value.toFixed(1), {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.graphLabelColorProperty,
+            maxWidth: 40,
+          }),
+      },
+    );
+    const yTickLabels = new TickLabelSet(
+      chartTransform,
+      Orientation.VERTICAL,
+      0.5,
+      {
+        createLabel: (value: number) =>
+          new Text(value.toFixed(2), {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.graphLabelColorProperty,
+            maxWidth: 45,
+          }),
+      },
+    );
 
     // Create line plots for each data set - wrapped in a clipped node
     const linePlots: LinePlot[] = [];
@@ -125,7 +155,10 @@ export default class TimeGraph extends Panel {
     });
 
     // Create labels with translatable string properties
-    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: ClassicalMechanicsColors.graphLabelColorProperty });
+    const xLabelText = new Text(xLabelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
+    });
     const yLabelText = new Text(yLabelStringProperty, {
       fontSize: 14,
       fill: ClassicalMechanicsColors.graphLabelColorProperty,
@@ -140,7 +173,10 @@ export default class TimeGraph extends Panel {
       });
 
       return new HBox({
-        children: [legendLine, new Text(legendLabelsStringProperties[index], { fontSize: 12 })],
+        children: [
+          legendLine,
+          new Text(legendLabelsStringProperties[index], { fontSize: 12 }),
+        ],
         spacing: 5,
       });
     });
@@ -148,7 +184,7 @@ export default class TimeGraph extends Panel {
     const legend = new HBox({
       children: legendItems,
       spacing: 15,
-      align: 'center',
+      align: "center",
     });
 
     // Assemble the chart
@@ -159,7 +195,7 @@ export default class TimeGraph extends Panel {
         gridLineSet,
         xAxis,
         yAxis,
-        clippedPlots,  // Use clipped container instead of individual plots
+        clippedPlots, // Use clipped container instead of individual plots
         xTickMarks,
         yTickMarks,
         xTickLabels,
@@ -183,10 +219,10 @@ export default class TimeGraph extends Panel {
       children: [chartNode, xLabelText, yLabelText, legend],
       // Force fixed local bounds to prevent panel from resizing
       localBounds: new Bounds2(
-        -50,  // left margin for Y label
-        -10,  // top margin
-        width + 10,  // right margin
-        height + 60  // bottom margin for X label and legend
+        -50, // left margin for Y label
+        -10, // top margin
+        width + 10, // right margin
+        height + 60, // bottom margin for X label and legend
       ),
     });
 
@@ -245,14 +281,16 @@ export default class TimeGraph extends Panel {
       const minRange = 0.1;
       const yMargin = Math.max(yRange * extraMargin, minRange);
 
-      this.chartTransform.setModelYRange(new Range(yMin - yMargin, yMax + yMargin));
+      this.chartTransform.setModelYRange(
+        new Range(yMin - yMargin, yMax + yMargin),
+      );
     }
 
     // Update X range with scrolling time window
     if (currentTime > this.timeWindow) {
       // Scrolling mode: show last timeWindow seconds
       this.chartTransform.setModelXRange(
-        new Range(currentTime - this.timeWindow, currentTime)
+        new Range(currentTime - this.timeWindow, currentTime),
       );
     } else {
       // Initial mode: show from 0 to timeWindow

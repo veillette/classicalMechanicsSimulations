@@ -49,6 +49,10 @@ onReadyToLaunch(() => {
     }),
   ];
 
-  const sim = new Sim(stringManager.getTitleStringProperty(), screens, simOptions);
+  const sim = new Sim(
+    stringManager.getTitleStringProperty(),
+    screens,
+    simOptions,
+  );
   sim.start();
 });

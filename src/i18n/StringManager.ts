@@ -125,9 +125,12 @@ export class StringManager {
       valueStringProperty: this.stringProperties.graph.axis.valueStringProperty,
 
       // Legend labels
-      line1StringProperty: this.stringProperties.graph.legend.line1StringProperty,
-      line2StringProperty: this.stringProperties.graph.legend.line2StringProperty,
-      line3StringProperty: this.stringProperties.graph.legend.line3StringProperty,
+      line1StringProperty:
+        this.stringProperties.graph.legend.line1StringProperty,
+      line2StringProperty:
+        this.stringProperties.graph.legend.line2StringProperty,
+      line3StringProperty:
+        this.stringProperties.graph.legend.line3StringProperty,
 
       // Pendulum-specific labels
       angleAndVelocityStringProperty:

@@ -9,6 +9,22 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["dist/", "node_modules/", "myphysicslab/", "reference-dopplerEffect"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+  {
+    ignores: [
+      "dist/",
+      "node_modules/",
+      "myphysicslab/",
+      "reference-dopplerEffect",
+    ],
   },
 ];

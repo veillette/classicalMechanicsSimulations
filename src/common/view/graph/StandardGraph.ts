@@ -8,15 +8,15 @@ import {
   TickLabelSet,
   TickMarkSet,
   AxisLine,
-} from 'scenerystack/bamboo';
-import { Range, Bounds2 } from 'scenerystack/dot';
-import { Orientation } from 'scenerystack/phet-core';
-import { Node, Text} from 'scenerystack/scenery';
-import { Panel } from 'scenerystack/sun';
-import { Shape } from 'scenerystack/kite';
-import { ReadOnlyProperty } from 'scenerystack';
-import GraphDataSet from './GraphDataSet';
-import ClassicalMechanicsColors from '../../../ClassicalMechanicsColors.js';
+} from "scenerystack/bamboo";
+import { Range, Bounds2 } from "scenerystack/dot";
+import { Orientation } from "scenerystack/phet-core";
+import { Node, Text } from "scenerystack/scenery";
+import { Panel } from "scenerystack/sun";
+import { Shape } from "scenerystack/kite";
+import { ReadOnlyProperty } from "scenerystack";
+import GraphDataSet from "./GraphDataSet";
+import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 
 /**
  * StandardGraph displays a single GraphDataSet as an X-Y plot using bamboo.
@@ -40,7 +40,7 @@ export default class StandardGraph extends Panel {
     width: number,
     height: number,
     xLabelStringProperty: ReadOnlyProperty<string>,
-    yLabelStringProperty: ReadOnlyProperty<string>
+    yLabelStringProperty: ReadOnlyProperty<string>,
   ) {
     // Create chart transform with initial ranges
     const chartTransform = new ChartTransform({
@@ -57,14 +57,24 @@ export default class StandardGraph extends Panel {
     });
 
     // Create grid lines
-    const gridLineSet = new GridLineSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      stroke: ClassicalMechanicsColors.graphGridColorProperty,
-      lineWidth: 0.5,
-    });
-    const verticalGridLineSet = new GridLineSet(chartTransform, Orientation.VERTICAL, 1, {
-      stroke: ClassicalMechanicsColors.graphGridColorProperty,
-      lineWidth: 0.5,
-    });
+    const gridLineSet = new GridLineSet(
+      chartTransform,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphGridColorProperty,
+        lineWidth: 0.5,
+      },
+    );
+    const verticalGridLineSet = new GridLineSet(
+      chartTransform,
+      Orientation.VERTICAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphGridColorProperty,
+        lineWidth: 0.5,
+      },
+    );
 
     // Create axes
     const xAxis = new AxisLine(chartTransform, Orientation.HORIZONTAL, {
@@ -77,32 +87,52 @@ export default class StandardGraph extends Panel {
     });
 
     // Create tick marks
-    const xTickMarks = new TickMarkSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
-      lineWidth: 1,
-    });
-    const yTickMarks = new TickMarkSet(chartTransform, Orientation.VERTICAL, 1, {
-      stroke: ClassicalMechanicsColors.graphAxisColorProperty,
-      lineWidth: 1,
-    });
+    const xTickMarks = new TickMarkSet(
+      chartTransform,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphAxisColorProperty,
+        lineWidth: 1,
+      },
+    );
+    const yTickMarks = new TickMarkSet(
+      chartTransform,
+      Orientation.VERTICAL,
+      1,
+      {
+        stroke: ClassicalMechanicsColors.graphAxisColorProperty,
+        lineWidth: 1,
+      },
+    );
 
     // Create tick labels with maxWidth to prevent overflow
-    const xTickLabels = new TickLabelSet(chartTransform, Orientation.HORIZONTAL, 1, {
-      createLabel: (value: number) =>
-        new Text(value.toFixed(1), {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.graphLabelColorProperty,
-          maxWidth: 40,
-        }),
-    });
-    const yTickLabels = new TickLabelSet(chartTransform, Orientation.VERTICAL, 1, {
-      createLabel: (value: number) =>
-        new Text(value.toFixed(1), {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.graphLabelColorProperty,
-          maxWidth: 45,
-        }),
-    });
+    const xTickLabels = new TickLabelSet(
+      chartTransform,
+      Orientation.HORIZONTAL,
+      1,
+      {
+        createLabel: (value: number) =>
+          new Text(value.toFixed(1), {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.graphLabelColorProperty,
+            maxWidth: 40,
+          }),
+      },
+    );
+    const yTickLabels = new TickLabelSet(
+      chartTransform,
+      Orientation.VERTICAL,
+      1,
+      {
+        createLabel: (value: number) =>
+          new Text(value.toFixed(1), {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.graphLabelColorProperty,
+            maxWidth: 45,
+          }),
+      },
+    );
 
     // Create line plot wrapped in a clipped container to prevent overflow beyond chart
     const linePlot = new LinePlot(chartTransform, dataSet.getDataPoints(), {
@@ -116,7 +146,10 @@ export default class StandardGraph extends Panel {
     });
 
     // Create labels with translatable string properties
-    const xLabelText = new Text(xLabelStringProperty, { fontSize: 14, fill: ClassicalMechanicsColors.graphLabelColorProperty });
+    const xLabelText = new Text(xLabelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
+    });
     const yLabelText = new Text(yLabelStringProperty, {
       fontSize: 14,
       fill: ClassicalMechanicsColors.graphLabelColorProperty,
@@ -131,7 +164,7 @@ export default class StandardGraph extends Panel {
         gridLineSet,
         xAxis,
         yAxis,
-        clippedPlot,  // Use clipped container instead of raw linePlot
+        clippedPlot, // Use clipped container instead of raw linePlot
         xTickMarks,
         yTickMarks,
         xTickLabels,
@@ -151,10 +184,10 @@ export default class StandardGraph extends Panel {
       children: [chartNode, xLabelText, yLabelText],
       // Force fixed local bounds to prevent panel from resizing
       localBounds: new Bounds2(
-        -50,  // left margin for Y label
-        -10,  // top margin
-        width + 10,  // right margin
-        height + 40  // bottom margin for X label
+        -50, // left margin for Y label
+        -10, // top margin
+        width + 10, // right margin
+        height + 40, // bottom margin for X label
       ),
     });
 
@@ -198,10 +231,10 @@ export default class StandardGraph extends Panel {
       const yMargin = Math.max(yRange * extraMargin, minRange);
 
       this.chartTransform.setModelXRange(
-        new Range(bounds.xMin - xMargin, bounds.xMax + xMargin)
+        new Range(bounds.xMin - xMargin, bounds.xMax + xMargin),
       );
       this.chartTransform.setModelYRange(
-        new Range(bounds.yMin - yMargin, bounds.yMax + yMargin)
+        new Range(bounds.yMin - yMargin, bounds.yMax + yMargin),
       );
     }
   }
