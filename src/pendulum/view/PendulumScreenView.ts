@@ -102,28 +102,28 @@ export class PendulumScreenView extends ScreenView {
     this.angleDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.angleProperty,
-      'lime',
+      ClassicalMechanicsColors.graphLine1ColorProperty,
       2000
     );
 
     this.angularVelocityDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.angularVelocityProperty,
-      'red',
+      ClassicalMechanicsColors.graphLine2ColorProperty,
       2000
     );
 
     this.kineticEnergyDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.kineticEnergyProperty,
-      'blue',
+      ClassicalMechanicsColors.graphLine3ColorProperty,
       2000
     );
 
     this.potentialEnergyDataSet = new GraphDataSet(
       this.model.timeProperty,
       this.model.potentialEnergyProperty,
-      'orange',
+      ClassicalMechanicsColors.graphLine4ColorProperty,
       2000
     );
 
