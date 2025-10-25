@@ -14,6 +14,7 @@ import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 export class SingleSpringScreenView extends ScreenView {
   private readonly model: SingleSpringModel;
@@ -45,7 +46,7 @@ export class SingleSpringScreenView extends ScreenView {
       this.fixedPoint.x - 20,
       this.layoutBounds.maxY,
       {
-        stroke: "#666",
+        stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
       },
     );
@@ -55,16 +56,14 @@ export class SingleSpringScreenView extends ScreenView {
     this.springNode = new SpringNode({
       loops: 12,
       radius: 15,
-      frontColor: "#888",
-      backColor: "#444",
       lineWidth: 3,
     });
     this.addChild(this.springNode);
 
     // Mass block
     this.massNode = new Rectangle(-25, -25, 50, 50, {
-      fill: "#4A90E2",
-      stroke: "#2E5C8A",
+      fill: ClassicalMechanicsColors.mass1FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
@@ -163,8 +162,8 @@ export class SingleSpringScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,

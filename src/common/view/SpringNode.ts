@@ -4,12 +4,14 @@
  */
 
 import { Node, Path, type NodeOptions } from "scenerystack/scenery";
+import { Color, ReadOnlyProperty } from "scenerystack";
 import { Shape } from "scenerystack/kite";
 import { Vector2 } from "scenerystack/dot";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 type SpringNodeOptions = NodeOptions & {
-  frontColor?: string;
-  backColor?: string;
+  frontColorProperty?: ReadOnlyProperty<Color>;
+  backColorProperty?: ReadOnlyProperty<Color>;
   lineWidth?: number;
   loops?: number;
   radius?: number;
@@ -30,13 +32,13 @@ export class SpringNode extends Node {
     this.loops = options?.loops ?? 10;
     this.radius = options?.radius ?? 10;
 
-    const frontColor = options?.frontColor ?? "#888888";
-    const backColor = options?.backColor ?? "#444444";
+    const frontColorProperty = options?.frontColorProperty ?? ClassicalMechanicsColors.springFrontColorProperty;
+    const backColorProperty = options?.backColorProperty ?? ClassicalMechanicsColors.springBackColorProperty;
     const lineWidth = options?.lineWidth ?? 3;
 
     // Back part of spring (goes behind)
     this.backPath = new Path(null, {
-      stroke: backColor,
+      stroke: backColorProperty,
       lineWidth: lineWidth,
       lineCap: "round",
       lineJoin: "round",
@@ -44,7 +46,7 @@ export class SpringNode extends Node {
 
     // Front part of spring (goes in front)
     this.frontPath = new Path(null, {
-      stroke: frontColor,
+      stroke: frontColorProperty,
       lineWidth: lineWidth,
       lineCap: "round",
       lineJoin: "round",

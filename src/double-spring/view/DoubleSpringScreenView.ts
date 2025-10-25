@@ -13,6 +13,7 @@ import { SpringNode } from "../../common/view/SpringNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 export class DoubleSpringScreenView extends ScreenView {
   private readonly model: DoubleSpringModel;
@@ -46,7 +47,7 @@ export class DoubleSpringScreenView extends ScreenView {
       this.fixedPoint.x - 20,
       this.layoutBounds.maxY,
       {
-        stroke: "#666",
+        stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
       },
     );
@@ -56,8 +57,6 @@ export class DoubleSpringScreenView extends ScreenView {
     this.spring1Node = new SpringNode({
       loops: 10,
       radius: 12,
-      frontColor: "#E74C3C",
-      backColor: "#C0392B",
       lineWidth: 3,
     });
     this.addChild(this.spring1Node);
@@ -66,16 +65,14 @@ export class DoubleSpringScreenView extends ScreenView {
     this.spring2Node = new SpringNode({
       loops: 10,
       radius: 12,
-      frontColor: "#3498DB",
-      backColor: "#2C3E50",
       lineWidth: 3,
     });
     this.addChild(this.spring2Node);
 
     // Mass 1
     this.mass1Node = new Rectangle(-20, -20, 40, 40, {
-      fill: "#E74C3C",
-      stroke: "#C0392B",
+      fill: ClassicalMechanicsColors.mass1FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
@@ -84,8 +81,8 @@ export class DoubleSpringScreenView extends ScreenView {
 
     // Mass 2
     this.mass2Node = new Rectangle(-20, -20, 40, 40, {
-      fill: "#3498DB",
-      stroke: "#2C3E50",
+      fill: ClassicalMechanicsColors.mass2FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
@@ -207,8 +204,8 @@ export class DoubleSpringScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,

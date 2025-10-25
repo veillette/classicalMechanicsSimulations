@@ -13,6 +13,7 @@ import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { GraphDataSet, TimeGraph, MultiGraph } from "../../common/view/graph/index.js";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 export class PendulumScreenView extends ScreenView {
   private readonly model: PendulumModel;
@@ -51,8 +52,8 @@ export class PendulumScreenView extends ScreenView {
 
     // Pivot
     this.pivotNode = new Circle(8, {
-      fill: "#333",
-      stroke: "#000",
+      fill: ClassicalMechanicsColors.pivotFillColorProperty,
+      stroke: ClassicalMechanicsColors.pivotStrokeColorProperty,
       lineWidth: 2,
     });
     this.pivotNode.center = this.pivotPoint;
@@ -60,7 +61,7 @@ export class PendulumScreenView extends ScreenView {
 
     // Rod
     this.rodNode = new Line(0, 0, 0, 0, {
-      stroke: "#666",
+      stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
       lineWidth: 4,
       lineCap: "round",
     });
@@ -68,8 +69,8 @@ export class PendulumScreenView extends ScreenView {
 
     // Bob
     this.bobNode = new Circle(20, {
-      fill: "#E67E22",
-      stroke: "#D35400",
+      fill: ClassicalMechanicsColors.mass2FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
     });
@@ -239,8 +240,8 @@ export class PendulumScreenView extends ScreenView {
       {
         xMargin: 10,
         yMargin: 10,
-        fill: "rgba(255, 255, 255, 0.8)",
-        stroke: "#ccc",
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,
