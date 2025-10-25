@@ -8,7 +8,7 @@ import {
   BooleanProperty,
   EnumerationProperty,
 } from "scenerystack/axon";
-import { RungeKuttaSolver, type DerivativeFunction } from "./RungeKuttaSolver.js";
+import { RungeKuttaSolver } from "./RungeKuttaSolver.js";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 
 /**
