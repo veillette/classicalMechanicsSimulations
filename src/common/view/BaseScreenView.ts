@@ -116,9 +116,9 @@ export abstract class BaseScreenView<
 
   /**
    * Step method that subclasses should override to update view-specific elements.
-   * @param dt - Time step in seconds (can be negative for backward stepping)
+   * @param _dt - Time step in seconds (can be negative for backward stepping)
    */
-  public step(dt: number): void {
+  public step(_dt: number): void {
     // Subclasses should override to update their visualizations
   }
 }

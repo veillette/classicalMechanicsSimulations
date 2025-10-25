@@ -18,13 +18,10 @@ import {
   NumberProperty,
   DerivedProperty,
   type TReadOnlyProperty,
-  BooleanProperty,
-  EnumerationProperty,
 } from "scenerystack/axon";
-import { RungeKuttaSolver } from "../../common/model/RungeKuttaSolver.js";
-import { TimeSpeed } from "scenerystack/scenery-phet";
+import { BaseModel } from "../../common/model/BaseModel.js";
 
-export class DoublePendulumModel {
+export class DoublePendulumModel extends BaseModel {
   // State variables
   public readonly angle1Property: NumberProperty;
   public readonly angularVelocity1Property: NumberProperty;
@@ -42,16 +39,8 @@ export class DoublePendulumModel {
   // Computed values
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
-  // Time control properties
-  public readonly isPlayingProperty: BooleanProperty;
-  public readonly timeSpeedProperty: EnumerationProperty<TimeSpeed>;
-
-  private readonly solver: RungeKuttaSolver;
-  public readonly timeProperty: NumberProperty;
-
   public constructor() {
-    // Initialize time
-    this.timeProperty = new NumberProperty(0.0); // seconds
+    super();
 
     // Initialize state (both start at 90 degrees)
     this.angle1Property = new NumberProperty(Math.PI / 2); // radians
@@ -96,105 +85,37 @@ export class DoublePendulumModel {
         return ke + pe;
       },
     );
-
-    // Time control properties
-    this.isPlayingProperty = new BooleanProperty(true);
-    this.timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
-
-    this.solver = new RungeKuttaSolver();
-  }
-
-  public reset(): void {
-    this.angle1Property.reset();
-    this.angularVelocity1Property.reset();
-    this.angle2Property.reset();
-    this.angularVelocity2Property.reset();
-    this.length1Property.reset();
-    this.length2Property.reset();
-    this.mass1Property.reset();
-    this.mass2Property.reset();
-    this.gravityProperty.reset();
-    this.dampingProperty.reset();
-    this.timeProperty.reset();
-    this.isPlayingProperty.reset();
-    this.timeSpeedProperty.reset();
   }
 
   /**
-   * Step the simulation forward in time.
-   * @param dt - Time step in seconds (can be negative for backward stepping)
-   * @param forceStep - If true, step even when paused (for manual stepping)
+   * Get the current state vector for physics integration.
+   * @returns [angle1, angularVelocity1, angle2, angularVelocity2]
    */
-  public step(dt: number, forceStep: boolean = false): void {
-    // Only step if playing (unless forced for manual stepping)
-    if (!this.isPlayingProperty.value && !forceStep) {
-      return;
-    }
-
-    // Apply time speed multiplier (only when auto-playing, not for manual steps)
-    const timeSpeedMultiplier = forceStep
-      ? 1.0
-      : this.getTimeSpeedMultiplier();
-    const adjustedDt = dt * timeSpeedMultiplier;
-
-    // State vector: [θ1, ω1, θ2, ω2]
-    const state = [
+  protected getState(): number[] {
+    return [
       this.angle1Property.value,
       this.angularVelocity1Property.value,
       this.angle2Property.value,
       this.angularVelocity2Property.value,
     ];
+  }
 
-    // Use RK4 solver with automatic sub-stepping
-    const newTime = this.solver.step(
-      state,
-      this.getDerivatives.bind(this),
-      this.timeProperty.value,
-      adjustedDt,
-    );
-
-    // Update properties
+  /**
+   * Update the model's properties from the state vector after integration.
+   * @param state - [angle1, angularVelocity1, angle2, angularVelocity2]
+   */
+  protected setState(state: number[]): void {
     this.angle1Property.value = state[0];
     this.angularVelocity1Property.value = state[1];
     this.angle2Property.value = state[2];
     this.angularVelocity2Property.value = state[3];
-    this.timeProperty.value = newTime;
-  }
-
-  /**
-   * Get the time speed multiplier based on the current time speed setting.
-   */
-  private getTimeSpeedMultiplier(): number {
-    const timeSpeed = this.timeSpeedProperty.value;
-    if (timeSpeed === TimeSpeed.SLOW) {
-      return 0.5;
-    } else if (timeSpeed === TimeSpeed.FAST) {
-      return 2.0;
-    } else {
-      return 1.0; // NORMAL
-    }
-  }
-
-  /**
-   * Set the fixed timestep for the physics solver.
-   * @param dt - Fixed timestep in seconds
-   */
-  public setPhysicsTimeStep(dt: number): void {
-    this.solver.setFixedTimeStep(dt);
-  }
-
-  /**
-   * Get the current physics timestep.
-   */
-  public getPhysicsTimeStep(): number {
-    return this.solver.getFixedTimeStep();
   }
 
   /**
    * Compute derivatives for the double pendulum system.
    * These are the coupled nonlinear equations derived from Lagrangian mechanics.
    */
-  private getDerivatives(
+  protected getDerivatives(
     state: number[],
     derivatives: number[],
     _: number,
@@ -244,5 +165,22 @@ export class DoublePendulumModel {
       b * omega2;
 
     derivatives[3] = num2 / denom2;
+  }
+
+  /**
+   * Reset the model to initial conditions.
+   */
+  public reset(): void {
+    this.angle1Property.reset();
+    this.angularVelocity1Property.reset();
+    this.angle2Property.reset();
+    this.angularVelocity2Property.reset();
+    this.length1Property.reset();
+    this.length2Property.reset();
+    this.mass1Property.reset();
+    this.mass2Property.reset();
+    this.gravityProperty.reset();
+    this.dampingProperty.reset();
+    this.resetCommon(); // Reset time-related properties from base class
   }
 }
