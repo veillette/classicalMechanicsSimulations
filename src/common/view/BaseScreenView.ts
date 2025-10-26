@@ -11,7 +11,11 @@ import {
   StepBackwardButton,
 } from "scenerystack/scenery-phet";
 import { KeyboardListener } from "scenerystack/scenery";
-import { BooleanProperty, EnumerationProperty } from "scenerystack/axon";
+import {
+  BooleanProperty,
+  EnumerationProperty,
+  DerivedProperty,
+} from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { HBox } from "scenerystack/scenery";
 
@@ -43,6 +47,12 @@ export abstract class BaseScreenView<
     // Default time step for manual stepping (in seconds)
     const manualStepSize = 0.016; // ~1 frame at 60 FPS
 
+    // Create derived property: stepper buttons enabled only when paused
+    const stepperEnabledProperty = new DerivedProperty(
+      [this.model.isPlayingProperty],
+      (isPlaying) => !isPlaying,
+    );
+
     // Time controls (play/pause and speed)
     const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
       timeSpeedProperty: this.model.timeSpeedProperty,
@@ -53,29 +63,32 @@ export abstract class BaseScreenView<
       speedRadioButtonGroupPlacement: "left",
     });
 
-    // Create step backward button
+    // Create step backward button (smaller radius, enabled only when paused)
     const stepBackwardButton = new StepBackwardButton({
       listener: () => {
         // Step backward by one frame (negative time step, forced even when paused)
         this.model.step(-manualStepSize, true);
         this.step(-manualStepSize);
       },
-      enabledProperty: new BooleanProperty(true), // Always enabled
+      enabledProperty: stepperEnabledProperty,
+      radius: 15, // Smaller than play/pause button
     });
 
-    // Create step forward button
+    // Create step forward button (smaller radius, enabled only when paused)
     const stepForwardButton = new StepForwardButton({
       listener: () => {
         // Step forward by one frame (forced even when paused)
         this.model.step(manualStepSize, true);
         this.step(manualStepSize);
       },
-      enabledProperty: new BooleanProperty(true), // Always enabled
+      enabledProperty: stepperEnabledProperty,
+      radius: 15, // Smaller than play/pause button
     });
 
     // Combine time controls and step buttons in a horizontal layout
+    // Arrangement: [<-] [▶️/⏸] [->] with symmetric spacing
     const controlsBox = new HBox({
-      spacing: 10,
+      spacing: 5, // Reduced spacing for tighter layout
       children: [stepBackwardButton, timeControlNode, stepForwardButton],
       centerX: this.layoutBounds.centerX,
       bottom: this.layoutBounds.maxY - 10,
