@@ -4,7 +4,7 @@
  */
 
 import { Node, VBox, Text } from "scenerystack/scenery";
-import { ComboBox } from "scenerystack/sun";
+import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,
   ChartTransform,
@@ -14,7 +14,7 @@ import {
   TickLabelSet,
 } from "scenerystack/bamboo";
 import { Range, Vector2 } from "scenerystack/dot";
-import { Property } from "scenerystack/axon";
+import { Property, BooleanProperty } from "scenerystack/axon";
 import { Orientation } from "scenerystack/phet-core";
 import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
@@ -30,6 +30,10 @@ export default class ConfigurableGraph extends Node {
   private readonly chartRectangle: ChartRectangle;
   private readonly graphWidth: number;
   private readonly graphHeight: number;
+
+  // Visibility control
+  private readonly graphVisibleProperty: BooleanProperty;
+  private readonly graphContentNode: Node;
 
   // Axis labels
   private readonly xAxisLabelNode: Text;
@@ -72,6 +76,12 @@ export default class ConfigurableGraph extends Node {
     this.xPropertyProperty = new Property(initialXProperty);
     this.yPropertyProperty = new Property(initialYProperty);
 
+    // Property to control graph visibility
+    this.graphVisibleProperty = new BooleanProperty(true);
+
+    // Create a container for all graph content
+    this.graphContentNode = new Node();
+
     // Create chart transform with initial ranges
     this.chartTransform = new ChartTransform({
       viewWidth: width,
@@ -87,20 +97,20 @@ export default class ConfigurableGraph extends Node {
       lineWidth: 1,
       cornerRadius: 0,
     });
-    this.addChild(this.chartRectangle);
+    this.graphContentNode.addChild(this.chartRectangle);
 
     // Create grid lines
     this.xGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, 1, {
       stroke: "lightgray",
       lineWidth: 0.5,
     });
-    this.addChild(this.xGridLineSet);
+    this.graphContentNode.addChild(this.xGridLineSet);
 
     this.yGridLineSet = new GridLineSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
       stroke: "lightgray",
       lineWidth: 0.5,
     });
-    this.addChild(this.yGridLineSet);
+    this.graphContentNode.addChild(this.yGridLineSet);
 
     // Create tick marks
     this.xTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
@@ -109,7 +119,7 @@ export default class ConfigurableGraph extends Node {
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       lineWidth: 1,
     });
-    this.addChild(this.xTickMarkSet);
+    this.graphContentNode.addChild(this.xTickMarkSet);
 
     this.yTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.VERTICAL, 1, {
       edge: "min",
@@ -117,7 +127,7 @@ export default class ConfigurableGraph extends Node {
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       lineWidth: 1,
     });
-    this.addChild(this.yTickMarkSet);
+    this.graphContentNode.addChild(this.yTickMarkSet);
 
     // Create tick labels
     this.xTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
@@ -128,7 +138,7 @@ export default class ConfigurableGraph extends Node {
           fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         }),
     });
-    this.addChild(this.xTickLabelSet);
+    this.graphContentNode.addChild(this.xTickLabelSet);
 
     this.yTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.VERTICAL, 1, {
       edge: "min",
@@ -138,14 +148,14 @@ export default class ConfigurableGraph extends Node {
           fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         }),
     });
-    this.addChild(this.yTickLabelSet);
+    this.graphContentNode.addChild(this.yTickLabelSet);
 
     // Create line plot
     this.linePlot = new LinePlot(this.chartTransform, [], {
       stroke: ClassicalMechanicsColors.graphLine1ColorProperty,
       lineWidth: 2,
     });
-    this.addChild(this.linePlot);
+    this.graphContentNode.addChild(this.linePlot);
 
     // Create axis labels
     this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
@@ -154,7 +164,7 @@ export default class ConfigurableGraph extends Node {
       centerX: this.graphWidth / 2,
       top: this.graphHeight + 35,
     });
-    this.addChild(this.xAxisLabelNode);
+    this.graphContentNode.addChild(this.xAxisLabelNode);
 
     this.yAxisLabelNode = new Text(this.formatAxisLabel(initialYProperty), {
       fontSize: 12,
@@ -163,13 +173,13 @@ export default class ConfigurableGraph extends Node {
       centerY: this.graphHeight / 2,
       right: -35,
     });
-    this.addChild(this.yAxisLabelNode);
+    this.graphContentNode.addChild(this.yAxisLabelNode);
 
     // Create axis selectors
     const selectorPanel = this.createSelectorPanel(listParent);
     selectorPanel.left = this.graphWidth + 10;
     selectorPanel.top = 0;
-    this.addChild(selectorPanel);
+    this.graphContentNode.addChild(selectorPanel);
 
     // Update labels when axes change
     this.xPropertyProperty.link((property) => {
@@ -183,6 +193,31 @@ export default class ConfigurableGraph extends Node {
       this.yAxisLabelNode.centerY = this.graphHeight / 2;
       this.clearData();
     });
+
+    // Add the graph content container
+    this.addChild(this.graphContentNode);
+
+    // Link visibility property to the content node
+    this.graphVisibleProperty.link((visible) => {
+      this.graphContentNode.visible = visible;
+    });
+
+    // Create show/hide checkbox
+    const showGraphCheckbox = new Checkbox(
+      this.graphVisibleProperty,
+      new Text("Show Graph", {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      },
+    );
+
+    // Position checkbox at top of graph area
+    showGraphCheckbox.left = 0;
+    showGraphCheckbox.top = -30;
+    this.addChild(showGraphCheckbox);
   }
 
   /**
