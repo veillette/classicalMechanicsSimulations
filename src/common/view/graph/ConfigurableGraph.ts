@@ -5,9 +5,17 @@
 
 import { Node, VBox, Text } from "scenerystack/scenery";
 import { ComboBox } from "scenerystack/sun";
-import { ChartRectangle, ChartTransform, LinePlot } from "scenerystack/bamboo";
+import {
+  ChartRectangle,
+  ChartTransform,
+  LinePlot,
+  GridLineSet,
+  TickMarkSet,
+  TickLabelSet,
+} from "scenerystack/bamboo";
 import { Range, Vector2 } from "scenerystack/dot";
 import { Property } from "scenerystack/axon";
+import { Orientation } from "scenerystack/phet-core";
 import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 
@@ -20,6 +28,20 @@ export default class ConfigurableGraph extends Node {
   private readonly chartTransform: ChartTransform;
   private readonly linePlot: LinePlot;
   private readonly chartRectangle: ChartRectangle;
+  private readonly graphWidth: number;
+  private readonly graphHeight: number;
+
+  // Axis labels
+  private readonly xAxisLabelNode: Text;
+  private readonly yAxisLabelNode: Text;
+
+  // Grid and tick components
+  private readonly xGridLineSet: GridLineSet;
+  private readonly yGridLineSet: GridLineSet;
+  private readonly xTickMarkSet: TickMarkSet;
+  private readonly yTickMarkSet: TickMarkSet;
+  private readonly xTickLabelSet: TickLabelSet;
+  private readonly yTickLabelSet: TickLabelSet;
 
   /**
    * @param availableProperties - List of properties that can be plotted
@@ -43,6 +65,8 @@ export default class ConfigurableGraph extends Node {
 
     this.availableProperties = availableProperties;
     this.maxDataPoints = maxDataPoints;
+    this.graphWidth = width;
+    this.graphHeight = height;
 
     // Properties to track current axis selections
     this.xPropertyProperty = new Property(initialXProperty);
@@ -65,6 +89,57 @@ export default class ConfigurableGraph extends Node {
     });
     this.addChild(this.chartRectangle);
 
+    // Create grid lines
+    this.xGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, 1, {
+      stroke: "lightgray",
+      lineWidth: 0.5,
+    });
+    this.addChild(this.xGridLineSet);
+
+    this.yGridLineSet = new GridLineSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
+      stroke: "lightgray",
+      lineWidth: 0.5,
+    });
+    this.addChild(this.yGridLineSet);
+
+    // Create tick marks
+    this.xTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
+      edge: "min",
+      extent: 8,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 1,
+    });
+    this.addChild(this.xTickMarkSet);
+
+    this.yTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.VERTICAL, 1, {
+      edge: "min",
+      extent: 8,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 1,
+    });
+    this.addChild(this.yTickMarkSet);
+
+    // Create tick labels
+    this.xTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
+      edge: "min",
+      createLabel: (value: number) =>
+        new Text(value.toFixed(2), {
+          fontSize: 10,
+          fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+        }),
+    });
+    this.addChild(this.xTickLabelSet);
+
+    this.yTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.VERTICAL, 1, {
+      edge: "min",
+      createLabel: (value: number) =>
+        new Text(value.toFixed(2), {
+          fontSize: 10,
+          fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+        }),
+    });
+    this.addChild(this.yTickLabelSet);
+
     // Create line plot
     this.linePlot = new LinePlot(this.chartTransform, [], {
       stroke: ClassicalMechanicsColors.graphLine1ColorProperty,
@@ -72,15 +147,52 @@ export default class ConfigurableGraph extends Node {
     });
     this.addChild(this.linePlot);
 
+    // Create axis labels
+    this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
+      fontSize: 12,
+      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      centerX: this.graphWidth / 2,
+      top: this.graphHeight + 35,
+    });
+    this.addChild(this.xAxisLabelNode);
+
+    this.yAxisLabelNode = new Text(this.formatAxisLabel(initialYProperty), {
+      fontSize: 12,
+      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      rotation: -Math.PI / 2,
+      centerY: this.graphHeight / 2,
+      right: -35,
+    });
+    this.addChild(this.yAxisLabelNode);
+
     // Create axis selectors
     const selectorPanel = this.createSelectorPanel(listParent);
-    selectorPanel.left = width + 10;
+    selectorPanel.left = this.graphWidth + 10;
     selectorPanel.top = 0;
     this.addChild(selectorPanel);
 
-    // Clear data when axes change
-    this.xPropertyProperty.link(() => this.clearData());
-    this.yPropertyProperty.link(() => this.clearData());
+    // Update labels when axes change
+    this.xPropertyProperty.link((property) => {
+      this.xAxisLabelNode.string = this.formatAxisLabel(property);
+      this.xAxisLabelNode.centerX = this.graphWidth / 2;
+      this.clearData();
+    });
+
+    this.yPropertyProperty.link((property) => {
+      this.yAxisLabelNode.string = this.formatAxisLabel(property);
+      this.yAxisLabelNode.centerY = this.graphHeight / 2;
+      this.clearData();
+    });
+  }
+
+  /**
+   * Format an axis label with the property name and unit
+   */
+  private formatAxisLabel(property: PlottableProperty): string {
+    if (property.unit) {
+      return `${property.name} (${property.unit})`;
+    }
+    return property.name;
   }
 
   /**
@@ -193,12 +305,52 @@ export default class ConfigurableGraph extends Node {
     const xPadding = (xMax - xMin) * 0.1 || 1;
     const yPadding = (yMax - yMin) * 0.1 || 1;
 
-    this.chartTransform.setModelXRange(
-      new Range(xMin - xPadding, xMax + xPadding),
-    );
-    this.chartTransform.setModelYRange(
-      new Range(yMin - yPadding, yMax + yPadding),
-    );
+    const xRange = new Range(xMin - xPadding, xMax + xPadding);
+    const yRange = new Range(yMin - yPadding, yMax + yPadding);
+
+    this.chartTransform.setModelXRange(xRange);
+    this.chartTransform.setModelYRange(yRange);
+
+    // Update tick spacing for better readability
+    this.updateTickSpacing(xRange, yRange);
+  }
+
+  /**
+   * Update tick spacing based on the range
+   */
+  private updateTickSpacing(xRange: Range, yRange: Range): void {
+    // Calculate appropriate tick spacing (aim for ~5-10 ticks)
+    const xSpacing = this.calculateTickSpacing(xRange.getLength());
+    const ySpacing = this.calculateTickSpacing(yRange.getLength());
+
+    this.xGridLineSet.setSpacing(xSpacing);
+    this.yGridLineSet.setSpacing(ySpacing);
+    this.xTickMarkSet.setSpacing(xSpacing);
+    this.yTickMarkSet.setSpacing(ySpacing);
+    this.xTickLabelSet.setSpacing(xSpacing);
+    this.yTickLabelSet.setSpacing(ySpacing);
+  }
+
+  /**
+   * Calculate appropriate tick spacing for a given range
+   */
+  private calculateTickSpacing(rangeLength: number): number {
+    // Target 5-10 ticks
+    const roughSpacing = rangeLength / 7;
+
+    // Round to a nice number (1, 2, 5, 10, 20, 50, etc.)
+    const magnitude = Math.pow(10, Math.floor(Math.log10(roughSpacing)));
+    const residual = roughSpacing / magnitude;
+
+    if (residual <= 1.5) {
+      return magnitude;
+    } else if (residual <= 3.5) {
+      return 2 * magnitude;
+    } else if (residual <= 7.5) {
+      return 5 * magnitude;
+    } else {
+      return 10 * magnitude;
+    }
   }
 
   /**
@@ -209,8 +361,12 @@ export default class ConfigurableGraph extends Node {
     this.linePlot.setDataSet([]);
 
     // Reset to default ranges
-    this.chartTransform.setModelXRange(new Range(-10, 10));
-    this.chartTransform.setModelYRange(new Range(-10, 10));
+    const defaultRange = new Range(-10, 10);
+    this.chartTransform.setModelXRange(defaultRange);
+    this.chartTransform.setModelYRange(defaultRange);
+
+    // Reset tick spacing
+    this.updateTickSpacing(defaultRange, defaultRange);
   }
 
   /**
