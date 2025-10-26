@@ -16,12 +16,17 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import {
+  ConfigurableGraph,
+  type PlottableProperty,
+} from "../../common/view/graph/index.js";
 
 export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly massNode: Rectangle;
   private readonly springNode: SpringNode;
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
+  private readonly configurableGraph: ConfigurableGraph;
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -89,6 +94,54 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
+
+    // Create configurable graph with available properties
+    const availableProperties: PlottableProperty[] = [
+      {
+        name: "Position",
+        property: this.model.positionProperty,
+        unit: "m",
+      },
+      {
+        name: "Velocity",
+        property: this.model.velocityProperty,
+        unit: "m/s",
+      },
+      {
+        name: "Kinetic Energy",
+        property: this.model.kineticEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: "Potential Energy",
+        property: this.model.potentialEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: "Total Energy",
+        property: this.model.totalEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: "Time",
+        property: this.model.timeProperty,
+        unit: "s",
+      },
+    ];
+
+    // Create the configurable graph (position vs time by default)
+    this.configurableGraph = new ConfigurableGraph(
+      availableProperties,
+      availableProperties[5], // Time for x-axis
+      availableProperties[0], // Position for y-axis
+      400, // width
+      300, // height
+      2000, // max data points
+      this, // list parent for combo boxes
+    );
+    this.configurableGraph.left = this.layoutBounds.minX + 10;
+    this.configurableGraph.top = this.layoutBounds.minY + 10;
+    this.addChild(this.configurableGraph);
 
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
@@ -184,6 +237,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   }
 
   public reset(): void {
+    // Clear graph data
+    this.configurableGraph.clearData();
+
     // Update visualization to match reset model state
     this.updateVisualization(this.model.positionProperty.value);
   }
@@ -191,5 +247,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   public override step(dt: number): void {
     // Update model physics
     this.model.step(dt);
+
+    // Add data point to configurable graph
+    this.configurableGraph.addDataPoint();
   }
 }
