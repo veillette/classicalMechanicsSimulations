@@ -21,7 +21,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "backgroundColor",
     {
-      default: WHITE,
+      default: BLACK,
       projector: WHITE,
     },
   ),
@@ -31,7 +31,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphBackgroundColor",
     {
-      default: WHITE,
+      default: new Color(25, 25, 25), // dark gray for default
       projector: WHITE,
     },
   ),
@@ -40,7 +40,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphBorderColor",
     {
-      default: BLACK,
+      default: WHITE,
       projector: BLACK,
     },
   ),
@@ -49,7 +49,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphGridColor",
     {
-      default: new Color(211, 211, 211), // lightgray
+      default: new Color(60, 60, 60), // darker grid for black background
       projector: new Color(180, 180, 180),
     },
   ),
@@ -58,7 +58,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphAxisColor",
     {
-      default: BLACK,
+      default: WHITE,
       projector: BLACK,
     },
   ),
@@ -67,7 +67,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphLabelColor",
     {
-      default: BLACK,
+      default: WHITE,
       projector: BLACK,
     },
   ),
@@ -76,7 +76,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphPanelBackgroundColor",
     {
-      default: new Color(230, 230, 230),
+      default: new Color(40, 40, 40, 0.9), // dark panel for default
       projector: new Color(245, 245, 245),
     },
   ),
@@ -85,7 +85,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphPanelStrokeColor",
     {
-      default: new Color(128, 128, 128), // gray
+      default: new Color(120, 120, 120), // lighter stroke for dark background
       projector: new Color(150, 150, 150),
     },
   ),
@@ -95,7 +95,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "controlPanelBackgroundColor",
     {
-      default: new Color(255, 255, 255, 0.8),
+      default: new Color(30, 30, 30, 0.9), // dark semi-transparent for default
       projector: new Color(255, 255, 255, 0.9),
     },
   ),
@@ -104,7 +104,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "controlPanelStrokeColor",
     {
-      default: new Color(204, 204, 204), // #ccc
+      default: new Color(100, 100, 100), // lighter stroke for dark background
       projector: new Color(180, 180, 180),
     },
   ),
@@ -114,7 +114,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "springFrontColor",
     {
-      default: new Color(136, 136, 136), // #888888
+      default: new Color(180, 180, 180), // lighter for dark background
       projector: new Color(100, 100, 100),
     },
   ),
@@ -123,7 +123,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "springBackColor",
     {
-      default: new Color(68, 68, 68), // #444444
+      default: new Color(120, 120, 120), // lighter for dark background
       projector: new Color(50, 50, 50),
     },
   ),
@@ -133,7 +133,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "mass1FillColor",
     {
-      default: new Color(74, 144, 226), // #4A90E2
+      default: new Color(100, 170, 255), // brighter blue for dark background
       projector: new Color(50, 120, 200),
     },
   ),
@@ -142,7 +142,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "mass1StrokeColor",
     {
-      default: new Color(46, 92, 138), // #2E5C8A
+      default: new Color(70, 140, 220), // brighter stroke for dark background
       projector: new Color(30, 80, 130),
     },
   ),
@@ -152,7 +152,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "mass2FillColor",
     {
-      default: new Color(230, 126, 34), // #E67E22
+      default: new Color(255, 150, 50), // brighter orange for dark background
       projector: new Color(200, 100, 30),
     },
   ),
@@ -161,7 +161,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "mass2StrokeColor",
     {
-      default: new Color(211, 84, 0), // #D35400
+      default: new Color(230, 120, 20), // brighter stroke for dark background
       projector: new Color(180, 70, 0),
     },
   ),
@@ -171,7 +171,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "pivotFillColor",
     {
-      default: new Color(51, 51, 51), // #333
+      default: new Color(160, 160, 160), // much lighter for dark background
       projector: new Color(40, 40, 40),
     },
   ),
@@ -180,7 +180,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "pivotStrokeColor",
     {
-      default: BLACK,
+      default: WHITE,
       projector: BLACK,
     },
   ),
@@ -190,7 +190,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "rodStrokeColor",
     {
-      default: new Color(102, 102, 102), // #666
+      default: new Color(200, 200, 200), // much lighter for dark background
       projector: new Color(80, 80, 80),
     },
   ),
@@ -200,7 +200,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphLine1Color",
     {
-      default: new Color(0, 255, 0), // lime
+      default: new Color(50, 255, 50), // bright lime for dark background
       projector: new Color(0, 180, 0),
     },
   ),
@@ -209,7 +209,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphLine2Color",
     {
-      default: new Color(255, 0, 0), // red
+      default: new Color(255, 80, 80), // bright red for dark background
       projector: new Color(200, 0, 0),
     },
   ),
@@ -218,7 +218,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphLine3Color",
     {
-      default: new Color(0, 0, 255), // blue
+      default: new Color(100, 150, 255), // bright blue for dark background
       projector: new Color(0, 0, 200),
     },
   ),
@@ -227,7 +227,7 @@ const ClassicalMechanicsColors = {
     classicalMechanics,
     "graphLine4Color",
     {
-      default: new Color(255, 165, 0), // orange
+      default: new Color(255, 200, 50), // bright orange for dark background
       projector: new Color(220, 140, 0),
     },
   ),
