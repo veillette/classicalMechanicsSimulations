@@ -7,11 +7,9 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import {
   TimeControlNode,
   ResetAllButton,
-  StepForwardButton,
-  StepBackwardButton,
   PhetFont,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener, Text, VBox, HBox } from "scenerystack/scenery";
+import { KeyboardListener, Text, VBox } from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
@@ -70,39 +68,28 @@ export abstract class BaseScreenView<
     const timeControlNode = new TimeControlNode(this.model.isPlayingProperty, {
       timeSpeedProperty: this.model.timeSpeedProperty,
       playPauseStepButtonOptions: {
-        includeStepForwardButton: false,
-        includeStepBackwardButton: false,
+        includeStepForwardButton: true,
+        includeStepBackwardButton: true,
+        stepForwardButtonOptions: {
+          listener: () => {
+            // Step forward by one frame (forced even when paused)
+            this.model.step(manualStepSize, true);
+            this.step(manualStepSize);
+          },
+          enabledProperty: stepperEnabledProperty,
+          radius: 15, // Smaller than play/pause button
+        },
+        stepBackwardButtonOptions: {
+          listener: () => {
+            // Step backward by one frame (negative time step, forced even when paused)
+            this.model.step(-manualStepSize, true);
+            this.step(-manualStepSize);
+          },
+          enabledProperty: stepperEnabledProperty,
+          radius: 15, // Smaller than play/pause button
+        }
       },
       speedRadioButtonGroupPlacement: "left",
-    });
-
-    // Create step backward button (smaller radius, enabled only when paused)
-    const stepBackwardButton = new StepBackwardButton({
-      listener: () => {
-        // Step backward by one frame (negative time step, forced even when paused)
-        this.model.step(-manualStepSize, true);
-        this.step(-manualStepSize);
-      },
-      enabledProperty: stepperEnabledProperty,
-      radius: 15, // Smaller than play/pause button
-    });
-
-    // Create step forward button (smaller radius, enabled only when paused)
-    const stepForwardButton = new StepForwardButton({
-      listener: () => {
-        // Step forward by one frame (forced even when paused)
-        this.model.step(manualStepSize, true);
-        this.step(manualStepSize);
-      },
-      enabledProperty: stepperEnabledProperty,
-      radius: 15, // Smaller than play/pause button
-    });
-
-    // Combine time controls and step buttons in a horizontal layout
-    // Arrangement: [<-] [▶️/⏸] [->] with symmetric spacing
-    const controlsBox = new HBox({
-      spacing: 5, // Reduced spacing for tighter layout
-      children: [stepBackwardButton, timeControlNode, stepForwardButton],
     });
 
     // Auto-pause checkbox
@@ -119,7 +106,7 @@ export abstract class BaseScreenView<
     // Combine controls and checkbox vertically
     const bottomControls = new VBox({
       spacing: 8,
-      children: [autoPauseCheckbox, controlsBox],
+      children: [autoPauseCheckbox, timeControlNode],
       centerX: this.layoutBounds.centerX,
       bottom: this.layoutBounds.maxY - 10,
     });
