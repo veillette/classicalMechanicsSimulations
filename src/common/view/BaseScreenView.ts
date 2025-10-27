@@ -9,15 +9,16 @@ import {
   ResetAllButton,
   StepForwardButton,
   StepBackwardButton,
+  PhetFont,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener } from "scenerystack/scenery";
+import { KeyboardListener, Text, VBox, HBox } from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
   DerivedProperty,
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
-import { HBox } from "scenerystack/scenery";
+import { Checkbox } from "scenerystack/sun";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -34,9 +35,21 @@ export abstract class BaseScreenView<
 > extends ScreenView {
   protected readonly model: T;
 
+  // Auto-pause preference: pause simulation when tab is hidden
+  private readonly autoPauseProperty: BooleanProperty;
+
+  // Store the playing state before auto-pause so we can restore it
+  private wasPlayingBeforeHidden: boolean = false;
+
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
     this.model = model;
+
+    // Initialize auto-pause preference (default: enabled)
+    this.autoPauseProperty = new BooleanProperty(true);
+
+    // Set up Page Visibility API to handle tab switching
+    this.setupPageVisibilityListener();
   }
 
   /**
@@ -90,10 +103,27 @@ export abstract class BaseScreenView<
     const controlsBox = new HBox({
       spacing: 5, // Reduced spacing for tighter layout
       children: [stepBackwardButton, timeControlNode, stepForwardButton],
+    });
+
+    // Auto-pause checkbox
+    const autoPauseCheckbox = new Checkbox(
+      this.autoPauseProperty,
+      new Text("Auto-pause when tab hidden", {
+        font: new PhetFont(14),
+      }),
+      {
+        boxWidth: 16,
+      },
+    );
+
+    // Combine controls and checkbox vertically
+    const bottomControls = new VBox({
+      spacing: 8,
+      children: [autoPauseCheckbox, controlsBox],
       centerX: this.layoutBounds.centerX,
       bottom: this.layoutBounds.maxY - 10,
     });
-    this.addChild(controlsBox);
+    this.addChild(bottomControls);
 
     // Reset button
     const resetButton = new ResetAllButton({
@@ -118,6 +148,34 @@ export abstract class BaseScreenView<
       },
     });
     this.addInputListener(keyboardListener);
+  }
+
+  /**
+   * Set up Page Visibility API to automatically pause when tab is hidden.
+   * This prevents large dt jumps when user switches tabs.
+   */
+  private setupPageVisibilityListener(): void {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Tab became hidden
+        if (this.autoPauseProperty.value && this.model.isPlayingProperty.value) {
+          // Store that we were playing before hiding
+          this.wasPlayingBeforeHidden = true;
+          // Pause the simulation
+          this.model.isPlayingProperty.value = false;
+        }
+      } else {
+        // Tab became visible
+        if (this.autoPauseProperty.value && this.wasPlayingBeforeHidden) {
+          // Restore playing state
+          this.model.isPlayingProperty.value = true;
+          this.wasPlayingBeforeHidden = false;
+        }
+      }
+    };
+
+    // Listen for visibility changes
+    document.addEventListener("visibilitychange", handleVisibilityChange);
   }
 
   /**

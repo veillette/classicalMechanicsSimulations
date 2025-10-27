@@ -57,11 +57,16 @@ export abstract class BaseModel {
       return;
     }
 
+    // Cap dt to prevent large jumps when user switches tabs or browser loses focus
+    // This prevents physics instabilities and large gaps in graphs
+    const MAX_DT = 0.1; // 100ms maximum
+    const cappedDt = Math.min(Math.abs(dt), MAX_DT) * Math.sign(dt);
+
     // Apply time speed multiplier (only when auto-playing, not for manual steps)
     const timeSpeedMultiplier = forceStep
       ? 1.0
       : this.getTimeSpeedMultiplier();
-    const adjustedDt = dt * timeSpeedMultiplier;
+    const adjustedDt = cappedDt * timeSpeedMultiplier;
 
     // Get the current state from the subclass
     const state = this.getState();
