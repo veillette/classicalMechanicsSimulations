@@ -30,6 +30,9 @@
     "metersPerSecondSquared": "{{value}} m/s²"
   },
   "graph": {
+    "showGraph": "Afficher le graphique",
+    "xAxisLabel": "Axe X:",
+    "yAxisLabel": "Axe Y:",
     "axis": {
       "x": "X",
       "y": "Y",
@@ -43,6 +46,17 @@
     },
     "pendulum": {
       "angleAndVelocity": "Angle (rad) / Vitesse Angulaire (rad/s)"
+    },
+    "properties": {
+      "position": "Position",
+      "velocity": "Vitesse",
+      "kineticEnergy": "Énergie Cinétique",
+      "potentialEnergy": "Énergie Potentielle",
+      "totalEnergy": "Énergie Totale",
+      "time": "Temps"
     }
+  },
+  "timeControls": {
+    "autoPauseWhenTabHidden": "Mettre en pause automatiquement lorsque l'onglet est masqué"
   }
 }

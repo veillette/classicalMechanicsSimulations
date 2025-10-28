@@ -118,6 +118,11 @@ export class StringManager {
    */
   public getGraphLabels() {
     return {
+      // Graph controls
+      showGraphStringProperty: this.stringProperties.graph.showGraphStringProperty,
+      xAxisLabelStringProperty: this.stringProperties.graph.xAxisLabelStringProperty,
+      yAxisLabelStringProperty: this.stringProperties.graph.yAxisLabelStringProperty,
+
       // Axis labels
       xStringProperty: this.stringProperties.graph.axis.xStringProperty,
       yStringProperty: this.stringProperties.graph.axis.yStringProperty,
@@ -135,6 +140,29 @@ export class StringManager {
       // Pendulum-specific labels
       angleAndVelocityStringProperty:
         this.stringProperties.graph.pendulum.angleAndVelocityStringProperty,
+    };
+  }
+
+  /**
+   * Get graph property name string properties
+   */
+  public getGraphPropertyNames() {
+    return {
+      positionStringProperty: this.stringProperties.graph.properties.positionStringProperty,
+      velocityStringProperty: this.stringProperties.graph.properties.velocityStringProperty,
+      kineticEnergyStringProperty: this.stringProperties.graph.properties.kineticEnergyStringProperty,
+      potentialEnergyStringProperty: this.stringProperties.graph.properties.potentialEnergyStringProperty,
+      totalEnergyStringProperty: this.stringProperties.graph.properties.totalEnergyStringProperty,
+      timeStringProperty: this.stringProperties.graph.properties.timeStringProperty,
+    };
+  }
+
+  /**
+   * Get time control string properties
+   */
+  public getTimeControlLabels() {
+    return {
+      autoPauseWhenTabHiddenStringProperty: this.stringProperties.timeControls.autoPauseWhenTabHiddenStringProperty,
     };
   }
 
