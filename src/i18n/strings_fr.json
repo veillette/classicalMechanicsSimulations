@@ -58,5 +58,9 @@
   },
   "timeControls": {
     "autoPauseWhenTabHidden": "Mettre en pause automatiquement lorsque l'onglet est masqué"
+  },
+  "preferences": {
+    "autoPauseWhenTabHidden": "Mettre en pause automatiquement lorsque l'onglet est masqué",
+    "autoPauseDescription": "Mettre automatiquement en pause la simulation lorsque l'onglet du navigateur est masqué"
   }
 }

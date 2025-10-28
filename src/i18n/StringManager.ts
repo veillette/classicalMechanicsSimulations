@@ -167,6 +167,16 @@ export class StringManager {
   }
 
   /**
+   * Get preferences string properties
+   */
+  public getPreferencesLabels() {
+    return {
+      autoPauseWhenTabHiddenStringProperty: this.stringProperties.preferences.autoPauseWhenTabHiddenStringProperty,
+      autoPauseDescriptionStringProperty: this.stringProperties.preferences.autoPauseDescriptionStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */

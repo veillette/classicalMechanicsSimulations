@@ -109,6 +109,16 @@ const ClassicalMechanicsColors = {
     },
   ),
 
+  // Text colors
+  textColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "textColor",
+    {
+      default: WHITE, // white text for dark background
+      projector: BLACK, // black text for light background
+    },
+  ),
+
   // Spring colors
   springFrontColorProperty: new ProfileColorProperty(
     classicalMechanics,
