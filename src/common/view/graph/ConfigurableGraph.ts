@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, VBox, Text } from "scenerystack/scenery";
+import { Node, VBox, Text, Circle } from "scenerystack/scenery";
 import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,
@@ -35,6 +35,10 @@ export default class ConfigurableGraph extends Node {
   private readonly chartRectangle: ChartRectangle;
   private readonly graphWidth: number;
   private readonly graphHeight: number;
+
+  // Trail points
+  private readonly trailNode: Node;
+  private readonly trailLength: number = 5;
 
   // Visibility control
   private readonly graphVisibleProperty: BooleanProperty;
@@ -161,6 +165,10 @@ export default class ConfigurableGraph extends Node {
       lineWidth: 2,
     });
     this.graphContentNode.addChild(this.linePlot);
+
+    // Create trail node for showing recent points
+    this.trailNode = new Node();
+    this.graphContentNode.addChild(this.trailNode);
 
     // Create axis labels
     this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
@@ -338,6 +346,9 @@ export default class ConfigurableGraph extends Node {
     if (this.dataPoints.length > 1) {
       this.updateAxisRanges();
     }
+
+    // Update the trail visualization
+    this.updateTrail();
   }
 
   /**
@@ -426,6 +437,57 @@ export default class ConfigurableGraph extends Node {
 
     // Reset tick spacing
     this.updateTickSpacing(defaultRange, defaultRange);
+
+    // Clear trail
+    this.trailNode.removeAllChildren();
+  }
+
+  /**
+   * Update the trail visualization showing the most recent points
+   */
+  private updateTrail(): void {
+    // Clear existing trail circles
+    this.trailNode.removeAllChildren();
+
+    // Get the last N points (up to trailLength)
+    const numTrailPoints = Math.min(this.trailLength, this.dataPoints.length);
+    if (numTrailPoints === 0) {
+      return;
+    }
+
+    // Start from the most recent points
+    const startIndex = this.dataPoints.length - numTrailPoints;
+
+    for (let i = 0; i < numTrailPoints; i++) {
+      const point = this.dataPoints[startIndex + i];
+
+      // Calculate the age of this point (0 = oldest in trail, numTrailPoints-1 = newest)
+      const age = i;
+      const fraction = age / (numTrailPoints - 1 || 1); // 0 to 1, where 1 is newest
+
+      // Size and opacity increase with recency
+      // Oldest point: small and transparent
+      // Newest point: large and opaque
+      const minRadius = 3;
+      const maxRadius = 5;
+      const radius = minRadius + (maxRadius - minRadius) * fraction;
+
+      const minOpacity = 0.2;
+      const maxOpacity = 0.8;
+      const opacity = minOpacity + (maxOpacity - minOpacity) * fraction;
+
+      // Transform model coordinates to view coordinates
+      const viewPosition = this.chartTransform.modelToViewPosition(point);
+
+      // Create circle for this trail point
+      const circle = new Circle(radius, {
+        fill: ClassicalMechanicsColors.graphLine1ColorProperty,
+        opacity: opacity,
+        center: viewPosition,
+      });
+
+      this.trailNode.addChild(circle);
+    }
   }
 
   /**
