@@ -18,6 +18,7 @@ import {
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { Checkbox } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -91,6 +92,11 @@ export abstract class BaseScreenView<
         }
       },
       speedRadioButtonGroupPlacement: "left",
+      speedRadioButtonGroupOptions: {
+        labelOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
+      },
     });
 
     // Auto-pause checkbox
@@ -101,6 +107,7 @@ export abstract class BaseScreenView<
       this.autoPauseProperty,
       new Text(timeControlLabels.autoPauseWhenTabHiddenStringProperty, {
         font: new PhetFont(14),
+        fill: ClassicalMechanicsColors.textColorProperty,
       }),
       {
         boxWidth: 16,

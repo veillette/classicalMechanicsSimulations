@@ -175,7 +175,10 @@ export default class TimeGraph extends Panel {
       return new HBox({
         children: [
           legendLine,
-          new Text(legendLabelsStringProperties[index], { fontSize: 12 }),
+          new Text(legendLabelsStringProperties[index], {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.graphLabelColorProperty,
+          }),
         ],
         spacing: 5,
       });

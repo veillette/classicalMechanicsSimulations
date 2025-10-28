@@ -267,6 +267,7 @@ export default class ConfigurableGraph extends Node {
       createNode: () =>
         new Text(prop.name, {
           fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
         }),
       tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
     }));
@@ -288,6 +289,7 @@ export default class ConfigurableGraph extends Node {
       createNode: () =>
         new Text(prop.name, {
           fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
         }),
       tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
     }));
