@@ -129,11 +129,12 @@ export default class TimeGraph extends Panel {
       Orientation.VERTICAL,
       0.5,
       {
+        edge: "min",
         createLabel: (value: number) =>
           new Text(value.toFixed(2), {
             fontSize: 12,
             fill: ClassicalMechanicsColors.graphLabelColorProperty,
-            maxWidth: 45,
+            maxWidth: 50,
           }),
       },
     );
