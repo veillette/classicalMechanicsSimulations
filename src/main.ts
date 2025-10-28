@@ -42,7 +42,7 @@ onReadyToLaunch(() => {
                     ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty,
                     new Text(preferencesLabels.autoPauseWhenTabHiddenStringProperty, {
                       font: new PhetFont(16),
-                      fill: ClassicalMechanicsColors.textColorProperty,
+                      fill: "black", // Preferences dialog always has white background
                     }),
                     {
                       boxWidth: 16,
@@ -50,7 +50,7 @@ onReadyToLaunch(() => {
                   ),
                   new Text(preferencesLabels.autoPauseDescriptionStringProperty, {
                     font: new PhetFont(12),
-                    fill: ClassicalMechanicsColors.textColorProperty,
+                    fill: "black", // Preferences dialog always has white background
                     maxWidth: 600,
                   }),
                 ],
