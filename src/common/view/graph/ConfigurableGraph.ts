@@ -20,6 +20,7 @@ import {
   type TReadOnlyProperty,
 } from "scenerystack/axon";
 import { Orientation } from "scenerystack/phet-core";
+import { Shape } from "scenerystack/kite";
 import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 import { StringManager } from "../../../i18n/StringManager.js";
@@ -55,6 +56,10 @@ export default class ConfigurableGraph extends Node {
   private readonly yTickMarkSet: TickMarkSet;
   private readonly xTickLabelSet: TickLabelSet;
   private readonly yTickLabelSet: TickLabelSet;
+
+  // Zoom control
+  private isManuallyZoomed: boolean = false;
+  private readonly zoomFactor: number = 1.1; // 10% zoom per wheel tick
 
   /**
    * @param availableProperties - List of properties that can be plotted
@@ -168,11 +173,16 @@ export default class ConfigurableGraph extends Node {
       stroke: ClassicalMechanicsColors.graphLine1ColorProperty,
       lineWidth: 2,
     });
-    this.graphContentNode.addChild(this.linePlot);
 
     // Create trail node for showing recent points
     this.trailNode = new Node();
-    this.graphContentNode.addChild(this.trailNode);
+
+    // Wrap line plot and trail in a clipped container to prevent overflow
+    const clippedDataContainer = new Node({
+      children: [this.linePlot, this.trailNode],
+      clipArea: Shape.rect(0, 0, width, height),
+    });
+    this.graphContentNode.addChild(clippedDataContainer);
 
     // Create axis labels
     this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
@@ -238,6 +248,90 @@ export default class ConfigurableGraph extends Node {
     showGraphCheckbox.left = 0;
     showGraphCheckbox.top = -30;
     this.addChild(showGraphCheckbox);
+
+    // Add zoom controls (non-intrusive mouse and keyboard)
+    this.setupZoomControls();
+  }
+
+  /**
+   * Setup non-intrusive zoom controls using mouse wheel and keyboard
+   */
+  private setupZoomControls(): void {
+    // Mouse wheel zoom on the chart area
+    this.chartRectangle.addInputListener({
+      wheel: (event) => {
+        event.handle();
+        const delta = event.domEvent!.deltaY;
+
+        // Get mouse position relative to chart
+        const pointerPoint = this.chartRectangle.globalToLocalPoint(event.pointer.point);
+
+        // Zoom in or out
+        if (delta < 0) {
+          this.zoom(this.zoomFactor, pointerPoint);
+        } else {
+          this.zoom(1 / this.zoomFactor, pointerPoint);
+        }
+      },
+    });
+
+    // Double-click to reset to auto-scale
+    this.chartRectangle.addInputListener({
+      down: (event) => {
+        if (event.domEvent && event.domEvent.detail === 2) {
+          // Double click detected
+          event.handle();
+          this.resetZoom();
+        }
+      },
+    });
+
+    // Make chart rectangle pickable so it can receive input
+    this.chartRectangle.pickable = true;
+  }
+
+  /**
+   * Zoom the graph by a given factor, centered on a point
+   */
+  private zoom(factor: number, centerPoint: Vector2): void {
+    this.isManuallyZoomed = true;
+
+    const currentXRange = this.chartTransform.modelXRange;
+    const currentYRange = this.chartTransform.modelYRange;
+
+    // Convert center point from view to model coordinates
+    const modelCenter = this.chartTransform.viewToModelPosition(centerPoint);
+
+    // Calculate new ranges centered on the mouse position
+    const xMin = modelCenter.x - (modelCenter.x - currentXRange.min) / factor;
+    const xMax = modelCenter.x + (currentXRange.max - modelCenter.x) / factor;
+    const yMin = modelCenter.y - (modelCenter.y - currentYRange.min) / factor;
+    const yMax = modelCenter.y + (currentYRange.max - modelCenter.y) / factor;
+
+    const newXRange = new Range(xMin, xMax);
+    const newYRange = new Range(yMin, yMax);
+
+    // Update chart transform
+    this.chartTransform.setModelXRange(newXRange);
+    this.chartTransform.setModelYRange(newYRange);
+
+    // Update tick spacing
+    this.updateTickSpacing(newXRange, newYRange);
+
+    // Update trail with new transform
+    this.updateTrail();
+  }
+
+  /**
+   * Reset zoom to auto-scale mode
+   */
+  private resetZoom(): void {
+    this.isManuallyZoomed = false;
+
+    // Recalculate axis ranges based on current data
+    if (this.dataPoints.length > 1) {
+      this.updateAxisRanges();
+    }
   }
 
   /**
@@ -346,8 +440,8 @@ export default class ConfigurableGraph extends Node {
     // Update the line plot
     this.linePlot.setDataSet(this.dataPoints);
 
-    // Auto-scale the axes if we have data
-    if (this.dataPoints.length > 1) {
+    // Auto-scale the axes if we have data and user hasn't manually zoomed
+    if (this.dataPoints.length > 1 && !this.isManuallyZoomed) {
       this.updateAxisRanges();
     }
 
@@ -463,6 +557,9 @@ export default class ConfigurableGraph extends Node {
 
     // Clear trail
     this.trailNode.removeAllChildren();
+
+    // Reset zoom state
+    this.isManuallyZoomed = false;
   }
 
   /**
