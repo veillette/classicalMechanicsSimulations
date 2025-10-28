@@ -376,7 +376,7 @@ export default class ConfigurableGraph extends Node {
    * Update tick spacing based on the range
    */
   private updateTickSpacing(xRange: Range, yRange: Range): void {
-    // Calculate appropriate tick spacing (aim for ~5-10 ticks)
+    // Calculate appropriate tick spacing (aim for ~5 ticks to avoid clutter)
     const xSpacing = this.calculateTickSpacing(xRange.getLength());
     const ySpacing = this.calculateTickSpacing(yRange.getLength());
 
@@ -392,8 +392,8 @@ export default class ConfigurableGraph extends Node {
    * Calculate appropriate tick spacing for a given range
    */
   private calculateTickSpacing(rangeLength: number): number {
-    // Target 5-10 ticks
-    const roughSpacing = rangeLength / 7;
+    // Target ~5 ticks to avoid too many grid lines
+    const roughSpacing = rangeLength / 5;
 
     // Round to a nice number (1, 2, 5, 10, 20, 50, etc.)
     const magnitude = Math.pow(10, Math.floor(Math.log10(roughSpacing)));
