@@ -6,8 +6,8 @@
 import { type TReadOnlyProperty } from "scenerystack/axon";
 
 export interface PlottableProperty {
-  // The name to display in the selector
-  name: string;
+  // The name to display in the selector (can be a string or a localized string property)
+  name: string | TReadOnlyProperty<string>;
 
   // The property to read values from
   property: TReadOnlyProperty<number>;

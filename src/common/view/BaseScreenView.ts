@@ -19,6 +19,7 @@ import {
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { Checkbox } from "scenerystack/sun";
+import { StringManager } from "../../i18n/StringManager.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -106,9 +107,12 @@ export abstract class BaseScreenView<
     });
 
     // Auto-pause checkbox
+    const stringManager = StringManager.getInstance();
+    const timeControlLabels = stringManager.getTimeControlLabels();
+
     const autoPauseCheckbox = new Checkbox(
       this.autoPauseProperty,
-      new Text("Auto-pause when tab hidden", {
+      new Text(timeControlLabels.autoPauseWhenTabHiddenStringProperty, {
         font: new PhetFont(14),
       }),
       {

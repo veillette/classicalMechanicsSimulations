@@ -14,10 +14,15 @@ import {
   TickLabelSet,
 } from "scenerystack/bamboo";
 import { Range, Vector2 } from "scenerystack/dot";
-import { Property, BooleanProperty } from "scenerystack/axon";
+import {
+  Property,
+  BooleanProperty,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { Orientation } from "scenerystack/phet-core";
 import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
+import { StringManager } from "../../../i18n/StringManager.js";
 
 export default class ConfigurableGraph extends Node {
   private readonly availableProperties: PlottableProperty[];
@@ -203,9 +208,12 @@ export default class ConfigurableGraph extends Node {
     });
 
     // Create show/hide checkbox
+    const stringManager = StringManager.getInstance();
+    const graphLabels = stringManager.getGraphLabels();
+
     const showGraphCheckbox = new Checkbox(
       this.graphVisibleProperty,
-      new Text("Show Graph", {
+      new Text(graphLabels.showGraphStringProperty, {
         fontSize: 14,
         fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       }),
@@ -221,21 +229,35 @@ export default class ConfigurableGraph extends Node {
   }
 
   /**
+   * Helper to get the string value from either a string or TReadOnlyProperty<string>
+   */
+  private getNameValue(
+    name: string | TReadOnlyProperty<string>,
+  ): string {
+    return typeof name === "string" ? name : name.value;
+  }
+
+  /**
    * Format an axis label with the property name and unit
    */
   private formatAxisLabel(property: PlottableProperty): string {
+    const nameValue = this.getNameValue(property.name);
     if (property.unit) {
-      return `${property.name} (${property.unit})`;
+      return `${nameValue} (${property.unit})`;
     }
-    return property.name;
+    return nameValue;
   }
 
   /**
    * Create the panel with combo boxes for axis selection
    */
   private createSelectorPanel(listParent: Node): Node {
+    // Get string manager
+    const stringManager = StringManager.getInstance();
+    const graphLabels = stringManager.getGraphLabels();
+
     // X-axis selector
-    const xLabel = new Text("X-axis:", {
+    const xLabel = new Text(graphLabels.xAxisLabelStringProperty, {
       fontSize: 14,
       fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
     });
@@ -246,7 +268,7 @@ export default class ConfigurableGraph extends Node {
         new Text(prop.name, {
           fontSize: 12,
         }),
-      tandemName: prop.name.replace(/\s/g, ""),
+      tandemName: this.getNameValue(prop.name).replace(/\s/g, ""),
     }));
 
     const xComboBox = new ComboBox(this.xPropertyProperty, xItems, listParent, {
@@ -256,7 +278,7 @@ export default class ConfigurableGraph extends Node {
     });
 
     // Y-axis selector
-    const yLabel = new Text("Y-axis:", {
+    const yLabel = new Text(graphLabels.yAxisLabelStringProperty, {
       fontSize: 14,
       fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
     });
@@ -267,7 +289,7 @@ export default class ConfigurableGraph extends Node {
         new Text(prop.name, {
           fontSize: 12,
         }),
-      tandemName: prop.name.replace(/\s/g, ""),
+      tandemName: this.getNameValue(prop.name).replace(/\s/g, ""),
     }));
 
     const yComboBox = new ComboBox(this.yPropertyProperty, yItems, listParent, {

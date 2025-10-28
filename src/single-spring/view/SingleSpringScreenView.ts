@@ -96,34 +96,36 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.addChild(controlPanel);
 
     // Create configurable graph with available properties
+    const stringManager = StringManager.getInstance();
+    const propertyNames = stringManager.getGraphPropertyNames();
     const availableProperties: PlottableProperty[] = [
       {
-        name: "Position",
+        name: propertyNames.positionStringProperty,
         property: this.model.positionProperty,
         unit: "m",
       },
       {
-        name: "Velocity",
+        name: propertyNames.velocityStringProperty,
         property: this.model.velocityProperty,
         unit: "m/s",
       },
       {
-        name: "Kinetic Energy",
+        name: propertyNames.kineticEnergyStringProperty,
         property: this.model.kineticEnergyProperty,
         unit: "J",
       },
       {
-        name: "Potential Energy",
+        name: propertyNames.potentialEnergyStringProperty,
         property: this.model.potentialEnergyProperty,
         unit: "J",
       },
       {
-        name: "Total Energy",
+        name: propertyNames.totalEnergyStringProperty,
         property: this.model.totalEnergyProperty,
         unit: "J",
       },
       {
-        name: "Time",
+        name: propertyNames.timeStringProperty,
         property: this.model.timeProperty,
         unit: "s",
       },
