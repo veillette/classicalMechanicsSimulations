@@ -365,7 +365,7 @@ export default class ConfigurableGraph extends Node {
     // X-axis selector
     const xLabel = new Text(graphLabels.xAxisLabelStringProperty, {
       fontSize: 14,
-      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const xItems = this.availableProperties.map((prop) => ({
@@ -382,12 +382,17 @@ export default class ConfigurableGraph extends Node {
       cornerRadius: 5,
       xMargin: 8,
       yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
     });
 
     // Y-axis selector
     const yLabel = new Text(graphLabels.yAxisLabelStringProperty, {
       fontSize: 14,
-      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const yItems = this.availableProperties.map((prop) => ({
@@ -404,6 +409,11 @@ export default class ConfigurableGraph extends Node {
       cornerRadius: 5,
       xMargin: 8,
       yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
     });
 
     // Arrange in vertical layout
