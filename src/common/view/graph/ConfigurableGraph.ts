@@ -268,7 +268,7 @@ export default class ConfigurableGraph extends Node {
         new Text(prop.name, {
           fontSize: 12,
         }),
-      tandemName: this.getNameValue(prop.name).replace(/\s/g, ""),
+      tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
     }));
 
     const xComboBox = new ComboBox(this.xPropertyProperty, xItems, listParent, {
@@ -289,7 +289,7 @@ export default class ConfigurableGraph extends Node {
         new Text(prop.name, {
           fontSize: 12,
         }),
-      tandemName: this.getNameValue(prop.name).replace(/\s/g, ""),
+      tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
     }));
 
     const yComboBox = new ComboBox(this.yPropertyProperty, yItems, listParent, {
