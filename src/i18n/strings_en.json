@@ -61,6 +61,20 @@
   },
   "preferences": {
     "autoPauseWhenTabHidden": "Auto-pause when tab hidden",
-    "autoPauseDescription": "Automatically pause the simulation when the browser tab is hidden"
+    "autoPauseDescription": "Automatically pause the simulation when the browser tab is hidden",
+    "solverMethod": "Solver Method",
+    "solverDescription": "Choose the numerical integration method for solving differential equations",
+    "solvers": {
+      "rk4": "RK4 (Runge-Kutta 4th Order)",
+      "adaptiveRK45": "Adaptive RK45",
+      "adaptiveEuler": "Adaptive Euler-Heun",
+      "modifiedMidpoint": "Modified Midpoint"
+    },
+    "solverDescriptions": {
+      "rk4": "Fixed-step 4th order method. Accurate and stable for most problems.",
+      "adaptiveRK45": "Variable-step 5th order method. Automatic error control, best for complex systems.",
+      "adaptiveEuler": "Variable-step 2nd order method. Fast and adaptive, good for smooth problems.",
+      "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums."
+    }
   }
 }

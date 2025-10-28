@@ -61,6 +61,20 @@
   },
   "preferences": {
     "autoPauseWhenTabHidden": "Mettre en pause automatiquement lorsque l'onglet est masqué",
-    "autoPauseDescription": "Mettre automatiquement en pause la simulation lorsque l'onglet du navigateur est masqué"
+    "autoPauseDescription": "Mettre automatiquement en pause la simulation lorsque l'onglet du navigateur est masqué",
+    "solverMethod": "Méthode de Résolution",
+    "solverDescription": "Choisir la méthode d'intégration numérique pour résoudre les équations différentielles",
+    "solvers": {
+      "rk4": "RK4 (Runge-Kutta 4e Ordre)",
+      "adaptiveRK45": "RK45 Adaptatif",
+      "adaptiveEuler": "Euler-Heun Adaptatif",
+      "modifiedMidpoint": "Point Milieu Modifié"
+    },
+    "solverDescriptions": {
+      "rk4": "Méthode à pas fixe d'ordre 4. Précise et stable pour la plupart des problèmes.",
+      "adaptiveRK45": "Méthode à pas variable d'ordre 5. Contrôle automatique des erreurs, idéale pour les systèmes complexes.",
+      "adaptiveEuler": "Méthode à pas variable d'ordre 2. Rapide et adaptative, bonne pour les problèmes lisses.",
+      "modifiedMidpoint": "Méthode à pas fixe d'ordre 2. Excellente pour les systèmes oscillatoires comme les ressorts et les pendules."
+    }
   }
 }

@@ -8,8 +8,14 @@ import {
   BooleanProperty,
   EnumerationProperty,
 } from "scenerystack/axon";
+import { ODESolver } from "./ODESolver.js";
 import { RungeKuttaSolver } from "./RungeKuttaSolver.js";
+import { AdaptiveRK45Solver } from "./AdaptiveRK45Solver.js";
+import { AdaptiveEulerSolver } from "./AdaptiveEulerSolver.js";
+import { ModifiedMidpointSolver } from "./ModifiedMidpointSolver.js";
+import SolverType from "./SolverType.js";
 import { TimeSpeed } from "scenerystack/scenery-phet";
+import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 
 /**
  * Abstract base class that all physics models should extend.
@@ -21,8 +27,8 @@ export abstract class BaseModel {
   public readonly timeSpeedProperty: EnumerationProperty<TimeSpeed>;
   public readonly timeProperty: NumberProperty;
 
-  // Physics solver
-  protected readonly solver: RungeKuttaSolver;
+  // Physics solver (can be swapped based on preference)
+  protected solver: ODESolver;
 
   protected constructor() {
     // Initialize time control properties
@@ -30,8 +36,31 @@ export abstract class BaseModel {
     this.isPlayingProperty = new BooleanProperty(true);
     this.timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
 
-    // Create physics solver
-    this.solver = new RungeKuttaSolver();
+    // Create initial physics solver based on preference
+    this.solver = this.createSolver(ClassicalMechanicsPreferences.solverTypeProperty.value);
+
+    // Listen for solver type changes and recreate solver
+    ClassicalMechanicsPreferences.solverTypeProperty.link((solverType) => {
+      this.solver = this.createSolver(solverType);
+    });
+  }
+
+  /**
+   * Create a solver instance based on the solver type.
+   */
+  private createSolver(solverType: SolverType): ODESolver {
+    if (solverType === SolverType.RK4) {
+      return new RungeKuttaSolver();
+    } else if (solverType === SolverType.ADAPTIVE_RK45) {
+      return new AdaptiveRK45Solver();
+    } else if (solverType === SolverType.ADAPTIVE_EULER) {
+      return new AdaptiveEulerSolver();
+    } else if (solverType === SolverType.MODIFIED_MIDPOINT) {
+      return new ModifiedMidpointSolver();
+    } else {
+      // Default to RK4
+      return new RungeKuttaSolver();
+    }
   }
 
   /**
