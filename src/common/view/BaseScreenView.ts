@@ -7,18 +7,16 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import {
   TimeControlNode,
   ResetAllButton,
-  PhetFont,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener, Text, VBox } from "scenerystack/scenery";
+import { KeyboardListener } from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
   DerivedProperty,
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
-import { Checkbox } from "scenerystack/sun";
-import { StringManager } from "../../i18n/StringManager.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -35,18 +33,12 @@ export abstract class BaseScreenView<
 > extends ScreenView {
   protected readonly model: T;
 
-  // Auto-pause preference: pause simulation when tab is hidden
-  private readonly autoPauseProperty: BooleanProperty;
-
   // Store the playing state before auto-pause so we can restore it
   private wasPlayingBeforeHidden: boolean = false;
 
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
     this.model = model;
-
-    // Initialize auto-pause preference (default: enabled)
-    this.autoPauseProperty = new BooleanProperty(true);
 
     // Set up Page Visibility API to handle tab switching
     this.setupPageVisibilityListener();
@@ -99,29 +91,10 @@ export abstract class BaseScreenView<
       },
     });
 
-    // Auto-pause checkbox
-    const stringManager = StringManager.getInstance();
-    const timeControlLabels = stringManager.getTimeControlLabels();
-
-    const autoPauseCheckbox = new Checkbox(
-      this.autoPauseProperty,
-      new Text(timeControlLabels.autoPauseWhenTabHiddenStringProperty, {
-        font: new PhetFont(14),
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      },
-    );
-
-    // Combine controls and checkbox vertically
-    const bottomControls = new VBox({
-      spacing: 8,
-      children: [autoPauseCheckbox, timeControlNode],
-      centerX: this.layoutBounds.centerX,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(bottomControls);
+    // Position time controls at bottom center
+    timeControlNode.centerX = this.layoutBounds.centerX;
+    timeControlNode.bottom = this.layoutBounds.maxY - 10;
+    this.addChild(timeControlNode);
 
     // Reset button
     const resetButton = new ResetAllButton({
@@ -156,7 +129,7 @@ export abstract class BaseScreenView<
     const handleVisibilityChange = () => {
       if (document.hidden) {
         // Tab became hidden
-        if (this.autoPauseProperty.value && this.model.isPlayingProperty.value) {
+        if (ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty.value && this.model.isPlayingProperty.value) {
           // Store that we were playing before hiding
           this.wasPlayingBeforeHidden = true;
           // Pause the simulation
@@ -164,7 +137,7 @@ export abstract class BaseScreenView<
         }
       } else {
         // Tab became visible
-        if (this.autoPauseProperty.value && this.wasPlayingBeforeHidden) {
+        if (ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty.value && this.wasPlayingBeforeHidden) {
           // Restore playing state
           this.model.isPlayingProperty.value = true;
           this.wasPlayingBeforeHidden = false;

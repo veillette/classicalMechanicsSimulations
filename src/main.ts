@@ -4,17 +4,24 @@ import "./brand.js";
 
 import { onReadyToLaunch, Sim, PreferencesModel } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
+import { VBox, Text } from "scenerystack/scenery";
+import { Checkbox } from "scenerystack/sun";
+import { PhetFont } from "scenerystack/scenery-phet";
 import { SingleSpringScreen } from "./single-spring/SingleSpringScreen.js";
 import { DoubleSpringScreen } from "./double-spring/DoubleSpringScreen.js";
 import { PendulumScreen } from "./pendulum/PendulumScreen.js";
 import { DoublePendulumScreen } from "./double-pendulum/DoublePendulumScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
 import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
+import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
 
 onReadyToLaunch(() => {
   // Get the string manager instance
   const stringManager = StringManager.getInstance();
   const screenNames = stringManager.getScreenNames();
+
+  // Get preferences strings
+  const preferencesLabels = stringManager.getPreferencesLabels();
 
   const simOptions = {
     webgl: true,
@@ -22,6 +29,35 @@ onReadyToLaunch(() => {
       visualOptions: {
         supportsProjectorMode: true,
         supportsInteractiveHighlights: true,
+      },
+      simulationOptions: {
+        customPreferences: [
+          {
+            createContent: (_tandem: Tandem) => {
+              return new VBox({
+                align: "left",
+                spacing: 8,
+                children: [
+                  new Checkbox(
+                    ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty,
+                    new Text(preferencesLabels.autoPauseWhenTabHiddenStringProperty, {
+                      font: new PhetFont(16),
+                      fill: ClassicalMechanicsColors.textColorProperty,
+                    }),
+                    {
+                      boxWidth: 16,
+                    },
+                  ),
+                  new Text(preferencesLabels.autoPauseDescriptionStringProperty, {
+                    font: new PhetFont(12),
+                    fill: ClassicalMechanicsColors.textColorProperty,
+                    maxWidth: 600,
+                  }),
+                ],
+              });
+            },
+          },
+        ],
       },
     }),
   };
