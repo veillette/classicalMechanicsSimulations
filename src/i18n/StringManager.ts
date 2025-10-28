@@ -173,6 +173,32 @@ export class StringManager {
     return {
       autoPauseWhenTabHiddenStringProperty: this.stringProperties.preferences.autoPauseWhenTabHiddenStringProperty,
       autoPauseDescriptionStringProperty: this.stringProperties.preferences.autoPauseDescriptionStringProperty,
+      solverMethodStringProperty: this.stringProperties.preferences.solverMethodStringProperty,
+      solverDescriptionStringProperty: this.stringProperties.preferences.solverDescriptionStringProperty,
+    };
+  }
+
+  /**
+   * Get solver name string properties
+   */
+  public getSolverNames() {
+    return {
+      rk4StringProperty: this.stringProperties.preferences.solvers.rk4StringProperty,
+      adaptiveRK45StringProperty: this.stringProperties.preferences.solvers.adaptiveRK45StringProperty,
+      adaptiveEulerStringProperty: this.stringProperties.preferences.solvers.adaptiveEulerStringProperty,
+      modifiedMidpointStringProperty: this.stringProperties.preferences.solvers.modifiedMidpointStringProperty,
+    };
+  }
+
+  /**
+   * Get solver description string properties
+   */
+  public getSolverDescriptions() {
+    return {
+      rk4StringProperty: this.stringProperties.preferences.solverDescriptions.rk4StringProperty,
+      adaptiveRK45StringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveRK45StringProperty,
+      adaptiveEulerStringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveEulerStringProperty,
+      modifiedMidpointStringProperty: this.stringProperties.preferences.solverDescriptions.modifiedMidpointStringProperty,
     };
   }
 

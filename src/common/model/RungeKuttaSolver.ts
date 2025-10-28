@@ -11,13 +11,9 @@
  * sub-step when the requested timestep is larger than the fixed timestep.
  */
 
-export type DerivativeFunction = (
-  state: number[],
-  derivatives: number[],
-  time: number,
-) => void;
+import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 
-export class RungeKuttaSolver {
+export class RungeKuttaSolver implements ODESolver {
   // Temporary arrays to avoid reallocation
   private k1: number[] = [];
   private k2: number[] = [];

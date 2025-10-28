@@ -4,8 +4,8 @@ import "./brand.js";
 
 import { onReadyToLaunch, Sim, PreferencesModel } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
-import { VBox, Text } from "scenerystack/scenery";
-import { Checkbox } from "scenerystack/sun";
+import { VBox, Text, HStrut } from "scenerystack/scenery";
+import { Checkbox, VerticalAquaRadioButtonGroup } from "scenerystack/sun";
 import { PhetFont } from "scenerystack/scenery-phet";
 import { SingleSpringScreen } from "./single-spring/SingleSpringScreen.js";
 import { DoubleSpringScreen } from "./double-spring/DoubleSpringScreen.js";
@@ -14,6 +14,7 @@ import { DoublePendulumScreen } from "./double-pendulum/DoublePendulumScreen.js"
 import { StringManager } from "./i18n/StringManager.js";
 import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
+import SolverType from "./common/model/SolverType.js";
 
 onReadyToLaunch(() => {
   // Get the string manager instance
@@ -22,6 +23,8 @@ onReadyToLaunch(() => {
 
   // Get preferences strings
   const preferencesLabels = stringManager.getPreferencesLabels();
+  const solverNames = stringManager.getSolverNames();
+  const solverDescriptions = stringManager.getSolverDescriptions();
 
   const simOptions = {
     webgl: true,
@@ -34,7 +37,8 @@ onReadyToLaunch(() => {
         customPreferences: [
           {
             createContent: (_tandem: Tandem) => {
-              return new VBox({
+              // Auto-pause preference
+              const autoPauseSection = new VBox({
                 align: "left",
                 spacing: 8,
                 children: [
@@ -42,7 +46,7 @@ onReadyToLaunch(() => {
                     ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty,
                     new Text(preferencesLabels.autoPauseWhenTabHiddenStringProperty, {
                       font: new PhetFont(16),
-                      fill: ClassicalMechanicsColors.textColorProperty,
+                      fill: "black",
                     }),
                     {
                       boxWidth: 16,
@@ -50,9 +54,125 @@ onReadyToLaunch(() => {
                   ),
                   new Text(preferencesLabels.autoPauseDescriptionStringProperty, {
                     font: new PhetFont(12),
-                    fill: ClassicalMechanicsColors.textColorProperty,
+                    fill: "black",
                     maxWidth: 600,
                   }),
+                ],
+              });
+
+              // Solver method preference
+              const solverRadioButtonGroup = new VerticalAquaRadioButtonGroup(
+                ClassicalMechanicsPreferences.solverTypeProperty,
+                [
+                  {
+                    value: SolverType.RK4,
+                    createNode: () => new VBox({
+                      align: "left",
+                      spacing: 4,
+                      children: [
+                        new Text(solverNames.rk4StringProperty, {
+                          font: new PhetFont(14),
+                          fill: "black",
+                        }),
+                        new Text(solverDescriptions.rk4StringProperty, {
+                          font: new PhetFont(11),
+                          fill: "rgb(80,80,80)",
+                          maxWidth: 550,
+                        }),
+                      ],
+                    }),
+                    tandemName: "rk4RadioButton",
+                  },
+                  {
+                    value: SolverType.ADAPTIVE_RK45,
+                    createNode: () => new VBox({
+                      align: "left",
+                      spacing: 4,
+                      children: [
+                        new Text(solverNames.adaptiveRK45StringProperty, {
+                          font: new PhetFont(14),
+                          fill: "black",
+                        }),
+                        new Text(solverDescriptions.adaptiveRK45StringProperty, {
+                          font: new PhetFont(11),
+                          fill: "rgb(80,80,80)",
+                          maxWidth: 550,
+                        }),
+                      ],
+                    }),
+                    tandemName: "adaptiveRK45RadioButton",
+                  },
+                  {
+                    value: SolverType.ADAPTIVE_EULER,
+                    createNode: () => new VBox({
+                      align: "left",
+                      spacing: 4,
+                      children: [
+                        new Text(solverNames.adaptiveEulerStringProperty, {
+                          font: new PhetFont(14),
+                          fill: "black",
+                        }),
+                        new Text(solverDescriptions.adaptiveEulerStringProperty, {
+                          font: new PhetFont(11),
+                          fill: "rgb(80,80,80)",
+                          maxWidth: 550,
+                        }),
+                      ],
+                    }),
+                    tandemName: "adaptiveEulerRadioButton",
+                  },
+                  {
+                    value: SolverType.MODIFIED_MIDPOINT,
+                    createNode: () => new VBox({
+                      align: "left",
+                      spacing: 4,
+                      children: [
+                        new Text(solverNames.modifiedMidpointStringProperty, {
+                          font: new PhetFont(14),
+                          fill: "black",
+                        }),
+                        new Text(solverDescriptions.modifiedMidpointStringProperty, {
+                          font: new PhetFont(11),
+                          fill: "rgb(80,80,80)",
+                          maxWidth: 550,
+                        }),
+                      ],
+                    }),
+                    tandemName: "modifiedMidpointRadioButton",
+                  },
+                ],
+                {
+                  spacing: 12,
+                  radioButtonOptions: {
+                    radius: 8,
+                  },
+                },
+              );
+
+              const solverSection = new VBox({
+                align: "left",
+                spacing: 12,
+                children: [
+                  new Text(preferencesLabels.solverMethodStringProperty, {
+                    font: new PhetFont({ size: 16, weight: "bold" }),
+                    fill: "black",
+                  }),
+                  new Text(preferencesLabels.solverDescriptionStringProperty, {
+                    font: new PhetFont(12),
+                    fill: "black",
+                    maxWidth: 600,
+                  }),
+                  solverRadioButtonGroup,
+                ],
+              });
+
+              return new VBox({
+                align: "left",
+                spacing: 20,
+                children: [
+                  autoPauseSection,
+                  new HStrut(650), // Set minimum width
+                  solverSection,
                 ],
               });
             },

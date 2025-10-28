@@ -5,8 +5,9 @@
  * Contains simulation-wide settings that users can configure.
  */
 
-import { BooleanProperty } from "scenerystack/axon";
+import { BooleanProperty, EnumerationProperty } from "scenerystack/axon";
 import classicalMechanics from "./ClassicalMechanicsNamespace.js";
+import SolverType from "./common/model/SolverType.js";
 
 /**
  * Preferences for the Classical Mechanics Simulations
@@ -18,6 +19,12 @@ const ClassicalMechanicsPreferences = {
    * preventing large dt jumps and maintaining smooth playback.
    */
   autoPauseWhenTabHiddenProperty: new BooleanProperty(true),
+
+  /**
+   * The ODE solver method to use for numerical integration.
+   * Options: RK4, Adaptive RK45, Adaptive Euler, Modified Midpoint
+   */
+  solverTypeProperty: new EnumerationProperty(SolverType.RK4),
 };
 
 // Register the namespace
