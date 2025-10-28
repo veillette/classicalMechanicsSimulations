@@ -200,6 +200,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           decimalPlaces: 1,
           valuePattern: "{0} m",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -212,6 +215,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         numberDisplayOptions: {
           decimalPlaces: 1,
           valuePattern: "{0} m",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );
@@ -226,6 +232,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           decimalPlaces: 1,
           valuePattern: "{0} kg",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -238,6 +247,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         numberDisplayOptions: {
           decimalPlaces: 1,
           valuePattern: "{0} kg",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );
@@ -252,6 +264,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           decimalPlaces: 1,
           valuePattern: "{0} m/s²",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -264,6 +279,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         numberDisplayOptions: {
           decimalPlaces: 2,
           valuePattern: "{0} N·m·s",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );

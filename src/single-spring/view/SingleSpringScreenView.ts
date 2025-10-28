@@ -170,6 +170,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           decimalPlaces: 1,
           valuePattern: "{0} kg",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -183,6 +186,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           decimalPlaces: 0,
           valuePattern: "{0} N/m",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -195,6 +201,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         numberDisplayOptions: {
           decimalPlaces: 2,
           valuePattern: "{0} N·s/m",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );

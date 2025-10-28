@@ -143,6 +143,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           decimalPlaces: 1,
           valuePattern: "{0} kg",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -155,6 +158,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         numberDisplayOptions: {
           decimalPlaces: 1,
           valuePattern: "{0} kg",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );
@@ -169,6 +175,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           decimalPlaces: 0,
           valuePattern: "{0} N/m",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -181,6 +190,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         numberDisplayOptions: {
           decimalPlaces: 0,
           valuePattern: "{0} N/m",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );

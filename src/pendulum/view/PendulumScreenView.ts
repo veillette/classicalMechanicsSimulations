@@ -183,6 +183,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           decimalPlaces: 1,
           valuePattern: "{0} m",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -195,6 +198,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
         numberDisplayOptions: {
           decimalPlaces: 1,
           valuePattern: "{0} kg",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );
@@ -209,6 +215,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           decimalPlaces: 1,
           valuePattern: "{0} m/s²",
         },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
       },
     );
 
@@ -221,6 +230,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
         numberDisplayOptions: {
           decimalPlaces: 2,
           valuePattern: "{0} N·m·s",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
         },
       },
     );
