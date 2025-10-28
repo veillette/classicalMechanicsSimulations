@@ -49,8 +49,8 @@ export default class ConfigurableGraph extends Node {
   private readonly yAxisLabelNode: Text;
 
   // Grid and tick components
-  private readonly xGridLineSet: GridLineSet;
-  private readonly yGridLineSet: GridLineSet;
+  private readonly verticalGridLineSet: GridLineSet;
+  private readonly horizontalGridLineSet: GridLineSet;
   private readonly xTickMarkSet: TickMarkSet;
   private readonly yTickMarkSet: TickMarkSet;
   private readonly xTickLabelSet: TickLabelSet;
@@ -92,12 +92,16 @@ export default class ConfigurableGraph extends Node {
     this.graphContentNode = new Node();
 
     // Create chart transform with initial ranges
+    const initialRange = new Range(-10, 10);
     this.chartTransform = new ChartTransform({
       viewWidth: width,
       viewHeight: height,
-      modelXRange: new Range(-10, 10),
-      modelYRange: new Range(-10, 10),
+      modelXRange: initialRange,
+      modelYRange: initialRange,
     });
+
+    // Calculate appropriate initial tick spacing
+    const initialSpacing = this.calculateTickSpacing(initialRange.getLength());
 
     // Create chart background
     this.chartRectangle = new ChartRectangle(this.chartTransform, {
@@ -109,20 +113,20 @@ export default class ConfigurableGraph extends Node {
     this.graphContentNode.addChild(this.chartRectangle);
 
     // Create grid lines
-    this.xGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, 1, {
+    this.verticalGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, initialSpacing, {
       stroke: "lightgray",
       lineWidth: 0.5,
     });
-    this.graphContentNode.addChild(this.xGridLineSet);
+    this.graphContentNode.addChild(this.verticalGridLineSet);
 
-    this.yGridLineSet = new GridLineSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
+    this.horizontalGridLineSet = new GridLineSet(this.chartTransform, Orientation.HORIZONTAL, initialSpacing, {
       stroke: "lightgray",
       lineWidth: 0.5,
     });
-    this.graphContentNode.addChild(this.yGridLineSet);
+    this.graphContentNode.addChild(this.horizontalGridLineSet);
 
     // Create tick marks
-    this.xTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
+    this.xTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.HORIZONTAL, initialSpacing, {
       edge: "min",
       extent: 8,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
@@ -130,7 +134,7 @@ export default class ConfigurableGraph extends Node {
     });
     this.graphContentNode.addChild(this.xTickMarkSet);
 
-    this.yTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.VERTICAL, 1, {
+    this.yTickMarkSet = new TickMarkSet(this.chartTransform, Orientation.VERTICAL, initialSpacing, {
       edge: "min",
       extent: 8,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
@@ -139,7 +143,7 @@ export default class ConfigurableGraph extends Node {
     this.graphContentNode.addChild(this.yTickMarkSet);
 
     // Create tick labels
-    this.xTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.HORIZONTAL, 1, {
+    this.xTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.HORIZONTAL, initialSpacing, {
       edge: "min",
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
@@ -149,7 +153,7 @@ export default class ConfigurableGraph extends Node {
     });
     this.graphContentNode.addChild(this.xTickLabelSet);
 
-    this.yTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.VERTICAL, 1, {
+    this.yTickLabelSet = new TickLabelSet(this.chartTransform, Orientation.VERTICAL, initialSpacing, {
       edge: "min",
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
@@ -371,9 +375,13 @@ export default class ConfigurableGraph extends Node {
       yMax = Math.max(yMax, point.y);
     }
 
-    // Add 10% padding
-    const xPadding = (xMax - xMin) * 0.1 || 1;
-    const yPadding = (yMax - yMin) * 0.1 || 1;
+    // Add 10% padding with a minimum to ensure reasonable range sizes
+    const xSpan = xMax - xMin;
+    const ySpan = yMax - yMin;
+
+    // Use 10% padding but ensure a minimum range of 2 units
+    const xPadding = Math.max(xSpan * 0.1, (2 - xSpan) / 2, 0.1);
+    const yPadding = Math.max(ySpan * 0.1, (2 - ySpan) / 2, 0.1);
 
     const xRange = new Range(xMin - xPadding, xMax + xPadding);
     const yRange = new Range(yMin - yPadding, yMax + yPadding);
@@ -393,8 +401,8 @@ export default class ConfigurableGraph extends Node {
     const xSpacing = this.calculateTickSpacing(xRange.getLength());
     const ySpacing = this.calculateTickSpacing(yRange.getLength());
 
-    this.xGridLineSet.setSpacing(xSpacing);
-    this.yGridLineSet.setSpacing(ySpacing);
+    this.verticalGridLineSet.setSpacing(ySpacing);
+    this.horizontalGridLineSet.setSpacing(xSpacing);
     this.xTickMarkSet.setSpacing(xSpacing);
     this.yTickMarkSet.setSpacing(ySpacing);
     this.xTickLabelSet.setSpacing(xSpacing);
@@ -405,22 +413,37 @@ export default class ConfigurableGraph extends Node {
    * Calculate appropriate tick spacing for a given range
    */
   private calculateTickSpacing(rangeLength: number): number {
-    // Target ~5 ticks to avoid too many grid lines
-    const roughSpacing = rangeLength / 5;
+    // Handle edge cases
+    if (!isFinite(rangeLength) || rangeLength <= 0) {
+      return 1;
+    }
+
+    // Target ~5-6 ticks to avoid too many grid lines
+    const targetTicks = 5;
+    const roughSpacing = rangeLength / targetTicks;
+
+    // Handle very small spacings
+    if (roughSpacing < 1e-10) {
+      return 1e-10;
+    }
 
     // Round to a nice number (1, 2, 5, 10, 20, 50, etc.)
     const magnitude = Math.pow(10, Math.floor(Math.log10(roughSpacing)));
     const residual = roughSpacing / magnitude;
 
+    let spacing: number;
     if (residual <= 1.5) {
-      return magnitude;
+      spacing = magnitude;
     } else if (residual <= 3.5) {
-      return 2 * magnitude;
+      spacing = 2 * magnitude;
     } else if (residual <= 7.5) {
-      return 5 * magnitude;
+      spacing = 5 * magnitude;
     } else {
-      return 10 * magnitude;
+      spacing = 10 * magnitude;
     }
+
+    // Ensure minimum spacing to prevent too many ticks
+    return Math.max(spacing, rangeLength / 20);
   }
 
   /**
