@@ -176,10 +176,13 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       2000, // max data points
       this, // list parent for combo boxes
     );
-    // Position graph underneath the control panel
+    // Position graph at the top right
     this.configurableGraph.right = this.layoutBounds.maxX - 10;
-    this.configurableGraph.top = controlPanel.bottom + 10;
+    this.configurableGraph.top = this.layoutBounds.minY + 10;
     this.addChild(this.configurableGraph);
+
+    // Position control panel below the graph
+    controlPanel.top = this.configurableGraph.bottom + 10;
 
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
@@ -301,7 +304,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         lineWidth: 1,
         cornerRadius: 5,
         right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10,
+        // Position will be set after graph is positioned
       },
     );
 

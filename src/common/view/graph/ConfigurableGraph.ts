@@ -202,11 +202,18 @@ export default class ConfigurableGraph extends Node {
     });
     this.graphContentNode.addChild(this.yAxisLabelNode);
 
-    // Create axis selectors
-    const selectorPanel = this.createSelectorPanel(listParent);
-    selectorPanel.left = this.graphWidth + 10;
-    selectorPanel.top = 0;
-    this.graphContentNode.addChild(selectorPanel);
+    // Create axis selectors positioned directly on the axes
+    const { xSelector, ySelector } = this.createAxisSelectors(listParent);
+
+    // Position X-axis selector below the graph, centered
+    xSelector.centerX = this.graphWidth / 2;
+    xSelector.top = this.graphHeight + 60;
+    this.graphContentNode.addChild(xSelector);
+
+    // Position Y-axis selector to the left of the graph, centered vertically
+    ySelector.right = -60;
+    ySelector.centerY = this.graphHeight / 2;
+    this.graphContentNode.addChild(ySelector);
 
     // Update labels when axes change
     this.xPropertyProperty.link((property) => {
@@ -420,19 +427,10 @@ export default class ConfigurableGraph extends Node {
   }
 
   /**
-   * Create the panel with combo boxes for axis selection
+   * Create combo boxes for axis selection positioned on the axes
    */
-  private createSelectorPanel(listParent: Node): Node {
-    // Get string manager
-    const stringManager = StringManager.getInstance();
-    const graphLabels = stringManager.getGraphLabels();
-
-    // X-axis selector
-    const xLabel = new Text(graphLabels.xAxisLabelStringProperty, {
-      fontSize: 14,
-      fill: ClassicalMechanicsColors.textColorProperty,
-    });
-
+  private createAxisSelectors(listParent: Node): { xSelector: Node; ySelector: Node } {
+    // X-axis selector (positioned below horizontal axis)
     const xItems = this.availableProperties.map((prop) => ({
       value: prop,
       createNode: () =>
@@ -443,7 +441,7 @@ export default class ConfigurableGraph extends Node {
       tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
     }));
 
-    const xComboBox = new ComboBox(this.xPropertyProperty, xItems, listParent, {
+    const xSelector = new ComboBox(this.xPropertyProperty, xItems, listParent, {
       cornerRadius: 5,
       xMargin: 8,
       yMargin: 4,
@@ -454,12 +452,7 @@ export default class ConfigurableGraph extends Node {
       highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
     });
 
-    // Y-axis selector
-    const yLabel = new Text(graphLabels.yAxisLabelStringProperty, {
-      fontSize: 14,
-      fill: ClassicalMechanicsColors.textColorProperty,
-    });
-
+    // Y-axis selector (positioned left of vertical axis)
     const yItems = this.availableProperties.map((prop) => ({
       value: prop,
       createNode: () =>
@@ -470,7 +463,7 @@ export default class ConfigurableGraph extends Node {
       tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
     }));
 
-    const yComboBox = new ComboBox(this.yPropertyProperty, yItems, listParent, {
+    const ySelector = new ComboBox(this.yPropertyProperty, yItems, listParent, {
       cornerRadius: 5,
       xMargin: 8,
       yMargin: 4,
@@ -479,17 +472,10 @@ export default class ConfigurableGraph extends Node {
       listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      rotation: -Math.PI / 2, // Rotate the button, but dropdown will appear normally
     });
 
-    // Arrange in vertical layout
-    return new VBox({
-      spacing: 10,
-      align: "left",
-      children: [
-        new VBox({ spacing: 5, align: "left", children: [xLabel, xComboBox] }),
-        new VBox({ spacing: 5, align: "left", children: [yLabel, yComboBox] }),
-      ],
-    });
+    return { xSelector, ySelector };
   }
 
   /**
