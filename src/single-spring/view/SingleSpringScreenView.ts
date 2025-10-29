@@ -274,11 +274,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const dampingControl = new NumberControl(
       controlLabels.dampingStringProperty,
       this.model.dampingProperty,
-      new Range(0.0, 2.0),
+      new Range(0.0, 20.0),
       {
-        delta: 0.05,
+        delta: 0.5,
         numberDisplayOptions: {
-          decimalPlaces: 2,
+          decimalPlaces: 1,
           valuePattern: "{0} N·s/m",
         },
         titleNodeOptions: {
@@ -368,8 +368,13 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Reset velocity when applying preset
     this.model.velocityProperty.value = 0;
 
-    // Reset simulation time
-    this.model.reset();
+    // Reset simulation time only (don't reset the parameters we just set!)
+    this.model.timeProperty.value = 0;
+
+    // Clear the graph when switching presets (if it exists)
+    if (this.configurableGraph) {
+      this.configurableGraph.clearData();
+    }
 
     this.isApplyingPreset = false;
   }
