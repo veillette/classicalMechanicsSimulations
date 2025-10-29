@@ -85,13 +85,18 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.massNode);
 
-    // Add drag listener to mass
+    // Add drag listener to mass with accessibility announcements
     this.massNode.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader("Dragging mass block");
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
@@ -99,6 +104,10 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           this.model.positionProperty.value = modelPosition.x;
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
+        },
+        end: () => {
+          const position = this.model.positionProperty.value.toFixed(2);
+          this.announceToScreenReader(`Mass released at position ${position} meters`);
         },
       }),
     );
@@ -126,6 +135,17 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.model.massProperty.lazyLink(detectCustomChange);
     this.model.springConstantProperty.lazyLink(detectCustomChange);
     this.model.dampingProperty.lazyLink(detectCustomChange);
+
+    // Add accessibility announcements for parameter changes
+    this.model.massProperty.lazyLink((mass) => {
+      this.announceToScreenReader(`Mass changed to ${mass.toFixed(1)} kilograms`);
+    });
+    this.model.springConstantProperty.lazyLink((springConstant) => {
+      this.announceToScreenReader(`Spring constant changed to ${springConstant.toFixed(0)} newtons per meter`);
+    });
+    this.model.dampingProperty.lazyLink((damping) => {
+      this.announceToScreenReader(`Damping changed to ${damping.toFixed(1)} newton seconds per meter`);
+    });
 
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
@@ -378,6 +398,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     if (this.configurableGraph) {
       this.configurableGraph.clearData();
     }
+
+    // Announce preset change
+    this.announceToScreenReader(`Preset applied: ${preset.nameProperty.value}`);
 
     this.isApplyingPreset = false;
   }

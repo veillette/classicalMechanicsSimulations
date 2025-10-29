@@ -99,6 +99,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.bob1Node);
 
@@ -108,13 +110,18 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.bob2Node);
 
-    // Drag listener for bob 1
+    // Drag listener for bob 1 with accessibility announcements
     this.bob1Node.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader("Dragging upper pendulum bob");
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const delta = parentPoint.minus(this.pivotPoint);
@@ -123,13 +130,20 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           this.model.angularVelocity1Property.value = 0;
           this.clearTrail();
         },
+        end: () => {
+          const angleDegrees = (this.model.angle1Property.value * 180 / Math.PI).toFixed(1);
+          this.announceToScreenReader(`Upper bob released at ${angleDegrees} degrees`);
+        },
       }),
     );
 
-    // Drag listener for bob 2
+    // Drag listener for bob 2 with accessibility announcements
     this.bob2Node.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader("Dragging lower pendulum bob");
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           // Calculate position of bob 1 first
@@ -147,6 +161,10 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           this.model.angle2Property.value = angle;
           this.model.angularVelocity2Property.value = 0;
           this.clearTrail();
+        },
+        end: () => {
+          const angleDegrees = (this.model.angle2Property.value * 180 / Math.PI).toFixed(1);
+          this.announceToScreenReader(`Lower bob released at ${angleDegrees} degrees`);
         },
       }),
     );

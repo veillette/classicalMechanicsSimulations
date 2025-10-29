@@ -61,6 +61,9 @@ export default class ConfigurableGraph extends Node {
   private isManuallyZoomed: boolean = false;
   private readonly zoomFactor: number = 1.1; // 10% zoom per wheel tick
 
+  // Screen reader announcement element
+  private readonly ariaLiveRegion: HTMLElement;
+
   /**
    * @param availableProperties - List of properties that can be plotted
    * @param initialXProperty - Initial property for x-axis
@@ -208,17 +211,19 @@ export default class ConfigurableGraph extends Node {
     selectorPanel.top = 0;
     this.graphContentNode.addChild(selectorPanel);
 
-    // Update labels when axes change
+    // Update labels when axes change and announce to screen readers
     this.xPropertyProperty.link((property) => {
       this.xAxisLabelNode.string = this.formatAxisLabel(property);
       this.xAxisLabelNode.centerX = this.graphWidth / 2;
       this.clearData();
+      this.announceGraphChange(`X-axis changed to ${this.getNameValue(property.name)}`);
     });
 
     this.yPropertyProperty.link((property) => {
       this.yAxisLabelNode.string = this.formatAxisLabel(property);
       this.yAxisLabelNode.centerY = this.graphHeight / 2;
       this.clearData();
+      this.announceGraphChange(`Y-axis changed to ${this.getNameValue(property.name)}`);
     });
 
     // Add the graph content container
@@ -249,9 +254,17 @@ export default class ConfigurableGraph extends Node {
     showGraphCheckbox.top = -30;
     this.addChild(showGraphCheckbox);
 
+    // Create ARIA live region for screen reader announcements
+    this.ariaLiveRegion = this.createAriaLiveRegion();
+
     // Add zoom and pan controls (non-intrusive mouse and keyboard)
     this.setupZoomControls();
     this.setupPanControls();
+
+    // Link visibility changes to announce to screen readers
+    this.graphVisibleProperty.link((visible) => {
+      this.announceGraphChange(visible ? "Graph shown" : "Graph hidden");
+    });
   }
 
   /**
@@ -697,5 +710,37 @@ export default class ConfigurableGraph extends Node {
    */
   public getYProperty(): PlottableProperty {
     return this.yPropertyProperty.value;
+  }
+
+  /**
+   * Create an ARIA live region for screen reader announcements.
+   */
+  private createAriaLiveRegion(): HTMLElement {
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.setAttribute('role', 'status');
+    liveRegion.setAttribute('aria-label', 'Graph updates');
+    liveRegion.style.position = 'absolute';
+    liveRegion.style.left = '-10000px';
+    liveRegion.style.width = '1px';
+    liveRegion.style.height = '1px';
+    liveRegion.style.overflow = 'hidden';
+    document.body.appendChild(liveRegion);
+    return liveRegion;
+  }
+
+  /**
+   * Announce a graph-related message to screen readers.
+   * @param message - The message to announce
+   */
+  private announceGraphChange(message: string): void {
+    // Clear previous announcement
+    this.ariaLiveRegion.textContent = '';
+
+    // Small delay to ensure screen readers pick up the change
+    setTimeout(() => {
+      this.ariaLiveRegion.textContent = message;
+    }, 100);
   }
 }

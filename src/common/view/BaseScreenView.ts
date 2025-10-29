@@ -36,12 +36,21 @@ export abstract class BaseScreenView<
   // Store the playing state before auto-pause so we can restore it
   private wasPlayingBeforeHidden: boolean = false;
 
+  // Screen reader announcement element
+  private readonly ariaLiveRegion: HTMLElement;
+
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
     this.model = model;
 
+    // Create ARIA live region for screen reader announcements
+    this.ariaLiveRegion = this.createAriaLiveRegion();
+
     // Set up Page Visibility API to handle tab switching
     this.setupPageVisibilityListener();
+
+    // Set up accessibility listeners for state changes
+    this.setupAccessibilityListeners();
   }
 
   /**
@@ -107,14 +116,32 @@ export abstract class BaseScreenView<
     });
     this.addChild(resetButton);
 
-    // Add keyboard shortcuts for accessibility
+    // Add comprehensive keyboard shortcuts for accessibility
     const keyboardListener = new KeyboardListener({
-      keys: ["r"],
+      keys: ["r", "space", "arrowLeft", "arrowRight"],
       fire: (event, keysPressed) => {
         if (keysPressed === "r") {
           // Reset simulation with R key
           this.model.reset();
           this.reset();
+          this.announceToScreenReader("Simulation reset");
+        } else if (keysPressed === "space") {
+          // Toggle play/pause with Space key
+          this.model.isPlayingProperty.value = !this.model.isPlayingProperty.value;
+          const announcement = this.model.isPlayingProperty.value
+            ? "Simulation playing"
+            : "Simulation paused";
+          this.announceToScreenReader(announcement);
+        } else if (keysPressed === "arrowLeft" && !this.model.isPlayingProperty.value) {
+          // Step backward with Left Arrow (only when paused)
+          this.model.step(-manualStepSize, true);
+          this.step(-manualStepSize);
+          this.announceToScreenReader("Stepped backward");
+        } else if (keysPressed === "arrowRight" && !this.model.isPlayingProperty.value) {
+          // Step forward with Right Arrow (only when paused)
+          this.model.step(manualStepSize, true);
+          this.step(manualStepSize);
+          this.announceToScreenReader("Stepped forward");
         }
       },
     });
@@ -162,5 +189,54 @@ export abstract class BaseScreenView<
    */
   public step(_dt: number): void {
     // Subclasses should override to update their visualizations
+  }
+
+  /**
+   * Create an ARIA live region for screen reader announcements.
+   */
+  private createAriaLiveRegion(): HTMLElement {
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.setAttribute('role', 'status');
+    liveRegion.style.position = 'absolute';
+    liveRegion.style.left = '-10000px';
+    liveRegion.style.width = '1px';
+    liveRegion.style.height = '1px';
+    liveRegion.style.overflow = 'hidden';
+    document.body.appendChild(liveRegion);
+    return liveRegion;
+  }
+
+  /**
+   * Announce a message to screen readers.
+   * @param message - The message to announce
+   */
+  protected announceToScreenReader(message: string): void {
+    // Clear previous announcement
+    this.ariaLiveRegion.textContent = '';
+
+    // Small delay to ensure screen readers pick up the change
+    setTimeout(() => {
+      this.ariaLiveRegion.textContent = message;
+    }, 100);
+  }
+
+  /**
+   * Set up listeners for accessibility-related state changes.
+   */
+  private setupAccessibilityListeners(): void {
+    // Announce when play state changes
+    this.model.isPlayingProperty.lazyLink((isPlaying) => {
+      const announcement = isPlaying
+        ? "Simulation started"
+        : "Simulation paused";
+      this.announceToScreenReader(announcement);
+    });
+
+    // Announce when speed changes
+    this.model.timeSpeedProperty.lazyLink((speed) => {
+      this.announceToScreenReader(`Speed changed to ${speed.name}`);
+    });
   }
 }

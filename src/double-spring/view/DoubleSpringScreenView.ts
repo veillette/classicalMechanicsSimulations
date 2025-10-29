@@ -74,6 +74,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.mass1Node);
 
@@ -84,13 +86,18 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.mass2Node);
 
-    // Drag listeners
+    // Drag listeners with accessibility announcements
     this.mass1Node.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader("Dragging mass 1");
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
@@ -98,18 +105,29 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           this.model.position1Property.value = modelPosition.x;
           this.model.velocity1Property.value = 0;
         },
+        end: () => {
+          const position = this.model.position1Property.value.toFixed(2);
+          this.announceToScreenReader(`Mass 1 released at position ${position} meters`);
+        },
       }),
     );
 
     this.mass2Node.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader("Dragging mass 2");
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
             this.modelViewTransform.viewToModelPosition(parentPoint);
           this.model.position2Property.value = modelPosition.x;
           this.model.velocity2Property.value = 0;
+        },
+        end: () => {
+          const position = this.model.position2Property.value.toFixed(2);
+          this.announceToScreenReader(`Mass 2 released at position ${position} meters`);
         },
       }),
     );

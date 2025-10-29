@@ -75,19 +75,28 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.bobNode);
 
-    // Drag listener for bob
+    // Drag listener for bob with accessibility announcements
     this.bobNode.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader("Dragging pendulum bob");
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const delta = parentPoint.minus(this.pivotPoint);
           const angle = Math.atan2(delta.x, delta.y); // angle from vertical
           this.model.angleProperty.value = angle;
           this.model.angularVelocityProperty.value = 0;
+        },
+        end: () => {
+          const angleDegrees = (this.model.angleProperty.value * 180 / Math.PI).toFixed(1);
+          this.announceToScreenReader(`Pendulum bob released at ${angleDegrees} degrees from vertical`);
         },
       }),
     );
