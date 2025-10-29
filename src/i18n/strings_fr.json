@@ -76,5 +76,63 @@
       "adaptiveEuler": "Méthode à pas variable d'ordre 2. Rapide et adaptative, bonne pour les problèmes lisses.",
       "modifiedMidpoint": "Méthode à pas fixe d'ordre 2. Excellente pour les systèmes oscillatoires comme les ressorts et les pendules."
     }
+  },
+  "presets": {
+    "label": "Préréglage:",
+    "custom": "Personnalisé",
+    "singleSpring": {
+      "lightAndBouncy": "Léger & Rebondissant",
+      "lightAndBouncyDesc": "Masse faible avec ressort rigide - oscillations rapides",
+      "heavyAndSlow": "Lourd & Lent",
+      "heavyAndSlowDesc": "Masse élevée avec ressort souple - oscillations lentes",
+      "criticallyDamped": "Amorti Critique",
+      "criticallyDampedDesc": "Retour à l'équilibre sans oscillation",
+      "underdamped": "Sous-Amorti",
+      "underdampedDesc": "Amortissement léger - décroissance graduelle des oscillations",
+      "overdamped": "Sur-Amorti",
+      "overdampedDesc": "Amortissement fort - retour lent à l'équilibre"
+    },
+    "doubleSpring": {
+      "symmetric": "Mode Symétrique",
+      "symmetricDesc": "Masses et ressorts égaux - mouvement synchronisé",
+      "asymmetricMasses": "Masses Asymétriques",
+      "asymmetricMassesDesc": "Masses différentes créent des battements intéressants",
+      "differentSprings": "Ressorts Différents",
+      "differentSpringsDesc": "Constantes de ressort inégales conduisent au transfert d'énergie",
+      "coupledResonance": "Résonance Couplée",
+      "coupledResonanceDesc": "Les masses échangent de l'énergie"
+    },
+    "pendulum": {
+      "shortAndFast": "Court & Rapide",
+      "shortAndFastDesc": "Pendule court avec oscillations rapides",
+      "longAndSlow": "Long & Lent",
+      "longAndSlowDesc": "Pendule long avec des oscillations lentes et gracieuses",
+      "smallAngle": "Petit Angle (MHS)",
+      "smallAngleDesc": "Démontre l'approximation du mouvement harmonique simple",
+      "largeAmplitude": "Grande Amplitude",
+      "largeAmplitudeDesc": "Les effets non linéaires deviennent apparents"
+    },
+    "doublePendulum": {
+      "synchronized": "Synchronisé",
+      "synchronizedDesc": "Petits angles, les deux pendules oscillent ensemble",
+      "chaoticDance": "Danse Chaotique",
+      "chaoticDanceDesc": "Grands angles créent un mouvement chaotique imprévisible",
+      "counterRotation": "Rotation Contraire",
+      "counterRotationDesc": "Les pendules tournent dans des directions opposées",
+      "energyTransfer": "Transfert d'Énergie",
+      "energyTransferDesc": "L'énergie circule entre les deux pendules"
+    }
+  },
+  "visualization": {
+    "showVectors": "Afficher les Vecteurs",
+    "showEnergyChart": "Afficher le Graphique d'Énergie",
+    "velocity": "Vitesse",
+    "acceleration": "Accélération",
+    "force": "Force",
+    "energy": {
+      "kinetic": "Cinétique",
+      "potential": "Potentielle",
+      "total": "Totale"
+    }
   }
 }

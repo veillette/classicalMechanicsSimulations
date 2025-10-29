@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, VBox, Text, Circle } from "scenerystack/scenery";
+import { Node, VBox, Text, Circle, DragListener } from "scenerystack/scenery";
 import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,
@@ -119,13 +119,13 @@ export default class ConfigurableGraph extends Node {
 
     // Create grid lines
     this.verticalGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, initialSpacing, {
-      stroke: "lightgray",
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
     this.graphContentNode.addChild(this.verticalGridLineSet);
 
     this.horizontalGridLineSet = new GridLineSet(this.chartTransform, Orientation.HORIZONTAL, initialSpacing, {
-      stroke: "lightgray",
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
     this.graphContentNode.addChild(this.horizontalGridLineSet);
@@ -249,8 +249,9 @@ export default class ConfigurableGraph extends Node {
     showGraphCheckbox.top = -30;
     this.addChild(showGraphCheckbox);
 
-    // Add zoom controls (non-intrusive mouse and keyboard)
+    // Add zoom and pan controls (non-intrusive mouse and keyboard)
     this.setupZoomControls();
+    this.setupPanControls();
   }
 
   /**
@@ -288,6 +289,70 @@ export default class ConfigurableGraph extends Node {
 
     // Make chart rectangle pickable so it can receive input
     this.chartRectangle.pickable = true;
+  }
+
+  /**
+   * Setup pan controls using drag
+   */
+  private setupPanControls(): void {
+    let dragStartModelPoint: Vector2 | null = null;
+    let dragStartXRange: Range | null = null;
+    let dragStartYRange: Range | null = null;
+
+    const dragListener = new DragListener({
+      start: (event) => {
+        // Record the starting point in model coordinates
+        const viewPoint = this.chartRectangle.globalToLocalPoint(event.pointer.point);
+        dragStartModelPoint = this.chartTransform.viewToModelPosition(viewPoint);
+        dragStartXRange = this.chartTransform.modelXRange.copy();
+        dragStartYRange = this.chartTransform.modelYRange.copy();
+
+        // Mark as manually zoomed so auto-scaling doesn't interfere
+        this.isManuallyZoomed = true;
+      },
+
+      drag: (event) => {
+        if (dragStartModelPoint && dragStartXRange && dragStartYRange) {
+          // Get current point in model coordinates
+          const viewPoint = this.chartRectangle.globalToLocalPoint(event.pointer.point);
+          const currentModelPoint = this.chartTransform.viewToModelPosition(viewPoint);
+
+          // Calculate the delta in model coordinates
+          const deltaX = dragStartModelPoint.x - currentModelPoint.x;
+          const deltaY = dragStartModelPoint.y - currentModelPoint.y;
+
+          // Translate the ranges by the delta
+          const newXRange = new Range(
+            dragStartXRange.min + deltaX,
+            dragStartXRange.max + deltaX
+          );
+          const newYRange = new Range(
+            dragStartYRange.min + deltaY,
+            dragStartYRange.max + deltaY
+          );
+
+          // Update the chart transform
+          this.chartTransform.setModelXRange(newXRange);
+          this.chartTransform.setModelYRange(newYRange);
+
+          // Update tick spacing
+          this.updateTickSpacing(newXRange, newYRange);
+
+          // Update trail with new transform
+          this.updateTrail();
+        }
+      },
+
+      end: () => {
+        // Clean up
+        dragStartModelPoint = null;
+        dragStartXRange = null;
+        dragStartYRange = null;
+      },
+    });
+
+    this.chartRectangle.addInputListener(dragListener);
+    this.chartRectangle.cursor = 'move';
   }
 
   /**

@@ -203,6 +203,98 @@ export class StringManager {
   }
 
   /**
+   * Get preset common string properties
+   */
+  public getPresetLabels() {
+    return {
+      labelStringProperty: this.stringProperties.presets.labelStringProperty,
+      customStringProperty: this.stringProperties.presets.customStringProperty,
+    };
+  }
+
+  /**
+   * Get single spring preset string properties
+   */
+  public getSingleSpringPresets() {
+    return {
+      lightAndBouncyStringProperty: this.stringProperties.presets.singleSpring.lightAndBouncyStringProperty,
+      lightAndBouncyDescStringProperty: this.stringProperties.presets.singleSpring.lightAndBouncyDescStringProperty,
+      heavyAndSlowStringProperty: this.stringProperties.presets.singleSpring.heavyAndSlowStringProperty,
+      heavyAndSlowDescStringProperty: this.stringProperties.presets.singleSpring.heavyAndSlowDescStringProperty,
+      criticallyDampedStringProperty: this.stringProperties.presets.singleSpring.criticallyDampedStringProperty,
+      criticallyDampedDescStringProperty: this.stringProperties.presets.singleSpring.criticallyDampedDescStringProperty,
+      underdampedStringProperty: this.stringProperties.presets.singleSpring.underdampedStringProperty,
+      underdampedDescStringProperty: this.stringProperties.presets.singleSpring.underdampedDescStringProperty,
+      overdampedStringProperty: this.stringProperties.presets.singleSpring.overdampedStringProperty,
+      overdampedDescStringProperty: this.stringProperties.presets.singleSpring.overdampedDescStringProperty,
+    };
+  }
+
+  /**
+   * Get double spring preset string properties
+   */
+  public getDoubleSpringPresets() {
+    return {
+      symmetricStringProperty: this.stringProperties.presets.doubleSpring.symmetricStringProperty,
+      symmetricDescStringProperty: this.stringProperties.presets.doubleSpring.symmetricDescStringProperty,
+      asymmetricMassesStringProperty: this.stringProperties.presets.doubleSpring.asymmetricMassesStringProperty,
+      asymmetricMassesDescStringProperty: this.stringProperties.presets.doubleSpring.asymmetricMassesDescStringProperty,
+      differentSpringsStringProperty: this.stringProperties.presets.doubleSpring.differentSpringsStringProperty,
+      differentSpringsDescStringProperty: this.stringProperties.presets.doubleSpring.differentSpringsDescStringProperty,
+      coupledResonanceStringProperty: this.stringProperties.presets.doubleSpring.coupledResonanceStringProperty,
+      coupledResonanceDescStringProperty: this.stringProperties.presets.doubleSpring.coupledResonanceDescStringProperty,
+    };
+  }
+
+  /**
+   * Get pendulum preset string properties
+   */
+  public getPendulumPresets() {
+    return {
+      shortAndFastStringProperty: this.stringProperties.presets.pendulum.shortAndFastStringProperty,
+      shortAndFastDescStringProperty: this.stringProperties.presets.pendulum.shortAndFastDescStringProperty,
+      longAndSlowStringProperty: this.stringProperties.presets.pendulum.longAndSlowStringProperty,
+      longAndSlowDescStringProperty: this.stringProperties.presets.pendulum.longAndSlowDescStringProperty,
+      smallAngleStringProperty: this.stringProperties.presets.pendulum.smallAngleStringProperty,
+      smallAngleDescStringProperty: this.stringProperties.presets.pendulum.smallAngleDescStringProperty,
+      largeAmplitudeStringProperty: this.stringProperties.presets.pendulum.largeAmplitudeStringProperty,
+      largeAmplitudeDescStringProperty: this.stringProperties.presets.pendulum.largeAmplitudeDescStringProperty,
+    };
+  }
+
+  /**
+   * Get double pendulum preset string properties
+   */
+  public getDoublePendulumPresets() {
+    return {
+      synchronizedStringProperty: this.stringProperties.presets.doublePendulum.synchronizedStringProperty,
+      synchronizedDescStringProperty: this.stringProperties.presets.doublePendulum.synchronizedDescStringProperty,
+      chaoticDanceStringProperty: this.stringProperties.presets.doublePendulum.chaoticDanceStringProperty,
+      chaoticDanceDescStringProperty: this.stringProperties.presets.doublePendulum.chaoticDanceDescStringProperty,
+      counterRotationStringProperty: this.stringProperties.presets.doublePendulum.counterRotationStringProperty,
+      counterRotationDescStringProperty: this.stringProperties.presets.doublePendulum.counterRotationDescStringProperty,
+      energyTransferStringProperty: this.stringProperties.presets.doublePendulum.energyTransferStringProperty,
+      energyTransferDescStringProperty: this.stringProperties.presets.doublePendulum.energyTransferDescStringProperty,
+    };
+  }
+
+  /**
+   * Get visualization string properties
+   */
+  public getVisualizationLabels() {
+    return {
+      showVectorsStringProperty: this.stringProperties.visualization.showVectorsStringProperty,
+      showEnergyChartStringProperty: this.stringProperties.visualization.showEnergyChartStringProperty,
+      velocityStringProperty: this.stringProperties.visualization.velocityStringProperty,
+      accelerationStringProperty: this.stringProperties.visualization.accelerationStringProperty,
+      forceStringProperty: this.stringProperties.visualization.forceStringProperty,
+      kineticStringProperty: this.stringProperties.visualization.energy.kineticStringProperty,
+      potentialStringProperty: this.stringProperties.visualization.energy.potentialStringProperty,
+      totalStringProperty: this.stringProperties.visualization.energy.totalStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */

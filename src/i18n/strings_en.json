@@ -76,5 +76,63 @@
       "adaptiveEuler": "Variable-step 2nd order method. Fast and adaptive, good for smooth problems.",
       "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums."
     }
+  },
+  "presets": {
+    "label": "Preset:",
+    "custom": "Custom",
+    "singleSpring": {
+      "lightAndBouncy": "Light & Bouncy",
+      "lightAndBouncyDesc": "Low mass with stiff spring - fast oscillations",
+      "heavyAndSlow": "Heavy & Slow",
+      "heavyAndSlowDesc": "High mass with soft spring - slow oscillations",
+      "criticallyDamped": "Critically Damped",
+      "criticallyDampedDesc": "Returns to equilibrium without oscillating",
+      "underdamped": "Underdamped",
+      "underdampedDesc": "Light damping - gradual decay of oscillations",
+      "overdamped": "Overdamped",
+      "overdampedDesc": "Heavy damping - slow return to equilibrium"
+    },
+    "doubleSpring": {
+      "symmetric": "Symmetric Mode",
+      "symmetricDesc": "Equal masses and springs - synchronized motion",
+      "asymmetricMasses": "Asymmetric Masses",
+      "asymmetricMassesDesc": "Different masses create interesting beat patterns",
+      "differentSprings": "Different Springs",
+      "differentSpringsDesc": "Unequal spring constants lead to energy transfer",
+      "coupledResonance": "Coupled Resonance",
+      "coupledResonanceDesc": "Masses exchange energy back and forth"
+    },
+    "pendulum": {
+      "shortAndFast": "Short & Fast",
+      "shortAndFastDesc": "Short pendulum with rapid oscillations",
+      "longAndSlow": "Long & Slow",
+      "longAndSlowDesc": "Long pendulum with slow, graceful swings",
+      "smallAngle": "Small Angle (SHM)",
+      "smallAngleDesc": "Demonstrates simple harmonic motion approximation",
+      "largeAmplitude": "Large Amplitude",
+      "largeAmplitudeDesc": "Non-linear effects become apparent"
+    },
+    "doublePendulum": {
+      "synchronized": "Synchronized",
+      "synchronizedDesc": "Small angles, both pendulums swing together",
+      "chaoticDance": "Chaotic Dance",
+      "chaoticDanceDesc": "Large angles create unpredictable chaotic motion",
+      "counterRotation": "Counter Rotation",
+      "counterRotationDesc": "Pendulums rotate in opposite directions",
+      "energyTransfer": "Energy Transfer",
+      "energyTransferDesc": "Energy flows between the two pendulums"
+    }
+  },
+  "visualization": {
+    "showVectors": "Show Vectors",
+    "showEnergyChart": "Show Energy Chart",
+    "velocity": "Velocity",
+    "acceleration": "Acceleration",
+    "force": "Force",
+    "energy": {
+      "kinetic": "Kinetic",
+      "potential": "Potential",
+      "total": "Total"
+    }
   }
 }
