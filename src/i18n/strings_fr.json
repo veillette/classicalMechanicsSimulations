@@ -134,5 +134,44 @@
       "potential": "Potentielle",
       "total": "Totale"
     }
+  },
+  "accessibility": {
+    "simulation": {
+      "reset": "Simulation réinitialisée",
+      "playing": "Simulation en cours",
+      "paused": "Simulation en pause",
+      "started": "Simulation démarrée",
+      "steppedForward": "Avancé d'un pas",
+      "steppedBackward": "Reculé d'un pas",
+      "speedChanged": "Vitesse changée à {{speed}}"
+    },
+    "drag": {
+      "draggingMass": "Déplacement du bloc de masse",
+      "draggingMass1": "Déplacement de la masse 1",
+      "draggingMass2": "Déplacement de la masse 2",
+      "draggingBob": "Déplacement du pendule",
+      "draggingUpperBob": "Déplacement du pendule supérieur",
+      "draggingLowerBob": "Déplacement du pendule inférieur",
+      "massReleasedAt": "Masse relâchée à la position {{position}} mètres",
+      "mass1ReleasedAt": "Masse 1 relâchée à la position {{position}} mètres",
+      "mass2ReleasedAt": "Masse 2 relâchée à la position {{position}} mètres",
+      "bobReleasedAt": "Pendule relâché à {{angle}} degrés de la verticale",
+      "upperBobReleasedAt": "Pendule supérieur relâché à {{angle}} degrés",
+      "lowerBobReleasedAt": "Pendule inférieur relâché à {{angle}} degrés"
+    },
+    "parameters": {
+      "massChanged": "Masse changée à {{value}} kilogrammes",
+      "springConstantChanged": "Constante du ressort changée à {{value}} newtons par mètre",
+      "dampingChanged": "Amortissement changé à {{value}} newton secondes par mètre",
+      "lengthChanged": "Longueur changée à {{value}} mètres",
+      "gravityChanged": "Gravité changée à {{value}} mètres par seconde carré",
+      "presetApplied": "Préréglage appliqué : {{preset}}"
+    },
+    "graph": {
+      "shown": "Graphique affiché",
+      "hidden": "Graphique masqué",
+      "xAxisChanged": "Axe X changé à {{property}}",
+      "yAxisChanged": "Axe Y changé à {{property}}"
+    }
   }
 }

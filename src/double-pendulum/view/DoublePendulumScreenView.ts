@@ -116,11 +116,12 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.addChild(this.bob2Node);
 
     // Drag listener for bob 1 with accessibility announcements
+    const a11yStrings = this.getA11yStrings();
     this.bob1Node.addInputListener(
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader("Dragging upper pendulum bob");
+          this.announceToScreenReader(a11yStrings.draggingUpperBobStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -132,7 +133,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         },
         end: () => {
           const angleDegrees = (this.model.angle1Property.value * 180 / Math.PI).toFixed(1);
-          this.announceToScreenReader(`Upper bob released at ${angleDegrees} degrees`);
+          const template = a11yStrings.upperBobReleasedAtStringProperty.value;
+          const announcement = template.replace('{{angle}}', angleDegrees);
+          this.announceToScreenReader(announcement);
         },
       }),
     );
@@ -142,7 +145,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader("Dragging lower pendulum bob");
+          this.announceToScreenReader(a11yStrings.draggingLowerBobStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -164,7 +167,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         },
         end: () => {
           const angleDegrees = (this.model.angle2Property.value * 180 / Math.PI).toFixed(1);
-          this.announceToScreenReader(`Lower bob released at ${angleDegrees} degrees`);
+          const template = a11yStrings.lowerBobReleasedAtStringProperty.value;
+          const announcement = template.replace('{{angle}}', angleDegrees);
+          this.announceToScreenReader(announcement);
         },
       }),
     );

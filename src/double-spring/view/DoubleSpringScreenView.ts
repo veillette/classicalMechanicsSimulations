@@ -92,11 +92,12 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.mass2Node);
 
     // Drag listeners with accessibility announcements
+    const a11yStrings = this.getA11yStrings();
     this.mass1Node.addInputListener(
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader("Dragging mass 1");
+          this.announceToScreenReader(a11yStrings.draggingMass1StringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -107,7 +108,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         },
         end: () => {
           const position = this.model.position1Property.value.toFixed(2);
-          this.announceToScreenReader(`Mass 1 released at position ${position} meters`);
+          const template = a11yStrings.mass1ReleasedAtStringProperty.value;
+          const announcement = template.replace('{{position}}', position);
+          this.announceToScreenReader(announcement);
         },
       }),
     );
@@ -116,7 +119,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader("Dragging mass 2");
+          this.announceToScreenReader(a11yStrings.draggingMass2StringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -127,7 +130,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         },
         end: () => {
           const position = this.model.position2Property.value.toFixed(2);
-          this.announceToScreenReader(`Mass 2 released at position ${position} meters`);
+          const template = a11yStrings.mass2ReleasedAtStringProperty.value;
+          const announcement = template.replace('{{position}}', position);
+          this.announceToScreenReader(announcement);
         },
       }),
     );

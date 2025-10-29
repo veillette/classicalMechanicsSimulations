@@ -17,6 +17,7 @@ import {
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import { StringManager } from "../../i18n/StringManager.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -51,6 +52,13 @@ export abstract class BaseScreenView<
 
     // Set up accessibility listeners for state changes
     this.setupAccessibilityListeners();
+  }
+
+  /**
+   * Get accessibility strings from StringManager
+   */
+  protected getA11yStrings() {
+    return StringManager.getInstance().getAccessibilityStrings();
   }
 
   /**
@@ -117,6 +125,7 @@ export abstract class BaseScreenView<
     this.addChild(resetButton);
 
     // Add comprehensive keyboard shortcuts for accessibility
+    const a11yStrings = this.getA11yStrings();
     const keyboardListener = new KeyboardListener({
       keys: ["r", "space", "arrowLeft", "arrowRight"],
       fire: (event, keysPressed) => {
@@ -124,24 +133,24 @@ export abstract class BaseScreenView<
           // Reset simulation with R key
           this.model.reset();
           this.reset();
-          this.announceToScreenReader("Simulation reset");
+          this.announceToScreenReader(a11yStrings.simulationResetStringProperty.value);
         } else if (keysPressed === "space") {
           // Toggle play/pause with Space key
           this.model.isPlayingProperty.value = !this.model.isPlayingProperty.value;
           const announcement = this.model.isPlayingProperty.value
-            ? "Simulation playing"
-            : "Simulation paused";
+            ? a11yStrings.simulationPlayingStringProperty.value
+            : a11yStrings.simulationPausedStringProperty.value;
           this.announceToScreenReader(announcement);
         } else if (keysPressed === "arrowLeft" && !this.model.isPlayingProperty.value) {
           // Step backward with Left Arrow (only when paused)
           this.model.step(-manualStepSize, true);
           this.step(-manualStepSize);
-          this.announceToScreenReader("Stepped backward");
+          this.announceToScreenReader(a11yStrings.steppedBackwardStringProperty.value);
         } else if (keysPressed === "arrowRight" && !this.model.isPlayingProperty.value) {
           // Step forward with Right Arrow (only when paused)
           this.model.step(manualStepSize, true);
           this.step(manualStepSize);
-          this.announceToScreenReader("Stepped forward");
+          this.announceToScreenReader(a11yStrings.steppedForwardStringProperty.value);
         }
       },
     });
@@ -226,17 +235,21 @@ export abstract class BaseScreenView<
    * Set up listeners for accessibility-related state changes.
    */
   private setupAccessibilityListeners(): void {
+    const a11yStrings = this.getA11yStrings();
+
     // Announce when play state changes
     this.model.isPlayingProperty.lazyLink((isPlaying) => {
       const announcement = isPlaying
-        ? "Simulation started"
-        : "Simulation paused";
+        ? a11yStrings.simulationStartedStringProperty.value
+        : a11yStrings.simulationPausedStringProperty.value;
       this.announceToScreenReader(announcement);
     });
 
     // Announce when speed changes
     this.model.timeSpeedProperty.lazyLink((speed) => {
-      this.announceToScreenReader(`Speed changed to ${speed.name}`);
+      const template = a11yStrings.speedChangedStringProperty.value;
+      const announcement = template.replace('{{speed}}', speed.name);
+      this.announceToScreenReader(announcement);
     });
   }
 }

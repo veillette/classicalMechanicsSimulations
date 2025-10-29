@@ -212,18 +212,23 @@ export default class ConfigurableGraph extends Node {
     this.graphContentNode.addChild(selectorPanel);
 
     // Update labels when axes change and announce to screen readers
+    const a11yStrings = StringManager.getInstance().getAccessibilityStrings();
     this.xPropertyProperty.link((property) => {
       this.xAxisLabelNode.string = this.formatAxisLabel(property);
       this.xAxisLabelNode.centerX = this.graphWidth / 2;
       this.clearData();
-      this.announceGraphChange(`X-axis changed to ${this.getNameValue(property.name)}`);
+      const template = a11yStrings.xAxisChangedStringProperty.value;
+      const announcement = template.replace('{{property}}', this.getNameValue(property.name));
+      this.announceGraphChange(announcement);
     });
 
     this.yPropertyProperty.link((property) => {
       this.yAxisLabelNode.string = this.formatAxisLabel(property);
       this.yAxisLabelNode.centerY = this.graphHeight / 2;
       this.clearData();
-      this.announceGraphChange(`Y-axis changed to ${this.getNameValue(property.name)}`);
+      const template = a11yStrings.yAxisChangedStringProperty.value;
+      const announcement = template.replace('{{property}}', this.getNameValue(property.name));
+      this.announceGraphChange(announcement);
     });
 
     // Add the graph content container
@@ -263,7 +268,10 @@ export default class ConfigurableGraph extends Node {
 
     // Link visibility changes to announce to screen readers
     this.graphVisibleProperty.link((visible) => {
-      this.announceGraphChange(visible ? "Graph shown" : "Graph hidden");
+      const announcement = visible
+        ? a11yStrings.graphShownStringProperty.value
+        : a11yStrings.graphHiddenStringProperty.value;
+      this.announceGraphChange(announcement);
     });
   }
 

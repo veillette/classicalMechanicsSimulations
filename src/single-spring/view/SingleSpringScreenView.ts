@@ -91,11 +91,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.addChild(this.massNode);
 
     // Add drag listener to mass with accessibility announcements
+    const a11yStrings = this.getA11yStrings();
     this.massNode.addInputListener(
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader("Dragging mass block");
+          this.announceToScreenReader(a11yStrings.draggingMassStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -107,7 +108,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         },
         end: () => {
           const position = this.model.positionProperty.value.toFixed(2);
-          this.announceToScreenReader(`Mass released at position ${position} meters`);
+          const template = a11yStrings.massReleasedAtStringProperty.value;
+          const announcement = template.replace('{{position}}', position);
+          this.announceToScreenReader(announcement);
         },
       }),
     );
@@ -138,13 +141,19 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Add accessibility announcements for parameter changes
     this.model.massProperty.lazyLink((mass) => {
-      this.announceToScreenReader(`Mass changed to ${mass.toFixed(1)} kilograms`);
+      const template = a11yStrings.massChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', mass.toFixed(1));
+      this.announceToScreenReader(announcement);
     });
     this.model.springConstantProperty.lazyLink((springConstant) => {
-      this.announceToScreenReader(`Spring constant changed to ${springConstant.toFixed(0)} newtons per meter`);
+      const template = a11yStrings.springConstantChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
+      this.announceToScreenReader(announcement);
     });
     this.model.dampingProperty.lazyLink((damping) => {
-      this.announceToScreenReader(`Damping changed to ${damping.toFixed(1)} newton seconds per meter`);
+      const template = a11yStrings.dampingChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', damping.toFixed(1));
+      this.announceToScreenReader(announcement);
     });
 
     // Apply the first preset immediately
@@ -400,7 +409,10 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     }
 
     // Announce preset change
-    this.announceToScreenReader(`Preset applied: ${preset.nameProperty.value}`);
+    const a11yStrings = this.getA11yStrings();
+    const template = a11yStrings.presetAppliedStringProperty.value;
+    const announcement = template.replace('{{preset}}', preset.nameProperty.value);
+    this.announceToScreenReader(announcement);
 
     this.isApplyingPreset = false;
   }
