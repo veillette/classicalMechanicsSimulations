@@ -6,8 +6,8 @@
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
-import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl } from "scenerystack/scenery-phet";
+import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
+import { NumberControl, ArrowNode } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { Vector2 } from "scenerystack/dot";
@@ -22,7 +22,7 @@ import {
 } from "../../common/view/graph/index.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property } from "scenerystack/axon";
+import { Property, BooleanProperty } from "scenerystack/axon";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -36,6 +36,13 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly presetProperty: Property<PresetOption>;
   private readonly presets: Preset[];
   private isApplyingPreset: boolean = false;
+
+  // Vector visualization
+  private readonly showVectorsProperty: BooleanProperty;
+  private readonly velocityArrow: ArrowNode;
+  private readonly accelerationArrow: ArrowNode;
+  private readonly forceArrow: ArrowNode;
+  private readonly vectorScale: number = 30; // Scale factor for vector visualization
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -87,6 +94,44 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       cursor: "pointer",
     });
     this.addChild(this.massNode);
+
+    // Vector visualization
+    this.showVectorsProperty = new BooleanProperty(false);
+
+    // Create vector arrows (initially invisible)
+    this.velocityArrow = new ArrowNode(0, 0, 0, 0, {
+      fill: "blue",
+      stroke: "blue",
+      headWidth: 12,
+      headHeight: 10,
+      tailWidth: 3,
+    });
+    this.addChild(this.velocityArrow);
+
+    this.accelerationArrow = new ArrowNode(0, 0, 0, 0, {
+      fill: "red",
+      stroke: "red",
+      headWidth: 12,
+      headHeight: 10,
+      tailWidth: 3,
+    });
+    this.addChild(this.accelerationArrow);
+
+    this.forceArrow = new ArrowNode(0, 0, 0, 0, {
+      fill: "green",
+      stroke: "green",
+      headWidth: 12,
+      headHeight: 10,
+      tailWidth: 3,
+    });
+    this.addChild(this.forceArrow);
+
+    // Link visibility to showVectorsProperty
+    this.showVectorsProperty.link((showVectors) => {
+      this.velocityArrow.visible = showVectors;
+      this.accelerationArrow.visible = showVectors;
+      this.forceArrow.visible = showVectors;
+    });
 
     // Add drag listener to mass
     this.massNode.addInputListener(
@@ -287,11 +332,24 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       },
     );
 
+    // Vector visualization checkbox
+    const vizLabels = stringManager.getVisualizationLabels();
+    const showVectorsCheckbox = new Checkbox(
+      this.showVectorsProperty,
+      new Text(vizLabels.showVectorsStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      },
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 15,
         align: "left",
-        children: [presetRow, massControl, springControl, dampingControl],
+        children: [presetRow, massControl, springControl, dampingControl, showVectorsCheckbox],
       }),
       {
         xMargin: 10,
@@ -341,6 +399,65 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Add data point to configurable graph
     this.configurableGraph.addDataPoint();
+
+    // Update vector visualization
+    if (this.showVectorsProperty.value) {
+      this.updateVectors();
+    }
+  }
+
+  /**
+   * Update vector arrows to show velocity, acceleration, and force
+   */
+  private updateVectors(): void {
+    // Get current state
+    const position = this.model.positionProperty.value;
+    const velocity = this.model.velocityProperty.value;
+    const mass = this.model.massProperty.value;
+    const springConstant = this.model.springConstantProperty.value;
+    const damping = this.model.dampingProperty.value;
+
+    // Calculate forces
+    const springForce = -springConstant * position; // F = -kx
+    const dampingForce = -damping * velocity; // F = -bv
+    const totalForce = springForce + dampingForce;
+
+    // Calculate acceleration (F = ma)
+    const acceleration = totalForce / mass;
+
+    // Get arrow origin from mass center
+    const arrowOrigin = this.massNode.center;
+
+    // Update velocity arrow (blue) - pointing in direction of motion
+    const velEndX = arrowOrigin.x + velocity * this.vectorScale;
+    const velEndY = arrowOrigin.y;
+    if (Math.abs(velocity) > 0.01) {
+      this.velocityArrow.setTailAndTip(arrowOrigin.x, arrowOrigin.y, velEndX, velEndY);
+      this.velocityArrow.visible = true;
+    } else {
+      this.velocityArrow.visible = false; // Hide if nearly zero
+    }
+
+    // Update acceleration arrow (red) - pointing in direction of acceleration
+    const accEndX = arrowOrigin.x + acceleration * this.vectorScale * 2; // Scale up for visibility
+    const accEndY = arrowOrigin.y - 30; // Offset vertically
+    if (Math.abs(acceleration) > 0.01) {
+      this.accelerationArrow.setTailAndTip(arrowOrigin.x, arrowOrigin.y - 30, accEndX, accEndY);
+      this.accelerationArrow.visible = true;
+    } else {
+      this.accelerationArrow.visible = false; // Hide if nearly zero
+    }
+
+    // Update force arrow (green) - pointing in direction of total force
+    const forceScale = this.vectorScale / 5; // Forces can be large, scale down
+    const forceEndX = arrowOrigin.x + totalForce * forceScale;
+    const forceEndY = arrowOrigin.y + 30; // Offset vertically in opposite direction
+    if (Math.abs(totalForce) > 0.1) {
+      this.forceArrow.setTailAndTip(arrowOrigin.x, arrowOrigin.y + 30, forceEndX, forceEndY);
+      this.forceArrow.visible = true;
+    } else {
+      this.forceArrow.visible = false; // Hide if nearly zero
+    }
   }
 
   /**
