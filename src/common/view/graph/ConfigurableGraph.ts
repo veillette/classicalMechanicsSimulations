@@ -119,13 +119,13 @@ export default class ConfigurableGraph extends Node {
 
     // Create grid lines
     this.verticalGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, initialSpacing, {
-      stroke: "lightgray",
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
     this.graphContentNode.addChild(this.verticalGridLineSet);
 
     this.horizontalGridLineSet = new GridLineSet(this.chartTransform, Orientation.HORIZONTAL, initialSpacing, {
-      stroke: "lightgray",
+      stroke: ClassicalMechanicsColors.graphGridColorProperty,
       lineWidth: 0.5,
     });
     this.graphContentNode.addChild(this.horizontalGridLineSet);
