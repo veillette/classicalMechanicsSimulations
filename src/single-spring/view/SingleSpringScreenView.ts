@@ -5,8 +5,8 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
-import { Rectangle, Line, VBox, Node } from "scenerystack/scenery";
-import { Panel } from "scenerystack/sun";
+import { Rectangle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
+import { Panel, ComboBox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
@@ -20,6 +20,12 @@ import {
   ConfigurableGraph,
   type PlottableProperty,
 } from "../../common/view/graph/index.js";
+import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
+import { Preset } from "../../common/model/Preset.js";
+import { Property } from "scenerystack/axon";
+
+// Custom preset type to include "Custom" option
+type PresetOption = Preset | "Custom";
 
 export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly massNode: Rectangle;
@@ -27,9 +33,18 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
   private readonly configurableGraph: ConfigurableGraph;
+  private readonly presetProperty: Property<PresetOption>;
+  private readonly presets: Preset[];
+  private isApplyingPreset: boolean = false;
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
+
+    // Get available presets
+    this.presets = SingleSpringPresets.getPresets();
+
+    // Initialize with first preset as default
+    this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Fixed point for spring attachment (left side of screen)
     this.fixedPoint = new Vector2(150, this.layoutBounds.centerY);
@@ -95,6 +110,26 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
+    // Listen for preset changes to apply configuration
+    this.presetProperty.link((preset) => {
+      if (preset !== "Custom" && !this.isApplyingPreset) {
+        this.applyPreset(preset);
+      }
+    });
+
+    // Listen to model parameter changes to detect user modifications
+    const detectCustomChange = () => {
+      if (!this.isApplyingPreset && this.presetProperty.value !== "Custom") {
+        this.presetProperty.value = "Custom";
+      }
+    };
+    this.model.massProperty.lazyLink(detectCustomChange);
+    this.model.springConstantProperty.lazyLink(detectCustomChange);
+    this.model.dampingProperty.lazyLink(detectCustomChange);
+
+    // Apply the first preset immediately
+    this.applyPreset(this.presets[0]);
+
     // Create configurable graph with available properties
     const stringManager = StringManager.getInstance();
     const propertyNames = stringManager.getGraphPropertyNames();
@@ -159,6 +194,50 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private createControlPanel(): Node {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
+    const presetLabels = stringManager.getPresetLabels();
+
+    // Create preset selector
+    const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
+      // Add "Custom" option first
+      {
+        value: "Custom",
+        createNode: () => new Text(presetLabels.customStringProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: "customPresetItem",
+      },
+      // Add all presets
+      ...this.presets.map((preset, index) => ({
+        value: preset,
+        createNode: () => new Text(preset.nameProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: `preset${index}Item`,
+      })),
+    ];
+
+    const presetSelector = new ComboBox(this.presetProperty, presetItems, this, {
+      cornerRadius: 5,
+      xMargin: 8,
+      yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    });
+
+    const presetLabel = new Text(presetLabels.labelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    const presetRow = new HBox({
+      spacing: 10,
+      children: [presetLabel, presetSelector],
+    });
 
     const massControl = new NumberControl(
       controlLabels.massStringProperty,
@@ -212,7 +291,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       new VBox({
         spacing: 15,
         align: "left",
-        children: [massControl, springControl, dampingControl],
+        children: [presetRow, massControl, springControl, dampingControl],
       }),
       {
         xMargin: 10,
@@ -262,5 +341,36 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Add data point to configurable graph
     this.configurableGraph.addDataPoint();
+  }
+
+  /**
+   * Apply a preset configuration to the model
+   */
+  private applyPreset(preset: Preset): void {
+    this.isApplyingPreset = true;
+
+    const config = preset.configuration;
+
+    // Apply all configuration values to model properties
+    if (config.mass !== undefined) {
+      this.model.massProperty.value = config.mass;
+    }
+    if (config.springConstant !== undefined) {
+      this.model.springConstantProperty.value = config.springConstant;
+    }
+    if (config.damping !== undefined) {
+      this.model.dampingProperty.value = config.damping;
+    }
+    if (config.position !== undefined) {
+      this.model.positionProperty.value = config.position;
+    }
+
+    // Reset velocity when applying preset
+    this.model.velocityProperty.value = 0;
+
+    // Reset simulation time
+    this.model.reset();
+
+    this.isApplyingPreset = false;
   }
 }
