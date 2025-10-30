@@ -3,7 +3,8 @@
  * Displays an arrow with a label.
  */
 
-import { Node, ArrowNode, Text, type TColor } from "scenerystack/scenery";
+import { Node, Text, type TColor } from "scenerystack/scenery";
+import { ArrowNode } from "scenerystack/scenery-phet";
 import { Vector2 } from "scenerystack/dot";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
@@ -53,7 +54,7 @@ export interface VectorNodeOptions {
 export class VectorNode extends Node {
   private readonly arrowNode: ArrowNode;
   private readonly labelText: Text | null = null;
-  private readonly scale: number;
+  private readonly vectorScale: number;
   private readonly minMagnitude: number;
   private tailPosition: Vector2 = Vector2.ZERO;
   private vectorValue: Vector2 = Vector2.ZERO;
@@ -61,7 +62,7 @@ export class VectorNode extends Node {
   public constructor(options: VectorNodeOptions) {
     super();
 
-    this.scale = options.scale;
+    this.vectorScale = options.scale;
     this.minMagnitude = options.minMagnitude ?? 0.01;
 
     // Create arrow node
@@ -120,7 +121,7 @@ export class VectorNode extends Node {
     this.visible = true;
 
     // Scale vector to view coordinates
-    const scaledVector = this.vectorValue.times(this.scale);
+    const scaledVector = this.vectorValue.times(this.vectorScale);
     const tipPosition = this.tailPosition.plus(scaledVector);
 
     // Update arrow

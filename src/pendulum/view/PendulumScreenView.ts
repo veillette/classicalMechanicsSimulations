@@ -20,7 +20,7 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import { PendulumPresets } from "../model/PendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty } from "scenerystack/axon";
+import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
 import { VectorNode } from "../../common/view/VectorNode.js";
 
 // Custom preset type to include "Custom" option
@@ -156,21 +156,21 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.addChild(this.accelerationVectorNode);
 
     // Link visibility properties to vector nodes
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showVelocityProperty],
       (showVectors, showVelocity) => {
         this.velocityVectorNode.setVectorVisible(showVectors && showVelocity);
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showForceProperty],
       (showVectors, showForce) => {
         this.forceVectorNode.setVectorVisible(showVectors && showForce);
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showAccelerationProperty],
       (showVectors, showAcceleration) => {
         this.accelerationVectorNode.setVectorVisible(showVectors && showAcceleration);

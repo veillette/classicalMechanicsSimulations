@@ -23,7 +23,7 @@ import {
 } from "../../common/view/graph/index.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty, DerivedProperty } from "scenerystack/axon";
+import { Property, BooleanProperty, DerivedProperty, Multilink } from "scenerystack/axon";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -160,21 +160,21 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.addChild(this.accelerationVectorNode);
 
     // Link visibility properties to vector nodes
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showVelocityProperty],
       (showVectors, showVelocity) => {
         this.velocityVectorNode.setVectorVisible(showVectors && showVelocity);
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showForceProperty],
       (showVectors, showForce) => {
         this.forceVectorNode.setVectorVisible(showVectors && showForce);
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showAccelerationProperty],
       (showVectors, showAcceleration) => {
         this.accelerationVectorNode.setVectorVisible(showVectors && showAcceleration);

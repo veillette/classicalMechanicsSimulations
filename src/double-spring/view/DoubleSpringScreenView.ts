@@ -18,7 +18,7 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty } from "scenerystack/axon";
+import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -228,7 +228,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showVelocityProperty],
       (showVectors, showVelocity) => {
         this.velocity1VectorNode.setVectorVisible(showVectors && showVelocity);
@@ -236,7 +236,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showForceProperty],
       (showVectors, showForce) => {
         this.force1VectorNode.setVectorVisible(showVectors && showForce);
@@ -244,7 +244,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showAccelerationProperty],
       (showVectors, showAcceleration) => {
         this.acceleration1VectorNode.setVectorVisible(showVectors && showAcceleration);

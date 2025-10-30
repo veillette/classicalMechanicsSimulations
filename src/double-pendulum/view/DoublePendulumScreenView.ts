@@ -22,7 +22,7 @@ import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import { BooleanProperty, Property } from "scenerystack/axon";
+import { BooleanProperty, Property, Multilink } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import {
   ConfigurableGraph,
@@ -281,7 +281,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showVelocityProperty],
       (showVectors, showVelocity) => {
         this.velocity1VectorNode.setVectorVisible(showVectors && showVelocity);
@@ -289,7 +289,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showForceProperty],
       (showVectors, showForce) => {
         this.force1VectorNode.setVectorVisible(showVectors && showForce);
@@ -297,7 +297,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       }
     );
 
-    Property.multilink(
+    Multilink.multilink(
       [this.showVectorsProperty, this.showAccelerationProperty],
       (showVectors, showAcceleration) => {
         this.acceleration1VectorNode.setVectorVisible(showVectors && showAcceleration);
