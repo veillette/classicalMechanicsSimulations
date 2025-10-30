@@ -57,6 +57,7 @@ export class VectorNode extends Node {
   private readonly minMagnitude: number;
   private tailPosition: Vector2 = Vector2.ZERO;
   private vectorValue: Vector2 = Vector2.ZERO;
+  private shouldBeVisible: boolean = false; // Track user's visibility preference
 
   public constructor(options: VectorNodeOptions) {
     super();
@@ -111,8 +112,8 @@ export class VectorNode extends Node {
   private updateArrow(): void {
     const magnitude = this.vectorValue.magnitude;
 
-    // Hide if magnitude is too small
-    if (magnitude < this.minMagnitude) {
+    // Only show if user wants it visible AND magnitude is sufficient
+    if (!this.shouldBeVisible || magnitude < this.minMagnitude) {
       this.visible = false;
       return;
     }
@@ -143,11 +144,7 @@ export class VectorNode extends Node {
    * Set whether the vector should be visible
    */
   public setVectorVisible(visible: boolean): void {
-    if (!visible) {
-      this.visible = false;
-    } else {
-      // Update visibility based on magnitude
-      this.updateArrow();
-    }
+    this.shouldBeVisible = visible;
+    this.updateArrow(); // Re-evaluate visibility
   }
 }
