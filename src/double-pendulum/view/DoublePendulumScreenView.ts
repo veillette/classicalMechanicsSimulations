@@ -24,6 +24,10 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { BooleanProperty, Property } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import {
+  ConfigurableGraph,
+  type PlottableProperty,
+} from "../../common/view/graph/index.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import { DoublePendulumPresets } from "../model/DoublePendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
@@ -46,6 +50,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private readonly presetProperty: Property<PresetOption>;
   private readonly presets: Preset[];
   private isApplyingPreset: boolean = false;
+
+  // Graph component
+  private readonly configurableGraph: ConfigurableGraph;
 
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -227,7 +234,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.model.dampingProperty.lazyLink(detectCustomChange);
 
     // Add accessibility announcements for parameter changes
-    const a11yStrings = this.getA11yStrings();
     this.model.length1Property.lazyLink((length) => {
       this.announceToScreenReader(`Upper pendulum length changed to ${length.toFixed(1)} meters`);
     });
@@ -249,6 +255,67 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
+
+    // Create configurable graph with available properties
+    const stringManager = StringManager.getInstance();
+    const propertyNames = stringManager.getGraphPropertyNames();
+    const availableProperties: PlottableProperty[] = [
+      {
+        name: propertyNames.angle1StringProperty,
+        property: this.model.angle1Property,
+        unit: "rad",
+      },
+      {
+        name: propertyNames.angle2StringProperty,
+        property: this.model.angle2Property,
+        unit: "rad",
+      },
+      {
+        name: propertyNames.angularVelocity1StringProperty,
+        property: this.model.angularVelocity1Property,
+        unit: "rad/s",
+      },
+      {
+        name: propertyNames.angularVelocity2StringProperty,
+        property: this.model.angularVelocity2Property,
+        unit: "rad/s",
+      },
+      {
+        name: propertyNames.kineticEnergyStringProperty,
+        property: this.model.kineticEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.potentialEnergyStringProperty,
+        property: this.model.potentialEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.totalEnergyStringProperty,
+        property: this.model.totalEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.timeStringProperty,
+        property: this.model.timeProperty,
+        unit: "s",
+      },
+    ];
+
+    // Create the configurable graph (time vs angle1 by default)
+    this.configurableGraph = new ConfigurableGraph(
+      availableProperties,
+      availableProperties[7], // Time for x-axis
+      availableProperties[0], // Angle1 for y-axis
+      450, // width
+      300, // height
+      2000, // max data points
+      this, // list parent for combo boxes
+    );
+    // Position graph at the top left
+    this.configurableGraph.left = this.layoutBounds.minX + 10;
+    this.configurableGraph.top = this.layoutBounds.minY + 10;
+    this.addChild(this.configurableGraph);
 
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
@@ -517,6 +584,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Clear trail
     this.clearTrail();
 
+    // Clear graph data
+    this.configurableGraph.clearData();
+
     // Update visualization to match reset model state
     this.updateVisualization();
   }
@@ -526,6 +596,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Update visualization after physics step completes
     // This ensures all state variables are updated consistently before drawing
     this.updateVisualization();
+
+    // Add data point to configurable graph
+    this.configurableGraph.addDataPoint();
   }
 
   /**
@@ -571,6 +644,11 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Clear trail when switching presets
     this.clearTrail();
+
+    // Clear graph when switching presets (if it exists)
+    if (this.configurableGraph) {
+      this.configurableGraph.clearData();
+    }
 
     // Announce preset change
     const a11yStrings = this.getA11yStrings();

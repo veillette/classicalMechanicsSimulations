@@ -37,6 +37,8 @@ export class DoublePendulumModel extends BaseModel {
   public readonly dampingProperty: NumberProperty;
 
   // Computed values
+  public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
+  public readonly potentialEnergyProperty: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
   public constructor() {
@@ -56,8 +58,9 @@ export class DoublePendulumModel extends BaseModel {
     this.gravityProperty = new NumberProperty(9.8); // m/s²
     this.dampingProperty = new NumberProperty(0.0); // N*m*s (default: no damping for chaos)
 
-    // Compute total energy
-    this.totalEnergyProperty = new DerivedProperty(
+    // Compute kinetic energy (complex due to coupling between pendulums)
+    // KE = (1/2) * (m1 + m2) * L1² * ω1² + (1/2) * m2 * L2² * ω2² + m2 * L1 * L2 * ω1 * ω2 * cos(θ1 - θ2)
+    this.kineticEnergyProperty = new DerivedProperty(
       [
         this.angle1Property,
         this.angle2Property,
@@ -67,23 +70,40 @@ export class DoublePendulumModel extends BaseModel {
         this.mass2Property,
         this.length1Property,
         this.length2Property,
-        this.gravityProperty,
       ],
-      (theta1, theta2, omega1, omega2, m1, m2, L1, L2, g) => {
-        // Kinetic energy (complex due to coupling)
+      (theta1, theta2, omega1, omega2, m1, m2, L1, L2) => {
         const ke1 = 0.5 * (m1 + m2) * L1 * L1 * omega1 * omega1;
         const ke2 = 0.5 * m2 * L2 * L2 * omega2 * omega2;
         const ke_coupling =
           m2 * L1 * L2 * omega1 * omega2 * Math.cos(theta1 - theta2);
-        const ke = ke1 + ke2 + ke_coupling;
+        return ke1 + ke2 + ke_coupling;
+      },
+    );
 
-        // Potential energy
+    // Compute potential energy
+    // PE = (m1 + m2) * g * y1 + m2 * g * y2
+    // where y1 = -L1 * cos(θ1) and y2 = y1 - L2 * cos(θ2)
+    this.potentialEnergyProperty = new DerivedProperty(
+      [
+        this.angle1Property,
+        this.angle2Property,
+        this.mass1Property,
+        this.mass2Property,
+        this.length1Property,
+        this.length2Property,
+        this.gravityProperty,
+      ],
+      (theta1, theta2, m1, m2, L1, L2, g) => {
         const y1 = -L1 * Math.cos(theta1);
         const y2 = y1 - L2 * Math.cos(theta2);
-        const pe = (m1 + m2) * g * y1 + m2 * g * y2;
-
-        return ke + pe;
+        return (m1 + m2) * g * y1 + m2 * g * y2;
       },
+    );
+
+    // Total energy = KE + PE
+    this.totalEnergyProperty = new DerivedProperty(
+      [this.kineticEnergyProperty, this.potentialEnergyProperty],
+      (ke, pe) => ke + pe,
     );
   }
 

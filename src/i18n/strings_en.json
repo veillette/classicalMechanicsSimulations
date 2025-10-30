@@ -50,6 +50,12 @@
     "properties": {
       "position": "Position",
       "velocity": "Velocity",
+      "angle": "Angle",
+      "angularVelocity": "Angular Velocity",
+      "angle1": "Angle 1",
+      "angle2": "Angle 2",
+      "angularVelocity1": "Angular Velocity 1",
+      "angularVelocity2": "Angular Velocity 2",
       "kineticEnergy": "Kinetic Energy",
       "potentialEnergy": "Potential Energy",
       "totalEnergy": "Total Energy",
