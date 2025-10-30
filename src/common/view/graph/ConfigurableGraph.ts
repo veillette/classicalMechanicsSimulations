@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, VBox, Text, Circle, DragListener } from "scenerystack/scenery";
+import { Node, VBox, Text, Circle, DragListener, type Pointer } from "scenerystack/scenery";
 import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,
@@ -260,6 +260,8 @@ export default class ConfigurableGraph extends Node {
     // Add zoom and pan controls (non-intrusive mouse and keyboard)
     this.setupZoomControls();
     this.setupPanControls();
+    this.setupTouchZoomControls();
+    this.setupYAxisTouchControls();
 
     // Link visibility changes to announce using voicing
     this.graphVisibleProperty.link((visible) => {
@@ -369,6 +371,221 @@ export default class ConfigurableGraph extends Node {
 
     this.chartRectangle.addInputListener(dragListener);
     this.chartRectangle.cursor = 'move';
+  }
+
+  /**
+   * Setup touch-based pinch-to-zoom on the chart area
+   */
+  private setupTouchZoomControls(): void {
+    // Track active touch pointers
+    const activePointers = new Map<Pointer, Vector2>();
+    let initialDistance: number | null = null;
+    let initialMidpoint: Vector2 | null = null;
+    let initialXRange: Range | null = null;
+    let initialYRange: Range | null = null;
+
+    this.chartRectangle.addInputListener({
+      down: (event) => {
+        // Only track touch events (not mouse)
+        if (event.pointer.type === 'touch') {
+          const localPoint = this.chartRectangle.globalToLocalPoint(event.pointer.point);
+          activePointers.set(event.pointer, localPoint);
+
+          // If we now have exactly 2 touches, start pinch gesture
+          if (activePointers.size === 2) {
+            const points = Array.from(activePointers.values());
+            initialDistance = points[0].distance(points[1]);
+            initialMidpoint = points[0].average(points[1]);
+            initialXRange = this.chartTransform.modelXRange.copy();
+            initialYRange = this.chartTransform.modelYRange.copy();
+            this.isManuallyZoomed = true;
+          }
+        }
+      },
+
+      move: (event) => {
+        // Only handle touch events
+        if (event.pointer.type === 'touch' && activePointers.has(event.pointer)) {
+          const localPoint = this.chartRectangle.globalToLocalPoint(event.pointer.point);
+          activePointers.set(event.pointer, localPoint);
+
+          // If we have exactly 2 touches, perform pinch zoom
+          if (activePointers.size === 2 && initialDistance && initialMidpoint && initialXRange && initialYRange) {
+            const points = Array.from(activePointers.values());
+            const currentDistance = points[0].distance(points[1]);
+            const currentMidpoint = points[0].average(points[1]);
+
+            // Calculate zoom factor from distance ratio
+            const zoomFactor = initialDistance / currentDistance;
+
+            // Convert initial midpoint to model coordinates
+            const initialModelCenter = this.chartTransform.viewToModelPosition(initialMidpoint);
+
+            // Calculate new ranges centered on the initial midpoint
+            const xMin = initialModelCenter.x - (initialModelCenter.x - initialXRange.min) * zoomFactor;
+            const xMax = initialModelCenter.x + (initialXRange.max - initialModelCenter.x) * zoomFactor;
+            const yMin = initialModelCenter.y - (initialModelCenter.y - initialYRange.min) * zoomFactor;
+            const yMax = initialModelCenter.y + (initialYRange.max - initialModelCenter.y) * zoomFactor;
+
+            // Apply the zoom
+            this.chartTransform.setModelXRange(new Range(xMin, xMax));
+            this.chartTransform.setModelYRange(new Range(yMin, yMax));
+
+            // Update tick spacing
+            this.updateTickSpacing(
+              this.chartTransform.modelXRange,
+              this.chartTransform.modelYRange
+            );
+
+            // Update trail
+            this.updateTrail();
+          }
+        }
+      },
+
+      up: (event) => {
+        // Remove this pointer from tracking
+        if (event.pointer.type === 'touch') {
+          activePointers.delete(event.pointer);
+
+          // Reset pinch state if we no longer have 2 touches
+          if (activePointers.size < 2) {
+            initialDistance = null;
+            initialMidpoint = null;
+            initialXRange = null;
+            initialYRange = null;
+          }
+        }
+      },
+
+      cancel: (event) => {
+        // Handle cancelled touches (e.g., when gesture is interrupted)
+        if (event.pointer.type === 'touch') {
+          activePointers.delete(event.pointer);
+          if (activePointers.size < 2) {
+            initialDistance = null;
+            initialMidpoint = null;
+            initialXRange = null;
+            initialYRange = null;
+          }
+        }
+      },
+    });
+  }
+
+  /**
+   * Setup touch controls for the Y-axis (tick labels)
+   * Allows pinch-to-zoom on Y-axis only and one-finger drag for vertical panning
+   */
+  private setupYAxisTouchControls(): void {
+    // Track active touch pointers for Y-axis
+    const activePointers = new Map<Pointer, Vector2>();
+    let initialYDistance: number | null = null;
+    let initialYMidpoint: number | null = null;
+    let initialYRange: Range | null = null;
+    let singleTouchStartY: number | null = null;
+
+    this.yTickLabelSet.addInputListener({
+      down: (event) => {
+        if (event.pointer.type === 'touch') {
+          const globalPoint = event.pointer.point;
+          activePointers.set(event.pointer, globalPoint);
+
+          if (activePointers.size === 1) {
+            // Single touch - prepare for vertical pan
+            singleTouchStartY = globalPoint.y;
+            initialYRange = this.chartTransform.modelYRange.copy();
+            this.isManuallyZoomed = true;
+          } else if (activePointers.size === 2) {
+            // Two touches - prepare for pinch zoom on Y-axis
+            const points = Array.from(activePointers.values());
+            initialYDistance = Math.abs(points[0].y - points[1].y);
+            initialYMidpoint = (points[0].y + points[1].y) / 2;
+            initialYRange = this.chartTransform.modelYRange.copy();
+            singleTouchStartY = null; // Cancel single touch
+            this.isManuallyZoomed = true;
+          }
+        }
+      },
+
+      move: (event) => {
+        if (event.pointer.type === 'touch' && activePointers.has(event.pointer)) {
+          const globalPoint = event.pointer.point;
+          activePointers.set(event.pointer, globalPoint);
+
+          if (activePointers.size === 1 && singleTouchStartY !== null && initialYRange) {
+            // Single touch - vertical pan
+            const deltaY = globalPoint.y - singleTouchStartY;
+
+            // Convert delta to model coordinates
+            // Negative because screen Y increases downward, but model Y typically increases upward
+            const modelDeltaY = -deltaY * (initialYRange.getLength() / this.graphHeight);
+
+            const newYRange = new Range(
+              initialYRange.min + modelDeltaY,
+              initialYRange.max + modelDeltaY
+            );
+
+            this.chartTransform.setModelYRange(newYRange);
+            this.updateTickSpacing(this.chartTransform.modelXRange, newYRange);
+            this.updateTrail();
+
+          } else if (activePointers.size === 2 && initialYDistance && initialYMidpoint !== null && initialYRange) {
+            // Two touches - pinch zoom on Y-axis only
+            const points = Array.from(activePointers.values());
+            const currentYDistance = Math.abs(points[0].y - points[1].y);
+
+            // Calculate zoom factor from Y-distance ratio
+            const zoomFactor = initialYDistance / currentYDistance;
+
+            // Convert initial midpoint Y to model coordinates
+            const viewMidpoint = new Vector2(this.graphWidth / 2, initialYMidpoint);
+            const localMidpoint = this.chartRectangle.globalToLocalPoint(viewMidpoint);
+            const modelMidpointY = this.chartTransform.viewToModelPosition(localMidpoint).y;
+
+            // Calculate new Y range centered on the midpoint
+            const yMin = modelMidpointY - (modelMidpointY - initialYRange.min) * zoomFactor;
+            const yMax = modelMidpointY + (initialYRange.max - modelMidpointY) * zoomFactor;
+
+            this.chartTransform.setModelYRange(new Range(yMin, yMax));
+            this.updateTickSpacing(this.chartTransform.modelXRange, new Range(yMin, yMax));
+            this.updateTrail();
+          }
+        }
+      },
+
+      up: (event) => {
+        if (event.pointer.type === 'touch') {
+          activePointers.delete(event.pointer);
+
+          if (activePointers.size < 2) {
+            initialYDistance = null;
+            initialYMidpoint = null;
+          }
+          if (activePointers.size === 0) {
+            singleTouchStartY = null;
+            initialYRange = null;
+          }
+        }
+      },
+
+      cancel: (event) => {
+        if (event.pointer.type === 'touch') {
+          activePointers.delete(event.pointer);
+          if (activePointers.size < 2) {
+            initialYDistance = null;
+            initialYMidpoint = null;
+          }
+          if (activePointers.size === 0) {
+            singleTouchStartY = null;
+            initialYRange = null;
+          }
+        }
+      },
+    });
+
+    // Make Y-axis tick labels pickable so they can receive touch input
+    this.yTickLabelSet.pickable = true;
   }
 
   /**
