@@ -12,6 +12,7 @@ import { VBox, Text } from "scenerystack/scenery";
 import { Checkbox } from "scenerystack/sun";
 import { PhetFont } from "scenerystack/scenery-phet";
 import { Tandem } from "scenerystack/tandem";
+import type { TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
 
@@ -24,10 +25,11 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
     });
 
     const stringManager = StringManager.getInstance();
-    const audioStrings = (stringManager as any).stringProperties.preferences.audio;
+    const allStrings = stringManager.getAllStringProperties();
+    const audioStrings = allStrings.preferences.audio;
 
     // Header for sim-specific voicing options
-    const header = new Text(audioStrings.simVoicingOptionsStringProperty, {
+    const header = new Text(audioStrings.simVoicingOptionsStringProperty as unknown as TReadOnlyProperty<string>, {
       font: new PhetFont({ size: 16, weight: "bold" }),
       fill: "black",
       maxWidth: 350,
@@ -36,7 +38,7 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
     // Parameter change announcements checkbox
     const parameterAnnouncementsCheckbox = new Checkbox(
       ClassicalMechanicsPreferences.announceParameterChangesProperty,
-      new Text(audioStrings.announceParameterChangesStringProperty, {
+      new Text(audioStrings.announceParameterChangesStringProperty as unknown as TReadOnlyProperty<string>, {
         font: new PhetFont(16),
         fill: "black",
         maxWidth: 350,
@@ -49,7 +51,7 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
 
     // Description for parameter announcements
     const parameterDescription = new Text(
-      audioStrings.parameterAnnouncementsDescriptionStringProperty,
+      audioStrings.parameterAnnouncementsDescriptionStringProperty as unknown as TReadOnlyProperty<string>,
       {
         font: new PhetFont(12),
         fill: "rgb(80,80,80)",
@@ -60,7 +62,7 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
     // State change announcements checkbox
     const stateAnnouncementsCheckbox = new Checkbox(
       ClassicalMechanicsPreferences.announceStateChangesProperty,
-      new Text(audioStrings.announceStateChangesStringProperty, {
+      new Text(audioStrings.announceStateChangesStringProperty as unknown as TReadOnlyProperty<string>, {
         font: new PhetFont(16),
         fill: "black",
         maxWidth: 350,
@@ -73,7 +75,7 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
 
     // Description for state announcements
     const stateDescription = new Text(
-      audioStrings.stateAnnouncementsDescriptionStringProperty,
+      audioStrings.stateAnnouncementsDescriptionStringProperty as unknown as TReadOnlyProperty<string>,
       {
         font: new PhetFont(12),
         fill: "rgb(80,80,80)",
@@ -84,7 +86,7 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
     // Drag interaction announcements checkbox
     const dragAnnouncementsCheckbox = new Checkbox(
       ClassicalMechanicsPreferences.announceDragInteractionsProperty,
-      new Text(audioStrings.announceDragInteractionsStringProperty, {
+      new Text(audioStrings.announceDragInteractionsStringProperty as unknown as TReadOnlyProperty<string>, {
         font: new PhetFont(16),
         fill: "black",
         maxWidth: 350,
@@ -97,7 +99,7 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
 
     // Description for drag announcements
     const dragDescription = new Text(
-      audioStrings.dragAnnouncementsDescriptionStringProperty,
+      audioStrings.dragAnnouncementsDescriptionStringProperty as unknown as TReadOnlyProperty<string>,
       {
         font: new PhetFont(12),
         fill: "rgb(80,80,80)",
