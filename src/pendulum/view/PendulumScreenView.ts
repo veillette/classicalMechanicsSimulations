@@ -6,7 +6,7 @@
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
-import { Panel, ComboBox } from "scenerystack/sun";
+import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
@@ -20,7 +20,8 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import { PendulumPresets } from "../model/PendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property } from "scenerystack/axon";
+import { Property, BooleanProperty } from "scenerystack/axon";
+import { VectorNode } from "../../common/view/VectorNode.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -37,6 +38,15 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
   // Graph component
   private readonly configurableGraph: ConfigurableGraph;
+
+  // Vector visualization
+  private readonly showVectorsProperty: BooleanProperty;
+  private readonly showVelocityProperty: BooleanProperty;
+  private readonly showForceProperty: BooleanProperty;
+  private readonly showAccelerationProperty: BooleanProperty;
+  private readonly velocityVectorNode: VectorNode;
+  private readonly forceVectorNode: VectorNode;
+  private readonly accelerationVectorNode: VectorNode;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -113,6 +123,59 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Link model to view
     this.model.angleProperty.link(this.updateVisualization.bind(this));
     this.model.lengthProperty.link(this.updateVisualization.bind(this));
+
+    // Initialize vector visibility properties
+    this.showVectorsProperty = new BooleanProperty(false);
+    this.showVelocityProperty = new BooleanProperty(true);
+    this.showForceProperty = new BooleanProperty(true);
+    this.showAccelerationProperty = new BooleanProperty(false);
+
+    // Create vector nodes
+    this.velocityVectorNode = new VectorNode({
+      color: "blue",
+      scale: 50, // 50 pixels per m/s
+      label: "v",
+      minMagnitude: 0.05,
+    });
+    this.addChild(this.velocityVectorNode);
+
+    this.forceVectorNode = new VectorNode({
+      color: "red",
+      scale: 10, // 10 pixels per Newton
+      label: "F",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.forceVectorNode);
+
+    this.accelerationVectorNode = new VectorNode({
+      color: "green",
+      scale: 20, // 20 pixels per m/s²
+      label: "a",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.accelerationVectorNode);
+
+    // Link visibility properties to vector nodes
+    Property.multilink(
+      [this.showVectorsProperty, this.showVelocityProperty],
+      (showVectors, showVelocity) => {
+        this.velocityVectorNode.setVectorVisible(showVectors && showVelocity);
+      }
+    );
+
+    Property.multilink(
+      [this.showVectorsProperty, this.showForceProperty],
+      (showVectors, showForce) => {
+        this.forceVectorNode.setVectorVisible(showVectors && showForce);
+      }
+    );
+
+    Property.multilink(
+      [this.showVectorsProperty, this.showAccelerationProperty],
+      (showVectors, showAcceleration) => {
+        this.accelerationVectorNode.setVectorVisible(showVectors && showAcceleration);
+      }
+    );
 
     // Control panel
     const controlPanel = this.createControlPanel();
@@ -215,6 +278,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
+    const visualizationLabels = stringManager.getVisualizationLabels();
 
     // Create preset selector
     const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
@@ -323,11 +387,84 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       },
     );
 
+    // Vector visualization controls
+    const showVectorsCheckbox = new Checkbox(
+      this.showVectorsProperty,
+      new Text(visualizationLabels.showVectorsStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const velocityCheckbox = new Checkbox(
+      this.showVelocityProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.velocityStringProperty, {
+            fontSize: 12,
+            fill: "blue",
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
+    const forceCheckbox = new Checkbox(
+      this.showForceProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.forceStringProperty, {
+            fontSize: 12,
+            fill: "red",
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
+    const accelerationCheckbox = new Checkbox(
+      this.showAccelerationProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.accelerationStringProperty, {
+            fontSize: 12,
+            fill: "green",
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 15,
         align: "left",
-        children: [presetRow, lengthControl, massControl, gravityControl, dampingControl],
+        children: [
+          presetRow,
+          lengthControl,
+          massControl,
+          gravityControl,
+          dampingControl,
+          showVectorsCheckbox,
+          velocityCheckbox,
+          forceCheckbox,
+          accelerationCheckbox,
+        ],
       }),
       {
         xMargin: 10,
@@ -382,6 +519,64 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Add data point to configurable graph
     this.configurableGraph.addDataPoint();
+
+    // Update vector visualizations
+    this.updateVectors();
+  }
+
+  /**
+   * Update vector positions and magnitudes based on current model state
+   */
+  private updateVectors(): void {
+    const angle = this.model.angleProperty.value;
+    const omega = this.model.angularVelocityProperty.value;
+    const L = this.model.lengthProperty.value;
+    const m = this.model.massProperty.value;
+    const g = this.model.gravityProperty.value;
+    const b = this.model.dampingProperty.value;
+
+    // Calculate bob position
+    const modelBobX = L * Math.sin(angle);
+    const modelBobY = L * Math.cos(angle);
+    const modelBobPosition = new Vector2(modelBobX, modelBobY);
+    const viewBobPosition = this.modelViewTransform.modelToViewPosition(modelBobPosition);
+
+    // Calculate tangential direction (perpendicular to rod)
+    const tangentX = Math.cos(angle);  // perpendicular to rod direction
+    const tangentY = Math.sin(angle);
+
+    // Tangential velocity: v = L * ω (in tangential direction)
+    const vMagnitude = L * Math.abs(omega);
+    const velocitySign = omega >= 0 ? 1 : -1;
+    const velocityVector = new Vector2(
+      tangentX * vMagnitude * velocitySign,
+      tangentY * vMagnitude * velocitySign
+    );
+
+    // Angular acceleration: α = -(g/L)*sin(θ) - (b/mL²)*ω
+    const I = m * L * L;
+    const alpha = -(g / L) * Math.sin(angle) - (b / I) * omega;
+
+    // Tangential acceleration: a = L * α
+    const aMagnitude = L * Math.abs(alpha);
+    const accelSign = alpha >= 0 ? 1 : -1;
+    const accelerationVector = new Vector2(
+      tangentX * aMagnitude * accelSign,
+      tangentY * aMagnitude * accelSign
+    );
+
+    // Net tangential force: F = m * a
+    const forceVector = accelerationVector.times(m);
+
+    // Update vectors
+    this.velocityVectorNode.setTailPosition(viewBobPosition);
+    this.velocityVectorNode.setVector(velocityVector);
+
+    this.forceVectorNode.setTailPosition(viewBobPosition);
+    this.forceVectorNode.setVector(forceVector);
+
+    this.accelerationVectorNode.setTailPosition(viewBobPosition);
+    this.accelerationVectorNode.setVector(accelerationVector);
   }
 
   /**
