@@ -150,6 +150,12 @@ export class StringManager {
     return {
       positionStringProperty: this.stringProperties.graph.properties.positionStringProperty,
       velocityStringProperty: this.stringProperties.graph.properties.velocityStringProperty,
+      angleStringProperty: this.stringProperties.graph.properties.angleStringProperty,
+      angularVelocityStringProperty: this.stringProperties.graph.properties.angularVelocityStringProperty,
+      angle1StringProperty: this.stringProperties.graph.properties.angle1StringProperty,
+      angle2StringProperty: this.stringProperties.graph.properties.angle2StringProperty,
+      angularVelocity1StringProperty: this.stringProperties.graph.properties.angularVelocity1StringProperty,
+      angularVelocity2StringProperty: this.stringProperties.graph.properties.angularVelocity2StringProperty,
       kineticEnergyStringProperty: this.stringProperties.graph.properties.kineticEnergyStringProperty,
       potentialEnergyStringProperty: this.stringProperties.graph.properties.potentialEnergyStringProperty,
       totalEnergyStringProperty: this.stringProperties.graph.properties.totalEnergyStringProperty,

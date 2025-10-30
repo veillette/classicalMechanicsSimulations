@@ -179,26 +179,17 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.model.springConstant2Property.lazyLink(detectCustomChange);
 
     // Add accessibility announcements for parameter changes
-    const a11yStrings = this.getA11yStrings();
     this.model.mass1Property.lazyLink((mass) => {
-      const template = a11yStrings.mass1ChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', mass.toFixed(1));
-      this.announceToScreenReader(announcement);
+      this.announceToScreenReader(`Mass 1 changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.mass2Property.lazyLink((mass) => {
-      const template = a11yStrings.mass2ChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', mass.toFixed(1));
-      this.announceToScreenReader(announcement);
+      this.announceToScreenReader(`Mass 2 changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.springConstant1Property.lazyLink((springConstant) => {
-      const template = a11yStrings.springConstant1ChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
-      this.announceToScreenReader(announcement);
+      this.announceToScreenReader(`Spring 1 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
     });
     this.model.springConstant2Property.lazyLink((springConstant) => {
-      const template = a11yStrings.springConstant2ChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
-      this.announceToScreenReader(announcement);
+      this.announceToScreenReader(`Spring 2 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
     });
 
     // Apply the first preset immediately

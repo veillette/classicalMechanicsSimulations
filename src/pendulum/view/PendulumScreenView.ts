@@ -13,9 +13,8 @@ import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import {
-  GraphDataSet,
-  TimeGraph,
-  MultiGraph,
+  ConfigurableGraph,
+  type PlottableProperty,
 } from "../../common/view/graph/index.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
@@ -36,13 +35,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly presets: Preset[];
   private isApplyingPreset: boolean = false;
 
-  // Graph components
-  private readonly angleDataSet: GraphDataSet;
-  private readonly angularVelocityDataSet: GraphDataSet;
-  private readonly kineticEnergyDataSet: GraphDataSet;
-  private readonly potentialEnergyDataSet: GraphDataSet;
-  private readonly timeGraph: TimeGraph;
-  private readonly energyGraph: MultiGraph;
+  // Graph component
+  private readonly configurableGraph: ConfigurableGraph;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -159,67 +153,56 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
 
-    // Create graph datasets
-    this.angleDataSet = new GraphDataSet(
-      this.model.timeProperty,
-      this.model.angleProperty,
-      ClassicalMechanicsColors.graphLine1ColorProperty,
-      2000,
-    );
-
-    this.angularVelocityDataSet = new GraphDataSet(
-      this.model.timeProperty,
-      this.model.angularVelocityProperty,
-      ClassicalMechanicsColors.graphLine2ColorProperty,
-      2000,
-    );
-
-    this.kineticEnergyDataSet = new GraphDataSet(
-      this.model.timeProperty,
-      this.model.kineticEnergyProperty,
-      ClassicalMechanicsColors.graphLine3ColorProperty,
-      2000,
-    );
-
-    this.potentialEnergyDataSet = new GraphDataSet(
-      this.model.timeProperty,
-      this.model.potentialEnergyProperty,
-      ClassicalMechanicsColors.graphLine4ColorProperty,
-      2000,
-    );
-
-    // Get string manager and graph labels
+    // Create configurable graph with available properties
     const stringManager = StringManager.getInstance();
-    const graphLabels = stringManager.getGraphLabels();
+    const propertyNames = stringManager.getGraphPropertyNames();
+    const availableProperties: PlottableProperty[] = [
+      {
+        name: propertyNames.angleStringProperty,
+        property: this.model.angleProperty,
+        unit: "rad",
+      },
+      {
+        name: propertyNames.angularVelocityStringProperty,
+        property: this.model.angularVelocityProperty,
+        unit: "rad/s",
+      },
+      {
+        name: propertyNames.kineticEnergyStringProperty,
+        property: this.model.kineticEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.potentialEnergyStringProperty,
+        property: this.model.potentialEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.totalEnergyStringProperty,
+        property: this.model.totalEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.timeStringProperty,
+        property: this.model.timeProperty,
+        unit: "s",
+      },
+    ];
 
-    // Create time graph showing angle and angular velocity
-    this.timeGraph = new TimeGraph(
-      [this.angleDataSet, this.angularVelocityDataSet],
+    // Create the configurable graph (time vs angle by default)
+    this.configurableGraph = new ConfigurableGraph(
+      availableProperties,
+      availableProperties[5], // Time for x-axis
+      availableProperties[0], // Angle for y-axis
       450, // width
-      200, // height
-      graphLabels.timeStringProperty,
-      graphLabels.angleAndVelocityStringProperty,
-      [graphLabels.line1StringProperty, graphLabels.line2StringProperty],
-      10, // time window
+      300, // height
+      2000, // max data points
+      this, // list parent for combo boxes
     );
-    this.timeGraph.left = this.layoutBounds.minX + 10;
-    this.timeGraph.top = this.layoutBounds.minY + 10;
-    this.addChild(this.timeGraph);
-
-    // Create multi-graph showing kinetic and potential energy with independent scales
-    this.energyGraph = new MultiGraph(
-      this.kineticEnergyDataSet,
-      this.potentialEnergyDataSet,
-      450, // width
-      200, // height
-      graphLabels.timeStringProperty,
-      graphLabels.line1StringProperty,
-      graphLabels.line2StringProperty,
-      10, // time window
-    );
-    this.energyGraph.left = this.layoutBounds.minX + 10;
-    this.energyGraph.top = this.timeGraph.bottom + 10;
-    this.addChild(this.energyGraph);
+    // Position graph at the top left
+    this.configurableGraph.left = this.layoutBounds.minX + 10;
+    this.configurableGraph.top = this.layoutBounds.minY + 10;
+    this.addChild(this.configurableGraph);
 
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
@@ -388,12 +371,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
   public reset(): void {
     // Clear graph data
-    this.angleDataSet.clear();
-    this.angularVelocityDataSet.clear();
-    this.kineticEnergyDataSet.clear();
-    this.potentialEnergyDataSet.clear();
-    this.timeGraph.clear();
-    this.energyGraph.clear();
+    this.configurableGraph.clearData();
 
     // Update visualization to match reset model state
     this.updateVisualization();
@@ -402,15 +380,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   public override step(dt: number): void {
     this.model.step(dt);
 
-    // Update graph data
-    this.angleDataSet.addDataPoint();
-    this.angularVelocityDataSet.addDataPoint();
-    this.kineticEnergyDataSet.addDataPoint();
-    this.potentialEnergyDataSet.addDataPoint();
-
-    // Update graph visualizations
-    this.timeGraph.update(this.model.timeProperty.value);
-    this.energyGraph.update(this.model.timeProperty.value);
+    // Add data point to configurable graph
+    this.configurableGraph.addDataPoint();
   }
 
   /**
@@ -444,13 +415,10 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Reset simulation time only (don't reset the parameters we just set!)
     this.model.timeProperty.value = 0;
 
-    // Clear graphs when switching presets
-    this.angleDataSet.clear();
-    this.angularVelocityDataSet.clear();
-    this.kineticEnergyDataSet.clear();
-    this.potentialEnergyDataSet.clear();
-    this.timeGraph.clear();
-    this.energyGraph.clear();
+    // Clear graph when switching presets (if it exists)
+    if (this.configurableGraph) {
+      this.configurableGraph.clearData();
+    }
 
     // Announce preset change
     const angleDegrees = (config.angle || 0) * 180 / Math.PI;
