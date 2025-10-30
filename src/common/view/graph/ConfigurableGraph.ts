@@ -414,7 +414,6 @@ export default class ConfigurableGraph extends Node {
           if (activePointers.size === 2 && initialDistance && initialMidpoint && initialXRange && initialYRange) {
             const points = Array.from(activePointers.values());
             const currentDistance = points[0].distance(points[1]);
-            const currentMidpoint = points[0].average(points[1]);
 
             // Calculate zoom factor from distance ratio
             const zoomFactor = initialDistance / currentDistance;
