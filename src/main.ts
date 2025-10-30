@@ -11,6 +11,10 @@ import { SingleSpringScreen } from "./single-spring/SingleSpringScreen.js";
 import { DoubleSpringScreen } from "./double-spring/DoubleSpringScreen.js";
 import { PendulumScreen } from "./pendulum/PendulumScreen.js";
 import { DoublePendulumScreen } from "./double-pendulum/DoublePendulumScreen.js";
+import { SingleSpringScreenIcon } from "./single-spring/SingleSpringScreenIcon.js";
+import { DoubleSpringScreenIcon } from "./double-spring/DoubleSpringScreenIcon.js";
+import { PendulumScreenIcon } from "./pendulum/PendulumScreenIcon.js";
+import { DoublePendulumScreenIcon } from "./double-pendulum/DoublePendulumScreenIcon.js";
 import { StringManager } from "./i18n/StringManager.js";
 import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
@@ -200,21 +204,25 @@ onReadyToLaunch(() => {
       name: screenNames.singleSpringStringProperty,
       tandem: Tandem.ROOT.createTandem("singleSpringScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
+      homeScreenIcon: new SingleSpringScreenIcon(),
     }),
     new DoubleSpringScreen({
       name: screenNames.doubleSpringStringProperty,
       tandem: Tandem.ROOT.createTandem("doubleSpringScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
+      homeScreenIcon: new DoubleSpringScreenIcon(),
     }),
     new PendulumScreen({
       name: screenNames.pendulumStringProperty,
       tandem: Tandem.ROOT.createTandem("pendulumScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
+      homeScreenIcon: new PendulumScreenIcon(),
     }),
     new DoublePendulumScreen({
       name: screenNames.doublePendulumStringProperty,
       tandem: Tandem.ROOT.createTandem("doublePendulumScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
+      homeScreenIcon: new DoublePendulumScreenIcon(),
     }),
   ];
 
