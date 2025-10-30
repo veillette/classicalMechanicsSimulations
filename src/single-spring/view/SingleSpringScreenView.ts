@@ -23,7 +23,7 @@ import {
 } from "../../common/view/graph/index.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty, DerivedProperty, Multilink } from "scenerystack/axon";
+import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";

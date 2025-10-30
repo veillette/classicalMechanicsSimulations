@@ -7,7 +7,6 @@ import { Node, Text, type TColor } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { Vector2 } from "scenerystack/dot";
 import { type TReadOnlyProperty } from "scenerystack/axon";
-import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 export interface VectorNodeOptions {
   /**
