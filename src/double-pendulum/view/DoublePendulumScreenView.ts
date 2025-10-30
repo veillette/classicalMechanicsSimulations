@@ -15,7 +15,7 @@ import {
   Path,
   KeyboardListener,
 } from "scenerystack/scenery";
-import { Panel, ComboBox } from "scenerystack/sun";
+import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
@@ -31,6 +31,7 @@ import {
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import { DoublePendulumPresets } from "../model/DoublePendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
+import { VectorNode } from "../../common/view/VectorNode.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -53,6 +54,20 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
   // Graph component
   private readonly configurableGraph: ConfigurableGraph;
+
+  // Vector visualization
+  private readonly showVectorsProperty: BooleanProperty;
+  private readonly showVelocityProperty: BooleanProperty;
+  private readonly showForceProperty: BooleanProperty;
+  private readonly showAccelerationProperty: BooleanProperty;
+  // Vectors for bob 1
+  private readonly velocity1VectorNode: VectorNode;
+  private readonly force1VectorNode: VectorNode;
+  private readonly acceleration1VectorNode: VectorNode;
+  // Vectors for bob 2
+  private readonly velocity2VectorNode: VectorNode;
+  private readonly force2VectorNode: VectorNode;
+  private readonly acceleration2VectorNode: VectorNode;
 
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -209,6 +224,87 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       this.clearTrail();
     });
 
+    // Initialize vector visibility properties
+    this.showVectorsProperty = new BooleanProperty(false);
+    this.showVelocityProperty = new BooleanProperty(true);
+    this.showForceProperty = new BooleanProperty(true);
+    this.showAccelerationProperty = new BooleanProperty(false);
+
+    // Create vector nodes for bob 1
+    this.velocity1VectorNode = new VectorNode({
+      color: "blue",
+      scale: 50,
+      label: "v₁",
+      minMagnitude: 0.05,
+    });
+    this.addChild(this.velocity1VectorNode);
+
+    this.force1VectorNode = new VectorNode({
+      color: "red",
+      scale: 10,
+      label: "F₁",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.force1VectorNode);
+
+    this.acceleration1VectorNode = new VectorNode({
+      color: "green",
+      scale: 20,
+      label: "a₁",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.acceleration1VectorNode);
+
+    // Create vector nodes for bob 2
+    this.velocity2VectorNode = new VectorNode({
+      color: "cyan",
+      scale: 50,
+      label: "v₂",
+      minMagnitude: 0.05,
+    });
+    this.addChild(this.velocity2VectorNode);
+
+    this.force2VectorNode = new VectorNode({
+      color: "orange",
+      scale: 10,
+      label: "F₂",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.force2VectorNode);
+
+    this.acceleration2VectorNode = new VectorNode({
+      color: "lime",
+      scale: 20,
+      label: "a₂",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.acceleration2VectorNode);
+
+    // Link visibility properties to vector nodes
+    Property.multilink(
+      [this.showVectorsProperty, this.showVelocityProperty],
+      (showVectors, showVelocity) => {
+        this.velocity1VectorNode.setVectorVisible(showVectors && showVelocity);
+        this.velocity2VectorNode.setVectorVisible(showVectors && showVelocity);
+      }
+    );
+
+    Property.multilink(
+      [this.showVectorsProperty, this.showForceProperty],
+      (showVectors, showForce) => {
+        this.force1VectorNode.setVectorVisible(showVectors && showForce);
+        this.force2VectorNode.setVectorVisible(showVectors && showForce);
+      }
+    );
+
+    Property.multilink(
+      [this.showVectorsProperty, this.showAccelerationProperty],
+      (showVectors, showAcceleration) => {
+        this.acceleration1VectorNode.setVectorVisible(showVectors && showAcceleration);
+        this.acceleration2VectorNode.setVectorVisible(showVectors && showAcceleration);
+      }
+    );
+
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
@@ -340,6 +436,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
+    const visualizationLabels = stringManager.getVisualizationLabels();
 
     // Create preset selector
     const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
@@ -480,6 +577,69 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       },
     );
 
+    // Vector visualization controls
+    const showVectorsCheckbox = new Checkbox(
+      this.showVectorsProperty,
+      new Text(visualizationLabels.showVectorsStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const velocityCheckbox = new Checkbox(
+      this.showVelocityProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.velocityStringProperty, {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
+    const forceCheckbox = new Checkbox(
+      this.showForceProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.forceStringProperty, {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
+    const accelerationCheckbox = new Checkbox(
+      this.showAccelerationProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.accelerationStringProperty, {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 12,
@@ -492,6 +652,10 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           mass2Control,
           gravityControl,
           dampingControl,
+          showVectorsCheckbox,
+          velocityCheckbox,
+          forceCheckbox,
+          accelerationCheckbox,
         ],
       }),
       {
@@ -599,6 +763,105 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Add data point to configurable graph
     this.configurableGraph.addDataPoint();
+
+    // Update vector visualizations
+    this.updateVectors();
+  }
+
+  /**
+   * Update vector positions and magnitudes for both bobs
+   * For double pendulum, we compute tangential velocities, forces, and accelerations
+   */
+  private updateVectors(): void {
+    const angle1 = this.model.angle1Property.value;
+    const angle2 = this.model.angle2Property.value;
+    const omega1 = this.model.angularVelocity1Property.value;
+    const omega2 = this.model.angularVelocity2Property.value;
+    const L1 = this.model.length1Property.value;
+    const L2 = this.model.length2Property.value;
+    const m1 = this.model.mass1Property.value;
+    const m2 = this.model.mass2Property.value;
+    const g = this.model.gravityProperty.value;
+
+    // Get bob positions in view coordinates
+    const bob1ViewPos = this.bob1Node.center;
+    const bob2ViewPos = this.bob2Node.center;
+
+    // Calculate tangential direction for bob 1 (perpendicular to rod 1)
+    const tangent1X = Math.cos(angle1);
+    const tangent1Y = Math.sin(angle1);
+
+    // Tangential velocity for bob 1: v1 = L1 * ω1
+    const v1Magnitude = L1 * Math.abs(omega1);
+    const v1Sign = omega1 >= 0 ? 1 : -1;
+    const velocity1Vector = new Vector2(
+      tangent1X * v1Magnitude * v1Sign,
+      tangent1Y * v1Magnitude * v1Sign
+    );
+
+    // Calculate tangential direction for bob 2 (perpendicular to rod 2)
+    const tangent2X = Math.cos(angle2);
+    const tangent2Y = Math.sin(angle2);
+
+    // Tangential velocity for bob 2: v2 = L2 * ω2 (relative to bob 1)
+    // Total velocity is combination of bob 1 motion + relative motion
+    const v2Magnitude = Math.sqrt(
+      Math.pow(L1 * omega1, 2) +
+      Math.pow(L2 * omega2, 2) +
+      2 * L1 * L2 * omega1 * omega2 * Math.cos(angle1 - angle2)
+    );
+
+    // Simplified: use tangential component relative to pivot
+    const velocity2Vector = new Vector2(
+      tangent1X * L1 * omega1 + tangent2X * L2 * omega2,
+      tangent1Y * L1 * omega1 + tangent2Y * L2 * omega2
+    );
+
+    // For simplicity, we'll show approximate forces proportional to accelerations
+    // Full double pendulum dynamics are complex, but we can approximate:
+    // α1 ≈ -(g/L1)*sin(θ1) for the dominant gravitational component
+    // α2 ≈ -(g/L2)*sin(θ2) for the dominant gravitational component
+
+    const alpha1Approx = -(g / L1) * Math.sin(angle1);
+    const alpha2Approx = -(g / L2) * Math.sin(angle2);
+
+    const accel1Magnitude = L1 * Math.abs(alpha1Approx);
+    const accel1Sign = alpha1Approx >= 0 ? 1 : -1;
+    const acceleration1Vector = new Vector2(
+      tangent1X * accel1Magnitude * accel1Sign,
+      tangent1Y * accel1Magnitude * accel1Sign
+    );
+
+    const accel2Magnitude = L2 * Math.abs(alpha2Approx);
+    const accel2Sign = alpha2Approx >= 0 ? 1 : -1;
+    const acceleration2Vector = new Vector2(
+      tangent2X * accel2Magnitude * accel2Sign,
+      tangent2Y * accel2Magnitude * accel2Sign
+    );
+
+    // Forces: F = m * a
+    const force1Vector = acceleration1Vector.times(m1 + m2);  // Bob 1 carries both masses
+    const force2Vector = acceleration2Vector.times(m2);
+
+    // Update vectors for bob 1
+    this.velocity1VectorNode.setTailPosition(bob1ViewPos);
+    this.velocity1VectorNode.setVector(velocity1Vector);
+
+    this.force1VectorNode.setTailPosition(bob1ViewPos);
+    this.force1VectorNode.setVector(force1Vector);
+
+    this.acceleration1VectorNode.setTailPosition(bob1ViewPos);
+    this.acceleration1VectorNode.setVector(acceleration1Vector);
+
+    // Update vectors for bob 2
+    this.velocity2VectorNode.setTailPosition(bob2ViewPos);
+    this.velocity2VectorNode.setVector(velocity2Vector);
+
+    this.force2VectorNode.setTailPosition(bob2ViewPos);
+    this.force2VectorNode.setVector(force2Vector);
+
+    this.acceleration2VectorNode.setTailPosition(bob2ViewPos);
+    this.acceleration2VectorNode.setVector(acceleration2Vector);
   }
 
   /**

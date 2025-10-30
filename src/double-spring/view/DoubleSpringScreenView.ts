@@ -6,10 +6,11 @@
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
-import { Panel, ComboBox } from "scenerystack/sun";
+import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
+import { VectorNode } from "../../common/view/VectorNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
@@ -17,7 +18,7 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property } from "scenerystack/axon";
+import { Property, BooleanProperty } from "scenerystack/axon";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -32,6 +33,20 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly presetProperty: Property<PresetOption>;
   private readonly presets: Preset[];
   private isApplyingPreset: boolean = false;
+
+  // Vector visualization
+  private readonly showVectorsProperty: BooleanProperty;
+  private readonly showVelocityProperty: BooleanProperty;
+  private readonly showForceProperty: BooleanProperty;
+  private readonly showAccelerationProperty: BooleanProperty;
+  // Vectors for mass 1
+  private readonly velocity1VectorNode: VectorNode;
+  private readonly force1VectorNode: VectorNode;
+  private readonly acceleration1VectorNode: VectorNode;
+  // Vectors for mass 2
+  private readonly velocity2VectorNode: VectorNode;
+  private readonly force2VectorNode: VectorNode;
+  private readonly acceleration2VectorNode: VectorNode;
 
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -156,6 +171,87 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.model.position1Property.link(() => this.updateVisualization());
     this.model.position2Property.link(() => this.updateVisualization());
 
+    // Initialize vector visibility properties
+    this.showVectorsProperty = new BooleanProperty(false);
+    this.showVelocityProperty = new BooleanProperty(true);
+    this.showForceProperty = new BooleanProperty(true);
+    this.showAccelerationProperty = new BooleanProperty(false);
+
+    // Create vector nodes for mass 1
+    this.velocity1VectorNode = new VectorNode({
+      color: "blue",
+      scale: 50,
+      label: "v₁",
+      minMagnitude: 0.05,
+    });
+    this.addChild(this.velocity1VectorNode);
+
+    this.force1VectorNode = new VectorNode({
+      color: "red",
+      scale: 10,
+      label: "F₁",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.force1VectorNode);
+
+    this.acceleration1VectorNode = new VectorNode({
+      color: "green",
+      scale: 20,
+      label: "a₁",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.acceleration1VectorNode);
+
+    // Create vector nodes for mass 2
+    this.velocity2VectorNode = new VectorNode({
+      color: "cyan",
+      scale: 50,
+      label: "v₂",
+      minMagnitude: 0.05,
+    });
+    this.addChild(this.velocity2VectorNode);
+
+    this.force2VectorNode = new VectorNode({
+      color: "orange",
+      scale: 10,
+      label: "F₂",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.force2VectorNode);
+
+    this.acceleration2VectorNode = new VectorNode({
+      color: "lime",
+      scale: 20,
+      label: "a₂",
+      minMagnitude: 0.1,
+    });
+    this.addChild(this.acceleration2VectorNode);
+
+    // Link visibility properties to vector nodes
+    Property.multilink(
+      [this.showVectorsProperty, this.showVelocityProperty],
+      (showVectors, showVelocity) => {
+        this.velocity1VectorNode.setVectorVisible(showVectors && showVelocity);
+        this.velocity2VectorNode.setVectorVisible(showVectors && showVelocity);
+      }
+    );
+
+    Property.multilink(
+      [this.showVectorsProperty, this.showForceProperty],
+      (showVectors, showForce) => {
+        this.force1VectorNode.setVectorVisible(showVectors && showForce);
+        this.force2VectorNode.setVectorVisible(showVectors && showForce);
+      }
+    );
+
+    Property.multilink(
+      [this.showVectorsProperty, this.showAccelerationProperty],
+      (showVectors, showAcceleration) => {
+        this.acceleration1VectorNode.setVectorVisible(showVectors && showAcceleration);
+        this.acceleration2VectorNode.setVectorVisible(showVectors && showAcceleration);
+      }
+    );
+
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
@@ -206,6 +302,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
+    const visualizationLabels = stringManager.getVisualizationLabels();
 
     // Create preset selector
     const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
@@ -314,11 +411,84 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       },
     );
 
+    // Vector visualization controls
+    const showVectorsCheckbox = new Checkbox(
+      this.showVectorsProperty,
+      new Text(visualizationLabels.showVectorsStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const velocityCheckbox = new Checkbox(
+      this.showVelocityProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.velocityStringProperty, {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
+    const forceCheckbox = new Checkbox(
+      this.showForceProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.forceStringProperty, {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
+    const accelerationCheckbox = new Checkbox(
+      this.showAccelerationProperty,
+      new HBox({
+        spacing: 5,
+        children: [
+          new Text("  ", { fontSize: 12 }), // Indent
+          new Text(visualizationLabels.accelerationStringProperty, {
+            fontSize: 12,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 14,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 12,
         align: "left",
-        children: [presetRow, mass1Control, mass2Control, spring1Control, spring2Control],
+        children: [
+          presetRow,
+          mass1Control,
+          mass2Control,
+          spring1Control,
+          spring2Control,
+          showVectorsCheckbox,
+          velocityCheckbox,
+          forceCheckbox,
+          accelerationCheckbox,
+        ],
       }),
       {
         xMargin: 10,
@@ -367,6 +537,60 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
   public override step(dt: number): void {
     this.model.step(dt);
+
+    // Update vector visualizations
+    this.updateVectors();
+  }
+
+  /**
+   * Update vector positions and magnitudes for both masses
+   */
+  private updateVectors(): void {
+    // Get current model state
+    const x1 = this.model.position1Property.value;
+    const v1 = this.model.velocity1Property.value;
+    const x2 = this.model.position2Property.value;
+    const v2 = this.model.velocity2Property.value;
+    const m1 = this.model.mass1Property.value;
+    const m2 = this.model.mass2Property.value;
+    const k1 = this.model.springConstant1Property.value;
+    const k2 = this.model.springConstant2Property.value;
+    const b1 = this.model.damping1Property.value;
+    const b2 = this.model.damping2Property.value;
+
+    // Calculate forces on mass 1
+    // F1 = -k1*x1 + k2*(x2 - x1) - b1*v1
+    const force1 = -k1 * x1 + k2 * (x2 - x1) - b1 * v1;
+    const acceleration1 = force1 / m1;
+
+    // Calculate forces on mass 2
+    // F2 = -k2*(x2 - x1) - b2*v2
+    const force2 = -k2 * (x2 - x1) - b2 * v2;
+    const acceleration2 = force2 / m2;
+
+    // Get mass center positions in view coordinates
+    const mass1Center = this.mass1Node.center;
+    const mass2Center = this.mass2Node.center;
+
+    // Update vectors for mass 1
+    this.velocity1VectorNode.setTailPosition(mass1Center);
+    this.velocity1VectorNode.setVector(new Vector2(v1, 0));
+
+    this.force1VectorNode.setTailPosition(mass1Center);
+    this.force1VectorNode.setVector(new Vector2(force1, 0));
+
+    this.acceleration1VectorNode.setTailPosition(mass1Center);
+    this.acceleration1VectorNode.setVector(new Vector2(acceleration1, 0));
+
+    // Update vectors for mass 2
+    this.velocity2VectorNode.setTailPosition(mass2Center);
+    this.velocity2VectorNode.setVector(new Vector2(v2, 0));
+
+    this.force2VectorNode.setTailPosition(mass2Center);
+    this.force2VectorNode.setVector(new Vector2(force2, 0));
+
+    this.acceleration2VectorNode.setTailPosition(mass2Center);
+    this.acceleration2VectorNode.setVector(new Vector2(acceleration2, 0));
   }
 
   /**
