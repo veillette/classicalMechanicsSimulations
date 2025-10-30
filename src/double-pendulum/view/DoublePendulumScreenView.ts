@@ -803,14 +803,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     const tangent2X = Math.cos(angle2);
     const tangent2Y = Math.sin(angle2);
 
-    // Tangential velocity for bob 2: v2 = L2 * ω2 (relative to bob 1)
-    // Total velocity is combination of bob 1 motion + relative motion
-    const v2Magnitude = Math.sqrt(
-      Math.pow(L1 * omega1, 2) +
-      Math.pow(L2 * omega2, 2) +
-      2 * L1 * L2 * omega1 * omega2 * Math.cos(angle1 - angle2)
-    );
-
     // Simplified: use tangential component relative to pivot
     const velocity2Vector = new Vector2(
       tangent1X * L1 * omega1 + tangent2X * L2 * omega2,
