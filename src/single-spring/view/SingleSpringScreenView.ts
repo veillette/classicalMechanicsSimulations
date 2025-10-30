@@ -85,13 +85,19 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.massNode);
 
-    // Add drag listener to mass
+    // Add drag listener to mass with accessibility announcements
+    const a11yStrings = this.getA11yStrings();
     this.massNode.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader(a11yStrings.draggingMassStringProperty.value);
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
@@ -99,6 +105,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           this.model.positionProperty.value = modelPosition.x;
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
+        },
+        end: () => {
+          const position = this.model.positionProperty.value.toFixed(2);
+          const template = a11yStrings.massReleasedAtStringProperty.value;
+          const announcement = template.replace('{{position}}', position);
+          this.announceToScreenReader(announcement);
         },
       }),
     );
@@ -126,6 +138,23 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.model.massProperty.lazyLink(detectCustomChange);
     this.model.springConstantProperty.lazyLink(detectCustomChange);
     this.model.dampingProperty.lazyLink(detectCustomChange);
+
+    // Add accessibility announcements for parameter changes
+    this.model.massProperty.lazyLink((mass) => {
+      const template = a11yStrings.massChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', mass.toFixed(1));
+      this.announceToScreenReader(announcement);
+    });
+    this.model.springConstantProperty.lazyLink((springConstant) => {
+      const template = a11yStrings.springConstantChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
+      this.announceToScreenReader(announcement);
+    });
+    this.model.dampingProperty.lazyLink((damping) => {
+      const template = a11yStrings.dampingChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', damping.toFixed(1));
+      this.announceToScreenReader(announcement);
+    });
 
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
@@ -378,6 +407,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     if (this.configurableGraph) {
       this.configurableGraph.clearData();
     }
+
+    // Announce preset change
+    const a11yStrings = this.getA11yStrings();
+    const template = a11yStrings.presetAppliedStringProperty.value;
+    const announcement = template.replace('{{preset}}', preset.nameProperty.value);
+    this.announceToScreenReader(announcement);
 
     this.isApplyingPreset = false;
   }

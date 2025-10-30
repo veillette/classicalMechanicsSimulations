@@ -241,6 +241,36 @@ const ClassicalMechanicsColors = {
       projector: new Color(220, 140, 0),
     },
   ),
+
+  // Focus indicator colors for accessibility
+  focusIndicatorColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "focusIndicatorColor",
+    {
+      default: new Color(100, 200, 255), // bright cyan for dark background
+      projector: new Color(0, 100, 200),
+    },
+  ),
+
+  // High contrast focus indicator (more visible)
+  focusIndicatorHighContrastColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "focusIndicatorHighContrastColor",
+    {
+      default: new Color(255, 255, 0), // yellow for maximum contrast
+      projector: new Color(255, 0, 255), // magenta for projector mode
+    },
+  ),
+
+  // Interactive element hover color
+  interactiveHoverColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "interactiveHoverColor",
+    {
+      default: new Color(150, 220, 255, 0.3), // semi-transparent cyan
+      projector: new Color(0, 120, 200, 0.2),
+    },
+  ),
 };
 
 // Register the namespace

@@ -134,5 +134,44 @@
       "potential": "Potential",
       "total": "Total"
     }
+  },
+  "accessibility": {
+    "simulation": {
+      "reset": "Simulation reset",
+      "playing": "Simulation playing",
+      "paused": "Simulation paused",
+      "started": "Simulation started",
+      "steppedForward": "Stepped forward",
+      "steppedBackward": "Stepped backward",
+      "speedChanged": "Speed changed to {{speed}}"
+    },
+    "drag": {
+      "draggingMass": "Dragging mass block",
+      "draggingMass1": "Dragging mass 1",
+      "draggingMass2": "Dragging mass 2",
+      "draggingBob": "Dragging pendulum bob",
+      "draggingUpperBob": "Dragging upper pendulum bob",
+      "draggingLowerBob": "Dragging lower pendulum bob",
+      "massReleasedAt": "Mass released at position {{position}} meters",
+      "mass1ReleasedAt": "Mass 1 released at position {{position}} meters",
+      "mass2ReleasedAt": "Mass 2 released at position {{position}} meters",
+      "bobReleasedAt": "Pendulum bob released at {{angle}} degrees from vertical",
+      "upperBobReleasedAt": "Upper bob released at {{angle}} degrees",
+      "lowerBobReleasedAt": "Lower bob released at {{angle}} degrees"
+    },
+    "parameters": {
+      "massChanged": "Mass changed to {{value}} kilograms",
+      "springConstantChanged": "Spring constant changed to {{value}} newtons per meter",
+      "dampingChanged": "Damping changed to {{value}} newton seconds per meter",
+      "lengthChanged": "Length changed to {{value}} meters",
+      "gravityChanged": "Gravity changed to {{value}} meters per second squared",
+      "presetApplied": "Preset applied: {{preset}}"
+    },
+    "graph": {
+      "shown": "Graph shown",
+      "hidden": "Graph hidden",
+      "xAxisChanged": "X-axis changed to {{property}}",
+      "yAxisChanged": "Y-axis changed to {{property}}"
+    }
   }
 }

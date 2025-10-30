@@ -295,6 +295,50 @@ export class StringManager {
   }
 
   /**
+   * Get accessibility announcement string properties
+   */
+  public getAccessibilityStrings() {
+    return {
+      // Simulation state
+      simulationResetStringProperty: this.stringProperties.accessibility.simulation.resetStringProperty,
+      simulationPlayingStringProperty: this.stringProperties.accessibility.simulation.playingStringProperty,
+      simulationPausedStringProperty: this.stringProperties.accessibility.simulation.pausedStringProperty,
+      simulationStartedStringProperty: this.stringProperties.accessibility.simulation.startedStringProperty,
+      steppedForwardStringProperty: this.stringProperties.accessibility.simulation.steppedForwardStringProperty,
+      steppedBackwardStringProperty: this.stringProperties.accessibility.simulation.steppedBackwardStringProperty,
+      speedChangedStringProperty: this.stringProperties.accessibility.simulation.speedChangedStringProperty,
+
+      // Drag interactions
+      draggingMassStringProperty: this.stringProperties.accessibility.drag.draggingMassStringProperty,
+      draggingMass1StringProperty: this.stringProperties.accessibility.drag.draggingMass1StringProperty,
+      draggingMass2StringProperty: this.stringProperties.accessibility.drag.draggingMass2StringProperty,
+      draggingBobStringProperty: this.stringProperties.accessibility.drag.draggingBobStringProperty,
+      draggingUpperBobStringProperty: this.stringProperties.accessibility.drag.draggingUpperBobStringProperty,
+      draggingLowerBobStringProperty: this.stringProperties.accessibility.drag.draggingLowerBobStringProperty,
+      massReleasedAtStringProperty: this.stringProperties.accessibility.drag.massReleasedAtStringProperty,
+      mass1ReleasedAtStringProperty: this.stringProperties.accessibility.drag.mass1ReleasedAtStringProperty,
+      mass2ReleasedAtStringProperty: this.stringProperties.accessibility.drag.mass2ReleasedAtStringProperty,
+      bobReleasedAtStringProperty: this.stringProperties.accessibility.drag.bobReleasedAtStringProperty,
+      upperBobReleasedAtStringProperty: this.stringProperties.accessibility.drag.upperBobReleasedAtStringProperty,
+      lowerBobReleasedAtStringProperty: this.stringProperties.accessibility.drag.lowerBobReleasedAtStringProperty,
+
+      // Parameter changes
+      massChangedStringProperty: this.stringProperties.accessibility.parameters.massChangedStringProperty,
+      springConstantChangedStringProperty: this.stringProperties.accessibility.parameters.springConstantChangedStringProperty,
+      dampingChangedStringProperty: this.stringProperties.accessibility.parameters.dampingChangedStringProperty,
+      lengthChangedStringProperty: this.stringProperties.accessibility.parameters.lengthChangedStringProperty,
+      gravityChangedStringProperty: this.stringProperties.accessibility.parameters.gravityChangedStringProperty,
+      presetAppliedStringProperty: this.stringProperties.accessibility.parameters.presetAppliedStringProperty,
+
+      // Graph changes
+      graphShownStringProperty: this.stringProperties.accessibility.graph.shownStringProperty,
+      graphHiddenStringProperty: this.stringProperties.accessibility.graph.hiddenStringProperty,
+      xAxisChangedStringProperty: this.stringProperties.accessibility.graph.xAxisChangedStringProperty,
+      yAxisChangedStringProperty: this.stringProperties.accessibility.graph.yAxisChangedStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */

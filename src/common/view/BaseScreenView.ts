@@ -17,6 +17,7 @@ import {
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import { StringManager } from "../../i18n/StringManager.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -36,12 +37,28 @@ export abstract class BaseScreenView<
   // Store the playing state before auto-pause so we can restore it
   private wasPlayingBeforeHidden: boolean = false;
 
+  // Screen reader announcement element
+  private readonly ariaLiveRegion: HTMLElement;
+
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
     this.model = model;
 
+    // Create ARIA live region for screen reader announcements
+    this.ariaLiveRegion = this.createAriaLiveRegion();
+
     // Set up Page Visibility API to handle tab switching
     this.setupPageVisibilityListener();
+
+    // Set up accessibility listeners for state changes
+    this.setupAccessibilityListeners();
+  }
+
+  /**
+   * Get accessibility strings from StringManager
+   */
+  protected getA11yStrings() {
+    return StringManager.getInstance().getAccessibilityStrings();
   }
 
   /**
@@ -107,14 +124,33 @@ export abstract class BaseScreenView<
     });
     this.addChild(resetButton);
 
-    // Add keyboard shortcuts for accessibility
+    // Add comprehensive keyboard shortcuts for accessibility
+    const a11yStrings = this.getA11yStrings();
     const keyboardListener = new KeyboardListener({
-      keys: ["r"],
+      keys: ["r", "space", "arrowLeft", "arrowRight"],
       fire: (event, keysPressed) => {
         if (keysPressed === "r") {
           // Reset simulation with R key
           this.model.reset();
           this.reset();
+          this.announceToScreenReader(a11yStrings.simulationResetStringProperty.value);
+        } else if (keysPressed === "space") {
+          // Toggle play/pause with Space key
+          this.model.isPlayingProperty.value = !this.model.isPlayingProperty.value;
+          const announcement = this.model.isPlayingProperty.value
+            ? a11yStrings.simulationPlayingStringProperty.value
+            : a11yStrings.simulationPausedStringProperty.value;
+          this.announceToScreenReader(announcement);
+        } else if (keysPressed === "arrowLeft" && !this.model.isPlayingProperty.value) {
+          // Step backward with Left Arrow (only when paused)
+          this.model.step(-manualStepSize, true);
+          this.step(-manualStepSize);
+          this.announceToScreenReader(a11yStrings.steppedBackwardStringProperty.value);
+        } else if (keysPressed === "arrowRight" && !this.model.isPlayingProperty.value) {
+          // Step forward with Right Arrow (only when paused)
+          this.model.step(manualStepSize, true);
+          this.step(manualStepSize);
+          this.announceToScreenReader(a11yStrings.steppedForwardStringProperty.value);
         }
       },
     });
@@ -162,5 +198,58 @@ export abstract class BaseScreenView<
    */
   public step(_dt: number): void {
     // Subclasses should override to update their visualizations
+  }
+
+  /**
+   * Create an ARIA live region for screen reader announcements.
+   */
+  private createAriaLiveRegion(): HTMLElement {
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.setAttribute('role', 'status');
+    liveRegion.style.position = 'absolute';
+    liveRegion.style.left = '-10000px';
+    liveRegion.style.width = '1px';
+    liveRegion.style.height = '1px';
+    liveRegion.style.overflow = 'hidden';
+    document.body.appendChild(liveRegion);
+    return liveRegion;
+  }
+
+  /**
+   * Announce a message to screen readers.
+   * @param message - The message to announce
+   */
+  protected announceToScreenReader(message: string): void {
+    // Clear previous announcement
+    this.ariaLiveRegion.textContent = '';
+
+    // Small delay to ensure screen readers pick up the change
+    setTimeout(() => {
+      this.ariaLiveRegion.textContent = message;
+    }, 100);
+  }
+
+  /**
+   * Set up listeners for accessibility-related state changes.
+   */
+  private setupAccessibilityListeners(): void {
+    const a11yStrings = this.getA11yStrings();
+
+    // Announce when play state changes
+    this.model.isPlayingProperty.lazyLink((isPlaying) => {
+      const announcement = isPlaying
+        ? a11yStrings.simulationStartedStringProperty.value
+        : a11yStrings.simulationPausedStringProperty.value;
+      this.announceToScreenReader(announcement);
+    });
+
+    // Announce when speed changes
+    this.model.timeSpeedProperty.lazyLink((speed) => {
+      const template = a11yStrings.speedChangedStringProperty.value;
+      const announcement = template.replace('{{speed}}', speed.name);
+      this.announceToScreenReader(announcement);
+    });
   }
 }

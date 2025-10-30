@@ -74,6 +74,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.mass1Node);
 
@@ -84,13 +86,19 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
+      // Add focus highlight for accessibility
+      focusHighlight: "invisible",
     });
     this.addChild(this.mass2Node);
 
-    // Drag listeners
+    // Drag listeners with accessibility announcements
+    const a11yStrings = this.getA11yStrings();
     this.mass1Node.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader(a11yStrings.draggingMass1StringProperty.value);
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
@@ -98,18 +106,33 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           this.model.position1Property.value = modelPosition.x;
           this.model.velocity1Property.value = 0;
         },
+        end: () => {
+          const position = this.model.position1Property.value.toFixed(2);
+          const template = a11yStrings.mass1ReleasedAtStringProperty.value;
+          const announcement = template.replace('{{position}}', position);
+          this.announceToScreenReader(announcement);
+        },
       }),
     );
 
     this.mass2Node.addInputListener(
       new DragListener({
         translateNode: false,
+        start: () => {
+          this.announceToScreenReader(a11yStrings.draggingMass2StringProperty.value);
+        },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
             this.modelViewTransform.viewToModelPosition(parentPoint);
           this.model.position2Property.value = modelPosition.x;
           this.model.velocity2Property.value = 0;
+        },
+        end: () => {
+          const position = this.model.position2Property.value.toFixed(2);
+          const template = a11yStrings.mass2ReleasedAtStringProperty.value;
+          const announcement = template.replace('{{position}}', position);
+          this.announceToScreenReader(announcement);
         },
       }),
     );
