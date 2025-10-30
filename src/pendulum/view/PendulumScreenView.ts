@@ -5,8 +5,8 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
-import { Circle, Line, VBox, Node } from "scenerystack/scenery";
-import { Panel } from "scenerystack/sun";
+import { Circle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
+import { Panel, ComboBox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
@@ -19,6 +19,12 @@ import {
 } from "../../common/view/graph/index.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import { PendulumPresets } from "../model/PendulumPresets.js";
+import { Preset } from "../../common/model/Preset.js";
+import { Property } from "scenerystack/axon";
+
+// Custom preset type to include "Custom" option
+type PresetOption = Preset | "Custom";
 
 export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly bobNode: Circle;
@@ -26,6 +32,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly pivotNode: Circle;
   private readonly pivotPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
+  private readonly presetProperty: Property<PresetOption>;
+  private readonly presets: Preset[];
+  private isApplyingPreset: boolean = false;
 
   // Graph components
   private readonly angleDataSet: GraphDataSet;
@@ -37,6 +46,12 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(model, options);
+
+    // Get available presets
+    this.presets = PendulumPresets.getPresets();
+
+    // Initialize with first preset as default
+    this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Pivot point (top center of screen)
     this.pivotPoint = new Vector2(
@@ -108,6 +123,41 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
+
+    // Listen for preset changes to apply configuration
+    this.presetProperty.link((preset) => {
+      if (preset !== "Custom" && !this.isApplyingPreset) {
+        this.applyPreset(preset);
+      }
+    });
+
+    // Listen to model parameter changes to detect user modifications
+    const detectCustomChange = () => {
+      if (!this.isApplyingPreset && this.presetProperty.value !== "Custom") {
+        this.presetProperty.value = "Custom";
+      }
+    };
+    this.model.lengthProperty.lazyLink(detectCustomChange);
+    this.model.massProperty.lazyLink(detectCustomChange);
+    this.model.gravityProperty.lazyLink(detectCustomChange);
+    this.model.dampingProperty.lazyLink(detectCustomChange);
+
+    // Add accessibility announcements for parameter changes
+    this.model.lengthProperty.lazyLink((length) => {
+      this.announceToScreenReader(`Length changed to ${length.toFixed(1)} meters`);
+    });
+    this.model.massProperty.lazyLink((mass) => {
+      this.announceToScreenReader(`Mass changed to ${mass.toFixed(1)} kilograms`);
+    });
+    this.model.gravityProperty.lazyLink((gravity) => {
+      this.announceToScreenReader(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
+    });
+    this.model.dampingProperty.lazyLink((damping) => {
+      this.announceToScreenReader(`Damping changed to ${damping.toFixed(2)}`);
+    });
+
+    // Apply the first preset immediately
+    this.applyPreset(this.presets[0]);
 
     // Create graph datasets
     this.angleDataSet = new GraphDataSet(
@@ -181,6 +231,50 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private createControlPanel(): Node {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
+    const presetLabels = stringManager.getPresetLabels();
+
+    // Create preset selector
+    const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
+      // Add "Custom" option first
+      {
+        value: "Custom",
+        createNode: () => new Text(presetLabels.customStringProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: "customPresetItem",
+      },
+      // Add all presets
+      ...this.presets.map((preset, index) => ({
+        value: preset,
+        createNode: () => new Text(preset.nameProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: `preset${index}Item`,
+      })),
+    ];
+
+    const presetSelector = new ComboBox(this.presetProperty, presetItems, this, {
+      cornerRadius: 5,
+      xMargin: 8,
+      yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    });
+
+    const presetLabel = new Text(presetLabels.labelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    const presetRow = new HBox({
+      spacing: 10,
+      children: [presetLabel, presetSelector],
+    });
 
     const lengthControl = new NumberControl(
       controlLabels.lengthStringProperty,
@@ -250,7 +344,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       new VBox({
         spacing: 15,
         align: "left",
-        children: [lengthControl, massControl, gravityControl, dampingControl],
+        children: [presetRow, lengthControl, massControl, gravityControl, dampingControl],
       }),
       {
         xMargin: 10,
@@ -317,5 +411,51 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Update graph visualizations
     this.timeGraph.update(this.model.timeProperty.value);
     this.energyGraph.update(this.model.timeProperty.value);
+  }
+
+  /**
+   * Apply a preset configuration to the model
+   */
+  private applyPreset(preset: Preset): void {
+    this.isApplyingPreset = true;
+
+    const config = preset.configuration;
+
+    // Apply all configuration values to model properties
+    if (config.length !== undefined) {
+      this.model.lengthProperty.value = config.length;
+    }
+    if (config.mass !== undefined) {
+      this.model.massProperty.value = config.mass;
+    }
+    if (config.gravity !== undefined) {
+      this.model.gravityProperty.value = config.gravity;
+    }
+    if (config.damping !== undefined) {
+      this.model.dampingProperty.value = config.damping;
+    }
+    if (config.angle !== undefined) {
+      this.model.angleProperty.value = config.angle;
+    }
+
+    // Reset angular velocity when applying preset
+    this.model.angularVelocityProperty.value = 0;
+
+    // Reset simulation time only (don't reset the parameters we just set!)
+    this.model.timeProperty.value = 0;
+
+    // Clear graphs when switching presets
+    this.angleDataSet.clear();
+    this.angularVelocityDataSet.clear();
+    this.kineticEnergyDataSet.clear();
+    this.potentialEnergyDataSet.clear();
+    this.timeGraph.clear();
+    this.energyGraph.clear();
+
+    // Announce preset change
+    const angleDegrees = (config.angle || 0) * 180 / Math.PI;
+    this.announceToScreenReader(`Applied preset: ${preset.nameProperty.value}. Pendulum set to ${angleDegrees.toFixed(1)} degrees.`);
+
+    this.isApplyingPreset = false;
   }
 }

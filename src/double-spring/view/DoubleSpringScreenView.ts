@@ -5,8 +5,8 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
-import { Rectangle, Line, VBox, Node } from "scenerystack/scenery";
-import { Panel } from "scenerystack/sun";
+import { Rectangle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
+import { Panel, ComboBox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
@@ -15,6 +15,12 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
+import { Preset } from "../../common/model/Preset.js";
+import { Property } from "scenerystack/axon";
+
+// Custom preset type to include "Custom" option
+type PresetOption = Preset | "Custom";
 
 export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly mass1Node: Rectangle;
@@ -23,9 +29,18 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly spring2Node: SpringNode;
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
+  private readonly presetProperty: Property<PresetOption>;
+  private readonly presets: Preset[];
+  private isApplyingPreset: boolean = false;
 
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
+
+    // Get available presets
+    this.presets = DoubleSpringPresets.getPresets();
+
+    // Initialize with first preset as default
+    this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Fixed point for spring attachment
     this.fixedPoint = new Vector2(100, this.layoutBounds.centerY);
@@ -145,6 +160,50 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
+    // Listen for preset changes to apply configuration
+    this.presetProperty.link((preset) => {
+      if (preset !== "Custom" && !this.isApplyingPreset) {
+        this.applyPreset(preset);
+      }
+    });
+
+    // Listen to model parameter changes to detect user modifications
+    const detectCustomChange = () => {
+      if (!this.isApplyingPreset && this.presetProperty.value !== "Custom") {
+        this.presetProperty.value = "Custom";
+      }
+    };
+    this.model.mass1Property.lazyLink(detectCustomChange);
+    this.model.mass2Property.lazyLink(detectCustomChange);
+    this.model.springConstant1Property.lazyLink(detectCustomChange);
+    this.model.springConstant2Property.lazyLink(detectCustomChange);
+
+    // Add accessibility announcements for parameter changes
+    const a11yStrings = this.getA11yStrings();
+    this.model.mass1Property.lazyLink((mass) => {
+      const template = a11yStrings.mass1ChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', mass.toFixed(1));
+      this.announceToScreenReader(announcement);
+    });
+    this.model.mass2Property.lazyLink((mass) => {
+      const template = a11yStrings.mass2ChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', mass.toFixed(1));
+      this.announceToScreenReader(announcement);
+    });
+    this.model.springConstant1Property.lazyLink((springConstant) => {
+      const template = a11yStrings.springConstant1ChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
+      this.announceToScreenReader(announcement);
+    });
+    this.model.springConstant2Property.lazyLink((springConstant) => {
+      const template = a11yStrings.springConstant2ChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
+      this.announceToScreenReader(announcement);
+    });
+
+    // Apply the first preset immediately
+    this.applyPreset(this.presets[0]);
+
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -155,6 +214,50 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private createControlPanel(): Node {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
+    const presetLabels = stringManager.getPresetLabels();
+
+    // Create preset selector
+    const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
+      // Add "Custom" option first
+      {
+        value: "Custom",
+        createNode: () => new Text(presetLabels.customStringProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: "customPresetItem",
+      },
+      // Add all presets
+      ...this.presets.map((preset, index) => ({
+        value: preset,
+        createNode: () => new Text(preset.nameProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: `preset${index}Item`,
+      })),
+    ];
+
+    const presetSelector = new ComboBox(this.presetProperty, presetItems, this, {
+      cornerRadius: 5,
+      xMargin: 8,
+      yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    });
+
+    const presetLabel = new Text(presetLabels.labelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    const presetRow = new HBox({
+      spacing: 10,
+      children: [presetLabel, presetSelector],
+    });
 
     const mass1Control = new NumberControl(
       controlLabels.mass1StringProperty,
@@ -224,7 +327,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       new VBox({
         spacing: 12,
         align: "left",
-        children: [mass1Control, mass2Control, spring1Control, spring2Control],
+        children: [presetRow, mass1Control, mass2Control, spring1Control, spring2Control],
       }),
       {
         xMargin: 10,
@@ -273,5 +376,49 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
   public override step(dt: number): void {
     this.model.step(dt);
+  }
+
+  /**
+   * Apply a preset configuration to the model
+   */
+  private applyPreset(preset: Preset): void {
+    this.isApplyingPreset = true;
+
+    const config = preset.configuration;
+
+    // Apply all configuration values to model properties
+    if (config.mass1 !== undefined) {
+      this.model.mass1Property.value = config.mass1;
+    }
+    if (config.mass2 !== undefined) {
+      this.model.mass2Property.value = config.mass2;
+    }
+    if (config.springConstant1 !== undefined) {
+      this.model.springConstant1Property.value = config.springConstant1;
+    }
+    if (config.springConstant2 !== undefined) {
+      this.model.springConstant2Property.value = config.springConstant2;
+    }
+    if (config.position1 !== undefined) {
+      this.model.position1Property.value = config.position1;
+    }
+    if (config.position2 !== undefined) {
+      this.model.position2Property.value = config.position2;
+    }
+
+    // Reset velocities when applying preset
+    this.model.velocity1Property.value = 0;
+    this.model.velocity2Property.value = 0;
+
+    // Reset simulation time only (don't reset the parameters we just set!)
+    this.model.timeProperty.value = 0;
+
+    // Announce preset change
+    const a11yStrings = this.getA11yStrings();
+    const template = a11yStrings.presetAppliedStringProperty.value;
+    const announcement = template.replace('{{preset}}', preset.nameProperty.value);
+    this.announceToScreenReader(announcement);
+
+    this.isApplyingPreset = false;
   }
 }

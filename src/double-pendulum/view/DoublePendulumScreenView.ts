@@ -9,20 +9,27 @@ import {
   Circle,
   Line,
   VBox,
+  HBox,
   Node,
+  Text,
   Path,
   KeyboardListener,
 } from "scenerystack/scenery";
-import { Panel } from "scenerystack/sun";
+import { Panel, ComboBox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import { BooleanProperty } from "scenerystack/axon";
+import { BooleanProperty, Property } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import { DoublePendulumPresets } from "../model/DoublePendulumPresets.js";
+import { Preset } from "../../common/model/Preset.js";
+
+// Custom preset type to include "Custom" option
+type PresetOption = Preset | "Custom";
 
 export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel> {
   private readonly bob1Node: Circle;
@@ -36,9 +43,18 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private readonly trailPoints: Vector2[] = [];
   private readonly maxTrailPoints: number = 500;
   private readonly trailVisibleProperty: BooleanProperty;
+  private readonly presetProperty: Property<PresetOption>;
+  private readonly presets: Preset[];
+  private isApplyingPreset: boolean = false;
 
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
     super(model, options);
+
+    // Get available presets
+    this.presets = DoublePendulumPresets.getPresets();
+
+    // Initialize with first preset as default
+    this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Pivot point (top center)
     this.pivotPoint = new Vector2(
@@ -190,6 +206,50 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
 
+    // Listen for preset changes to apply configuration
+    this.presetProperty.link((preset) => {
+      if (preset !== "Custom" && !this.isApplyingPreset) {
+        this.applyPreset(preset);
+      }
+    });
+
+    // Listen to model parameter changes to detect user modifications
+    const detectCustomChange = () => {
+      if (!this.isApplyingPreset && this.presetProperty.value !== "Custom") {
+        this.presetProperty.value = "Custom";
+      }
+    };
+    this.model.length1Property.lazyLink(detectCustomChange);
+    this.model.length2Property.lazyLink(detectCustomChange);
+    this.model.mass1Property.lazyLink(detectCustomChange);
+    this.model.mass2Property.lazyLink(detectCustomChange);
+    this.model.gravityProperty.lazyLink(detectCustomChange);
+    this.model.dampingProperty.lazyLink(detectCustomChange);
+
+    // Add accessibility announcements for parameter changes
+    const a11yStrings = this.getA11yStrings();
+    this.model.length1Property.lazyLink((length) => {
+      this.announceToScreenReader(`Upper pendulum length changed to ${length.toFixed(1)} meters`);
+    });
+    this.model.length2Property.lazyLink((length) => {
+      this.announceToScreenReader(`Lower pendulum length changed to ${length.toFixed(1)} meters`);
+    });
+    this.model.mass1Property.lazyLink((mass) => {
+      this.announceToScreenReader(`Upper bob mass changed to ${mass.toFixed(1)} kilograms`);
+    });
+    this.model.mass2Property.lazyLink((mass) => {
+      this.announceToScreenReader(`Lower bob mass changed to ${mass.toFixed(1)} kilograms`);
+    });
+    this.model.gravityProperty.lazyLink((gravity) => {
+      this.announceToScreenReader(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
+    });
+    this.model.dampingProperty.lazyLink((damping) => {
+      this.announceToScreenReader(`Damping changed to ${damping.toFixed(2)}`);
+    });
+
+    // Apply the first preset immediately
+    this.applyPreset(this.presets[0]);
+
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -212,6 +272,50 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private createControlPanel(): Node {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
+    const presetLabels = stringManager.getPresetLabels();
+
+    // Create preset selector
+    const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
+      // Add "Custom" option first
+      {
+        value: "Custom",
+        createNode: () => new Text(presetLabels.customStringProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: "customPresetItem",
+      },
+      // Add all presets
+      ...this.presets.map((preset, index) => ({
+        value: preset,
+        createNode: () => new Text(preset.nameProperty, {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        tandemName: `preset${index}Item`,
+      })),
+    ];
+
+    const presetSelector = new ComboBox(this.presetProperty, presetItems, this, {
+      cornerRadius: 5,
+      xMargin: 8,
+      yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    });
+
+    const presetLabel = new Text(presetLabels.labelStringProperty, {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    const presetRow = new HBox({
+      spacing: 10,
+      children: [presetLabel, presetSelector],
+    });
 
     const length1Control = new NumberControl(
       controlLabels.length1StringProperty,
@@ -314,6 +418,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         spacing: 12,
         align: "left",
         children: [
+          presetRow,
           length1Control,
           length2Control,
           mass1Control,
@@ -421,5 +526,58 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Update visualization after physics step completes
     // This ensures all state variables are updated consistently before drawing
     this.updateVisualization();
+  }
+
+  /**
+   * Apply a preset configuration to the model
+   */
+  private applyPreset(preset: Preset): void {
+    this.isApplyingPreset = true;
+
+    const config = preset.configuration;
+
+    // Apply all configuration values to model properties
+    if (config.length1 !== undefined) {
+      this.model.length1Property.value = config.length1;
+    }
+    if (config.length2 !== undefined) {
+      this.model.length2Property.value = config.length2;
+    }
+    if (config.mass1 !== undefined) {
+      this.model.mass1Property.value = config.mass1;
+    }
+    if (config.mass2 !== undefined) {
+      this.model.mass2Property.value = config.mass2;
+    }
+    if (config.gravity !== undefined) {
+      this.model.gravityProperty.value = config.gravity;
+    }
+    if (config.damping !== undefined) {
+      this.model.dampingProperty.value = config.damping;
+    }
+    if (config.angle1 !== undefined) {
+      this.model.angle1Property.value = config.angle1;
+    }
+    if (config.angle2 !== undefined) {
+      this.model.angle2Property.value = config.angle2;
+    }
+
+    // Reset angular velocities when applying preset
+    this.model.angularVelocity1Property.value = 0;
+    this.model.angularVelocity2Property.value = 0;
+
+    // Reset simulation time only (don't reset the parameters we just set!)
+    this.model.timeProperty.value = 0;
+
+    // Clear trail when switching presets
+    this.clearTrail();
+
+    // Announce preset change
+    const a11yStrings = this.getA11yStrings();
+    const template = a11yStrings.presetAppliedStringProperty.value;
+    const announcement = template.replace('{{preset}}', preset.nameProperty.value);
+    this.announceToScreenReader(announcement);
+
+    this.isApplyingPreset = false;
   }
 }
