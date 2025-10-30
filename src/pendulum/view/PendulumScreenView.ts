@@ -18,6 +18,7 @@ import {
 } from "../../common/view/graph/index.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { PendulumPresets } from "../model/PendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
@@ -104,7 +105,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader("Dragging pendulum bob");
+          SimulationAnnouncer.announceDragInteraction("Dragging pendulum bob");
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -115,7 +116,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
         },
         end: () => {
           const angleDegrees = (this.model.angleProperty.value * 180 / Math.PI).toFixed(1);
-          this.announceToScreenReader(`Pendulum bob released at ${angleDegrees} degrees from vertical`);
+          SimulationAnnouncer.announceDragInteraction(`Pendulum bob released at ${angleDegrees} degrees from vertical`);
         },
       }),
     );
@@ -201,16 +202,16 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Add accessibility announcements for parameter changes
     this.model.lengthProperty.lazyLink((length) => {
-      this.announceToScreenReader(`Length changed to ${length.toFixed(1)} meters`);
+      SimulationAnnouncer.announceParameterChange(`Length changed to ${length.toFixed(1)} meters`);
     });
     this.model.massProperty.lazyLink((mass) => {
-      this.announceToScreenReader(`Mass changed to ${mass.toFixed(1)} kilograms`);
+      SimulationAnnouncer.announceParameterChange(`Mass changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.gravityProperty.lazyLink((gravity) => {
-      this.announceToScreenReader(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
+      SimulationAnnouncer.announceParameterChange(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
     });
     this.model.dampingProperty.lazyLink((damping) => {
-      this.announceToScreenReader(`Damping changed to ${damping.toFixed(2)}`);
+      SimulationAnnouncer.announceParameterChange(`Damping changed to ${damping.toFixed(2)}`);
     });
 
     // Apply the first preset immediately
@@ -617,7 +618,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Announce preset change
     const angleDegrees = (config.angle || 0) * 180 / Math.PI;
-    this.announceToScreenReader(`Applied preset: ${preset.nameProperty.value}. Pendulum set to ${angleDegrees.toFixed(1)} degrees.`);
+    SimulationAnnouncer.announceParameterChange(`Applied preset: ${preset.nameProperty.value}. Pendulum set to ${angleDegrees.toFixed(1)} degrees.`);
 
     this.isApplyingPreset = false;
   }

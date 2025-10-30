@@ -197,6 +197,21 @@ export class StringManager {
   }
 
   /**
+   * Get audio preferences label string properties
+   */
+  public getAudioPreferencesLabels() {
+    return {
+      simVoicingOptionsStringProperty: this.stringProperties.preferences.audio.simVoicingOptionsStringProperty,
+      announceParameterChangesStringProperty: this.stringProperties.preferences.audio.announceParameterChangesStringProperty,
+      parameterAnnouncementsDescriptionStringProperty: this.stringProperties.preferences.audio.parameterAnnouncementsDescriptionStringProperty,
+      announceStateChangesStringProperty: this.stringProperties.preferences.audio.announceStateChangesStringProperty,
+      stateAnnouncementsDescriptionStringProperty: this.stringProperties.preferences.audio.stateAnnouncementsDescriptionStringProperty,
+      announceDragInteractionsStringProperty: this.stringProperties.preferences.audio.announceDragInteractionsStringProperty,
+      dragAnnouncementsDescriptionStringProperty: this.stringProperties.preferences.audio.dragAnnouncementsDescriptionStringProperty,
+    };
+  }
+
+  /**
    * Get solver description string properties
    */
   public getSolverDescriptions() {

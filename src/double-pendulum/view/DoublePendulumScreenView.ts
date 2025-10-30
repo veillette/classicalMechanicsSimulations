@@ -29,6 +29,7 @@ import {
   type PlottableProperty,
 } from "../../common/view/graph/index.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoublePendulumPresets } from "../model/DoublePendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
@@ -159,7 +160,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader(a11yStrings.draggingUpperBobStringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingUpperBobStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -173,7 +174,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           const angleDegrees = (this.model.angle1Property.value * 180 / Math.PI).toFixed(1);
           const template = a11yStrings.upperBobReleasedAtStringProperty.value;
           const announcement = template.replace('{{angle}}', angleDegrees);
-          this.announceToScreenReader(announcement);
+          SimulationAnnouncer.announceDragInteraction(announcement);
         },
       }),
     );
@@ -183,7 +184,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader(a11yStrings.draggingLowerBobStringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingLowerBobStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -207,7 +208,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           const angleDegrees = (this.model.angle2Property.value * 180 / Math.PI).toFixed(1);
           const template = a11yStrings.lowerBobReleasedAtStringProperty.value;
           const announcement = template.replace('{{angle}}', angleDegrees);
-          this.announceToScreenReader(announcement);
+          SimulationAnnouncer.announceDragInteraction(announcement);
         },
       }),
     );
@@ -331,22 +332,22 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Add accessibility announcements for parameter changes
     this.model.length1Property.lazyLink((length) => {
-      this.announceToScreenReader(`Upper pendulum length changed to ${length.toFixed(1)} meters`);
+      SimulationAnnouncer.announceParameterChange(`Upper pendulum length changed to ${length.toFixed(1)} meters`);
     });
     this.model.length2Property.lazyLink((length) => {
-      this.announceToScreenReader(`Lower pendulum length changed to ${length.toFixed(1)} meters`);
+      SimulationAnnouncer.announceParameterChange(`Lower pendulum length changed to ${length.toFixed(1)} meters`);
     });
     this.model.mass1Property.lazyLink((mass) => {
-      this.announceToScreenReader(`Upper bob mass changed to ${mass.toFixed(1)} kilograms`);
+      SimulationAnnouncer.announceParameterChange(`Upper bob mass changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.mass2Property.lazyLink((mass) => {
-      this.announceToScreenReader(`Lower bob mass changed to ${mass.toFixed(1)} kilograms`);
+      SimulationAnnouncer.announceParameterChange(`Lower bob mass changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.gravityProperty.lazyLink((gravity) => {
-      this.announceToScreenReader(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
+      SimulationAnnouncer.announceParameterChange(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
     });
     this.model.dampingProperty.lazyLink((damping) => {
-      this.announceToScreenReader(`Damping changed to ${damping.toFixed(2)}`);
+      SimulationAnnouncer.announceParameterChange(`Damping changed to ${damping.toFixed(2)}`);
     });
 
     // Apply the first preset immediately
@@ -909,7 +910,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     const a11yStrings = this.getA11yStrings();
     const template = a11yStrings.presetAppliedStringProperty.value;
     const announcement = template.replace('{{preset}}', preset.nameProperty.value);
-    this.announceToScreenReader(announcement);
+    SimulationAnnouncer.announceDragInteraction(announcement);
 
     this.isApplyingPreset = false;
   }

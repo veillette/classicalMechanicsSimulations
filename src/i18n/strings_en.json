@@ -81,6 +81,15 @@
       "adaptiveRK45": "Variable-step 5th order method. Automatic error control, best for complex systems.",
       "adaptiveEuler": "Variable-step 2nd order method. Fast and adaptive, good for smooth problems.",
       "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums."
+    },
+    "audio": {
+      "simVoicingOptions": "Simulation Voicing Options",
+      "announceParameterChanges": "Announce parameter changes",
+      "parameterAnnouncementsDescription": "Hear announcements when changing mass, spring constant, damping, and other parameters",
+      "announceStateChanges": "Announce state changes",
+      "stateAnnouncementsDescription": "Hear announcements when playing, pausing, resetting, or stepping through the simulation",
+      "announceDragInteractions": "Announce drag interactions",
+      "dragAnnouncementsDescription": "Hear announcements when dragging masses or pendulum bobs, including position information"
     }
   },
   "presets": {

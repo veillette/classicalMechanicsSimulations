@@ -1,6 +1,5 @@
 /**
  * Fourth-order Runge-Kutta numerical integration solver.
- * Adapted from myphysicslab's RungeKutta implementation.
  *
  * This solver is used to integrate ordinary differential equations (ODEs) of the form:
  * dy/dt = f(t, y)

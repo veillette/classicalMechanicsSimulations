@@ -5,8 +5,5 @@
  */
 
 export { default as GraphDataSet } from "./GraphDataSet";
-export { default as StandardGraph } from "./StandardGraph";
-export { default as TimeGraph } from "./TimeGraph";
-export { default as MultiGraph } from "./MultiGraph";
 export { default as ConfigurableGraph } from "./ConfigurableGraph";
 export type { PlottableProperty } from "./PlottableProperty";

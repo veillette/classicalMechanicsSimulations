@@ -17,6 +17,7 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import {
   ConfigurableGraph,
   type PlottableProperty,
@@ -106,7 +107,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader(a11yStrings.draggingMassStringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingMassStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -120,7 +121,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           const position = this.model.positionProperty.value.toFixed(2);
           const template = a11yStrings.massReleasedAtStringProperty.value;
           const announcement = template.replace('{{position}}', position);
-          this.announceToScreenReader(announcement);
+          SimulationAnnouncer.announceDragInteraction(announcement);
         },
       }),
     );
@@ -206,17 +207,17 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.model.massProperty.lazyLink((mass) => {
       const template = a11yStrings.massChangedStringProperty.value;
       const announcement = template.replace('{{value}}', mass.toFixed(1));
-      this.announceToScreenReader(announcement);
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.springConstantProperty.lazyLink((springConstant) => {
       const template = a11yStrings.springConstantChangedStringProperty.value;
       const announcement = template.replace('{{value}}', springConstant.toFixed(0));
-      this.announceToScreenReader(announcement);
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.dampingProperty.lazyLink((damping) => {
       const template = a11yStrings.dampingChangedStringProperty.value;
       const announcement = template.replace('{{value}}', damping.toFixed(1));
-      this.announceToScreenReader(announcement);
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
 
     // Apply the first preset immediately
@@ -586,7 +587,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const a11yStrings = this.getA11yStrings();
     const template = a11yStrings.presetAppliedStringProperty.value;
     const announcement = template.replace('{{preset}}', preset.nameProperty.value);
-    this.announceToScreenReader(announcement);
+    SimulationAnnouncer.announceParameterChange(announcement);
 
     this.isApplyingPreset = false;
   }

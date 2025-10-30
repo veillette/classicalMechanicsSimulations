@@ -43,6 +43,25 @@ const ClassicalMechanicsPreferences = {
    * When enabled, uses higher contrast colors and thicker focus indicators.
    */
   highContrastModeProperty: new BooleanProperty(false),
+
+  /**
+   * Voicing-specific preferences for simulation announcements
+   */
+
+  /**
+   * Whether to announce parameter changes (mass, spring constant, damping, etc.)
+   */
+  announceParameterChangesProperty: new BooleanProperty(true),
+
+  /**
+   * Whether to announce state changes (play/pause, reset, step, speed changes)
+   */
+  announceStateChangesProperty: new BooleanProperty(true),
+
+  /**
+   * Whether to announce drag interactions (drag start, drag end, positions)
+   */
+  announceDragInteractionsProperty: new BooleanProperty(true),
 };
 
 // Register the namespace

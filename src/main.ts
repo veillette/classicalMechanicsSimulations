@@ -15,6 +15,7 @@ import { StringManager } from "./i18n/StringManager.js";
 import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
 import SolverType from "./common/model/SolverType.js";
+import ClassicalMechanicsAudioPreferencesNode from "./common/view/ClassicalMechanicsAudioPreferencesNode.js";
 
 onReadyToLaunch(() => {
   // Get the string manager instance
@@ -32,6 +33,18 @@ onReadyToLaunch(() => {
       visualOptions: {
         supportsProjectorMode: true,
         supportsInteractiveHighlights: true,
+      },
+      audioOptions: {
+        supportsVoicing: true,
+        supportsSound: false,
+        customPreferences: [
+          {
+            createContent: (tandem: Tandem) => {
+              return new ClassicalMechanicsAudioPreferencesNode(tandem);
+            },
+            column: "right",
+          },
+        ],
       },
       simulationOptions: {
         customPreferences: [

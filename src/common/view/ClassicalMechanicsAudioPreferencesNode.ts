@@ -1,0 +1,119 @@
+/**
+ * ClassicalMechanicsAudioPreferencesNode
+ *
+ * Custom audio preferences for the Classical Mechanics simulations.
+ * Provides sim-specific voicing options that appear in the Audio preferences tab.
+ *
+ * This follows the pattern from membrane-transport, where custom audio preferences
+ * are added to the right column of the Audio tab alongside the standard voicing controls.
+ */
+
+import { VBox, Text } from "scenerystack/scenery";
+import { Checkbox } from "scenerystack/sun";
+import { PhetFont } from "scenerystack/scenery-phet";
+import { Tandem } from "scenerystack/tandem";
+import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import { StringManager } from "../../i18n/StringManager.js";
+
+export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
+  public constructor(tandem: Tandem) {
+    super({
+      align: "left",
+      spacing: 12,
+      tandem: tandem,
+    });
+
+    const stringManager = StringManager.getInstance();
+    const audioStrings = (stringManager as any).stringProperties.preferences.audio;
+
+    // Header for sim-specific voicing options
+    const header = new Text(audioStrings.simVoicingOptionsStringProperty, {
+      font: new PhetFont({ size: 16, weight: "bold" }),
+      fill: "black",
+      maxWidth: 350,
+    });
+
+    // Parameter change announcements checkbox
+    const parameterAnnouncementsCheckbox = new Checkbox(
+      ClassicalMechanicsPreferences.announceParameterChangesProperty,
+      new Text(audioStrings.announceParameterChangesStringProperty, {
+        font: new PhetFont(16),
+        fill: "black",
+        maxWidth: 350,
+      }),
+      {
+        boxWidth: 16,
+        tandem: tandem.createTandem("parameterAnnouncementsCheckbox"),
+      }
+    );
+
+    // Description for parameter announcements
+    const parameterDescription = new Text(
+      audioStrings.parameterAnnouncementsDescriptionStringProperty,
+      {
+        font: new PhetFont(12),
+        fill: "rgb(80,80,80)",
+        maxWidth: 350,
+      }
+    );
+
+    // State change announcements checkbox
+    const stateAnnouncementsCheckbox = new Checkbox(
+      ClassicalMechanicsPreferences.announceStateChangesProperty,
+      new Text(audioStrings.announceStateChangesStringProperty, {
+        font: new PhetFont(16),
+        fill: "black",
+        maxWidth: 350,
+      }),
+      {
+        boxWidth: 16,
+        tandem: tandem.createTandem("stateAnnouncementsCheckbox"),
+      }
+    );
+
+    // Description for state announcements
+    const stateDescription = new Text(
+      audioStrings.stateAnnouncementsDescriptionStringProperty,
+      {
+        font: new PhetFont(12),
+        fill: "rgb(80,80,80)",
+        maxWidth: 350,
+      }
+    );
+
+    // Drag interaction announcements checkbox
+    const dragAnnouncementsCheckbox = new Checkbox(
+      ClassicalMechanicsPreferences.announceDragInteractionsProperty,
+      new Text(audioStrings.announceDragInteractionsStringProperty, {
+        font: new PhetFont(16),
+        fill: "black",
+        maxWidth: 350,
+      }),
+      {
+        boxWidth: 16,
+        tandem: tandem.createTandem("dragAnnouncementsCheckbox"),
+      }
+    );
+
+    // Description for drag announcements
+    const dragDescription = new Text(
+      audioStrings.dragAnnouncementsDescriptionStringProperty,
+      {
+        font: new PhetFont(12),
+        fill: "rgb(80,80,80)",
+        maxWidth: 350,
+      }
+    );
+
+    // Add all children to the VBox
+    this.children = [
+      header,
+      parameterAnnouncementsCheckbox,
+      parameterDescription,
+      stateAnnouncementsCheckbox,
+      stateDescription,
+      dragAnnouncementsCheckbox,
+      dragDescription,
+    ];
+  }
+}

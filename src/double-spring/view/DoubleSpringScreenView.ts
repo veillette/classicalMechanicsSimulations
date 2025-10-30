@@ -16,6 +16,7 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
+import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
@@ -127,7 +128,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader(a11yStrings.draggingMass1StringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingMass1StringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -140,7 +141,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           const position = this.model.position1Property.value.toFixed(2);
           const template = a11yStrings.mass1ReleasedAtStringProperty.value;
           const announcement = template.replace('{{position}}', position);
-          this.announceToScreenReader(announcement);
+          SimulationAnnouncer.announceDragInteraction(announcement);
         },
       }),
     );
@@ -149,7 +150,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       new DragListener({
         translateNode: false,
         start: () => {
-          this.announceToScreenReader(a11yStrings.draggingMass2StringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingMass2StringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -162,7 +163,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           const position = this.model.position2Property.value.toFixed(2);
           const template = a11yStrings.mass2ReleasedAtStringProperty.value;
           const announcement = template.replace('{{position}}', position);
-          this.announceToScreenReader(announcement);
+          SimulationAnnouncer.announceDragInteraction(announcement);
         },
       }),
     );
@@ -276,16 +277,16 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Add accessibility announcements for parameter changes
     this.model.mass1Property.lazyLink((mass) => {
-      this.announceToScreenReader(`Mass 1 changed to ${mass.toFixed(1)} kilograms`);
+      SimulationAnnouncer.announceParameterChange(`Mass 1 changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.mass2Property.lazyLink((mass) => {
-      this.announceToScreenReader(`Mass 2 changed to ${mass.toFixed(1)} kilograms`);
+      SimulationAnnouncer.announceParameterChange(`Mass 2 changed to ${mass.toFixed(1)} kilograms`);
     });
     this.model.springConstant1Property.lazyLink((springConstant) => {
-      this.announceToScreenReader(`Spring 1 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
+      SimulationAnnouncer.announceParameterChange(`Spring 1 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
     });
     this.model.springConstant2Property.lazyLink((springConstant) => {
-      this.announceToScreenReader(`Spring 2 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
+      SimulationAnnouncer.announceParameterChange(`Spring 2 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
     });
 
     // Apply the first preset immediately
@@ -632,7 +633,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const a11yStrings = this.getA11yStrings();
     const template = a11yStrings.presetAppliedStringProperty.value;
     const announcement = template.replace('{{preset}}', preset.nameProperty.value);
-    this.announceToScreenReader(announcement);
+    SimulationAnnouncer.announceDragInteraction(announcement);
 
     this.isApplyingPreset = false;
   }
