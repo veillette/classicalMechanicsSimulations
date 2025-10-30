@@ -262,6 +262,7 @@ export default class ConfigurableGraph extends Node {
     this.setupPanControls();
     this.setupTouchZoomControls();
     this.setupYAxisTouchControls();
+    this.setupXAxisTouchControls();
 
     // Link visibility changes to announce using voicing
     this.graphVisibleProperty.link((visible) => {
@@ -586,6 +587,120 @@ export default class ConfigurableGraph extends Node {
 
     // Make Y-axis tick labels pickable so they can receive touch input
     this.yTickLabelSet.pickable = true;
+  }
+
+  /**
+   * Setup touch controls for the X-axis (tick labels)
+   * Allows pinch-to-zoom on X-axis only and one-finger drag for horizontal panning
+   */
+  private setupXAxisTouchControls(): void {
+    // Track active touch pointers for X-axis
+    const activePointers = new Map<Pointer, Vector2>();
+    let initialXDistance: number | null = null;
+    let initialXMidpoint: number | null = null;
+    let initialXRange: Range | null = null;
+    let singleTouchStartX: number | null = null;
+
+    this.xTickLabelSet.addInputListener({
+      down: (event) => {
+        if (event.pointer.type === 'touch') {
+          const globalPoint = event.pointer.point;
+          activePointers.set(event.pointer, globalPoint);
+
+          if (activePointers.size === 1) {
+            // Single touch - prepare for horizontal pan
+            singleTouchStartX = globalPoint.x;
+            initialXRange = this.chartTransform.modelXRange.copy();
+            this.isManuallyZoomed = true;
+          } else if (activePointers.size === 2) {
+            // Two touches - prepare for pinch zoom on X-axis
+            const points = Array.from(activePointers.values());
+            initialXDistance = Math.abs(points[0].x - points[1].x);
+            initialXMidpoint = (points[0].x + points[1].x) / 2;
+            initialXRange = this.chartTransform.modelXRange.copy();
+            singleTouchStartX = null; // Cancel single touch
+            this.isManuallyZoomed = true;
+          }
+        }
+      },
+
+      move: (event) => {
+        if (event.pointer.type === 'touch' && activePointers.has(event.pointer)) {
+          const globalPoint = event.pointer.point;
+          activePointers.set(event.pointer, globalPoint);
+
+          if (activePointers.size === 1 && singleTouchStartX !== null && initialXRange) {
+            // Single touch - horizontal pan
+            const deltaX = globalPoint.x - singleTouchStartX;
+
+            // Convert delta to model coordinates
+            const modelDeltaX = -deltaX * (initialXRange.getLength() / this.graphWidth);
+
+            const newXRange = new Range(
+              initialXRange.min + modelDeltaX,
+              initialXRange.max + modelDeltaX
+            );
+
+            this.chartTransform.setModelXRange(newXRange);
+            this.updateTickSpacing(newXRange, this.chartTransform.modelYRange);
+            this.updateTrail();
+
+          } else if (activePointers.size === 2 && initialXDistance && initialXMidpoint !== null && initialXRange) {
+            // Two touches - pinch zoom on X-axis only
+            const points = Array.from(activePointers.values());
+            const currentXDistance = Math.abs(points[0].x - points[1].x);
+
+            // Calculate zoom factor from X-distance ratio
+            const zoomFactor = initialXDistance / currentXDistance;
+
+            // Convert initial midpoint X to model coordinates
+            const viewMidpoint = new Vector2(initialXMidpoint, this.graphHeight / 2);
+            const localMidpoint = this.chartRectangle.globalToLocalPoint(viewMidpoint);
+            const modelMidpointX = this.chartTransform.viewToModelPosition(localMidpoint).x;
+
+            // Calculate new X range centered on the midpoint
+            const xMin = modelMidpointX - (modelMidpointX - initialXRange.min) * zoomFactor;
+            const xMax = modelMidpointX + (initialXRange.max - modelMidpointX) * zoomFactor;
+
+            this.chartTransform.setModelXRange(new Range(xMin, xMax));
+            this.updateTickSpacing(new Range(xMin, xMax), this.chartTransform.modelYRange);
+            this.updateTrail();
+          }
+        }
+      },
+
+      up: (event) => {
+        if (event.pointer.type === 'touch') {
+          activePointers.delete(event.pointer);
+
+          if (activePointers.size < 2) {
+            initialXDistance = null;
+            initialXMidpoint = null;
+          }
+          if (activePointers.size === 0) {
+            singleTouchStartX = null;
+            initialXRange = null;
+          }
+        }
+      },
+
+      cancel: (event) => {
+        if (event.pointer.type === 'touch') {
+          activePointers.delete(event.pointer);
+          if (activePointers.size < 2) {
+            initialXDistance = null;
+            initialXMidpoint = null;
+          }
+          if (activePointers.size === 0) {
+            singleTouchStartX = null;
+            initialXRange = null;
+          }
+        }
+      },
+    });
+
+    // Make X-axis tick labels pickable so they can receive touch input
+    this.xTickLabelSet.pickable = true;
   }
 
   /**
