@@ -89,7 +89,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
     this.addChild(this.rodNode);
 
-    // Bob
+    // Bob (size will be updated based on mass value)
     this.bobNode = new Circle(20, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
@@ -99,6 +99,11 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       focusHighlight: "invisible",
     });
     this.addChild(this.bobNode);
+
+    // Link mass to visual size
+    this.model.massProperty.link((mass) => {
+      this.updateBobSize(mass);
+    });
 
     // Drag listener for bob with accessibility announcements
     this.bobNode.addInputListener(
@@ -505,6 +510,23 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       viewBobPosition.x,
       viewBobPosition.y,
     );
+  }
+
+  /**
+   * Update bob size based on mass value.
+   * Larger masses appear as larger bobs.
+   */
+  private updateBobSize(mass: number): void {
+    // Map mass [0.1, 5.0] kg to radius [12, 35] pixels
+    const minMass = 0.1, maxMass = 5.0;
+    const minRadius = 12, maxRadius = 35;
+    const radius = minRadius + (mass - minMass) * (maxRadius - minRadius) / (maxMass - minMass);
+
+    // Update circle radius
+    this.bobNode.radius = radius;
+
+    // Update visualization to ensure bob is positioned correctly
+    this.updateVisualization();
   }
 
   public reset(): void {

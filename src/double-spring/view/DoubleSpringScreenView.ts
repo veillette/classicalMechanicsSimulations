@@ -107,7 +107,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       this.updateSpring2Appearance(k);
     });
 
-    // Mass 1
+    // Mass 1 (size will be updated based on mass value)
     this.mass1Node = new Rectangle(-20, -20, 40, 40, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
@@ -119,7 +119,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
     this.addChild(this.mass1Node);
 
-    // Mass 2
+    // Mass 2 (size will be updated based on mass value)
     this.mass2Node = new Rectangle(-20, -20, 40, 40, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
@@ -130,6 +130,14 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       focusHighlight: "invisible",
     });
     this.addChild(this.mass2Node);
+
+    // Link masses to visual sizes
+    this.model.mass1Property.link((mass) => {
+      this.updateMass1Size(mass);
+    });
+    this.model.mass2Property.link((mass) => {
+      this.updateMass2Size(mass);
+    });
 
     // Drag listeners with accessibility announcements
     const a11yStrings = this.getA11yStrings();
@@ -563,15 +571,19 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.mass1Node.center = mass1ViewPos;
     this.mass2Node.center = mass2ViewPos;
 
+    // Account for mass heights which vary with mass values
+    const mass1HalfHeight = this.mass1Node.height / 2;
+    const mass2HalfHeight = this.mass2Node.height / 2;
+
     // Update spring endpoints (vertical springs)
     this.spring1Node.setEndpoints(
       this.fixedPoint,
-      new Vector2(mass1ViewPos.x, mass1ViewPos.y - 20), // Connect to top of mass 1
+      new Vector2(mass1ViewPos.x, mass1ViewPos.y - mass1HalfHeight), // Connect to top of mass 1
     );
 
     this.spring2Node.setEndpoints(
-      new Vector2(mass1ViewPos.x, mass1ViewPos.y + 20), // From bottom of mass 1
-      new Vector2(mass2ViewPos.x, mass2ViewPos.y - 20), // To top of mass 2
+      new Vector2(mass1ViewPos.x, mass1ViewPos.y + mass1HalfHeight), // From bottom of mass 1
+      new Vector2(mass2ViewPos.x, mass2ViewPos.y - mass2HalfHeight), // To top of mass 2
     );
   }
 
@@ -609,6 +621,40 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     this.spring2Node.setLineWidth(lineWidth);
     this.spring2Node.setRadius(radius);
+  }
+
+  /**
+   * Update mass 1 block size based on mass value.
+   * Larger masses appear as larger blocks.
+   */
+  private updateMass1Size(mass: number): void {
+    // Map mass [0.1, 5.0] kg to size [25, 60] pixels
+    const minMass = 0.1, maxMass = 5.0;
+    const minSize = 25, maxSize = 60;
+    const size = minSize + (mass - minMass) * (maxSize - minSize) / (maxMass - minMass);
+
+    // Update rectangle dimensions (keeping it centered)
+    this.mass1Node.setRect(-size / 2, -size / 2, size, size);
+
+    // Update visualization to reconnect springs to new mass size
+    this.updateVisualization();
+  }
+
+  /**
+   * Update mass 2 block size based on mass value.
+   * Larger masses appear as larger blocks.
+   */
+  private updateMass2Size(mass: number): void {
+    // Map mass [0.1, 5.0] kg to size [25, 60] pixels
+    const minMass = 0.1, maxMass = 5.0;
+    const minSize = 25, maxSize = 60;
+    const size = minSize + (mass - minMass) * (maxSize - minSize) / (maxMass - minMass);
+
+    // Update rectangle dimensions (keeping it centered)
+    this.mass2Node.setRect(-size / 2, -size / 2, size, size);
+
+    // Update visualization to reconnect springs to new mass size
+    this.updateVisualization();
   }
 
   public reset(): void {

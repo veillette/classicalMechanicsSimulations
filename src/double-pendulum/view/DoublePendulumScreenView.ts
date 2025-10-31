@@ -132,7 +132,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
     this.addChild(this.rod2Node);
 
-    // Bob 1
+    // Bob 1 (size will be updated based on mass value)
     this.bob1Node = new Circle(15, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
@@ -143,7 +143,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
     this.addChild(this.bob1Node);
 
-    // Bob 2
+    // Bob 2 (size will be updated based on mass value)
     this.bob2Node = new Circle(15, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
@@ -153,6 +153,14 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       focusHighlight: "invisible",
     });
     this.addChild(this.bob2Node);
+
+    // Link masses to visual sizes
+    this.model.mass1Property.link((mass) => {
+      this.updateBob1Size(mass);
+    });
+    this.model.mass2Property.link((mass) => {
+      this.updateBob2Size(mass);
+    });
 
     // Drag listener for bob 1 with accessibility announcements
     const a11yStrings = this.getA11yStrings();
@@ -743,6 +751,40 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private clearTrail(): void {
     this.trailPoints.length = 0;
     this.trailPath.shape = null;
+  }
+
+  /**
+   * Update bob 1 size based on mass value.
+   * Larger masses appear as larger bobs.
+   */
+  private updateBob1Size(mass: number): void {
+    // Map mass [0.1, 5.0] kg to radius [10, 30] pixels
+    const minMass = 0.1, maxMass = 5.0;
+    const minRadius = 10, maxRadius = 30;
+    const radius = minRadius + (mass - minMass) * (maxRadius - minRadius) / (maxMass - minMass);
+
+    // Update circle radius
+    this.bob1Node.radius = radius;
+
+    // Update visualization to ensure bob is positioned correctly
+    this.updateVisualization();
+  }
+
+  /**
+   * Update bob 2 size based on mass value.
+   * Larger masses appear as larger bobs.
+   */
+  private updateBob2Size(mass: number): void {
+    // Map mass [0.1, 5.0] kg to radius [10, 30] pixels
+    const minMass = 0.1, maxMass = 5.0;
+    const minRadius = 10, maxRadius = 30;
+    const radius = minRadius + (mass - minMass) * (maxRadius - minRadius) / (maxMass - minMass);
+
+    // Update circle radius
+    this.bob2Node.radius = radius;
+
+    // Update visualization to ensure bob is positioned correctly
+    this.updateVisualization();
   }
 
   public reset(): void {

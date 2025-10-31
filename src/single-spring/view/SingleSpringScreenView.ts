@@ -95,7 +95,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       this.updateSpringAppearance(k);
     });
 
-    // Mass block
+    // Mass block (size will be updated based on mass value)
     this.massNode = new Rectangle(-25, -25, 50, 50, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
@@ -106,6 +106,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       focusHighlight: "invisible",
     });
     this.addChild(this.massNode);
+
+    // Link mass to visual size
+    this.model.massProperty.link((mass) => {
+      this.updateMassSize(mass);
+    });
 
     // Add drag listener to mass with accessibility announcements
     const a11yStrings = this.getA11yStrings();
@@ -524,9 +529,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.massNode.center = viewPosition;
 
     // Update spring endpoints (vertical spring from fixed point to top of mass)
+    // Account for the mass height which varies with mass value
+    const massHalfHeight = this.massNode.height / 2;
     this.springNode.setEndpoints(
       this.fixedPoint,
-      new Vector2(viewPosition.x, viewPosition.y - 25), // Connect to top edge of mass
+      new Vector2(viewPosition.x, viewPosition.y - massHalfHeight), // Connect to top edge of mass
     );
   }
 
@@ -546,6 +553,23 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     this.springNode.setLineWidth(lineWidth);
     this.springNode.setRadius(radius);
+  }
+
+  /**
+   * Update mass block size based on mass value.
+   * Larger masses appear as larger blocks.
+   */
+  private updateMassSize(mass: number): void {
+    // Map mass [0.1, 5.0] kg to size [30, 70] pixels
+    const minMass = 0.1, maxMass = 5.0;
+    const minSize = 30, maxSize = 70;
+    const size = minSize + (mass - minMass) * (maxSize - minSize) / (maxMass - minMass);
+
+    // Update rectangle dimensions (keeping it centered)
+    this.massNode.setRect(-size / 2, -size / 2, size, size);
+
+    // Update visualization to reconnect spring to new mass size
+    this.updateVisualization(this.model.positionProperty.value);
   }
 
   public reset(): void {
