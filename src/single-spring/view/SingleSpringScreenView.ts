@@ -71,9 +71,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Wall visualization (horizontal bar at top)
     const wall = new Line(
-      this.layoutBounds.minX,
+      this.layoutBounds.centerX-20,
       this.fixedPoint.y - 20,
-      this.layoutBounds.maxX,
+      this.layoutBounds.centerX+20,
       this.fixedPoint.y - 20,
       {
         stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
