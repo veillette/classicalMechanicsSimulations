@@ -57,23 +57,24 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Initialize with first preset as default
     this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
-    // Fixed point for spring attachment (left side of screen)
-    this.fixedPoint = new Vector2(150, this.layoutBounds.centerY);
+    // Fixed point for spring attachment (top of screen, centered horizontally)
+    this.fixedPoint = new Vector2(this.layoutBounds.centerX, 100);
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
     // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
+    // Positive Y model direction maps to positive Y view direction (downward)
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
       Vector2.ZERO,
       this.fixedPoint,
       50, // pixels per meter
     );
 
-    // Wall visualization
+    // Wall visualization (horizontal bar at top)
     const wall = new Line(
-      this.fixedPoint.x - 20,
-      this.layoutBounds.minY,
-      this.fixedPoint.x - 20,
-      this.layoutBounds.maxY,
+      this.layoutBounds.minX,
+      this.fixedPoint.y - 20,
+      this.layoutBounds.maxX,
+      this.fixedPoint.y - 20,
       {
         stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
@@ -113,7 +114,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
             this.modelViewTransform.viewToModelPosition(parentPoint);
-          this.model.positionProperty.value = modelPosition.x;
+          this.model.positionProperty.value = modelPosition.y; // Use Y coordinate for vertical
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
         },
@@ -202,6 +203,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.model.massProperty.lazyLink(detectCustomChange);
     this.model.springConstantProperty.lazyLink(detectCustomChange);
     this.model.dampingProperty.lazyLink(detectCustomChange);
+    this.model.gravityProperty.lazyLink(detectCustomChange);
 
     // Add accessibility announcements for parameter changes
     this.model.massProperty.lazyLink((mass) => {
@@ -217,6 +219,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.model.dampingProperty.lazyLink((damping) => {
       const template = a11yStrings.dampingChangedStringProperty.value;
       const announcement = template.replace('{{value}}', damping.toFixed(1));
+      SimulationAnnouncer.announceParameterChange(announcement);
+    });
+    this.model.gravityProperty.lazyLink((gravity) => {
+      const template = a11yStrings.gravityChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', gravity.toFixed(1));
       SimulationAnnouncer.announceParameterChange(announcement);
     });
 
@@ -384,6 +391,22 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       },
     );
 
+    const gravityControl = new NumberControl(
+      controlLabels.gravityStringProperty,
+      this.model.gravityProperty,
+      new Range(0.0, 20.0),
+      {
+        delta: 0.1,
+        numberDisplayOptions: {
+          decimalPlaces: 1,
+          valuePattern: "{0} m/s²",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
+      },
+    );
+
     // Vector visualization controls
     const showVectorsCheckbox = new Checkbox(
       this.showVectorsProperty,
@@ -456,6 +479,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           massControl,
           springControl,
           dampingControl,
+          gravityControl,
           showVectorsCheckbox,
           velocityCheckbox,
           forceCheckbox,
@@ -482,17 +506,18 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
    */
   private updateVisualization(position: number): void {
     // Convert model position to view coordinates
-    const modelPosition = new Vector2(position, 0);
+    // Position is positive downward from natural length
+    const modelPosition = new Vector2(0, position);
     const viewPosition =
       this.modelViewTransform.modelToViewPosition(modelPosition);
 
     // Update mass position
     this.massNode.center = viewPosition;
 
-    // Update spring endpoints
+    // Update spring endpoints (vertical spring from fixed point to top of mass)
     this.springNode.setEndpoints(
       this.fixedPoint,
-      new Vector2(viewPosition.x - 25, viewPosition.y), // Connect to left edge of mass
+      new Vector2(viewPosition.x, viewPosition.y - 25), // Connect to top edge of mass
     );
   }
 
@@ -525,11 +550,13 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const mass = this.model.massProperty.value;
     const k = this.model.springConstantProperty.value;
     const b = this.model.dampingProperty.value;
+    const g = this.model.gravityProperty.value;
 
-    // Calculate forces
+    // Calculate forces (positive downward)
     const springForce = -k * position;
     const dampingForce = -b * velocity;
-    const totalForce = springForce + dampingForce;
+    const gravityForce = mass * g;
+    const totalForce = springForce + dampingForce + gravityForce;
 
     // Calculate acceleration
     const acceleration = totalForce / mass;
@@ -537,17 +564,17 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Get mass center position in view coordinates
     const massCenter = this.massNode.center;
 
-    // Update velocity vector (pointing in direction of motion)
+    // Update velocity vector (vertical, pointing in direction of motion)
     this.velocityVectorNode.setTailPosition(massCenter);
-    this.velocityVectorNode.setVector(new Vector2(velocity, 0));
+    this.velocityVectorNode.setVector(new Vector2(0, velocity));
 
-    // Update force vector
+    // Update force vector (vertical)
     this.forceVectorNode.setTailPosition(massCenter);
-    this.forceVectorNode.setVector(new Vector2(totalForce, 0));
+    this.forceVectorNode.setVector(new Vector2(0, totalForce));
 
-    // Update acceleration vector
+    // Update acceleration vector (vertical)
     this.accelerationVectorNode.setTailPosition(massCenter);
-    this.accelerationVectorNode.setVector(new Vector2(acceleration, 0));
+    this.accelerationVectorNode.setVector(new Vector2(0, acceleration));
   }
 
   /**
