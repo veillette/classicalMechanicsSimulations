@@ -83,7 +83,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     );
     this.addChild(wall);
 
-    // Spring 1 (wall to mass 1)
+    // Spring 1 (wall to mass 1) - appearance will be updated based on spring constant
     this.spring1Node = new SpringNode({
       loops: 10,
       radius: 12,
@@ -91,13 +91,21 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
     this.addChild(this.spring1Node);
 
-    // Spring 2 (mass 1 to mass 2)
+    // Spring 2 (mass 1 to mass 2) - appearance will be updated based on spring constant
     this.spring2Node = new SpringNode({
       loops: 10,
       radius: 12,
       lineWidth: 3,
     });
     this.addChild(this.spring2Node);
+
+    // Link spring constants to visual appearance
+    this.model.springConstant1Property.link((k) => {
+      this.updateSpring1Appearance(k);
+    });
+    this.model.springConstant2Property.link((k) => {
+      this.updateSpring2Appearance(k);
+    });
 
     // Mass 1
     this.mass1Node = new Rectangle(-20, -20, 40, 40, {
@@ -565,6 +573,42 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       new Vector2(mass1ViewPos.x, mass1ViewPos.y + 20), // From bottom of mass 1
       new Vector2(mass2ViewPos.x, mass2ViewPos.y - 20), // To top of mass 2
     );
+  }
+
+  /**
+   * Update spring 1 appearance based on its spring constant.
+   * Stiffer springs (higher k) appear beefier (thicker lines, wider coils).
+   */
+  private updateSpring1Appearance(springConstant: number): void {
+    // Map spring constant [1, 50] to lineWidth [2, 7]
+    const minK = 1, maxK = 50;
+    const minLineWidth = 2, maxLineWidth = 7;
+    const lineWidth = minLineWidth + (springConstant - minK) * (maxLineWidth - minLineWidth) / (maxK - minK);
+
+    // Map spring constant [1, 50] to radius [8, 20]
+    const minRadius = 8, maxRadius = 20;
+    const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
+
+    this.spring1Node.setLineWidth(lineWidth);
+    this.spring1Node.setRadius(radius);
+  }
+
+  /**
+   * Update spring 2 appearance based on its spring constant.
+   * Stiffer springs (higher k) appear beefier (thicker lines, wider coils).
+   */
+  private updateSpring2Appearance(springConstant: number): void {
+    // Map spring constant [1, 50] to lineWidth [2, 7]
+    const minK = 1, maxK = 50;
+    const minLineWidth = 2, maxLineWidth = 7;
+    const lineWidth = minLineWidth + (springConstant - minK) * (maxLineWidth - minLineWidth) / (maxK - minK);
+
+    // Map spring constant [1, 50] to radius [8, 20]
+    const minRadius = 8, maxRadius = 20;
+    const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
+
+    this.spring2Node.setLineWidth(lineWidth);
+    this.spring2Node.setRadius(radius);
   }
 
   public reset(): void {

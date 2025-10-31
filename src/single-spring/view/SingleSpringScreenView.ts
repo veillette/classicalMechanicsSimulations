@@ -82,13 +82,18 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     );
     this.addChild(wall);
 
-    // Spring
+    // Spring (appearance will be updated based on spring constant)
     this.springNode = new SpringNode({
       loops: 12,
       radius: 15,
       lineWidth: 3,
     });
     this.addChild(this.springNode);
+
+    // Link spring constant to visual appearance
+    this.model.springConstantProperty.link((k) => {
+      this.updateSpringAppearance(k);
+    });
 
     // Mass block
     this.massNode = new Rectangle(-25, -25, 50, 50, {
@@ -523,6 +528,24 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       this.fixedPoint,
       new Vector2(viewPosition.x, viewPosition.y - 25), // Connect to top edge of mass
     );
+  }
+
+  /**
+   * Update spring appearance based on spring constant.
+   * Stiffer springs (higher k) appear beefier (thicker lines, wider coils).
+   */
+  private updateSpringAppearance(springConstant: number): void {
+    // Map spring constant [1, 50] to lineWidth [2, 7]
+    const minK = 1, maxK = 50;
+    const minLineWidth = 2, maxLineWidth = 7;
+    const lineWidth = minLineWidth + (springConstant - minK) * (maxLineWidth - minLineWidth) / (maxK - minK);
+
+    // Map spring constant [1, 50] to radius [8, 22]
+    const minRadius = 8, maxRadius = 22;
+    const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
+
+    this.springNode.setLineWidth(lineWidth);
+    this.springNode.setRadius(radius);
   }
 
   public reset(): void {

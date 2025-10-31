@@ -21,7 +21,9 @@ export class SpringNode extends Node {
   private readonly frontPath: Path;
   private readonly backPath: Path;
   private readonly loops: number;
-  private readonly radius: number;
+  private radius: number;
+  private lastStart: Vector2 | null = null;
+  private lastEnd: Vector2 | null = null;
 
   /**
    * @param options - Configuration options
@@ -69,6 +71,9 @@ export class SpringNode extends Node {
    * @param end - Ending point of the spring
    */
   public setEndpoints(start: Vector2, end: Vector2): void {
+    this.lastStart = start;
+    this.lastEnd = end;
+
     const delta = end.minus(start);
     const length = delta.magnitude;
     const angle = delta.angle;
@@ -130,5 +135,24 @@ export class SpringNode extends Node {
    */
   public setEndpointsXY(x1: number, y1: number, x2: number, y2: number): void {
     this.setEndpoints(new Vector2(x1, y1), new Vector2(x2, y2));
+  }
+
+  /**
+   * Update the line width of the spring (makes it thicker or thinner).
+   */
+  public setLineWidth(lineWidth: number): void {
+    this.frontPath.lineWidth = lineWidth;
+    this.backPath.lineWidth = lineWidth;
+  }
+
+  /**
+   * Update the radius of the spring coils (makes them wider or narrower).
+   */
+  public setRadius(radius: number): void {
+    this.radius = radius;
+    // Re-render the spring with the new radius
+    if (this.lastStart && this.lastEnd) {
+      this.setEndpoints(this.lastStart, this.lastEnd);
+    }
   }
 }
