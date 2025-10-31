@@ -59,7 +59,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Fixed point for spring attachment (top of screen, centered horizontally)
-    this.fixedPoint = new Vector2(this.layoutBounds.centerX - 100, 100);
+    this.fixedPoint = new Vector2(this.layoutBounds.centerX, 100);
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
     // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
@@ -172,6 +172,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Link model to view
     this.model.position1Property.link(() => this.updateVisualization());
     this.model.position2Property.link(() => this.updateVisualization());
+    this.model.naturalLength1Property.link(() => this.updateVisualization());
+    this.model.naturalLength2Property.link(() => this.updateVisualization());
 
     // Initialize vector visibility properties
     this.showVectorsProperty = new BooleanProperty(false);
@@ -530,8 +532,20 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
   private updateVisualization(): void {
     // Convert model positions to view coordinates (vertical configuration)
-    const mass1ModelPos = new Vector2(0, this.model.position1Property.value);
-    const mass2ModelPos = new Vector2(0, this.model.position2Property.value);
+    // Positions are displacements from natural length
+    // Total distances from fixed point:
+    // - Mass 1: naturalLength1 + position1
+    // - Mass 2: naturalLength1 + position1 + naturalLength2 + (position2 - position1) = naturalLength1 + naturalLength2 + position2
+    const naturalLength1 = this.model.naturalLength1Property.value;
+    const naturalLength2 = this.model.naturalLength2Property.value;
+    const position1 = this.model.position1Property.value;
+    const position2 = this.model.position2Property.value;
+
+    const mass1TotalLength = naturalLength1 + position1;
+    const mass2TotalLength = naturalLength1 + position1 + naturalLength2 + (position2 - position1);
+
+    const mass1ModelPos = new Vector2(0, mass1TotalLength);
+    const mass2ModelPos = new Vector2(0, mass2TotalLength);
     const mass1ViewPos =
       this.modelViewTransform.modelToViewPosition(mass1ModelPos);
     const mass2ViewPos =

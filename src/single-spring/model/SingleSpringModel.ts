@@ -29,6 +29,7 @@ export class SingleSpringModel extends BaseModel {
   public readonly springConstantProperty: NumberProperty;
   public readonly dampingProperty: NumberProperty;
   public readonly gravityProperty: NumberProperty;
+  public readonly naturalLengthProperty: NumberProperty;
 
   // Computed values
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
@@ -47,6 +48,7 @@ export class SingleSpringModel extends BaseModel {
     this.springConstantProperty = new NumberProperty(10.0); // N/m
     this.dampingProperty = new NumberProperty(0.1); // N*s/m
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
+    this.naturalLengthProperty = new NumberProperty(1.0); // meters
 
     // Computed energies
     this.kineticEnergyProperty = new DerivedProperty(
@@ -118,6 +120,7 @@ export class SingleSpringModel extends BaseModel {
     this.springConstantProperty.reset();
     this.dampingProperty.reset();
     this.gravityProperty.reset();
+    this.naturalLengthProperty.reset();
     this.resetCommon(); // Reset time-related properties from base class
   }
 }

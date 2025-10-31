@@ -127,8 +127,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       }),
     );
 
-    // Link model position to view
+    // Link model position and natural length to view
     this.model.positionProperty.link(this.updateVisualization.bind(this));
+    this.model.naturalLengthProperty.link(() => this.updateVisualization(this.model.positionProperty.value));
 
     // Initialize vector visibility properties
     this.showVectorsProperty = new BooleanProperty(false);
@@ -506,8 +507,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
    */
   private updateVisualization(position: number): void {
     // Convert model position to view coordinates
-    // Position is positive downward from natural length
-    const modelPosition = new Vector2(0, position);
+    // Position is displacement from natural length (positive downward)
+    // Total length from fixed point = natural length + displacement
+    const naturalLength = this.model.naturalLengthProperty.value;
+    const totalLength = naturalLength + position;
+    const modelPosition = new Vector2(0, totalLength);
     const viewPosition =
       this.modelViewTransform.modelToViewPosition(modelPosition);
 

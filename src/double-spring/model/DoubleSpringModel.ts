@@ -34,6 +34,8 @@ export class DoubleSpringModel extends BaseModel {
   public readonly damping1Property: NumberProperty;
   public readonly damping2Property: NumberProperty;
   public readonly gravityProperty: NumberProperty;
+  public readonly naturalLength1Property: NumberProperty;
+  public readonly naturalLength2Property: NumberProperty;
 
   // Computed values
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
@@ -55,6 +57,8 @@ export class DoubleSpringModel extends BaseModel {
     this.damping1Property = new NumberProperty(0.1); // N*s/m
     this.damping2Property = new NumberProperty(0.1); // N*s/m
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
+    this.naturalLength1Property = new NumberProperty(0.8); // meters
+    this.naturalLength2Property = new NumberProperty(0.8); // meters
 
     // Compute total energy (including gravitational potential energy)
     this.totalEnergyProperty = new DerivedProperty(
@@ -153,6 +157,8 @@ export class DoubleSpringModel extends BaseModel {
     this.damping1Property.reset();
     this.damping2Property.reset();
     this.gravityProperty.reset();
+    this.naturalLength1Property.reset();
+    this.naturalLength2Property.reset();
     this.resetCommon(); // Reset time-related properties from base class
   }
 }

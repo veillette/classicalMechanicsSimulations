@@ -6,8 +6,7 @@ import { Color, ReadOnlyProperty } from "scenerystack";
 
 /**
  * GraphDataSet collects data from properties over time, storing it as a history
- * of Vector2 points. This is similar to myphysicslab's GraphLine but adapted
- * for SceneryStack's property system.
+ * of Vector2 points.
  *
  * The data can be displayed using bamboo's LinePlot component.
  */
