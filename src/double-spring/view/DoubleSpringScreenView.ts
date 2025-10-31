@@ -20,6 +20,7 @@ import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
+import { GridIcon } from "scenerystack/scenery-phet";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -69,6 +70,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       this.fixedPoint,
       50, // pixels per meter
     );
+
+    // Setup grid visualization (add early so it's behind other elements)
+    this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
     // Wall (horizontal bar at top)
     const wall = new Line(
@@ -514,6 +518,27 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       }
     );
 
+    // Grid checkbox with icon
+    const gridIcon = new GridIcon({
+      size: 16,
+    });
+    const showGridCheckbox = new Checkbox(
+      this.showGridProperty!,
+      new HBox({
+        spacing: 5,
+        children: [
+          gridIcon,
+          new Text(visualizationLabels.showGridStringProperty, {
+            fontSize: 14,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 12,
@@ -529,6 +554,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           velocityCheckbox,
           forceCheckbox,
           accelerationCheckbox,
+          showGridCheckbox,
         ],
       }),
       {

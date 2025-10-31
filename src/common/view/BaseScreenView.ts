@@ -13,12 +13,16 @@ import {
   BooleanProperty,
   EnumerationProperty,
   DerivedProperty,
+  Property,
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
+import { Bounds2 } from "scenerystack/dot";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
+import { ModelViewTransform2 } from "scenerystack/phetcommon";
+import { SceneGridNode } from "./SceneGridNode.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -38,6 +42,10 @@ export abstract class BaseScreenView<
   // Store the playing state before auto-pause so we can restore it
   private wasPlayingBeforeHidden: boolean = false;
 
+  // Grid visualization (available to all screens)
+  protected showGridProperty: BooleanProperty | null = null;
+  protected sceneGridNode: SceneGridNode | null = null;
+
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
     this.model = model;
@@ -47,6 +55,49 @@ export abstract class BaseScreenView<
 
     // Set up accessibility listeners for state changes
     this.setupAccessibilityListeners();
+  }
+
+  /**
+   * Setup the scene grid with specified spacing.
+   * Call this early in the subclass constructor (after modelViewTransform is created).
+   * @param gridSpacing - Spacing between grid lines in model coordinates (meters)
+   * @param modelViewTransform - Transform between model and view coordinates
+   * @param viewBounds - Optional bounds for the grid area (defaults to layoutBounds)
+   */
+  protected setupGrid(
+    gridSpacing: number,
+    modelViewTransform: ModelViewTransform2,
+    viewBounds?: Bounds2
+  ): void {
+    const bounds = viewBounds ?? this.layoutBounds;
+    const visualizationLabels = StringManager.getInstance().getVisualizationLabels();
+
+    this.showGridProperty = new BooleanProperty(false);
+
+    // Create scale label property for grid
+    const gridScaleLabel = new Property(
+      visualizationLabels.gridScaleLabelStringProperty.value.replace('{{value}}', gridSpacing.toString())
+    );
+    visualizationLabels.gridScaleLabelStringProperty.link((template: string) => {
+      gridScaleLabel.value = template.replace('{{value}}', gridSpacing.toString());
+    });
+
+    this.sceneGridNode = new SceneGridNode(
+      modelViewTransform,
+      bounds,
+      {
+        gridSpacing: gridSpacing,
+        scaleLabelProperty: gridScaleLabel,
+      }
+    );
+    this.addChild(this.sceneGridNode);
+
+    // Link grid visibility
+    this.showGridProperty.link((visible) => {
+      if (this.sceneGridNode) {
+        this.sceneGridNode.visible = visible;
+      }
+    });
   }
 
   /**

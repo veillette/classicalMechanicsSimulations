@@ -15,7 +15,6 @@ import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import { SceneGridNode } from "../../common/view/SceneGridNode.js";
 import { GridIcon } from "scenerystack/scenery-phet";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
@@ -50,10 +49,6 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly forceVectorNode: VectorNode;
   private readonly accelerationVectorNode: VectorNode;
 
-  // Grid visualization
-  private readonly showGridProperty: BooleanProperty;
-  private readonly sceneGridNode: SceneGridNode;
-
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
 
@@ -75,30 +70,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       50, // pixels per meter
     );
 
-    // Grid visualization (add early so it's behind other elements)
-    const visualizationLabels = StringManager.getInstance().getVisualizationLabels();
-    this.showGridProperty = new BooleanProperty(false);
-
-    // Create scale label property for grid
-    const gridScaleLabel = new Property(visualizationLabels.gridScaleLabelStringProperty.value.replace('{{value}}', '0.5'));
-    visualizationLabels.gridScaleLabelStringProperty.link((template: string) => {
-      gridScaleLabel.value = template.replace('{{value}}', '0.5');
-    });
-
-    this.sceneGridNode = new SceneGridNode(
-      this.modelViewTransform,
-      this.layoutBounds,
-      {
-        gridSpacing: 0.5, // 0.5 meter spacing
-        scaleLabelProperty: gridScaleLabel,
-      }
-    );
-    this.addChild(this.sceneGridNode);
-
-    // Link grid visibility
-    this.showGridProperty.link((visible) => {
-      this.sceneGridNode.visible = visible;
-    });
+    // Setup grid visualization (add early so it's behind other elements)
+    this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
     // Wall visualization (horizontal bar at top)
     const wall = new Line(
@@ -518,7 +491,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       size: 16,
     });
     const showGridCheckbox = new Checkbox(
-      this.showGridProperty,
+      this.showGridProperty!,
       new HBox({
         spacing: 5,
         children: [

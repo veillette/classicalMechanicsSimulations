@@ -23,6 +23,7 @@ import { PendulumPresets } from "../model/PendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
 import { VectorNode } from "../../common/view/VectorNode.js";
+import { GridIcon } from "scenerystack/scenery-phet";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -71,6 +72,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       this.pivotPoint,
       100, // pixels per meter
     );
+
+    // Setup grid visualization (add early so it's behind other elements)
+    this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
     // Pivot
     this.pivotNode = new Circle(8, {
@@ -456,6 +460,27 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       }
     );
 
+    // Grid checkbox with icon
+    const gridIcon = new GridIcon({
+      size: 16,
+    });
+    const showGridCheckbox = new Checkbox(
+      this.showGridProperty!,
+      new HBox({
+        spacing: 5,
+        children: [
+          gridIcon,
+          new Text(visualizationLabels.showGridStringProperty, {
+            fontSize: 14,
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        ],
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 15,
@@ -470,6 +495,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           velocityCheckbox,
           forceCheckbox,
           accelerationCheckbox,
+          showGridCheckbox,
         ],
       }),
       {

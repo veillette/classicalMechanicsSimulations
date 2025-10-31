@@ -25,5 +25,6 @@ init({
   allowLocaleSwitching: true,
 
   // Color profiles supported by the simulation
-  colorProfiles: ["default", "projector"],
+  // First profile in the list is the default
+  colorProfiles: ["projector", "default"],
 });
