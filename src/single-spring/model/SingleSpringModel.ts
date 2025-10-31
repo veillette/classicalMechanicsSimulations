@@ -1,13 +1,14 @@
 /**
- * Model for a single mass attached to a spring.
+ * Model for a single mass attached to a spring in vertical configuration.
  *
  * Physics:
  * - Spring force: F = -k * x
  * - Damping force: F = -b * v
- * - Equation of motion: m * a = -k * x - b * v
+ * - Gravitational force: F = m * g
+ * - Equation of motion: m * a = -k * x - b * v + m * g
  *
  * State variables:
- * - position (x)
+ * - position (x) - displacement from natural length (positive downward)
  * - velocity (v)
  */
 
@@ -27,6 +28,7 @@ export class SingleSpringModel extends BaseModel {
   public readonly massProperty: NumberProperty;
   public readonly springConstantProperty: NumberProperty;
   public readonly dampingProperty: NumberProperty;
+  public readonly gravityProperty: NumberProperty;
 
   // Computed values
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
@@ -37,13 +39,14 @@ export class SingleSpringModel extends BaseModel {
     super();
 
     // Initialize state
-    this.positionProperty = new NumberProperty(2.0); // meters
+    this.positionProperty = new NumberProperty(2.0); // meters (positive downward from natural length)
     this.velocityProperty = new NumberProperty(0.0); // m/s
 
     // Initialize parameters
     this.massProperty = new NumberProperty(1.0); // kg
     this.springConstantProperty = new NumberProperty(10.0); // N/m
     this.dampingProperty = new NumberProperty(0.1); // N*s/m
+    this.gravityProperty = new NumberProperty(9.8); // m/s^2
 
     // Computed energies
     this.kineticEnergyProperty = new DerivedProperty(
@@ -51,9 +54,10 @@ export class SingleSpringModel extends BaseModel {
       (v, m) => 0.5 * m * v * v,
     );
 
+    // Potential energy includes both spring and gravitational components
     this.potentialEnergyProperty = new DerivedProperty(
-      [this.positionProperty, this.springConstantProperty],
-      (x, k) => 0.5 * k * x * x,
+      [this.positionProperty, this.springConstantProperty, this.massProperty, this.gravityProperty],
+      (x, k, m, g) => 0.5 * k * x * x - m * g * x, // Spring PE + Gravitational PE (taking downward as positive)
     );
 
     this.totalEnergyProperty = new DerivedProperty(
@@ -81,7 +85,8 @@ export class SingleSpringModel extends BaseModel {
 
   /**
    * Compute derivatives for the ODE solver.
-   * Implements: x' = v, v' = (-k*x - b*v) / m
+   * Implements: x' = v, v' = (-k*x - b*v + m*g) / m
+   * Note: position x is positive downward from natural length
    */
   protected getDerivatives(
     state: number[],
@@ -94,12 +99,13 @@ export class SingleSpringModel extends BaseModel {
     const m = this.massProperty.value;
     const k = this.springConstantProperty.value;
     const b = this.dampingProperty.value;
+    const g = this.gravityProperty.value;
 
     // dx/dt = v
     derivatives[0] = v;
 
-    // dv/dt = (-k*x - b*v) / m
-    derivatives[1] = (-k * x - b * v) / m;
+    // dv/dt = (-k*x - b*v + m*g) / m = -k*x/m - b*v/m + g
+    derivatives[1] = (-k * x - b * v + m * g) / m;
   }
 
   /**
@@ -111,6 +117,7 @@ export class SingleSpringModel extends BaseModel {
     this.massProperty.reset();
     this.springConstantProperty.reset();
     this.dampingProperty.reset();
+    this.gravityProperty.reset();
     this.resetCommon(); // Reset time-related properties from base class
   }
 }

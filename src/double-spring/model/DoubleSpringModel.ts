@@ -1,13 +1,13 @@
 /**
- * Model for two masses connected by springs in series.
+ * Model for two masses connected by springs in series (vertical configuration).
  *
  * Physics:
- * - Mass 1: m1 * a1 = -k1 * x1 + k2 * (x2 - x1) - b1 * v1
- * - Mass 2: m2 * a2 = -k2 * (x2 - x1) - b2 * v2
+ * - Mass 1: m1 * a1 = -k1 * x1 + k2 * (x2 - x1) - b1 * v1 + m1 * g
+ * - Mass 2: m2 * a2 = -k2 * (x2 - x1) - b2 * v2 + m2 * g
  *
  * State variables:
- * - position1 (x1), velocity1 (v1)
- * - position2 (x2), velocity2 (v2)
+ * - position1 (x1), velocity1 (v1) - positive downward from natural length
+ * - position2 (x2), velocity2 (v2) - positive downward from natural length
  */
 
 import {
@@ -33,6 +33,7 @@ export class DoubleSpringModel extends BaseModel {
   public readonly springConstant2Property: NumberProperty;
   public readonly damping1Property: NumberProperty;
   public readonly damping2Property: NumberProperty;
+  public readonly gravityProperty: NumberProperty;
 
   // Computed values
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
@@ -41,9 +42,9 @@ export class DoubleSpringModel extends BaseModel {
     super();
 
     // Initialize state
-    this.position1Property = new NumberProperty(1.5); // meters
+    this.position1Property = new NumberProperty(1.5); // meters (positive downward from natural length)
     this.velocity1Property = new NumberProperty(0.0); // m/s
-    this.position2Property = new NumberProperty(3.0); // meters
+    this.position2Property = new NumberProperty(3.0); // meters (positive downward from natural length)
     this.velocity2Property = new NumberProperty(0.0); // m/s
 
     // Initialize parameters
@@ -53,8 +54,9 @@ export class DoubleSpringModel extends BaseModel {
     this.springConstant2Property = new NumberProperty(10.0); // N/m
     this.damping1Property = new NumberProperty(0.1); // N*s/m
     this.damping2Property = new NumberProperty(0.1); // N*s/m
+    this.gravityProperty = new NumberProperty(9.8); // m/s^2
 
-    // Compute total energy
+    // Compute total energy (including gravitational potential energy)
     this.totalEnergyProperty = new DerivedProperty(
       [
         this.velocity1Property,
@@ -65,12 +67,13 @@ export class DoubleSpringModel extends BaseModel {
         this.mass2Property,
         this.springConstant1Property,
         this.springConstant2Property,
+        this.gravityProperty,
       ],
-      (v1, v2, x1, x2, m1, m2, k1, k2) => {
+      (v1, v2, x1, x2, m1, m2, k1, k2, g) => {
         const ke1 = 0.5 * m1 * v1 * v1;
         const ke2 = 0.5 * m2 * v2 * v2;
-        const pe1 = 0.5 * k1 * x1 * x1;
-        const pe2 = 0.5 * k2 * (x2 - x1) * (x2 - x1);
+        const pe1 = 0.5 * k1 * x1 * x1 - m1 * g * x1; // Spring 1 PE + Gravitational PE for mass 1
+        const pe2 = 0.5 * k2 * (x2 - x1) * (x2 - x1) - m2 * g * x2; // Spring 2 PE + Gravitational PE for mass 2
         return ke1 + ke2 + pe1 + pe2;
       },
     );
@@ -101,7 +104,8 @@ export class DoubleSpringModel extends BaseModel {
   }
 
   /**
-   * Compute derivatives for coupled spring system.
+   * Compute derivatives for coupled spring system (vertical configuration).
+   * Note: positions x1 and x2 are positive downward from natural length
    */
   protected getDerivatives(
     state: number[],
@@ -119,18 +123,19 @@ export class DoubleSpringModel extends BaseModel {
     const k2 = this.springConstant2Property.value;
     const b1 = this.damping1Property.value;
     const b2 = this.damping2Property.value;
+    const g = this.gravityProperty.value;
 
     // dx1/dt = v1
     derivatives[0] = v1;
 
-    // dv1/dt = (-k1*x1 + k2*(x2 - x1) - b1*v1) / m1
-    derivatives[1] = (-k1 * x1 + k2 * (x2 - x1) - b1 * v1) / m1;
+    // dv1/dt = (-k1*x1 + k2*(x2 - x1) - b1*v1 + m1*g) / m1
+    derivatives[1] = (-k1 * x1 + k2 * (x2 - x1) - b1 * v1 + m1 * g) / m1;
 
     // dx2/dt = v2
     derivatives[2] = v2;
 
-    // dv2/dt = (-k2*(x2 - x1) - b2*v2) / m2
-    derivatives[3] = (-k2 * (x2 - x1) - b2 * v2) / m2;
+    // dv2/dt = (-k2*(x2 - x1) - b2*v2 + m2*g) / m2
+    derivatives[3] = (-k2 * (x2 - x1) - b2 * v2 + m2 * g) / m2;
   }
 
   /**
@@ -147,6 +152,7 @@ export class DoubleSpringModel extends BaseModel {
     this.springConstant2Property.reset();
     this.damping1Property.reset();
     this.damping2Property.reset();
+    this.gravityProperty.reset();
     this.resetCommon(); // Reset time-related properties from base class
   }
 }

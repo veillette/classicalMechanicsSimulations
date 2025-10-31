@@ -58,23 +58,24 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Initialize with first preset as default
     this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
-    // Fixed point for spring attachment
-    this.fixedPoint = new Vector2(100, this.layoutBounds.centerY);
+    // Fixed point for spring attachment (top of screen, centered horizontally)
+    this.fixedPoint = new Vector2(this.layoutBounds.centerX - 100, 100);
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
     // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
+    // Positive Y model direction maps to positive Y view direction (downward)
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleMapping(
       Vector2.ZERO,
       this.fixedPoint,
       50, // pixels per meter
     );
 
-    // Wall
+    // Wall (horizontal bar at top)
     const wall = new Line(
-      this.fixedPoint.x - 20,
-      this.layoutBounds.minY,
-      this.fixedPoint.x - 20,
-      this.layoutBounds.maxY,
+      this.layoutBounds.minX,
+      this.fixedPoint.y - 20,
+      this.layoutBounds.maxX,
+      this.fixedPoint.y - 20,
       {
         stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
@@ -134,7 +135,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
             this.modelViewTransform.viewToModelPosition(parentPoint);
-          this.model.position1Property.value = modelPosition.x;
+          this.model.position1Property.value = modelPosition.y; // Use Y coordinate for vertical
           this.model.velocity1Property.value = 0;
         },
         end: () => {
@@ -156,7 +157,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
             this.modelViewTransform.viewToModelPosition(parentPoint);
-          this.model.position2Property.value = modelPosition.x;
+          this.model.position2Property.value = modelPosition.y; // Use Y coordinate for vertical
           this.model.velocity2Property.value = 0;
         },
         end: () => {
@@ -274,6 +275,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.model.mass2Property.lazyLink(detectCustomChange);
     this.model.springConstant1Property.lazyLink(detectCustomChange);
     this.model.springConstant2Property.lazyLink(detectCustomChange);
+    this.model.gravityProperty.lazyLink(detectCustomChange);
 
     // Add accessibility announcements for parameter changes
     this.model.mass1Property.lazyLink((mass) => {
@@ -287,6 +289,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
     this.model.springConstant2Property.lazyLink((springConstant) => {
       SimulationAnnouncer.announceParameterChange(`Spring 2 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
+    });
+    this.model.gravityProperty.lazyLink((gravity) => {
+      SimulationAnnouncer.announceParameterChange(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
     });
 
     // Apply the first preset immediately
@@ -412,6 +417,22 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       },
     );
 
+    const gravityControl = new NumberControl(
+      controlLabels.gravityStringProperty,
+      this.model.gravityProperty,
+      new Range(0.0, 20.0),
+      {
+        delta: 0.1,
+        numberDisplayOptions: {
+          decimalPlaces: 1,
+          valuePattern: "{0} m/s²",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
+      },
+    );
+
     // Vector visualization controls
     const showVectorsCheckbox = new Checkbox(
       this.showVectorsProperty,
@@ -485,6 +506,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           mass2Control,
           spring1Control,
           spring2Control,
+          gravityControl,
           showVectorsCheckbox,
           velocityCheckbox,
           forceCheckbox,
@@ -507,9 +529,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   }
 
   private updateVisualization(): void {
-    // Convert model positions to view coordinates
-    const mass1ModelPos = new Vector2(this.model.position1Property.value, 0);
-    const mass2ModelPos = new Vector2(this.model.position2Property.value, 0);
+    // Convert model positions to view coordinates (vertical configuration)
+    const mass1ModelPos = new Vector2(0, this.model.position1Property.value);
+    const mass2ModelPos = new Vector2(0, this.model.position2Property.value);
     const mass1ViewPos =
       this.modelViewTransform.modelToViewPosition(mass1ModelPos);
     const mass2ViewPos =
@@ -519,15 +541,15 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.mass1Node.center = mass1ViewPos;
     this.mass2Node.center = mass2ViewPos;
 
-    // Update spring endpoints
+    // Update spring endpoints (vertical springs)
     this.spring1Node.setEndpoints(
       this.fixedPoint,
-      new Vector2(mass1ViewPos.x - 20, mass1ViewPos.y),
+      new Vector2(mass1ViewPos.x, mass1ViewPos.y - 20), // Connect to top of mass 1
     );
 
     this.spring2Node.setEndpoints(
-      new Vector2(mass1ViewPos.x + 20, mass1ViewPos.y),
-      new Vector2(mass2ViewPos.x - 20, mass2ViewPos.y),
+      new Vector2(mass1ViewPos.x, mass1ViewPos.y + 20), // From bottom of mass 1
+      new Vector2(mass2ViewPos.x, mass2ViewPos.y - 20), // To top of mass 2
     );
   }
 
@@ -544,7 +566,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   }
 
   /**
-   * Update vector positions and magnitudes for both masses
+   * Update vector positions and magnitudes for both masses (vertical configuration)
    */
   private updateVectors(): void {
     // Get current model state
@@ -558,40 +580,41 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const k2 = this.model.springConstant2Property.value;
     const b1 = this.model.damping1Property.value;
     const b2 = this.model.damping2Property.value;
+    const g = this.model.gravityProperty.value;
 
-    // Calculate forces on mass 1
-    // F1 = -k1*x1 + k2*(x2 - x1) - b1*v1
-    const force1 = -k1 * x1 + k2 * (x2 - x1) - b1 * v1;
+    // Calculate forces on mass 1 (positive downward)
+    // F1 = -k1*x1 + k2*(x2 - x1) - b1*v1 + m1*g
+    const force1 = -k1 * x1 + k2 * (x2 - x1) - b1 * v1 + m1 * g;
     const acceleration1 = force1 / m1;
 
-    // Calculate forces on mass 2
-    // F2 = -k2*(x2 - x1) - b2*v2
-    const force2 = -k2 * (x2 - x1) - b2 * v2;
+    // Calculate forces on mass 2 (positive downward)
+    // F2 = -k2*(x2 - x1) - b2*v2 + m2*g
+    const force2 = -k2 * (x2 - x1) - b2 * v2 + m2 * g;
     const acceleration2 = force2 / m2;
 
     // Get mass center positions in view coordinates
     const mass1Center = this.mass1Node.center;
     const mass2Center = this.mass2Node.center;
 
-    // Update vectors for mass 1
+    // Update vectors for mass 1 (vertical)
     this.velocity1VectorNode.setTailPosition(mass1Center);
-    this.velocity1VectorNode.setVector(new Vector2(v1, 0));
+    this.velocity1VectorNode.setVector(new Vector2(0, v1));
 
     this.force1VectorNode.setTailPosition(mass1Center);
-    this.force1VectorNode.setVector(new Vector2(force1, 0));
+    this.force1VectorNode.setVector(new Vector2(0, force1));
 
     this.acceleration1VectorNode.setTailPosition(mass1Center);
-    this.acceleration1VectorNode.setVector(new Vector2(acceleration1, 0));
+    this.acceleration1VectorNode.setVector(new Vector2(0, acceleration1));
 
-    // Update vectors for mass 2
+    // Update vectors for mass 2 (vertical)
     this.velocity2VectorNode.setTailPosition(mass2Center);
-    this.velocity2VectorNode.setVector(new Vector2(v2, 0));
+    this.velocity2VectorNode.setVector(new Vector2(0, v2));
 
     this.force2VectorNode.setTailPosition(mass2Center);
-    this.force2VectorNode.setVector(new Vector2(force2, 0));
+    this.force2VectorNode.setVector(new Vector2(0, force2));
 
     this.acceleration2VectorNode.setTailPosition(mass2Center);
-    this.acceleration2VectorNode.setVector(new Vector2(acceleration2, 0));
+    this.acceleration2VectorNode.setVector(new Vector2(0, acceleration2));
   }
 
   /**
