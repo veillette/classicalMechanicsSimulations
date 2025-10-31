@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, VBox, Text, Circle, DragListener, type Pointer } from "scenerystack/scenery";
+import { Node, VBox, HBox, Text, Circle, DragListener, type Pointer } from "scenerystack/scenery";
 import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,
@@ -203,11 +203,11 @@ export default class ConfigurableGraph extends Node {
     });
     this.graphContentNode.addChild(this.yAxisLabelNode);
 
-    // Create axis selectors panel to the left of the graph
-    const selectorPanel = this.createSelectorPanel(listParent);
-    selectorPanel.right = -40;
-    selectorPanel.top = 0;
-    this.graphContentNode.addChild(selectorPanel);
+    // Create title panel with "(Y vs X)" format at the top of the graph
+    const titlePanel = this.createTitlePanel(listParent);
+    titlePanel.centerX = this.graphWidth / 2;
+    titlePanel.bottom = -10;
+    this.graphContentNode.addChild(titlePanel);
 
     // Update labels when axes change and announce using voicing
     const a11yStrings = StringManager.getInstance().getAccessibilityStrings();
@@ -769,17 +769,10 @@ export default class ConfigurableGraph extends Node {
   /**
    * Create the panel with combo boxes for axis selection
    */
-  private createSelectorPanel(listParent: Node): Node {
-    // Get string manager
-    const stringManager = StringManager.getInstance();
-    const graphLabels = stringManager.getGraphLabels();
-
-    // X-axis selector
-    const xLabel = new Text(graphLabels.xAxisLabelStringProperty, {
-      fontSize: 14,
-      fill: ClassicalMechanicsColors.textColorProperty,
-    });
-
+  /**
+   * Create title panel with "(Y vs X)" format where Y and X are combo boxes
+   */
+  private createTitlePanel(listParent: Node): Node {
     const xItems = this.availableProperties.map((prop) => ({
       value: prop,
       createNode: () =>
@@ -792,19 +785,13 @@ export default class ConfigurableGraph extends Node {
 
     const xComboBox = new ComboBox(this.xPropertyProperty, xItems, listParent, {
       cornerRadius: 5,
-      xMargin: 8,
-      yMargin: 4,
+      xMargin: 6,
+      yMargin: 3,
       buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-    });
-
-    // Y-axis selector
-    const yLabel = new Text(graphLabels.yAxisLabelStringProperty, {
-      fontSize: 14,
-      fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const yItems = this.availableProperties.map((prop) => ({
@@ -819,8 +806,8 @@ export default class ConfigurableGraph extends Node {
 
     const yComboBox = new ComboBox(this.yPropertyProperty, yItems, listParent, {
       cornerRadius: 5,
-      xMargin: 8,
-      yMargin: 4,
+      xMargin: 6,
+      yMargin: 3,
       buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
@@ -828,14 +815,27 @@ export default class ConfigurableGraph extends Node {
       highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
     });
 
-    // Arrange in vertical layout
-    return new VBox({
-      spacing: 10,
-      align: "left",
-      children: [
-        new VBox({ spacing: 5, align: "left", children: [xLabel, xComboBox] }),
-        new VBox({ spacing: 5, align: "left", children: [yLabel, yComboBox] }),
-      ],
+    // Create title in format "(Y vs X)"
+    const leftParen = new Text("(", {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    const vsText = new Text(" vs ", {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    const rightParen = new Text(")", {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    // Arrange in horizontal layout: (Y vs X)
+    return new HBox({
+      spacing: 3,
+      align: "center",
+      children: [leftParen, yComboBox, vsText, xComboBox, rightParen],
     });
   }
 

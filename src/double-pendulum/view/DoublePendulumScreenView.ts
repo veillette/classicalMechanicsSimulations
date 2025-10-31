@@ -422,8 +422,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       this, // list parent for combo boxes
     );
     // Position graph at the top left
+    // Position graph at lower left, not overlapping time controls
     this.configurableGraph.left = this.layoutBounds.minX + 10;
-    this.configurableGraph.top = this.layoutBounds.minY + 10;
+    this.configurableGraph.bottom = this.layoutBounds.maxY - 70; // Leave room for time controls
     this.addChild(this.configurableGraph);
 
     // Setup common controls (time controls, reset button, keyboard shortcuts)
