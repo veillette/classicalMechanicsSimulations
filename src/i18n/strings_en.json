@@ -141,9 +141,13 @@
   "visualization": {
     "showVectors": "Show Vectors",
     "showEnergyChart": "Show Energy Chart",
+    "showGrid": "Show Grid",
     "velocity": "Velocity",
     "acceleration": "Acceleration",
     "force": "Force",
+    "grid": {
+      "scaleLabel": "{{value}} m"
+    },
     "energy": {
       "kinetic": "Kinetic",
       "potential": "Potential",

@@ -271,6 +271,25 @@ const ClassicalMechanicsColors = {
       projector: new Color(0, 120, 200, 0.2),
     },
   ),
+
+  // Scene grid colors
+  sceneGridColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "sceneGridColor",
+    {
+      default: new Color(80, 80, 80, 0.4), // dim gray for dark background
+      projector: new Color(200, 200, 200, 0.5), // dim gray for light background
+    },
+  ),
+
+  sceneGridOriginColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "sceneGridOriginColor",
+    {
+      default: new Color(120, 150, 180, 0.6), // slightly blue-ish for dark background
+      projector: new Color(100, 120, 150, 0.7), // slightly blue-ish for light background
+    },
+  ),
 };
 
 // Register the namespace

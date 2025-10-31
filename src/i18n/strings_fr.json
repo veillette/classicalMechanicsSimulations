@@ -132,9 +132,13 @@
   "visualization": {
     "showVectors": "Afficher les Vecteurs",
     "showEnergyChart": "Afficher le Graphique d'Énergie",
+    "showGrid": "Afficher la Grille",
     "velocity": "Vitesse",
     "acceleration": "Accélération",
     "force": "Force",
+    "grid": {
+      "scaleLabel": "{{value}} m"
+    },
     "energy": {
       "kinetic": "Cinétique",
       "potential": "Potentielle",

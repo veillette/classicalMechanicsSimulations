@@ -306,9 +306,11 @@ export class StringManager {
     return {
       showVectorsStringProperty: this.stringProperties.visualization.showVectorsStringProperty,
       showEnergyChartStringProperty: this.stringProperties.visualization.showEnergyChartStringProperty,
+      showGridStringProperty: this.stringProperties.visualization.showGridStringProperty,
       velocityStringProperty: this.stringProperties.visualization.velocityStringProperty,
       accelerationStringProperty: this.stringProperties.visualization.accelerationStringProperty,
       forceStringProperty: this.stringProperties.visualization.forceStringProperty,
+      gridScaleLabelStringProperty: this.stringProperties.visualization.grid.scaleLabelStringProperty,
       kineticStringProperty: this.stringProperties.visualization.energy.kineticStringProperty,
       potentialStringProperty: this.stringProperties.visualization.energy.potentialStringProperty,
       totalStringProperty: this.stringProperties.visualization.energy.totalStringProperty,
