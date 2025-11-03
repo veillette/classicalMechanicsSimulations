@@ -20,6 +20,7 @@ import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
 import SolverType from "./common/model/SolverType.js";
 import ClassicalMechanicsAudioPreferencesNode from "./common/view/ClassicalMechanicsAudioPreferencesNode.js";
+import { KeyboardShortcutsNode } from "./common/view/KeyboardShortcutsNode.js";
 
 onReadyToLaunch(() => {
   // Get the string manager instance
@@ -199,30 +200,44 @@ onReadyToLaunch(() => {
     }),
   };
 
+  const keyboardHelpNode = new KeyboardShortcutsNode();
+
   const screens = [
     new SingleSpringScreen({
       name: screenNames.singleSpringStringProperty,
       tandem: Tandem.ROOT.createTandem("singleSpringScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
       homeScreenIcon: new SingleSpringScreenIcon(),
+      createKeyboardHelpNode: () => {
+        return keyboardHelpNode;
+      },
     }),
     new DoubleSpringScreen({
       name: screenNames.doubleSpringStringProperty,
       tandem: Tandem.ROOT.createTandem("doubleSpringScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
       homeScreenIcon: new DoubleSpringScreenIcon(),
+      createKeyboardHelpNode: () => {
+        return keyboardHelpNode;
+      },
     }),
     new PendulumScreen({
       name: screenNames.pendulumStringProperty,
       tandem: Tandem.ROOT.createTandem("pendulumScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
       homeScreenIcon: new PendulumScreenIcon(),
+      createKeyboardHelpNode: () => {
+        return keyboardHelpNode;
+      },
     }),
     new DoublePendulumScreen({
       name: screenNames.doublePendulumStringProperty,
       tandem: Tandem.ROOT.createTandem("doublePendulumScreen"),
       backgroundColorProperty: ClassicalMechanicsColors.backgroundColorProperty,
       homeScreenIcon: new DoublePendulumScreenIcon(),
+      createKeyboardHelpNode: () => {
+        return keyboardHelpNode;
+      },
     }),
   ];
 
