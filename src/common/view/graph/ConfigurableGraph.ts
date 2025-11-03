@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, VBox, HBox, Text, Circle, DragListener, type Pointer } from "scenerystack/scenery";
+import { Node, HBox, Text, Circle, DragListener, type Pointer } from "scenerystack/scenery";
 import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,

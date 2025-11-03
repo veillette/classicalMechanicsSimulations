@@ -10,7 +10,7 @@
 
 import { Node, Path, Text, type NodeOptions } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
-import { Vector2, Bounds2 } from "scenerystack/dot";
+import {  Bounds2 } from "scenerystack/dot";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
