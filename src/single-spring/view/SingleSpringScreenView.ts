@@ -73,6 +73,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Setup grid visualization (add early so it's behind other elements)
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
+    // Setup measurement tools (distance tool, protractor, stopwatch)
+    this.setupMeasurementTools(this.modelViewTransform);
+
     // Wall visualization (horizontal bar at top)
     const wall = new Line(
       this.layoutBounds.centerX-20,
@@ -508,6 +511,40 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       }
     );
 
+    // Measurement tool checkboxes
+    const showDistanceToolCheckbox = new Checkbox(
+      this.showDistanceToolProperty,
+      new Text(visualizationLabels.showDistanceToolStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const showProtractorCheckbox = new Checkbox(
+      this.showProtractorProperty,
+      new Text(visualizationLabels.showProtractorStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const showStopwatchCheckbox = new Checkbox(
+      this.showStopwatchProperty,
+      new Text(visualizationLabels.showStopwatchStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 15,
@@ -523,6 +560,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           forceCheckbox,
           accelerationCheckbox,
           showGridCheckbox,
+          showDistanceToolCheckbox,
+          showProtractorCheckbox,
+          showStopwatchCheckbox,
         ],
       }),
       {

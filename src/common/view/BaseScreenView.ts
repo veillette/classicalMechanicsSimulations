@@ -26,6 +26,9 @@ import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
 import { KeyboardShortcutsDialog } from "./KeyboardShortcutsDialog.js";
+import { DistanceMeasurementTool } from "./tools/DistanceMeasurementTool.js";
+import { ProtractorTool } from "./tools/ProtractorTool.js";
+import { StopwatchTool } from "./tools/StopwatchTool.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -49,6 +52,14 @@ export abstract class BaseScreenView<
   protected showGridProperty: BooleanProperty | null = null;
   protected sceneGridNode: SceneGridNode | null = null;
 
+  // Measurement tools (available to all screens)
+  protected showDistanceToolProperty: BooleanProperty = new BooleanProperty(false);
+  protected showProtractorProperty: BooleanProperty = new BooleanProperty(false);
+  protected showStopwatchProperty: BooleanProperty = new BooleanProperty(false);
+  protected distanceTool: DistanceMeasurementTool | null = null;
+  protected protractorTool: ProtractorTool | null = null;
+  protected stopwatchTool: StopwatchTool | null = null;
+
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
     this.model = model;
@@ -58,6 +69,34 @@ export abstract class BaseScreenView<
 
     // Set up accessibility listeners for state changes
     this.setupAccessibilityListeners();
+  }
+
+  /**
+   * Setup measurement tools (distance, protractor, stopwatch).
+   * Call this after modelViewTransform is created.
+   * @param modelViewTransform - Transform between model and view coordinates
+   */
+  protected setupMeasurementTools(modelViewTransform: ModelViewTransform2): void {
+    // Distance measurement tool
+    this.distanceTool = new DistanceMeasurementTool(
+      modelViewTransform,
+      this.showDistanceToolProperty
+    );
+    this.addChild(this.distanceTool);
+
+    // Protractor tool
+    this.protractorTool = new ProtractorTool(this.showProtractorProperty);
+    // Position in upper right
+    this.protractorTool.left = this.layoutBounds.maxX - 200;
+    this.protractorTool.top = this.layoutBounds.minY + 150;
+    this.addChild(this.protractorTool);
+
+    // Stopwatch tool
+    this.stopwatchTool = new StopwatchTool(this.showStopwatchProperty);
+    // Position in upper left
+    this.stopwatchTool.left = this.layoutBounds.minX + 10;
+    this.stopwatchTool.top = this.layoutBounds.minY + 10;
+    this.addChild(this.stopwatchTool);
   }
 
   /**
@@ -276,10 +315,14 @@ export abstract class BaseScreenView<
 
   /**
    * Step method that subclasses should override to update view-specific elements.
-   * @param _dt - Time step in seconds (can be negative for backward stepping)
+   * @param dt - Time step in seconds (can be negative for backward stepping)
    */
-  public step(_dt: number): void {
-    // Subclasses should override to update their visualizations
+  public step(dt: number): void {
+    // Step the stopwatch if it exists
+    if (this.stopwatchTool && dt > 0) {
+      this.stopwatchTool.step(dt);
+    }
+    // Subclasses can override to add their own step behavior
   }
 
   /**

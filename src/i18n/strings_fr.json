@@ -143,6 +143,11 @@
       "kinetic": "Cinétique",
       "potential": "Potentielle",
       "total": "Totale"
+    },
+    "tools": {
+      "showDistanceTool": "Outil de Distance",
+      "showProtractor": "Rapporteur",
+      "showStopwatch": "Chronomètre"
     }
   },
   "accessibility": {

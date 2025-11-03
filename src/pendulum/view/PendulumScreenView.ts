@@ -76,6 +76,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Setup grid visualization (add early so it's behind other elements)
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
+    // Setup measurement tools (distance tool, protractor, stopwatch)
+    this.setupMeasurementTools(this.modelViewTransform);
+
     // Pivot
     this.pivotNode = new Circle(8, {
       fill: ClassicalMechanicsColors.pivotFillColorProperty,
@@ -482,6 +485,40 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       }
     );
 
+    // Measurement tool checkboxes
+    const showDistanceToolCheckbox = new Checkbox(
+      this.showDistanceToolProperty,
+      new Text(visualizationLabels.showDistanceToolStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const showProtractorCheckbox = new Checkbox(
+      this.showProtractorProperty,
+      new Text(visualizationLabels.showProtractorStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const showStopwatchCheckbox = new Checkbox(
+      this.showStopwatchProperty,
+      new Text(visualizationLabels.showStopwatchStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 15,
@@ -497,6 +534,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           forceCheckbox,
           accelerationCheckbox,
           showGridCheckbox,
+          showDistanceToolCheckbox,
+          showProtractorCheckbox,
+          showStopwatchCheckbox,
         ],
       }),
       {

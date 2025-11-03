@@ -152,6 +152,11 @@
       "kinetic": "Kinetic",
       "potential": "Potential",
       "total": "Total"
+    },
+    "tools": {
+      "showDistanceTool": "Distance Tool",
+      "showProtractor": "Protractor",
+      "showStopwatch": "Stopwatch"
     }
   },
   "accessibility": {

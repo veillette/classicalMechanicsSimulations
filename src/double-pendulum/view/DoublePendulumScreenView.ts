@@ -97,6 +97,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Setup grid visualization (add early so it's behind other elements)
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
+    // Setup measurement tools (distance tool, protractor, stopwatch)
+    this.setupMeasurementTools(this.modelViewTransform);
+
     // Trail for chaotic motion visualization
     this.trailPath = new Path(null, {
       stroke: ClassicalMechanicsColors.mass2FillColorProperty,
@@ -675,6 +678,40 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       }
     );
 
+    // Measurement tool checkboxes
+    const showDistanceToolCheckbox = new Checkbox(
+      this.showDistanceToolProperty,
+      new Text(visualizationLabels.showDistanceToolStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const showProtractorCheckbox = new Checkbox(
+      this.showProtractorProperty,
+      new Text(visualizationLabels.showProtractorStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
+    const showStopwatchCheckbox = new Checkbox(
+      this.showStopwatchProperty,
+      new Text(visualizationLabels.showStopwatchStringProperty, {
+        fontSize: 14,
+        fill: ClassicalMechanicsColors.textColorProperty,
+      }),
+      {
+        boxWidth: 16,
+      }
+    );
+
     const panel = new Panel(
       new VBox({
         spacing: 12,
@@ -692,6 +729,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           forceCheckbox,
           accelerationCheckbox,
           showGridCheckbox,
+          showDistanceToolCheckbox,
+          showProtractorCheckbox,
+          showStopwatchCheckbox,
         ],
       }),
       {
