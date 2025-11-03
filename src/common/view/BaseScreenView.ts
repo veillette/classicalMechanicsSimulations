@@ -277,8 +277,9 @@ export abstract class BaseScreenView<
     this.addChild(resetButton);
 
     // Add comprehensive keyboard shortcuts for accessibility
+    // Using global keyboard listener so shortcuts work regardless of focus
     const a11yStrings = this.getA11yStrings();
-    const keyboardListener = new KeyboardListener({
+    KeyboardListener.createGlobal(this, {
       keys: ["r", "space", "arrowLeft", "arrowRight"],
       fire: (event, keysPressed) => {
         if (keysPressed === "r") {
@@ -319,7 +320,6 @@ export abstract class BaseScreenView<
         }
       },
     });
-    this.addInputListener(keyboardListener);
   }
 
   /**
