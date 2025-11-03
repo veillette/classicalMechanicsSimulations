@@ -586,6 +586,27 @@ export default class ConfigurableGraph extends Node {
 
     // Make Y-axis tick labels pickable so they can receive touch input
     this.yTickLabelSet.pickable = true;
+
+    // Add mouse wheel support for Y-axis scrolling
+    this.yTickLabelSet.addInputListener({
+      wheel: (event) => {
+        event.handle();
+        const delta = event.domEvent!.deltaY;
+        const currentRange = this.chartTransform.modelYRange;
+        const panAmount = currentRange.getLength() * 0.1; // Pan by 10% of range
+
+        // Scroll up = pan up (increase Y values), scroll down = pan down (decrease Y values)
+        const newYRange = new Range(
+          currentRange.min + (delta > 0 ? -panAmount : panAmount),
+          currentRange.max + (delta > 0 ? -panAmount : panAmount)
+        );
+
+        this.chartTransform.setModelYRange(newYRange);
+        this.updateTickSpacing(this.chartTransform.modelXRange, newYRange);
+        this.updateTrail();
+        this.isManuallyZoomed = true;
+      },
+    });
   }
 
   /**
@@ -700,6 +721,27 @@ export default class ConfigurableGraph extends Node {
 
     // Make X-axis tick labels pickable so they can receive touch input
     this.xTickLabelSet.pickable = true;
+
+    // Add mouse wheel support for X-axis scrolling
+    this.xTickLabelSet.addInputListener({
+      wheel: (event) => {
+        event.handle();
+        const delta = event.domEvent!.deltaY;
+        const currentRange = this.chartTransform.modelXRange;
+        const panAmount = currentRange.getLength() * 0.1; // Pan by 10% of range
+
+        // Scroll down = pan right (increase X values), scroll up = pan left (decrease X values)
+        const newXRange = new Range(
+          currentRange.min + (delta > 0 ? panAmount : -panAmount),
+          currentRange.max + (delta > 0 ? panAmount : -panAmount)
+        );
+
+        this.chartTransform.setModelXRange(newXRange);
+        this.updateTickSpacing(newXRange, this.chartTransform.modelYRange);
+        this.updateTrail();
+        this.isManuallyZoomed = true;
+      },
+    });
   }
 
   /**
