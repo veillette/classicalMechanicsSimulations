@@ -314,6 +314,9 @@ export class StringManager {
       kineticStringProperty: this.stringProperties.visualization.energy.kineticStringProperty,
       potentialStringProperty: this.stringProperties.visualization.energy.potentialStringProperty,
       totalStringProperty: this.stringProperties.visualization.energy.totalStringProperty,
+      showDistanceToolStringProperty: this.stringProperties.visualization.tools.showDistanceToolStringProperty,
+      showProtractorStringProperty: this.stringProperties.visualization.tools.showProtractorStringProperty,
+      showStopwatchStringProperty: this.stringProperties.visualization.tools.showStopwatchStringProperty,
     };
   }
 

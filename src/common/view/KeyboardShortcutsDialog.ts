@@ -2,30 +2,63 @@
  * Dialog that displays available keyboard shortcuts for the simulation.
  */
 
-import { Dialog } from "scenerystack/sun";
+import { Panel } from "scenerystack/sun";
 import { VBox, HBox, Text, Node } from "scenerystack/scenery";
+import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
-import { StringManager } from "../../i18n/StringManager.js";
 
-export class KeyboardShortcutsDialog extends Dialog {
+
+export class KeyboardShortcutsDialog extends Node {
+  private readonly panel: Panel;
+  private readonly isShownProperty: BooleanProperty;
+
   public constructor() {
-    const content = KeyboardShortcutsDialog.createContent();
+    super();
 
-    super(content, {
-      title: new Text("Keyboard Shortcuts", {
-        fontSize: 18,
-        fontWeight: "bold",
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      xSpacing: 20,
-      topMargin: 20,
-      bottomMargin: 20,
-      leftMargin: 20,
-      rightMargin: 20,
+    this.isShownProperty = new BooleanProperty(false);
+
+    this.panel = new Panel(KeyboardShortcutsDialog.createContent(), {
+      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 2,
+      cornerRadius: 5,
+      xMargin: 20,
+      yMargin: 15,
+    });
+
+    this.addChild(this.panel);
+
+    // Position in center of screen
+    this.panel.centerX = 512;
+    this.panel.centerY = 384;
+
+    // Link visibility
+    this.isShownProperty.link((visible) => {
+      this.visible = visible;
     });
   }
 
+  /**
+   * Show the dialog
+   */
+  public show(): void {
+    this.isShownProperty.value = true;
+  }
+
+  /**
+   * Hide the dialog
+   */
+  public hide(): void {
+    this.isShownProperty.value = false;
+  }
+
   private static createContent(): Node {
+    const title = new Text("Keyboard Shortcuts", {
+      fontSize: 18,
+      fontWeight: "bold",
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
     const shortcuts = [
       { key: "Space", description: "Play / Pause simulation" },
       { key: "R", description: "Reset simulation" },
@@ -50,20 +83,14 @@ export class KeyboardShortcutsDialog extends Dialog {
 
       return new HBox({
         spacing: 20,
-        children: [
-          new Node({
-            children: [keyText],
-            minWidth: 180,
-          }),
-          descText,
-        ],
+        children: [keyText, descText],
       });
     });
 
     return new VBox({
       spacing: 12,
       align: "left",
-      children: rows,
+      children: [title, ...rows],
     });
   }
 }

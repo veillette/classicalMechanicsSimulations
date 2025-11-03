@@ -15,7 +15,7 @@ export class ProtractorTool extends Node {
   private readonly arm2Node: Path;
   private readonly arcNode: Path;
   private readonly labelNode: Text;
-  private center: Vector2;
+  private centerPosition: Vector2;
   private arm1End: Vector2;
   private arm2End: Vector2;
   private readonly armLength: number = 80;
@@ -23,7 +23,7 @@ export class ProtractorTool extends Node {
   public constructor(visibleProperty: BooleanProperty) {
     super();
 
-    this.center = new Vector2(300, 300);
+    this.centerPosition = new Vector2(300, 300);
     this.arm1End = new Vector2(300, 220); // Initial vertical
     this.arm2End = new Vector2(380, 300); // Initial horizontal
 
@@ -102,8 +102,8 @@ export class ProtractorTool extends Node {
       new DragListener({
         drag: (event) => {
           const localPoint = this.globalToLocalPoint(event.pointer.point);
-          const delta = localPoint.minus(this.center);
-          this.center = localPoint;
+          const delta = localPoint.minus(this.centerPosition);
+          this.centerPosition = localPoint;
           this.arm1End = this.arm1End.plus(delta);
           this.arm2End = this.arm2End.plus(delta);
           this.updateVisualization();
@@ -116,8 +116,8 @@ export class ProtractorTool extends Node {
       new DragListener({
         drag: (event) => {
           const localPoint = this.globalToLocalPoint(event.pointer.point);
-          const direction = localPoint.minus(this.center).normalized();
-          this.arm1End = this.center.plus(direction.times(this.armLength));
+          const direction = localPoint.minus(this.centerPosition).normalized();
+          this.arm1End = this.centerPosition.plus(direction.times(this.armLength));
           this.updateVisualization();
         },
       })
@@ -128,8 +128,8 @@ export class ProtractorTool extends Node {
       new DragListener({
         drag: (event) => {
           const localPoint = this.globalToLocalPoint(event.pointer.point);
-          const direction = localPoint.minus(this.center).normalized();
-          this.arm2End = this.center.plus(direction.times(this.armLength));
+          const direction = localPoint.minus(this.centerPosition).normalized();
+          this.arm2End = this.centerPosition.plus(direction.times(this.armLength));
           this.updateVisualization();
         },
       })
@@ -141,25 +141,25 @@ export class ProtractorTool extends Node {
    */
   private updateVisualization(): void {
     // Update center
-    this.centerNode.center = this.center;
+    this.centerNode.center = this.centerPosition;
 
     // Update arm 1
     const arm1Shape = new Shape()
-      .moveToPoint(this.center)
+      .moveToPoint(this.centerPosition)
       .lineToPoint(this.arm1End);
     this.arm1Node.shape = arm1Shape;
     this.arm1Node.children[0].center = this.arm1End;
 
     // Update arm 2
     const arm2Shape = new Shape()
-      .moveToPoint(this.center)
+      .moveToPoint(this.centerPosition)
       .lineToPoint(this.arm2End);
     this.arm2Node.shape = arm2Shape;
     this.arm2Node.children[0].center = this.arm2End;
 
     // Calculate angle
-    const vector1 = this.arm1End.minus(this.center);
-    const vector2 = this.arm2End.minus(this.center);
+    const vector1 = this.arm1End.minus(this.centerPosition);
+    const vector2 = this.arm2End.minus(this.centerPosition);
     const angle1 = Math.atan2(vector1.y, vector1.x);
     const angle2 = Math.atan2(vector2.y, vector2.x);
     let angleDiff = angle2 - angle1;
@@ -174,8 +174,8 @@ export class ProtractorTool extends Node {
     // Draw arc
     const arcRadius = this.armLength * 0.4;
     const arcShape = new Shape().arc(
-      this.center.x,
-      this.center.y,
+      this.centerPosition.x,
+      this.centerPosition.y,
       arcRadius,
       angle1,
       angle2,
@@ -188,7 +188,7 @@ export class ProtractorTool extends Node {
 
     // Position label near arc midpoint
     const midAngle = (angle1 + angle2) / 2;
-    const labelPosition = this.center.plus(
+    const labelPosition = this.centerPosition.plus(
       new Vector2(Math.cos(midAngle), Math.sin(midAngle)).times(arcRadius + 20)
     );
     this.labelNode.center = labelPosition;

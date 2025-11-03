@@ -11,6 +11,7 @@ export class StopwatchTool extends Node {
   private readonly isRunningProperty: BooleanProperty;
   private readonly elapsedTimeProperty: NumberProperty;
   private readonly displayNode: Text;
+  private readonly startStopButtonLabel: Text;
 
   public constructor(visibleProperty: BooleanProperty) {
     super();
@@ -30,12 +31,15 @@ export class StopwatchTool extends Node {
       this.displayNode.string = `${time.toFixed(2)} s`;
     });
 
+    // Start/Stop button label
+    this.startStopButtonLabel = new Text("Start", {
+      fontSize: 14,
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
     // Start/Stop button
     const startStopButton = new RectangularPushButton({
-      content: new Text("Start", {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
+      content: this.startStopButtonLabel,
       listener: () => {
         this.isRunningProperty.value = !this.isRunningProperty.value;
       },
@@ -46,7 +50,7 @@ export class StopwatchTool extends Node {
 
     // Update button label
     this.isRunningProperty.link((isRunning) => {
-      (startStopButton.content as Text).string = isRunning ? "Stop" : "Start";
+      this.startStopButtonLabel.string = isRunning ? "Stop" : "Start";
       startStopButton.baseColor = isRunning
         ? "rgba(200, 100, 100, 0.8)"
         : "rgba(100, 200, 100, 0.8)";
