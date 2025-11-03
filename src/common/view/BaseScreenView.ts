@@ -8,9 +8,7 @@ import {
   TimeControlNode,
   ResetAllButton,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener, Path } from "scenerystack/scenery";
-import { Shape } from "scenerystack/kite";
-import { RectangularPushButton } from "scenerystack/sun";
+import { KeyboardListener} from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
@@ -25,7 +23,6 @@ import { StringManager } from "../../i18n/StringManager.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
-import { KeyboardShortcutsDialog } from "./KeyboardShortcutsDialog.js";
 import { DistanceMeasurementTool } from "./tools/DistanceMeasurementTool.js";
 import { ProtractorTool } from "./tools/ProtractorTool.js";
 import { StopwatchTool } from "./tools/StopwatchTool.js";
@@ -211,39 +208,6 @@ export abstract class BaseScreenView<
       bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
-
-    // Keyboard shortcuts help button
-    const keyboardDialog = new KeyboardShortcutsDialog();
-
-    // Create keyboard icon
-    const keyboardIconShape = new Shape()
-      .moveTo(0, 0)
-      .lineTo(20, 0)
-      .lineTo(20, 14)
-      .lineTo(0, 14)
-      .close()
-      // Add key representations
-      .moveTo(2, 3).rect(2, 3, 3, 3)
-      .moveTo(6, 3).rect(6, 3, 3, 3)
-      .moveTo(10, 3).rect(10, 3, 3, 3)
-      .moveTo(14, 3).rect(14, 3, 3, 3)
-      .moveTo(3, 8).rect(3, 8, 12, 3);
-
-    const keyboardIcon = new Path(keyboardIconShape, {
-      fill: ClassicalMechanicsColors.textColorProperty,
-      scale: 0.8,
-    });
-
-    const keyboardButton = new RectangularPushButton({
-      content: keyboardIcon,
-      listener: () => keyboardDialog.show(),
-      baseColor: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      xMargin: 8,
-      yMargin: 6,
-      left: this.layoutBounds.minX + 10,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(keyboardButton);
 
     // Add comprehensive keyboard shortcuts for accessibility
     const a11yStrings = this.getA11yStrings();
