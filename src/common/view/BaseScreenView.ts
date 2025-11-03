@@ -7,6 +7,8 @@ import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import {
   TimeControlNode,
   ResetAllButton,
+  Stopwatch,
+  StopwatchNode,
 } from "scenerystack/scenery-phet";
 import { KeyboardListener} from "scenerystack/scenery";
 import {
@@ -16,7 +18,7 @@ import {
   Property,
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
-import { Bounds2 } from "scenerystack/dot";
+import { Bounds2, Vector2 } from "scenerystack/dot";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -25,7 +27,6 @@ import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
 import { DistanceMeasurementTool } from "./tools/DistanceMeasurementTool.js";
 import { ProtractorTool } from "./tools/ProtractorTool.js";
-import { StopwatchTool } from "./tools/StopwatchTool.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -55,7 +56,8 @@ export abstract class BaseScreenView<
   protected showStopwatchProperty: BooleanProperty = new BooleanProperty(false);
   protected distanceTool: DistanceMeasurementTool | null = null;
   protected protractorTool: ProtractorTool | null = null;
-  protected stopwatchTool: StopwatchTool | null = null;
+  protected stopwatch: Stopwatch | null = null;
+  protected stopwatchNode: StopwatchNode | null = null;
 
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
@@ -88,12 +90,28 @@ export abstract class BaseScreenView<
     this.protractorTool.top = this.layoutBounds.minY + 150;
     this.addChild(this.protractorTool);
 
-    // Stopwatch tool
-    this.stopwatchTool = new StopwatchTool(this.showStopwatchProperty);
-    // Position in upper left
-    this.stopwatchTool.left = this.layoutBounds.minX + 10;
-    this.stopwatchTool.top = this.layoutBounds.minY + 10;
-    this.addChild(this.stopwatchTool);
+    // Stopwatch tool (SceneryStack component)
+    this.stopwatch = new Stopwatch({
+      position: new Vector2(
+        this.layoutBounds.minX + 100,
+        this.layoutBounds.minY + 50
+      ),
+      isVisible: false,
+    });
+
+    this.stopwatchNode = new StopwatchNode(this.stopwatch, {
+      dragBoundsProperty: new Property(this.layoutBounds),
+    });
+    this.addChild(this.stopwatchNode);
+
+    // Bidirectional link between showStopwatchProperty and stopwatch visibility
+    this.showStopwatchProperty.link((visible) => {
+      this.stopwatch!.isVisibleProperty.value = visible;
+    });
+
+    this.stopwatch.isVisibleProperty.link((visible) => {
+      this.stopwatchNode!.visible = visible;
+    });
   }
 
   /**
@@ -274,6 +292,10 @@ export abstract class BaseScreenView<
    * Reset method that subclasses can override to add custom reset behavior.
    */
   public reset(): void {
+    // Reset the stopwatch if it exists
+    if (this.stopwatch) {
+      this.stopwatch.reset();
+    }
     // Subclasses can override to add custom reset behavior
   }
 
@@ -282,9 +304,9 @@ export abstract class BaseScreenView<
    * @param dt - Time step in seconds (can be negative for backward stepping)
    */
   public step(dt: number): void {
-    // Step the stopwatch if it exists
-    if (this.stopwatchTool && dt > 0) {
-      this.stopwatchTool.step(dt);
+    // Step the stopwatch if it exists and is running (only for forward time)
+    if (this.stopwatch && dt > 0) {
+      this.stopwatch.step(dt);
     }
     // Subclasses can override to add their own step behavior
   }
