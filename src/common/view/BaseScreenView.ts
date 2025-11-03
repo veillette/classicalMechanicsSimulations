@@ -10,8 +10,9 @@ import {
   Stopwatch,
   StopwatchNode,
   ProtractorNode,
+  MeasuringTapeNode,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener} from "scenerystack/scenery";
+import { KeyboardListener } from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
@@ -26,7 +27,6 @@ import { StringManager } from "../../i18n/StringManager.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
-import { DistanceMeasurementTool } from "./tools/DistanceMeasurementTool.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -51,10 +51,14 @@ export abstract class BaseScreenView<
   protected sceneGridNode: SceneGridNode | null = null;
 
   // Measurement tools (available to all screens)
-  protected showDistanceToolProperty: BooleanProperty = new BooleanProperty(false);
-  protected showProtractorProperty: BooleanProperty = new BooleanProperty(false);
+  protected showDistanceToolProperty: BooleanProperty = new BooleanProperty(
+    false,
+  );
+  protected showProtractorProperty: BooleanProperty = new BooleanProperty(
+    false,
+  );
   protected showStopwatchProperty: BooleanProperty = new BooleanProperty(false);
-  protected distanceTool: DistanceMeasurementTool | null = null;
+  protected measuringTapeNode: MeasuringTapeNode | null = null;
   protected protractorNode: ProtractorNode | null = null;
   protected stopwatch: Stopwatch | null = null;
   protected stopwatchNode: StopwatchNode | null = null;
@@ -78,14 +82,35 @@ export abstract class BaseScreenView<
    */
   protected setupMeasurementTools(
     modelViewTransform: ModelViewTransform2,
-    protractorPosition?: Vector2
+    protractorPosition?: Vector2,
   ): void {
-    // Distance measurement tool
-    this.distanceTool = new DistanceMeasurementTool(
-      modelViewTransform,
-      this.showDistanceToolProperty
-    );
-    this.addChild(this.distanceTool);
+    // Measuring tape tool (SceneryStack component)
+    const unitsProperty = new Property({
+      name: "m",
+      multiplier: 1,
+    });
+
+    const basePositionProperty = new Property(new Vector2(0, 0));
+    const tipPositionProperty = new Property(new Vector2(2, 0));
+
+    this.measuringTapeNode = new MeasuringTapeNode(unitsProperty, {
+      basePositionProperty: basePositionProperty,
+      tipPositionProperty: tipPositionProperty,
+      modelViewTransform: modelViewTransform,
+      dragBounds: this.layoutBounds,
+      textColor: "black",
+      textBackgroundColor: "rgba(255, 255, 255, 0.8)",
+      significantFigures: 2,
+    });
+    this.addChild(this.measuringTapeNode);
+
+    this.measuringTapeNode.left = 10;
+    this.measuringTapeNode.top = 10;
+
+    // Link visibility
+    this.showDistanceToolProperty.link((visible) => {
+      this.measuringTapeNode!.visible = visible;
+    });
 
     // Protractor tool (SceneryStack component)
     this.protractorNode = new ProtractorNode({
@@ -113,7 +138,7 @@ export abstract class BaseScreenView<
     this.stopwatch = new Stopwatch({
       position: new Vector2(
         this.layoutBounds.minX + 100,
-        this.layoutBounds.minY + 50
+        this.layoutBounds.minY + 50,
       ),
       isVisible: false,
     });
@@ -143,29 +168,34 @@ export abstract class BaseScreenView<
   protected setupGrid(
     gridSpacing: number,
     modelViewTransform: ModelViewTransform2,
-    viewBounds?: Bounds2
+    viewBounds?: Bounds2,
   ): void {
     const bounds = viewBounds ?? this.layoutBounds;
-    const visualizationLabels = StringManager.getInstance().getVisualizationLabels();
+    const visualizationLabels =
+      StringManager.getInstance().getVisualizationLabels();
 
     this.showGridProperty = new BooleanProperty(false);
 
     // Create scale label property for grid
     const gridScaleLabel = new Property(
-      visualizationLabels.gridScaleLabelStringProperty.value.replace('{{value}}', gridSpacing.toString())
+      visualizationLabels.gridScaleLabelStringProperty.value.replace(
+        "{{value}}",
+        gridSpacing.toString(),
+      ),
     );
-    visualizationLabels.gridScaleLabelStringProperty.link((template: string) => {
-      gridScaleLabel.value = template.replace('{{value}}', gridSpacing.toString());
-    });
+    visualizationLabels.gridScaleLabelStringProperty.link(
+      (template: string) => {
+        gridScaleLabel.value = template.replace(
+          "{{value}}",
+          gridSpacing.toString(),
+        );
+      },
+    );
 
-    this.sceneGridNode = new SceneGridNode(
-      modelViewTransform,
-      bounds,
-      {
-        gridSpacing: gridSpacing,
-        scaleLabelProperty: gridScaleLabel,
-      }
-    );
+    this.sceneGridNode = new SceneGridNode(modelViewTransform, bounds, {
+      gridSpacing: gridSpacing,
+      scaleLabelProperty: gridScaleLabel,
+    });
     this.addChild(this.sceneGridNode);
 
     // Link grid visibility
@@ -220,7 +250,7 @@ export abstract class BaseScreenView<
           },
           enabledProperty: stepperEnabledProperty,
           radius: 15, // Smaller than play/pause button
-        }
+        },
       },
       speedRadioButtonGroupPlacement: "left",
       speedRadioButtonGroupOptions: {
@@ -255,24 +285,37 @@ export abstract class BaseScreenView<
           // Reset simulation with R key
           this.model.reset();
           this.reset();
-          SimulationAnnouncer.announceSimulationReset(a11yStrings.simulationResetStringProperty.value);
+          SimulationAnnouncer.announceSimulationReset(
+            a11yStrings.simulationResetStringProperty.value,
+          );
         } else if (keysPressed === "space") {
           // Toggle play/pause with Space key
-          this.model.isPlayingProperty.value = !this.model.isPlayingProperty.value;
+          this.model.isPlayingProperty.value =
+            !this.model.isPlayingProperty.value;
           const announcement = this.model.isPlayingProperty.value
             ? a11yStrings.simulationPlayingStringProperty.value
             : a11yStrings.simulationPausedStringProperty.value;
           SimulationAnnouncer.announceSimulationState(announcement);
-        } else if (keysPressed === "arrowLeft" && !this.model.isPlayingProperty.value) {
+        } else if (
+          keysPressed === "arrowLeft" &&
+          !this.model.isPlayingProperty.value
+        ) {
           // Step backward with Left Arrow (only when paused)
           this.model.step(-manualStepSize, true);
           this.step(-manualStepSize);
-          SimulationAnnouncer.announceSimulationState(a11yStrings.steppedBackwardStringProperty.value);
-        } else if (keysPressed === "arrowRight" && !this.model.isPlayingProperty.value) {
+          SimulationAnnouncer.announceSimulationState(
+            a11yStrings.steppedBackwardStringProperty.value,
+          );
+        } else if (
+          keysPressed === "arrowRight" &&
+          !this.model.isPlayingProperty.value
+        ) {
           // Step forward with Right Arrow (only when paused)
           this.model.step(manualStepSize, true);
           this.step(manualStepSize);
-          SimulationAnnouncer.announceSimulationState(a11yStrings.steppedForwardStringProperty.value);
+          SimulationAnnouncer.announceSimulationState(
+            a11yStrings.steppedForwardStringProperty.value,
+          );
         }
       },
     });
@@ -287,7 +330,10 @@ export abstract class BaseScreenView<
     const handleVisibilityChange = () => {
       if (document.hidden) {
         // Tab became hidden
-        if (ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty.value && this.model.isPlayingProperty.value) {
+        if (
+          ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty.value &&
+          this.model.isPlayingProperty.value
+        ) {
           // Store that we were playing before hiding
           this.wasPlayingBeforeHidden = true;
           // Pause the simulation
@@ -295,7 +341,10 @@ export abstract class BaseScreenView<
         }
       } else {
         // Tab became visible
-        if (ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty.value && this.wasPlayingBeforeHidden) {
+        if (
+          ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty.value &&
+          this.wasPlayingBeforeHidden
+        ) {
           // Restore playing state
           this.model.isPlayingProperty.value = true;
           this.wasPlayingBeforeHidden = false;
@@ -358,7 +407,7 @@ export abstract class BaseScreenView<
     // Announce when speed changes
     this.model.timeSpeedProperty.lazyLink((speed) => {
       const template = a11yStrings.speedChangedStringProperty.value;
-      const announcement = template.replace('{{speed}}', speed.name);
+      const announcement = template.replace("{{speed}}", speed.name);
       SimulationAnnouncer.announceSimulationState(announcement);
     });
   }
