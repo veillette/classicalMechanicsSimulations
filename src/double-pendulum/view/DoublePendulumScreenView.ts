@@ -98,7 +98,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
     // Setup measurement tools (distance tool, protractor, stopwatch)
-    this.setupMeasurementTools(this.modelViewTransform);
+    // Position protractor at the pivot point for angle measurement
+    this.setupMeasurementTools(this.modelViewTransform, this.pivotPoint);
 
     // Trail for chaotic motion visualization
     this.trailPath = new Path(null, {

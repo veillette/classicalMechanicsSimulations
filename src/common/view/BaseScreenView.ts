@@ -9,6 +9,7 @@ import {
   ResetAllButton,
   Stopwatch,
   StopwatchNode,
+  ProtractorNode,
 } from "scenerystack/scenery-phet";
 import { KeyboardListener} from "scenerystack/scenery";
 import {
@@ -26,7 +27,6 @@ import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
 import { DistanceMeasurementTool } from "./tools/DistanceMeasurementTool.js";
-import { ProtractorTool } from "./tools/ProtractorTool.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -55,7 +55,7 @@ export abstract class BaseScreenView<
   protected showProtractorProperty: BooleanProperty = new BooleanProperty(false);
   protected showStopwatchProperty: BooleanProperty = new BooleanProperty(false);
   protected distanceTool: DistanceMeasurementTool | null = null;
-  protected protractorTool: ProtractorTool | null = null;
+  protected protractorNode: ProtractorNode | null = null;
   protected stopwatch: Stopwatch | null = null;
   protected stopwatchNode: StopwatchNode | null = null;
 
@@ -74,8 +74,12 @@ export abstract class BaseScreenView<
    * Setup measurement tools (distance, protractor, stopwatch).
    * Call this after modelViewTransform is created.
    * @param modelViewTransform - Transform between model and view coordinates
+   * @param protractorPosition - Optional position for the protractor (defaults to upper right)
    */
-  protected setupMeasurementTools(modelViewTransform: ModelViewTransform2): void {
+  protected setupMeasurementTools(
+    modelViewTransform: ModelViewTransform2,
+    protractorPosition?: Vector2
+  ): void {
     // Distance measurement tool
     this.distanceTool = new DistanceMeasurementTool(
       modelViewTransform,
@@ -83,12 +87,27 @@ export abstract class BaseScreenView<
     );
     this.addChild(this.distanceTool);
 
-    // Protractor tool
-    this.protractorTool = new ProtractorTool(this.showProtractorProperty);
-    // Position in upper right
-    this.protractorTool.left = this.layoutBounds.maxX - 200;
-    this.protractorTool.top = this.layoutBounds.minY + 150;
-    this.addChild(this.protractorTool);
+    // Protractor tool (SceneryStack component)
+    this.protractorNode = new ProtractorNode({
+      rotatable: true,
+      angle: 0,
+    });
+
+    // Position the protractor
+    if (protractorPosition) {
+      this.protractorNode.center = protractorPosition;
+    } else {
+      // Default position in upper right
+      this.protractorNode.left = this.layoutBounds.maxX - 200;
+      this.protractorNode.top = this.layoutBounds.minY + 150;
+    }
+
+    this.addChild(this.protractorNode);
+
+    // Link visibility
+    this.showProtractorProperty.link((visible) => {
+      this.protractorNode!.visible = visible;
+    });
 
     // Stopwatch tool (SceneryStack component)
     this.stopwatch = new Stopwatch({

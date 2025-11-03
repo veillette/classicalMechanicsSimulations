@@ -77,7 +77,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
     // Setup measurement tools (distance tool, protractor, stopwatch)
-    this.setupMeasurementTools(this.modelViewTransform);
+    // Position protractor at the pivot point for angle measurement
+    this.setupMeasurementTools(this.modelViewTransform, this.pivotPoint);
 
     // Pivot
     this.pivotNode = new Circle(8, {
