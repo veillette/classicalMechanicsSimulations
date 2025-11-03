@@ -76,21 +76,27 @@ export class SceneGridNode extends Node {
   private createScaleIndicator(scaleLabelProperty: TReadOnlyProperty<string>): Node {
     const indicatorNode = new Node();
 
-    // Position in bottom-left corner with some margin
-    const margin = 20;
-    const startX = this.viewBounds.minX + margin;
-    const startY = this.viewBounds.maxY - margin;
+    // Convert view bounds to model bounds
+    const modelMinX = this.modelViewTransform.viewToModelX(this.viewBounds.minX);
+    const modelMaxY = this.modelViewTransform.viewToModelY(this.viewBounds.maxY);
 
-    // Length of the arrow in view coordinates
-    const arrowLengthModel = this.gridSpacing;
-    const arrowLengthView = this.modelViewTransform.modelToViewDeltaX(arrowLengthModel);
+    // Position in model coordinates, aligned to gridlines
+    // Find the first gridline in from the left edge (add one grid spacing for padding)
+    const modelStartX = Math.ceil(modelMinX / this.gridSpacing) * this.gridSpacing + this.gridSpacing;
+    // Find the first gridline up from the bottom (subtract one grid spacing for padding)
+    const modelStartY = Math.floor(modelMaxY / this.gridSpacing) * this.gridSpacing - this.gridSpacing;
 
-    // Create double-sided arrow
+    // Convert model positions to view coordinates
+    const viewStartX = this.modelViewTransform.modelToViewX(modelStartX);
+    const viewStartY = this.modelViewTransform.modelToViewY(modelStartY);
+    const viewEndX = this.modelViewTransform.modelToViewX(modelStartX + this.gridSpacing);
+
+    // Create double-sided arrow (horizontal, aligned with gridlines)
     const arrow = new ArrowNode(
-      startX,
-      startY,
-      startX + arrowLengthView,
-      startY,
+      viewStartX,
+      viewStartY,
+      viewEndX,
+      viewStartY,
       {
         doubleHead: true,
         headHeight: 8,
@@ -107,8 +113,8 @@ export class SceneGridNode extends Node {
     const label = new Text(scaleLabelProperty, {
       font: "14px sans-serif",
       fill: ClassicalMechanicsColors.textColorProperty,
-      centerX: startX + arrowLengthView / 2,
-      top: startY + 5,
+      centerX: (viewStartX + viewEndX) / 2,
+      top: viewStartY + 5,
     });
     indicatorNode.addChild(label);
 
