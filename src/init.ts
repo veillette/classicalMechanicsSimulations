@@ -26,5 +26,5 @@ init({
 
   // Color profiles supported by the simulation
   // First profile in the list is the default
-  colorProfiles: ["projector", "default"],
+  colorProfiles: ["default", "projector"],
 });
