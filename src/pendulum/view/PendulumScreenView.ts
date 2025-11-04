@@ -24,6 +24,7 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { GridIcon } from "scenerystack/scenery-phet";
+import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -49,6 +50,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly velocityVectorNode: VectorNode;
   private readonly forceVectorNode: VectorNode;
   private readonly accelerationVectorNode: VectorNode;
+
+  // Dragging state for protractor
+  private readonly isDraggingProperty: BooleanProperty;
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(model, options);
@@ -76,9 +80,35 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Setup grid visualization (add early so it's behind other elements)
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
-    // Setup measurement tools (distance tool, protractor, stopwatch)
-    // Position protractor at the pivot point for angle measurement
+    // Initialize dragging state
+    this.isDraggingProperty = new BooleanProperty(false);
+
+    // Setup measurement tools (distance tool, stopwatch)
+    // We'll set up the protractor separately with the PendulumLabProtractorNode
     this.setupMeasurementTools(this.modelViewTransform, this.pivotPoint);
+
+    // Replace the generic protractor with the PendulumLabProtractorNode
+    if (this.protractorNode) {
+      this.removeChild(this.protractorNode);
+    }
+
+    // Create the PendulumLabProtractorNode
+    const pendulumLabProtractor = new PendulumLabProtractorNode(
+      {
+        angleProperty: this.model.angleProperty,
+        isDraggingProperty: this.isDraggingProperty,
+        color: ClassicalMechanicsColors.mass2FillColorProperty.value,
+        lengthProperty: this.model.lengthProperty,
+      },
+      this.modelViewTransform
+    );
+    this.protractorNode = pendulumLabProtractor;
+    this.addChild(pendulumLabProtractor);
+
+    // Link visibility
+    this.showProtractorProperty.link((visible: boolean) => {
+      pendulumLabProtractor.visible = visible;
+    });
 
     // Pivot
     this.pivotNode = new Circle(8, {
@@ -118,6 +148,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       new DragListener({
         translateNode: false,
         start: () => {
+          this.isDraggingProperty.value = true;
           SimulationAnnouncer.announceDragInteraction("Dragging pendulum bob");
         },
         drag: (event) => {
@@ -128,6 +159,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           this.model.angularVelocityProperty.value = 0;
         },
         end: () => {
+          this.isDraggingProperty.value = false;
           const angleDegrees = (this.model.angleProperty.value * 180 / Math.PI).toFixed(1);
           SimulationAnnouncer.announceDragInteraction(`Pendulum bob released at ${angleDegrees} degrees from vertical`);
         },
