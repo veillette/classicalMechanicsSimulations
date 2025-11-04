@@ -31,6 +31,7 @@ type PresetOption = Preset | "Custom";
 
 export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly bobNode: Circle;
+  private readonly bobReferenceDot: Circle; // Small dot showing center of mass position
   private readonly rodNode: Line;
   private readonly pivotNode: Circle;
   private readonly pivotPoint: Vector2;
@@ -137,6 +138,14 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       focusHighlight: "invisible",
     });
     this.addChild(this.bobNode);
+
+    // Center of mass reference dot (small circle at center of bob)
+    this.bobReferenceDot = new Circle(3, {
+      fill: ClassicalMechanicsColors.textColorProperty,
+      stroke: "white",
+      lineWidth: 1,
+    });
+    this.addChild(this.bobReferenceDot);
 
     // Link mass to visual size
     this.model.massProperty.link((mass) => {
@@ -602,6 +611,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Update bob position
     this.bobNode.center = viewBobPosition;
+
+    // Update center of mass reference dot (position at center of bob)
+    this.bobReferenceDot.center = viewBobPosition;
 
     // Update rod
     this.rodNode.setLine(

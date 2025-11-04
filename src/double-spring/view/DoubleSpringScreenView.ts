@@ -30,7 +30,9 @@ type PresetOption = Preset | "Custom";
 
 export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly mass1Node: Rectangle;
+  private readonly mass1ReferenceLine: Line; // Horizontal line showing center of mass1 position
   private readonly mass2Node: Rectangle;
+  private readonly mass2ReferenceLine: Line; // Horizontal line showing center of mass2 position
   private readonly classicSpring1Node: SpringNode;
   private readonly parametricSpring1Node: ParametricSpringNode;
   private currentSpring1Node: SpringNode | ParametricSpringNode;
@@ -158,6 +160,14 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
     this.addChild(this.mass1Node);
 
+    // Center of mass reference line for mass 1
+    this.mass1ReferenceLine = new Line(0, 0, 0, 0, {
+      stroke: ClassicalMechanicsColors.textColorProperty,
+      lineWidth: 2,
+      lineDash: [5, 3],
+    });
+    this.addChild(this.mass1ReferenceLine);
+
     // Mass 2 (size will be updated based on mass value)
     this.mass2Node = new Rectangle(-20, -20, 40, 40, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
@@ -170,6 +180,14 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
     this.addChild(this.mass2Node);
 
+    // Center of mass reference line for mass 2
+    this.mass2ReferenceLine = new Line(0, 0, 0, 0, {
+      stroke: ClassicalMechanicsColors.textColorProperty,
+      lineWidth: 2,
+      lineDash: [5, 3],
+    });
+    this.addChild(this.mass2ReferenceLine);
+
     // Link masses to visual sizes
     this.model.mass1Property.link((mass) => {
       this.updateMass1Size(mass);
@@ -177,6 +195,14 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.model.mass2Property.link((mass) => {
       this.updateMass2Size(mass);
     });
+
+    // Listen to spring visualization preference changes
+    // Using lazyLink to avoid triggering during initialization
+    ClassicalMechanicsPreferences.springVisualizationTypeProperty.lazyLink(
+      (springType) => {
+        this.switchSpringVisualization(springType);
+      }
+    );
 
     // Drag listeners with accessibility announcements
     const a11yStrings = this.getA11yStrings();
@@ -694,6 +720,23 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Update mass positions
     this.mass1Node.center = mass1ViewPos;
     this.mass2Node.center = mass2ViewPos;
+
+    // Update center of mass reference lines (horizontal lines across each mass)
+    const mass1HalfWidth = this.mass1Node.width / 2;
+    this.mass1ReferenceLine.setLine(
+      mass1ViewPos.x - mass1HalfWidth,
+      mass1ViewPos.y,
+      mass1ViewPos.x + mass1HalfWidth,
+      mass1ViewPos.y
+    );
+
+    const mass2HalfWidth = this.mass2Node.width / 2;
+    this.mass2ReferenceLine.setLine(
+      mass2ViewPos.x - mass2HalfWidth,
+      mass2ViewPos.y,
+      mass2ViewPos.x + mass2HalfWidth,
+      mass2ViewPos.y
+    );
 
     // Account for mass heights which vary with mass values
     const mass1HalfHeight = this.mass1Node.height / 2;

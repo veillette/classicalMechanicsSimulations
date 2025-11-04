@@ -40,7 +40,9 @@ type PresetOption = Preset | "Custom";
 
 export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel> {
   private readonly bob1Node: Circle;
+  private readonly bob1ReferenceDot: Circle; // Small dot showing center of mass position
   private readonly bob2Node: Circle;
+  private readonly bob2ReferenceDot: Circle; // Small dot showing center of mass position
   private readonly rod1Node: Line;
   private readonly rod2Node: Line;
   private readonly pivotNode: Circle;
@@ -151,6 +153,14 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
     this.addChild(this.bob1Node);
 
+    // Center of mass reference dot for bob 1 (small circle at center of bob)
+    this.bob1ReferenceDot = new Circle(3, {
+      fill: ClassicalMechanicsColors.textColorProperty,
+      stroke: "white",
+      lineWidth: 1,
+    });
+    this.addChild(this.bob1ReferenceDot);
+
     // Bob 2 (size will be updated based on mass value)
     this.bob2Node = new Circle(15, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
@@ -161,6 +171,14 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       focusHighlight: "invisible",
     });
     this.addChild(this.bob2Node);
+
+    // Center of mass reference dot for bob 2 (small circle at center of bob)
+    this.bob2ReferenceDot = new Circle(3, {
+      fill: ClassicalMechanicsColors.textColorProperty,
+      stroke: "white",
+      lineWidth: 1,
+    });
+    this.addChild(this.bob2ReferenceDot);
 
     // Link masses to visual sizes
     this.model.mass1Property.link((mass) => {
@@ -777,6 +795,10 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Update bob positions
     this.bob1Node.center = bob1ViewPos;
     this.bob2Node.center = bob2ViewPos;
+
+    // Update center of mass reference dots
+    this.bob1ReferenceDot.center = bob1ViewPos;
+    this.bob2ReferenceDot.center = bob2ViewPos;
 
     // Update rods
     this.rod1Node.setLine(

@@ -35,6 +35,7 @@ type PresetOption = Preset | "Custom";
 
 export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly massNode: Rectangle;
+  private readonly massReferenceLine: Line; // Horizontal line showing center of mass position
   private readonly classicSpringNode: SpringNode;
   private readonly parametricSpringNode: ParametricSpringNode;
   private currentSpringNode: SpringNode | ParametricSpringNode;
@@ -132,6 +133,14 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       focusHighlight: "invisible",
     });
     this.addChild(this.massNode);
+
+    // Center of mass reference line (horizontal line across mass)
+    this.massReferenceLine = new Line(0, 0, 0, 0, {
+      stroke: ClassicalMechanicsColors.textColorProperty,
+      lineWidth: 2,
+      lineDash: [5, 3],
+    });
+    this.addChild(this.massReferenceLine);
 
     // Link mass to visual size
     this.model.massProperty.link((mass) => {
@@ -633,6 +642,15 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Update mass position
     this.massNode.center = viewPosition;
+
+    // Update center of mass reference line (horizontal line across the mass)
+    const massHalfWidth = this.massNode.width / 2;
+    this.massReferenceLine.setLine(
+      viewPosition.x - massHalfWidth,
+      viewPosition.y,
+      viewPosition.x + massHalfWidth,
+      viewPosition.y
+    );
 
     // Update spring endpoints (vertical spring from fixed point to top of mass)
     // Account for the mass height which varies with mass value
