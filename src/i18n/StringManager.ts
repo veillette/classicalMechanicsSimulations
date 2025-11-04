@@ -365,6 +365,24 @@ export class StringManager {
   }
 
   /**
+   * Get keyboard shortcuts string properties
+   */
+  public getKeyboardShortcutsStrings() {
+    return {
+      titleStringProperty: this.stringProperties.keyboardShortcuts.titleStringProperty,
+      simulationControlsStringProperty: this.stringProperties.keyboardShortcuts.simulationControlsStringProperty,
+      graphInteractionsStringProperty: this.stringProperties.keyboardShortcuts.graphInteractionsStringProperty,
+      playPauseSimulationStringProperty: this.stringProperties.keyboardShortcuts.playPauseSimulationStringProperty,
+      resetSimulationStringProperty: this.stringProperties.keyboardShortcuts.resetSimulationStringProperty,
+      stepBackwardStringProperty: this.stringProperties.keyboardShortcuts.stepBackwardStringProperty,
+      stepForwardStringProperty: this.stringProperties.keyboardShortcuts.stepForwardStringProperty,
+      resetZoomStringProperty: this.stringProperties.keyboardShortcuts.resetZoomStringProperty,
+      zoomInOutStringProperty: this.stringProperties.keyboardShortcuts.zoomInOutStringProperty,
+      panViewStringProperty: this.stringProperties.keyboardShortcuts.panViewStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */

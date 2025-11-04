@@ -197,5 +197,17 @@
       "xAxisChanged": "X-axis changed to {{property}}",
       "yAxisChanged": "Y-axis changed to {{property}}"
     }
+  },
+  "keyboardShortcuts": {
+    "title": "Keyboard Shortcuts",
+    "simulationControls": "Simulation Controls",
+    "graphInteractions": "Graph Interactions",
+    "playPauseSimulation": "Play / Pause simulation",
+    "resetSimulation": "Reset simulation",
+    "stepBackward": "Step backward (when paused)",
+    "stepForward": "Step forward (when paused)",
+    "resetZoom": "Reset zoom to auto-scale",
+    "zoomInOut": "Zoom in/out",
+    "panView": "Pan view"
   }
 }

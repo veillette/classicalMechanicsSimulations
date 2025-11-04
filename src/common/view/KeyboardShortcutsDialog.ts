@@ -6,6 +6,7 @@ import { Panel } from "scenerystack/sun";
 import { VBox, HBox, Text, Node } from "scenerystack/scenery";
 import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { StringManager } from "../../i18n/StringManager.js";
 
 
 export class KeyboardShortcutsDialog extends Node {
@@ -53,20 +54,23 @@ export class KeyboardShortcutsDialog extends Node {
   }
 
   private static createContent(): Node {
-    const title = new Text("Keyboard Shortcuts", {
+    const stringManager = StringManager.getInstance();
+    const keyboardShortcutsStrings = stringManager.getKeyboardShortcutsStrings();
+
+    const title = new Text(keyboardShortcutsStrings.titleStringProperty, {
       fontSize: 18,
       fontWeight: "bold",
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const shortcuts = [
-      { key: "Space", description: "Play / Pause simulation" },
-      { key: "R", description: "Reset simulation" },
-      { key: "←", description: "Step backward (when paused)" },
-      { key: "→", description: "Step forward (when paused)" },
-      { key: "Double-click graph", description: "Reset zoom to auto-scale" },
-      { key: "Mouse wheel on graph", description: "Zoom in/out" },
-      { key: "Drag on graph", description: "Pan view" },
+      { key: "Space", descriptionProperty: keyboardShortcutsStrings.playPauseSimulationStringProperty },
+      { key: "R", descriptionProperty: keyboardShortcutsStrings.resetSimulationStringProperty },
+      { key: "←", descriptionProperty: keyboardShortcutsStrings.stepBackwardStringProperty },
+      { key: "→", descriptionProperty: keyboardShortcutsStrings.stepForwardStringProperty },
+      { key: "Double-click graph", descriptionProperty: keyboardShortcutsStrings.resetZoomStringProperty },
+      { key: "Mouse wheel on graph", descriptionProperty: keyboardShortcutsStrings.zoomInOutStringProperty },
+      { key: "Drag on graph", descriptionProperty: keyboardShortcutsStrings.panViewStringProperty },
     ];
 
     const rows = shortcuts.map((shortcut) => {
@@ -76,7 +80,7 @@ export class KeyboardShortcutsDialog extends Node {
         fill: ClassicalMechanicsColors.textColorProperty,
       });
 
-      const descText = new Text(shortcut.description, {
+      const descText = new Text(shortcut.descriptionProperty, {
         fontSize: 14,
         fill: ClassicalMechanicsColors.textColorProperty,
       });

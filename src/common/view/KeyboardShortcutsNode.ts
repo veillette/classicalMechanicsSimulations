@@ -4,29 +4,32 @@
  */
 
 import { TwoColumnKeyboardHelpContent, KeyboardHelpSection, KeyboardHelpSectionRow } from "scenerystack/scenery-phet";
-import { StringProperty } from "scenerystack/axon";
 import { TextKeyNode } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class KeyboardShortcutsNode extends TwoColumnKeyboardHelpContent {
   public constructor() {
+    const stringManager = StringManager.getInstance();
+    const keyboardShortcutsStrings = stringManager.getKeyboardShortcutsStrings();
+
     // Create sections for simulation controls
     const simulationControlsSection = new KeyboardHelpSection(
-      new StringProperty("Simulation Controls"),
+      keyboardShortcutsStrings.simulationControlsStringProperty,
       [
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Play / Pause simulation"),
+          keyboardShortcutsStrings.playPauseSimulationStringProperty,
           TextKeyNode.space()
         ),
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Reset simulation"),
+          keyboardShortcutsStrings.resetSimulationStringProperty,
           new TextKeyNode("R")
         ),
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Step backward (when paused)"),
+          keyboardShortcutsStrings.stepBackwardStringProperty,
           new TextKeyNode("\u2190") // Left arrow
         ),
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Step forward (when paused)"),
+          keyboardShortcutsStrings.stepForwardStringProperty,
           new TextKeyNode("\u2192") // Right arrow
         ),
       ]
@@ -34,18 +37,18 @@ export class KeyboardShortcutsNode extends TwoColumnKeyboardHelpContent {
 
     // Create sections for graph interactions
     const graphInteractionsSection = new KeyboardHelpSection(
-      new StringProperty("Graph Interactions"),
+      keyboardShortcutsStrings.graphInteractionsStringProperty,
       [
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Reset zoom to auto-scale"),
+          keyboardShortcutsStrings.resetZoomStringProperty,
           new TextKeyNode("Double-click")
         ),
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Zoom in/out"),
+          keyboardShortcutsStrings.zoomInOutStringProperty,
           new TextKeyNode("Mouse wheel")
         ),
         KeyboardHelpSectionRow.labelWithIcon(
-          new StringProperty("Pan view"),
+          keyboardShortcutsStrings.panViewStringProperty,
           new TextKeyNode("Drag")
         ),
       ]
