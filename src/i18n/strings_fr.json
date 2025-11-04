@@ -188,5 +188,17 @@
       "xAxisChanged": "Axe X changé à {{property}}",
       "yAxisChanged": "Axe Y changé à {{property}}"
     }
+  },
+  "keyboardShortcuts": {
+    "title": "Raccourcis Clavier",
+    "simulationControls": "Contrôles de Simulation",
+    "graphInteractions": "Interactions Graphiques",
+    "playPauseSimulation": "Lecture / Pause de la simulation",
+    "resetSimulation": "Réinitialiser la simulation",
+    "stepBackward": "Reculer d'un pas (en pause)",
+    "stepForward": "Avancer d'un pas (en pause)",
+    "resetZoom": "Réinitialiser le zoom automatique",
+    "zoomInOut": "Zoomer / Dézoomer",
+    "panView": "Déplacer la vue"
   }
 }
