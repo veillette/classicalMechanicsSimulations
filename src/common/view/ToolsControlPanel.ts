@@ -66,7 +66,7 @@ export class ToolsControlPanel extends Panel {
       }
     );
 
-    const children: any[] = [
+    const children = [
       showGridCheckbox,
       showDistanceToolCheckbox,
       showStopwatchCheckbox,
