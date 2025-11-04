@@ -290,6 +290,25 @@ const ClassicalMechanicsColors = {
       projector: new Color(100, 120, 150, 0.7), // slightly blue-ish for light background
     },
   ),
+
+  // Protractor colors
+  protractorTicksColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "protractorTicksColor",
+    {
+      default: WHITE, // white ticks for dark background
+      projector: BLACK, // black ticks for light background
+    },
+  ),
+
+  protractorPivotDotColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "protractorPivotDotColor",
+    {
+      default: WHITE, // white dot for dark background
+      projector: BLACK, // black dot for light background
+    },
+  ),
 };
 
 // Register the namespace
