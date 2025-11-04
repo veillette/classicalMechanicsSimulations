@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
 import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
-import { NumberControl } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, ArrowNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -187,7 +187,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Create vector nodes
     this.velocityVectorNode = new VectorNode({
-      color: "blue",
+      color: PhetColorScheme.VELOCITY,
       scale: 50, // 50 pixels per m/s
       label: "v",
       minMagnitude: 0.05,
@@ -195,7 +195,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.addChild(this.velocityVectorNode);
 
     this.forceVectorNode = new VectorNode({
-      color: "red",
+      color: PhetColorScheme.APPLIED_FORCE,
       scale: 10, // 10 pixels per Newton
       label: "F",
       minMagnitude: 0.1,
@@ -203,7 +203,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.addChild(this.forceVectorNode);
 
     this.accelerationVectorNode = new VectorNode({
-      color: "green",
+      color: PhetColorScheme.ACCELERATION,
       scale: 20, // 20 pixels per m/s²
       label: "a",
       minMagnitude: 0.1,
@@ -463,7 +463,14 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           new Text("  ", { fontSize: 12 }), // Indent
           new Text(visualizationLabels.velocityStringProperty, {
             fontSize: 12,
-            fill: "blue",
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+          new ArrowNode(0, 0, 15, 0, {
+            fill: PhetColorScheme.VELOCITY,
+            stroke: PhetColorScheme.VELOCITY,
+            headHeight: 6,
+            headWidth: 6,
+            tailWidth: 2,
           }),
         ],
       }),
@@ -480,7 +487,14 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           new Text("  ", { fontSize: 12 }), // Indent
           new Text(visualizationLabels.forceStringProperty, {
             fontSize: 12,
-            fill: "red",
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+          new ArrowNode(0, 0, 15, 0, {
+            fill: PhetColorScheme.APPLIED_FORCE,
+            stroke: PhetColorScheme.APPLIED_FORCE,
+            headHeight: 6,
+            headWidth: 6,
+            tailWidth: 2,
           }),
         ],
       }),
@@ -497,7 +511,14 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           new Text("  ", { fontSize: 12 }), // Indent
           new Text(visualizationLabels.accelerationStringProperty, {
             fontSize: 12,
-            fill: "green",
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+          new ArrowNode(0, 0, 15, 0, {
+            fill: PhetColorScheme.ACCELERATION,
+            stroke: PhetColorScheme.ACCELERATION,
+            headHeight: 6,
+            headWidth: 6,
+            tailWidth: 2,
           }),
         ],
       }),

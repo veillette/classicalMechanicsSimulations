@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
 import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
-import { NumberControl } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, ArrowNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -272,7 +272,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Create vector nodes for mass 1
     this.velocity1VectorNode = new VectorNode({
-      color: "blue",
+      color: PhetColorScheme.VELOCITY,
       scale: 50,
       label: "v₁",
       minMagnitude: 0.05,
@@ -280,7 +280,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.velocity1VectorNode);
 
     this.force1VectorNode = new VectorNode({
-      color: "red",
+      color: PhetColorScheme.APPLIED_FORCE,
       scale: 10,
       label: "F₁",
       minMagnitude: 0.1,
@@ -288,7 +288,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.force1VectorNode);
 
     this.acceleration1VectorNode = new VectorNode({
-      color: "green",
+      color: PhetColorScheme.ACCELERATION,
       scale: 20,
       label: "a₁",
       minMagnitude: 0.1,
@@ -297,7 +297,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Create vector nodes for mass 2
     this.velocity2VectorNode = new VectorNode({
-      color: "cyan",
+      color: PhetColorScheme.VELOCITY,
       scale: 50,
       label: "v₂",
       minMagnitude: 0.05,
@@ -305,7 +305,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.velocity2VectorNode);
 
     this.force2VectorNode = new VectorNode({
-      color: "orange",
+      color: PhetColorScheme.APPLIED_FORCE,
       scale: 10,
       label: "F₂",
       minMagnitude: 0.1,
@@ -313,7 +313,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.force2VectorNode);
 
     this.acceleration2VectorNode = new VectorNode({
-      color: "lime",
+      color: PhetColorScheme.ACCELERATION,
       scale: 20,
       label: "a₂",
       minMagnitude: 0.1,
@@ -546,6 +546,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
             fontSize: 12,
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
+          new ArrowNode(0, 0, 15, 0, {
+            fill: PhetColorScheme.VELOCITY,
+            stroke: PhetColorScheme.VELOCITY,
+            headHeight: 6,
+            headWidth: 6,
+            tailWidth: 2,
+          }),
         ],
       }),
       {
@@ -563,6 +570,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
             fontSize: 12,
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
+          new ArrowNode(0, 0, 15, 0, {
+            fill: PhetColorScheme.APPLIED_FORCE,
+            stroke: PhetColorScheme.APPLIED_FORCE,
+            headHeight: 6,
+            headWidth: 6,
+            tailWidth: 2,
+          }),
         ],
       }),
       {
@@ -579,6 +593,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           new Text(visualizationLabels.accelerationStringProperty, {
             fontSize: 12,
             fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+          new ArrowNode(0, 0, 15, 0, {
+            fill: PhetColorScheme.ACCELERATION,
+            stroke: PhetColorScheme.ACCELERATION,
+            headHeight: 6,
+            headWidth: 6,
+            tailWidth: 2,
           }),
         ],
       }),
