@@ -79,10 +79,12 @@ export abstract class BaseScreenView<
    * Call this after modelViewTransform is created.
    * @param modelViewTransform - Transform between model and view coordinates
    * @param protractorPosition - Optional position for the protractor (defaults to upper right)
+   * @param includeProtractor - Whether to include the protractor tool (defaults to true)
    */
   protected setupMeasurementTools(
     modelViewTransform: ModelViewTransform2,
     protractorPosition?: Vector2,
+    includeProtractor = true,
   ): void {
     // Measuring tape tool (SceneryStack component)
     const unitsProperty = new Property({
@@ -112,27 +114,29 @@ export abstract class BaseScreenView<
       this.measuringTapeNode!.visible = visible;
     });
 
-    // Protractor tool (SceneryStack component)
-    this.protractorNode = new ProtractorNode({
-      rotatable: true,
-      angle: 0,
-    });
+    // Protractor tool (SceneryStack component) - only for pendulum screens
+    if (includeProtractor) {
+      this.protractorNode = new ProtractorNode({
+        rotatable: true,
+        angle: 0,
+      });
 
-    // Position the protractor
-    if (protractorPosition) {
-      this.protractorNode.center = protractorPosition;
-    } else {
-      // Default position in upper right
-      this.protractorNode.left = this.layoutBounds.maxX - 200;
-      this.protractorNode.top = this.layoutBounds.minY + 150;
+      // Position the protractor
+      if (protractorPosition) {
+        this.protractorNode.center = protractorPosition;
+      } else {
+        // Default position in upper right
+        this.protractorNode.left = this.layoutBounds.maxX - 200;
+        this.protractorNode.top = this.layoutBounds.minY + 150;
+      }
+
+      this.addChild(this.protractorNode);
+
+      // Link visibility
+      this.showProtractorProperty.link((visible) => {
+        this.protractorNode!.visible = visible;
+      });
     }
-
-    this.addChild(this.protractorNode);
-
-    // Link visibility
-    this.showProtractorProperty.link((visible) => {
-      this.protractorNode!.visible = visible;
-    });
 
     // Stopwatch tool (SceneryStack component)
     this.stopwatch = new Stopwatch({

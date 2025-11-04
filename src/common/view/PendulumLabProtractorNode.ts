@@ -45,21 +45,21 @@ export class PendulumLabProtractorNode extends Node {
     modelViewTransform: ModelViewTransform2,
     options?: PendulumLabProtractorNodeOptions
   ) {
-    // Get the color from pendulum data or use default
-    const pendulumColor = pendulumData.color || ClassicalMechanicsColors.mass2FillColorProperty.value;
+    // Use color property for pendulum-specific elements
+    const pendulumColorProperty = ClassicalMechanicsColors.mass2FillColorProperty;
 
     // Central dashed reference line (vertical line from pivot)
     const maxLength = modelViewTransform.modelToViewDeltaX(
       pendulumData.lengthProperty.value * 1.2
     );
     const centralDashLine = new Line(0, 0, 0, maxLength, {
-      stroke: pendulumColor,
+      stroke: pendulumColorProperty,
       lineDash: [4, 7],
     });
 
     // Pivot visualization
-    const pivotDot = new Circle(2, { fill: "black" });
-    const pivotCircle = new Circle(5, { stroke: pendulumColor });
+    const pivotDot = new Circle(2, { fill: ClassicalMechanicsColors.protractorPivotDotColorProperty });
+    const pivotCircle = new Circle(5, { stroke: pendulumColorProperty });
 
     // Create background ticks for the protractor
     const protractorShape = new Shape();
@@ -84,7 +84,7 @@ export class PendulumLabProtractorNode extends Node {
     }
 
     const protractorPath = new Path(protractorShape, {
-      stroke: "black",
+      stroke: ClassicalMechanicsColors.protractorTicksColorProperty,
       lineWidth: 0.5,
     });
 
@@ -115,7 +115,7 @@ export class PendulumLabProtractorNode extends Node {
       RADIUS - 2,
       0,
       {
-        stroke: pendulumColor,
+        stroke: pendulumColorProperty,
         lineWidth: 2,
       }
     );
@@ -127,7 +127,7 @@ export class PendulumLabProtractorNode extends Node {
       RADIUS - 2,
       0,
       {
-        stroke: pendulumColor,
+        stroke: pendulumColorProperty,
         lineWidth: 2,
       }
     );
@@ -144,7 +144,7 @@ export class PendulumLabProtractorNode extends Node {
     const degreesText = new Text("0°", {
       centerY: 15,
       font: "14px Arial",
-      fill: pendulumColor,
+      fill: pendulumColorProperty,
     });
     degreesLayer.addChild(degreesText);
 

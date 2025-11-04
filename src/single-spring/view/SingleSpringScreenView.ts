@@ -73,8 +73,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Setup grid visualization (add early so it's behind other elements)
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
-    // Setup measurement tools (distance tool, protractor, stopwatch)
-    this.setupMeasurementTools(this.modelViewTransform);
+    // Setup measurement tools (distance tool, stopwatch) - no protractor for spring screens
+    this.setupMeasurementTools(this.modelViewTransform, undefined, false);
 
     // Wall visualization (horizontal bar at top)
     const wall = new Line(
@@ -523,17 +523,6 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       }
     );
 
-    const showProtractorCheckbox = new Checkbox(
-      this.showProtractorProperty,
-      new Text(visualizationLabels.showProtractorStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
     const showStopwatchCheckbox = new Checkbox(
       this.showStopwatchProperty,
       new Text(visualizationLabels.showStopwatchStringProperty, {
@@ -561,7 +550,6 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           accelerationCheckbox,
           showGridCheckbox,
           showDistanceToolCheckbox,
-          showProtractorCheckbox,
           showStopwatchCheckbox,
         ],
       }),
