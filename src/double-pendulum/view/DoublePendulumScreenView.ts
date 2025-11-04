@@ -855,7 +855,18 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.updateVisualization();
   }
 
-  public reset(): void {
+  public override reset(): void {
+    super.reset(); // Reset base view properties
+
+    // Reset vector visibility properties
+    this.showVectorsProperty.reset();
+    this.showVelocityProperty.reset();
+    this.showForceProperty.reset();
+    this.showAccelerationProperty.reset();
+
+    // Reset trail visibility
+    this.trailVisibleProperty.reset();
+
     // Clear trail
     this.clearTrail();
 

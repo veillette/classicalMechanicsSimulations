@@ -629,7 +629,15 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.updateVisualization();
   }
 
-  public reset(): void {
+  public override reset(): void {
+    super.reset(); // Reset base view properties
+
+    // Reset vector visibility properties
+    this.showVectorsProperty.reset();
+    this.showVelocityProperty.reset();
+    this.showForceProperty.reset();
+    this.showAccelerationProperty.reset();
+
     // Clear graph data
     this.configurableGraph.clearData();
 
