@@ -11,6 +11,7 @@ import {
   StopwatchNode,
   ProtractorNode,
   MeasuringTapeNode,
+  InfoButton,
 } from "scenerystack/scenery-phet";
 import { KeyboardListener, Node } from "scenerystack/scenery";
 import {
@@ -21,6 +22,7 @@ import {
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { Bounds2, Vector2 } from "scenerystack/dot";
+import { Panel } from "scenerystack/sun";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -62,6 +64,9 @@ export abstract class BaseScreenView<
   protected protractorNode: Node | null = null;
   protected stopwatch: Stopwatch | null = null;
   protected stopwatchNode: StopwatchNode | null = null;
+
+  // Info panel
+  private infoPanel: Panel | null = null;
 
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
@@ -218,6 +223,13 @@ export abstract class BaseScreenView<
   }
 
   /**
+   * Create the content for the info dialog.
+   * Subclasses must implement this to provide simulation-specific information.
+   * @returns A Node containing the dialog content (typically a VBox with Text/RichText nodes)
+   */
+  protected abstract createInfoDialogContent(): Node;
+
+  /**
    * Sets up common UI components (time controls and reset button).
    * Call this method at the end of the subclass constructor after all other components are added.
    */
@@ -279,6 +291,30 @@ export abstract class BaseScreenView<
       bottom: this.layoutBounds.maxY - 10,
     });
     this.addChild(resetButton);
+
+    // Info button and panel
+    const infoContent = this.createInfoDialogContent();
+    this.infoPanel = new Panel(infoContent, {
+      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 2,
+      xMargin: 20,
+      yMargin: 15,
+      cornerRadius: 10,
+      center: this.layoutBounds.center,
+      visible: false,
+    });
+    this.addChild(this.infoPanel);
+
+    const infoButton = new InfoButton({
+      iconFill: "rgb(50, 145, 184)",
+      listener: () => {
+        this.infoPanel!.visible = !this.infoPanel!.visible;
+      },
+      right: this.layoutBounds.maxX - 60,
+      bottom: this.layoutBounds.maxY - 10,
+    });
+    this.addChild(infoButton);
 
     // Add comprehensive keyboard shortcuts for accessibility
     // Using global keyboard listener so shortcuts work regardless of focus

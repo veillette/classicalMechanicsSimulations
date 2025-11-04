@@ -17,7 +17,7 @@ import {
   RichText,
 } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, InfoButton } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
@@ -473,81 +473,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     toolsPanel.bottom = this.layoutBounds.maxY - 80;
     this.addChild(toolsPanel);
 
-    // Create info dialog with physics explanation and ODE
-    const infoContent = new VBox({
-      spacing: 10,
-      align: "left",
-      children: [
-        new Text("Double Pendulum", {
-          fontSize: 18,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "This simulation models a double pendulum system, which exhibits rich dynamics including periodic motion and deterministic chaos depending on initial conditions and energy.",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Equations of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "(<i>m</i>₁ + <i>m</i>₂)<i>l</i>₁<sup>2</sup> θ̈₁ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₂ cos(θ₁-θ₂)<br>" +
-          "+ <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₂<sup>2</sup> sin(θ₁-θ₂) + (<i>m</i>₁ + <i>m</i>₂)<i>gl</i>₁ sin(θ₁) = 0<br><br>" +
-          "<i>m</i>₂<i>l</i>₂<sup>2</sup> θ̈₂ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₁ cos(θ₁-θ₂)<br>" +
-          "- <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₁<sup>2</sup> sin(θ₁-θ₂) + <i>m</i>₂<i>gl</i>₂ sin(θ₂) = 0",
-          {
-            font: "12px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Where:", {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
-          "• <i>l</i>₁, <i>l</i>₂ = lengths (m)<br>" +
-          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
-          "• θ₁, θ₂ = angles from vertical (rad)",
-          {
-            font: "12px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
-      ],
-    });
-
-    const infoPanel = new Panel(infoContent, {
-      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 2,
-      xMargin: 20,
-      yMargin: 15,
-      cornerRadius: 10,
-      center: this.layoutBounds.center,
-      visible: false,
-    });
-    this.addChild(infoPanel);
-
-    const infoButton = new InfoButton({
-      iconFill: "rgb(50, 145, 184)",
-      listener: () => {
-        infoPanel.visible = !infoPanel.visible;
-      },
-      right: this.layoutBounds.maxX - 60,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(infoButton);
-
-    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
     // Add additional keyboard shortcut for trail toggle
@@ -748,6 +674,62 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     );
 
     return panel;
+  }
+
+  /**
+   * Create the content for the info dialog.
+   */
+  protected createInfoDialogContent(): Node {
+    return new VBox({
+      spacing: 10,
+      align: "left",
+      children: [
+        new Text("Double Pendulum", {
+          fontSize: 18,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "This simulation models a double pendulum system, which exhibits rich dynamics including periodic motion and deterministic chaos depending on initial conditions and energy.",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Equations of Motion:", {
+          fontSize: 14,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "(<i>m</i>₁ + <i>m</i>₂)<i>l</i>₁<sup>2</sup> θ̈₁ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₂ cos(θ₁-θ₂)<br>" +
+          "+ <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₂<sup>2</sup> sin(θ₁-θ₂) + (<i>m</i>₁ + <i>m</i>₂)<i>gl</i>₁ sin(θ₁) = 0<br><br>" +
+          "<i>m</i>₂<i>l</i>₂<sup>2</sup> θ̈₂ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₁ cos(θ₁-θ₂)<br>" +
+          "- <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₁<sup>2</sup> sin(θ₁-θ₂) + <i>m</i>₂<i>gl</i>₂ sin(θ₂) = 0",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Where:", {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
+          "• <i>l</i>₁, <i>l</i>₂ = lengths (m)<br>" +
+          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
+          "• θ₁, θ₂ = angles from vertical (rad)",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            lineWrap: 400,
+          }
+        ),
+      ],
+    });
   }
 
   private updateVisualization(): void {

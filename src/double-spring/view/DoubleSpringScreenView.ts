@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, InfoButton } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -410,78 +410,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
 
-    // Create info dialog with physics explanation and ODE
-    const infoContent = new VBox({
-      spacing: 10,
-      align: "left",
-      children: [
-        new Text("Double Spring System", {
-          fontSize: 18,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes.",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Equations of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "<i>m</i>₁ d<sup>2</sup><i>x</i>₁/d<i>t</i><sup>2</sup> = -<i>k</i>₁<i>x</i>₁ + <i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)<br>" +
-          "<i>m</i>₂ d<sup>2</sup><i>x</i>₂/d<i>t</i><sup>2</sup> = -<i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Where:", {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
-          "• <i>k</i>₁, <i>k</i>₂ = spring constants (N/m)<br>" +
-          "• <i>x</i>₁, <i>x</i>₂ = displacements from equilibrium (m)",
-          {
-            font: "12px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
-      ],
-    });
-
-    const infoPanel = new Panel(infoContent, {
-      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 2,
-      xMargin: 20,
-      yMargin: 15,
-      cornerRadius: 10,
-      center: this.layoutBounds.center,
-      visible: false,
-    });
-    this.addChild(infoPanel);
-
-    const infoButton = new InfoButton({
-      iconFill: "rgb(50, 145, 184)",
-      listener: () => {
-        infoPanel.visible = !infoPanel.visible;
-      },
-      right: this.layoutBounds.maxX - 60,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(infoButton);
-
-    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
     // Initial visualization
@@ -683,6 +612,59 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.updateSpring1Appearance(this.model.springConstant1Property.value);
     this.updateSpring2Appearance(this.model.springConstant2Property.value);
     this.updateVisualization();
+  }
+
+  /**
+   * Create the content for the info dialog.
+   */
+  protected createInfoDialogContent(): Node {
+    return new VBox({
+      spacing: 10,
+      align: "left",
+      children: [
+        new Text("Double Spring System", {
+          fontSize: 18,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes.",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Equations of Motion:", {
+          fontSize: 14,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "<i>m</i>₁ d<sup>2</sup><i>x</i>₁/d<i>t</i><sup>2</sup> = -<i>k</i>₁<i>x</i>₁ + <i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)<br>" +
+          "<i>m</i>₂ d<sup>2</sup><i>x</i>₂/d<i>t</i><sup>2</sup> = -<i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Where:", {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
+          "• <i>k</i>₁, <i>k</i>₂ = spring constants (N/m)<br>" +
+          "• <i>x</i>₁, <i>x</i>₂ = displacements from equilibrium (m)",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            lineWrap: 400,
+          }
+        ),
+      ],
+    });
   }
 
   private updateVisualization(): void {

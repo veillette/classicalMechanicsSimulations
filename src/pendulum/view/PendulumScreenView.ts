@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, InfoButton } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -346,80 +346,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     toolsPanel.bottom = this.layoutBounds.maxY - 80;
     this.addChild(toolsPanel);
 
-    // Create info dialog with physics explanation and ODE
-    const infoContent = new VBox({
-      spacing: 10,
-      align: "left",
-      children: [
-        new Text("Simple Pendulum", {
-          fontSize: 18,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "This simulation models a simple pendulum, demonstrating periodic motion and energy conservation. At small angles, the motion approximates simple harmonic motion.",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Equation of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "<i>I</i> d<sup>2</sup>θ/d<i>t</i><sup>2</sup> = -<i>mgl</i> sin(θ) - <i>b</i> dθ/d<i>t</i>",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Where:", {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "• <i>I</i> = <i>ml</i><sup>2</sup> = moment of inertia (kg·m²)<br>" +
-          "• <i>m</i> = mass (kg)<br>" +
-          "• <i>l</i> = length (m)<br>" +
-          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
-          "• <i>b</i> = damping coefficient (N·m·s)<br>" +
-          "• θ = angle from vertical (rad)",
-          {
-            font: "12px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
-      ],
-    });
-
-    const infoPanel = new Panel(infoContent, {
-      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 2,
-      xMargin: 20,
-      yMargin: 15,
-      cornerRadius: 10,
-      center: this.layoutBounds.center,
-      visible: false,
-    });
-    this.addChild(infoPanel);
-
-    const infoButton = new InfoButton({
-      iconFill: "rgb(50, 145, 184)",
-      listener: () => {
-        infoPanel.visible = !infoPanel.visible;
-      },
-      right: this.layoutBounds.maxX - 60,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(infoButton);
-
-    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
     // Initial visualization
@@ -562,6 +489,61 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     );
 
     return panel;
+  }
+
+  /**
+   * Create the content for the info dialog.
+   */
+  protected createInfoDialogContent(): Node {
+    return new VBox({
+      spacing: 10,
+      align: "left",
+      children: [
+        new Text("Simple Pendulum", {
+          fontSize: 18,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "This simulation models a simple pendulum, demonstrating periodic motion and energy conservation. At small angles, the motion approximates simple harmonic motion.",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Equation of Motion:", {
+          fontSize: 14,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "<i>I</i> d<sup>2</sup>θ/d<i>t</i><sup>2</sup> = -<i>mgl</i> sin(θ) - <i>b</i> dθ/d<i>t</i>",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Where:", {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "• <i>I</i> = <i>ml</i><sup>2</sup> = moment of inertia (kg·m²)<br>" +
+          "• <i>m</i> = mass (kg)<br>" +
+          "• <i>l</i> = length (m)<br>" +
+          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
+          "• <i>b</i> = damping coefficient (N·m·s)<br>" +
+          "• θ = angle from vertical (rad)",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            lineWrap: 400,
+          }
+        ),
+      ],
+    });
   }
 
   private updateVisualization(): void {

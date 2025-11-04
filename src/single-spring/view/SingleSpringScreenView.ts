@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, InfoButton } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -357,78 +357,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     toolsPanel.bottom = this.layoutBounds.maxY - 80;
     this.addChild(toolsPanel);
 
-    // Create info panel with physics explanation and ODE
-    const infoContent = new VBox({
-      spacing: 10,
-      align: "left",
-      children: [
-        new Text("Single Spring System", {
-          fontSize: 18,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "This simulation models a mass attached to a spring, demonstrating simple harmonic motion with optional damping.",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Equation of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "<i>m</i> d<sup>2</sup><i>x</i>/d<i>t</i><sup>2</sup> = -<i>kx</i> - <i>b</i> d<i>x</i>/d<i>t</i>",
-          {
-            font: "14px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
-        new Text("Where:", {
-          fontSize: 12,
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        new RichText(
-          "• <i>m</i> = mass (kg)<br>" +
-          "• <i>k</i> = spring constant (N/m)<br>" +
-          "• <i>b</i> = damping coefficient (N·s/m)<br>" +
-          "• <i>x</i> = displacement from equilibrium (m)",
-          {
-            font: "12px sans-serif",
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
-      ],
-    });
-
-    const infoPanel = new Panel(infoContent, {
-      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 2,
-      xMargin: 20,
-      yMargin: 15,
-      cornerRadius: 10,
-      center: this.layoutBounds.center,
-      visible: false,
-    });
-    this.addChild(infoPanel);
-
-    const infoButton = new InfoButton({
-      iconFill: "rgb(50, 145, 184)",
-      listener: () => {
-        infoPanel.visible = !infoPanel.visible;
-      },
-      right: this.layoutBounds.maxX - 60,
-      bottom: this.layoutBounds.maxY - 10,
-    });
-    this.addChild(infoButton);
-
-    // Setup common controls (time controls, reset button, keyboard shortcuts)
+    // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
     // Initial visualization
@@ -598,6 +527,59 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Update the new spring node to match current state
     this.updateSpringAppearance(this.model.springConstantProperty.value);
     this.updateVisualization(this.model.positionProperty.value);
+  }
+
+  /**
+   * Create the content for the info dialog.
+   */
+  protected createInfoDialogContent(): Node {
+    return new VBox({
+      spacing: 10,
+      align: "left",
+      children: [
+        new Text("Single Spring System", {
+          fontSize: 18,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "This simulation models a mass attached to a spring, demonstrating simple harmonic motion with optional damping.",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Equation of Motion:", {
+          fontSize: 14,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "<i>m</i> d<sup>2</sup><i>x</i>/d<i>t</i><sup>2</sup> = -<i>kx</i> - <i>b</i> d<i>x</i>/d<i>t</i>",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Where:", {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "• <i>m</i> = mass (kg)<br>" +
+          "• <i>k</i> = spring constant (N/m)<br>" +
+          "• <i>b</i> = damping coefficient (N·s/m)<br>" +
+          "• <i>x</i> = displacement from equilibrium (m)",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            lineWrap: 400,
+          }
+        ),
+      ],
+    });
   }
 
   /**
