@@ -281,7 +281,7 @@ export abstract class BaseScreenView<
     const a11yStrings = this.getA11yStrings();
     KeyboardListener.createGlobal(this, {
       keys: ["r", "space", "arrowLeft", "arrowRight"],
-      fire: (event, keysPressed) => {
+      fire: (_event, keysPressed) => {
         if (keysPressed === "r") {
           // Reset simulation with R key
           this.model.reset();

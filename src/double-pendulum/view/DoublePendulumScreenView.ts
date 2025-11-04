@@ -437,7 +437,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Add additional keyboard shortcut for trail toggle
     const trailKeyboardListener = new KeyboardListener({
       keys: ["t"],
-      fire: (event, keysPressed) => {
+      fire: (_event, keysPressed) => {
         if (keysPressed === "t") {
           // Toggle trail visibility with T key
           this.trailVisibleProperty.value = !this.trailVisibleProperty.value;
