@@ -13,17 +13,6 @@ export class PendulumPresets {
 
     return [
       {
-        nameProperty: presetStrings.shortAndFastStringProperty,
-        descriptionProperty: presetStrings.shortAndFastDescStringProperty,
-        configuration: {
-          length: 0.5,            // Short pendulum (m)
-          mass: 1.0,              // Mass (kg)
-          gravity: 9.8,           // Earth gravity (m/s²)
-          damping: 0.05,          // Light damping (N·m·s)
-          angle: Math.PI / 6,     // 30 degrees initial angle (rad)
-        },
-      },
-      {
         nameProperty: presetStrings.longAndSlowStringProperty,
         descriptionProperty: presetStrings.longAndSlowDescStringProperty,
         configuration: {
@@ -31,6 +20,17 @@ export class PendulumPresets {
           mass: 1.0,              // Mass (kg)
           gravity: 9.8,           // Earth gravity (m/s²)
           damping: 0.1,           // Light damping (N·m·s)
+          angle: Math.PI / 6,     // 30 degrees initial angle (rad)
+        },
+      },
+      {
+        nameProperty: presetStrings.shortAndFastStringProperty,
+        descriptionProperty: presetStrings.shortAndFastDescStringProperty,
+        configuration: {
+          length: 0.5,            // Short pendulum (m)
+          mass: 1.0,              // Mass (kg)
+          gravity: 9.8,           // Earth gravity (m/s²)
+          damping: 0.05,          // Light damping (N·m·s)
           angle: Math.PI / 6,     // 30 degrees initial angle (rad)
         },
       },

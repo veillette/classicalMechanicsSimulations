@@ -5,9 +5,9 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
-import { Rectangle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
-import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, ArrowNode } from "scenerystack/scenery-phet";
+import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
+import { Panel, ComboBox } from "scenerystack/sun";
+import { NumberControl, PhetColorScheme, InfoButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -22,8 +22,9 @@ import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
-import { GridIcon } from "scenerystack/scenery-phet";
+import { Property, BooleanProperty } from "scenerystack/axon";
+import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
+import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -46,7 +47,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private isApplyingPreset: boolean = false;
 
   // Vector visualization
-  private readonly showVectorsProperty: BooleanProperty;
   private readonly showVelocityProperty: BooleanProperty;
   private readonly showForceProperty: BooleanProperty;
   private readonly showAccelerationProperty: BooleanProperty;
@@ -265,7 +265,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     );
 
     // Initialize vector visibility properties
-    this.showVectorsProperty = new BooleanProperty(false);
     this.showVelocityProperty = new BooleanProperty(true);
     this.showForceProperty = new BooleanProperty(true);
     this.showAccelerationProperty = new BooleanProperty(false);
@@ -321,33 +320,56 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes
-    Multilink.multilink(
-      [this.showVectorsProperty, this.showVelocityProperty],
-      (showVectors, showVelocity) => {
-        this.velocity1VectorNode.setVectorVisible(showVectors && showVelocity);
-        this.velocity2VectorNode.setVectorVisible(showVectors && showVelocity);
-      }
-    );
+    this.showVelocityProperty.link((showVelocity) => {
+      this.velocity1VectorNode.setVectorVisible(showVelocity);
+      this.velocity2VectorNode.setVectorVisible(showVelocity);
+    });
 
-    Multilink.multilink(
-      [this.showVectorsProperty, this.showForceProperty],
-      (showVectors, showForce) => {
-        this.force1VectorNode.setVectorVisible(showVectors && showForce);
-        this.force2VectorNode.setVectorVisible(showVectors && showForce);
-      }
-    );
+    this.showForceProperty.link((showForce) => {
+      this.force1VectorNode.setVectorVisible(showForce);
+      this.force2VectorNode.setVectorVisible(showForce);
+    });
 
-    Multilink.multilink(
-      [this.showVectorsProperty, this.showAccelerationProperty],
-      (showVectors, showAcceleration) => {
-        this.acceleration1VectorNode.setVectorVisible(showVectors && showAcceleration);
-        this.acceleration2VectorNode.setVectorVisible(showVectors && showAcceleration);
-      }
-    );
+    this.showAccelerationProperty.link((showAcceleration) => {
+      this.acceleration1VectorNode.setVectorVisible(showAcceleration);
+      this.acceleration2VectorNode.setVectorVisible(showAcceleration);
+    });
 
     // Control panel
     const controlPanel = this.createControlPanel();
     this.addChild(controlPanel);
+
+    // Position control panel at the top right
+    controlPanel.right = this.layoutBounds.maxX - 10;
+    controlPanel.top = this.layoutBounds.minY + 10;
+
+    // Create vector control panel
+    const stringManager = StringManager.getInstance();
+    const visualizationLabels = stringManager.getVisualizationLabels();
+    const vectorPanel = new VectorControlPanel({
+      showVelocityProperty: this.showVelocityProperty,
+      showForceProperty: this.showForceProperty,
+      showAccelerationProperty: this.showAccelerationProperty,
+      velocityLabelProperty: visualizationLabels.velocityStringProperty,
+      forceLabelProperty: visualizationLabels.forceStringProperty,
+      accelerationLabelProperty: visualizationLabels.accelerationStringProperty,
+    });
+    vectorPanel.left = this.layoutBounds.minX + 10;
+    vectorPanel.top = this.layoutBounds.minY + 10;
+    this.addChild(vectorPanel);
+
+    // Create tools control panel
+    const toolsPanel = new ToolsControlPanel({
+      showGridProperty: this.showGridProperty!,
+      showDistanceToolProperty: this.showDistanceToolProperty,
+      showStopwatchProperty: this.showStopwatchProperty,
+      gridLabelProperty: visualizationLabels.showGridStringProperty,
+      distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
+      stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
+    });
+    toolsPanel.left = this.layoutBounds.minX + 10;
+    toolsPanel.bottom = this.layoutBounds.maxY - 80;
+    this.addChild(toolsPanel);
 
     // Listen for preset changes to apply configuration
     this.presetProperty.link((preset) => {
@@ -388,6 +410,77 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
 
+    // Create info dialog with physics explanation and ODE
+    const infoContent = new VBox({
+      spacing: 10,
+      align: "left",
+      children: [
+        new Text("Double Spring System", {
+          fontSize: 18,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes.",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Equations of Motion:", {
+          fontSize: 14,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "<i>m</i>₁ d<sup>2</sup><i>x</i>₁/d<i>t</i><sup>2</sup> = -<i>k</i>₁<i>x</i>₁ + <i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)<br>" +
+          "<i>m</i>₂ d<sup>2</sup><i>x</i>₂/d<i>t</i><sup>2</sup> = -<i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Where:", {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
+          "• <i>k</i>₁, <i>k</i>₂ = spring constants (N/m)<br>" +
+          "• <i>x</i>₁, <i>x</i>₂ = displacements from equilibrium (m)",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            lineWrap: 400,
+          }
+        ),
+      ],
+    });
+
+    const infoPanel = new Panel(infoContent, {
+      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 2,
+      xMargin: 20,
+      yMargin: 15,
+      cornerRadius: 10,
+      center: this.layoutBounds.center,
+      visible: false,
+    });
+    this.addChild(infoPanel);
+
+    const infoButton = new InfoButton({
+      iconFill: "rgb(50, 145, 184)",
+      listener: () => {
+        infoPanel.visible = !infoPanel.visible;
+      },
+      right: this.layoutBounds.maxX - 60,
+      bottom: this.layoutBounds.maxY - 10,
+    });
+    this.addChild(infoButton);
+
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -399,7 +492,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
-    const visualizationLabels = stringManager.getVisualizationLabels();
 
     // Create preset selector
     const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
@@ -457,6 +549,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         titleNodeOptions: {
           fill: ClassicalMechanicsColors.textColorProperty,
         },
+        sliderOptions: {
+          thumbFill: ClassicalMechanicsColors.mass1FillColorProperty,
+        },
       },
     );
 
@@ -472,6 +567,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         },
         titleNodeOptions: {
           fill: ClassicalMechanicsColors.textColorProperty,
+        },
+        sliderOptions: {
+          thumbFill: ClassicalMechanicsColors.mass2FillColorProperty,
         },
       },
     );
@@ -489,6 +587,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         titleNodeOptions: {
           fill: ClassicalMechanicsColors.textColorProperty,
         },
+        sliderOptions: {
+          thumbFill: ClassicalMechanicsColors.mass1FillColorProperty,
+        },
       },
     );
 
@@ -504,6 +605,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         },
         titleNodeOptions: {
           fill: ClassicalMechanicsColors.textColorProperty,
+        },
+        sliderOptions: {
+          thumbFill: ClassicalMechanicsColors.mass2FillColorProperty,
         },
       },
     );
@@ -524,137 +628,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       },
     );
 
-    // Vector visualization controls
-    const showVectorsCheckbox = new Checkbox(
-      this.showVectorsProperty,
-      new Text(visualizationLabels.showVectorsStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    const velocityCheckbox = new Checkbox(
-      this.showVelocityProperty,
-      new HBox({
-        spacing: 5,
-        children: [
-          new Text("  ", { fontSize: 12 }), // Indent
-          new Text(visualizationLabels.velocityStringProperty, {
-            fontSize: 12,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-          new ArrowNode(0, 0, 15, 0, {
-            fill: PhetColorScheme.VELOCITY,
-            stroke: PhetColorScheme.VELOCITY,
-            headHeight: 6,
-            headWidth: 6,
-            tailWidth: 2,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 14,
-      }
-    );
-
-    const forceCheckbox = new Checkbox(
-      this.showForceProperty,
-      new HBox({
-        spacing: 5,
-        children: [
-          new Text("  ", { fontSize: 12 }), // Indent
-          new Text(visualizationLabels.forceStringProperty, {
-            fontSize: 12,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-          new ArrowNode(0, 0, 15, 0, {
-            fill: PhetColorScheme.APPLIED_FORCE,
-            stroke: PhetColorScheme.APPLIED_FORCE,
-            headHeight: 6,
-            headWidth: 6,
-            tailWidth: 2,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 14,
-      }
-    );
-
-    const accelerationCheckbox = new Checkbox(
-      this.showAccelerationProperty,
-      new HBox({
-        spacing: 5,
-        children: [
-          new Text("  ", { fontSize: 12 }), // Indent
-          new Text(visualizationLabels.accelerationStringProperty, {
-            fontSize: 12,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-          new ArrowNode(0, 0, 15, 0, {
-            fill: PhetColorScheme.ACCELERATION,
-            stroke: PhetColorScheme.ACCELERATION,
-            headHeight: 6,
-            headWidth: 6,
-            tailWidth: 2,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 14,
-      }
-    );
-
-    // Grid checkbox with icon
-    const gridIcon = new GridIcon({
-      size: 16,
-    });
-    const showGridCheckbox = new Checkbox(
-      this.showGridProperty!,
-      new HBox({
-        spacing: 5,
-        children: [
-          gridIcon,
-          new Text(visualizationLabels.showGridStringProperty, {
-            fontSize: 14,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    // Measurement tool checkboxes
-    const showDistanceToolCheckbox = new Checkbox(
-      this.showDistanceToolProperty,
-      new Text(visualizationLabels.showDistanceToolStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    const showStopwatchCheckbox = new Checkbox(
-      this.showStopwatchProperty,
-      new Text(visualizationLabels.showStopwatchStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
     const panel = new Panel(
       new VBox({
-        spacing: 12,
+        spacing: 15,
         align: "left",
         children: [
           presetRow,
@@ -663,13 +639,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           spring1Control,
           spring2Control,
           gravityControl,
-          showVectorsCheckbox,
-          velocityCheckbox,
-          forceCheckbox,
-          accelerationCheckbox,
-          showGridCheckbox,
-          showDistanceToolCheckbox,
-          showStopwatchCheckbox,
         ],
       }),
       {
@@ -679,8 +648,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
-        right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10,
+        // Position will be set after creation
       },
     );
 
@@ -849,7 +817,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     super.reset(); // Reset base view properties
 
     // Reset vector visibility properties
-    this.showVectorsProperty.reset();
     this.showVelocityProperty.reset();
     this.showForceProperty.reset();
     this.showAccelerationProperty.reset();

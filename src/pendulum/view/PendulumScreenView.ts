@@ -5,9 +5,9 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
-import { Circle, Line, VBox, HBox, Node, Text } from "scenerystack/scenery";
-import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, ArrowNode } from "scenerystack/scenery-phet";
+import { Circle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
+import { Panel, ComboBox } from "scenerystack/sun";
+import { NumberControl, PhetColorScheme, InfoButton } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -21,10 +21,11 @@ import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { PendulumPresets } from "../model/PendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty, Multilink } from "scenerystack/axon";
+import { Property, BooleanProperty } from "scenerystack/axon";
 import { VectorNode } from "../../common/view/VectorNode.js";
-import { GridIcon } from "scenerystack/scenery-phet";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
+import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
+import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -44,7 +45,6 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly configurableGraph: ConfigurableGraph;
 
   // Vector visualization
-  private readonly showVectorsProperty: BooleanProperty;
   private readonly showVelocityProperty: BooleanProperty;
   private readonly showForceProperty: BooleanProperty;
   private readonly showAccelerationProperty: BooleanProperty;
@@ -180,7 +180,6 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.model.lengthProperty.link(this.updateVisualization.bind(this));
 
     // Initialize vector visibility properties
-    this.showVectorsProperty = new BooleanProperty(false);
     this.showVelocityProperty = new BooleanProperty(true);
     this.showForceProperty = new BooleanProperty(true);
     this.showAccelerationProperty = new BooleanProperty(false);
@@ -211,26 +210,17 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.addChild(this.accelerationVectorNode);
 
     // Link visibility properties to vector nodes
-    Multilink.multilink(
-      [this.showVectorsProperty, this.showVelocityProperty],
-      (showVectors, showVelocity) => {
-        this.velocityVectorNode.setVectorVisible(showVectors && showVelocity);
-      }
-    );
+    this.showVelocityProperty.link((showVelocity) => {
+      this.velocityVectorNode.setVectorVisible(showVelocity);
+    });
 
-    Multilink.multilink(
-      [this.showVectorsProperty, this.showForceProperty],
-      (showVectors, showForce) => {
-        this.forceVectorNode.setVectorVisible(showVectors && showForce);
-      }
-    );
+    this.showForceProperty.link((showForce) => {
+      this.forceVectorNode.setVectorVisible(showForce);
+    });
 
-    Multilink.multilink(
-      [this.showVectorsProperty, this.showAccelerationProperty],
-      (showVectors, showAcceleration) => {
-        this.accelerationVectorNode.setVectorVisible(showVectors && showAcceleration);
-      }
-    );
+    this.showAccelerationProperty.link((showAcceleration) => {
+      this.accelerationVectorNode.setVectorVisible(showAcceleration);
+    });
 
     // Control panel
     const controlPanel = this.createControlPanel();
@@ -323,6 +313,112 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.configurableGraph.bottom = this.layoutBounds.maxY - 70; // Leave room for time controls
     this.addChild(this.configurableGraph);
 
+    // Position control panel at the top right
+    controlPanel.right = this.layoutBounds.maxX - 10;
+    controlPanel.top = this.layoutBounds.minY + 10;
+
+    // Create vector control panel
+    const visualizationLabels = stringManager.getVisualizationLabels();
+    const vectorPanel = new VectorControlPanel({
+      showVelocityProperty: this.showVelocityProperty,
+      showForceProperty: this.showForceProperty,
+      showAccelerationProperty: this.showAccelerationProperty,
+      velocityLabelProperty: visualizationLabels.velocityStringProperty,
+      forceLabelProperty: visualizationLabels.forceStringProperty,
+      accelerationLabelProperty: visualizationLabels.accelerationStringProperty,
+    });
+    vectorPanel.left = this.layoutBounds.minX + 10;
+    vectorPanel.top = this.layoutBounds.minY + 10;
+    this.addChild(vectorPanel);
+
+    // Create tools control panel
+    const toolsPanel = new ToolsControlPanel({
+      showGridProperty: this.showGridProperty!,
+      showDistanceToolProperty: this.showDistanceToolProperty,
+      showStopwatchProperty: this.showStopwatchProperty,
+      showProtractorProperty: this.showProtractorProperty,
+      gridLabelProperty: visualizationLabels.showGridStringProperty,
+      distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
+      stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
+      protractorLabelProperty: visualizationLabels.showProtractorStringProperty,
+    });
+    toolsPanel.left = this.layoutBounds.minX + 10;
+    toolsPanel.bottom = this.layoutBounds.maxY - 80;
+    this.addChild(toolsPanel);
+
+    // Create info dialog with physics explanation and ODE
+    const infoContent = new VBox({
+      spacing: 10,
+      align: "left",
+      children: [
+        new Text("Simple Pendulum", {
+          fontSize: 18,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "This simulation models a simple pendulum, demonstrating periodic motion and energy conservation. At small angles, the motion approximates simple harmonic motion.",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Equation of Motion:", {
+          fontSize: 14,
+          fontWeight: "bold",
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "<i>I</i> d<sup>2</sup>θ/d<i>t</i><sup>2</sup> = -<i>mgl</i> sin(θ) - <i>b</i> dθ/d<i>t</i>",
+          {
+            font: "14px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            maxWidth: 400,
+          }
+        ),
+        new Text("Where:", {
+          fontSize: 12,
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        new RichText(
+          "• <i>I</i> = <i>ml</i><sup>2</sup> = moment of inertia (kg·m²)<br>" +
+          "• <i>m</i> = mass (kg)<br>" +
+          "• <i>l</i> = length (m)<br>" +
+          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
+          "• <i>b</i> = damping coefficient (N·m·s)<br>" +
+          "• θ = angle from vertical (rad)",
+          {
+            font: "12px sans-serif",
+            fill: ClassicalMechanicsColors.textColorProperty,
+            lineWrap: 400,
+          }
+        ),
+      ],
+    });
+
+    const infoPanel = new Panel(infoContent, {
+      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 2,
+      xMargin: 20,
+      yMargin: 15,
+      cornerRadius: 10,
+      center: this.layoutBounds.center,
+      visible: false,
+    });
+    this.addChild(infoPanel);
+
+    const infoButton = new InfoButton({
+      iconFill: "rgb(50, 145, 184)",
+      listener: () => {
+        infoPanel.visible = !infoPanel.visible;
+      },
+      right: this.layoutBounds.maxX - 60,
+      bottom: this.layoutBounds.maxY - 10,
+    });
+    this.addChild(infoButton);
+
     // Setup common controls (time controls, reset button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -334,7 +430,6 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     const stringManager = StringManager.getInstance();
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
-    const visualizationLabels = stringManager.getVisualizationLabels();
 
     // Create preset selector
     const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
@@ -443,163 +538,16 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       },
     );
 
-    // Vector visualization controls
-    const showVectorsCheckbox = new Checkbox(
-      this.showVectorsProperty,
-      new Text(visualizationLabels.showVectorsStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    const velocityCheckbox = new Checkbox(
-      this.showVelocityProperty,
-      new HBox({
-        spacing: 5,
-        children: [
-          new Text("  ", { fontSize: 12 }), // Indent
-          new Text(visualizationLabels.velocityStringProperty, {
-            fontSize: 12,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-          new ArrowNode(0, 0, 15, 0, {
-            fill: PhetColorScheme.VELOCITY,
-            stroke: PhetColorScheme.VELOCITY,
-            headHeight: 6,
-            headWidth: 6,
-            tailWidth: 2,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 14,
-      }
-    );
-
-    const forceCheckbox = new Checkbox(
-      this.showForceProperty,
-      new HBox({
-        spacing: 5,
-        children: [
-          new Text("  ", { fontSize: 12 }), // Indent
-          new Text(visualizationLabels.forceStringProperty, {
-            fontSize: 12,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-          new ArrowNode(0, 0, 15, 0, {
-            fill: PhetColorScheme.APPLIED_FORCE,
-            stroke: PhetColorScheme.APPLIED_FORCE,
-            headHeight: 6,
-            headWidth: 6,
-            tailWidth: 2,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 14,
-      }
-    );
-
-    const accelerationCheckbox = new Checkbox(
-      this.showAccelerationProperty,
-      new HBox({
-        spacing: 5,
-        children: [
-          new Text("  ", { fontSize: 12 }), // Indent
-          new Text(visualizationLabels.accelerationStringProperty, {
-            fontSize: 12,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-          new ArrowNode(0, 0, 15, 0, {
-            fill: PhetColorScheme.ACCELERATION,
-            stroke: PhetColorScheme.ACCELERATION,
-            headHeight: 6,
-            headWidth: 6,
-            tailWidth: 2,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 14,
-      }
-    );
-
-    // Grid checkbox with icon
-    const gridIcon = new GridIcon({
-      size: 16,
-    });
-    const showGridCheckbox = new Checkbox(
-      this.showGridProperty!,
-      new HBox({
-        spacing: 5,
-        children: [
-          gridIcon,
-          new Text(visualizationLabels.showGridStringProperty, {
-            fontSize: 14,
-            fill: ClassicalMechanicsColors.textColorProperty,
-          }),
-        ],
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    // Measurement tool checkboxes
-    const showDistanceToolCheckbox = new Checkbox(
-      this.showDistanceToolProperty,
-      new Text(visualizationLabels.showDistanceToolStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    const showProtractorCheckbox = new Checkbox(
-      this.showProtractorProperty,
-      new Text(visualizationLabels.showProtractorStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
-    const showStopwatchCheckbox = new Checkbox(
-      this.showStopwatchProperty,
-      new Text(visualizationLabels.showStopwatchStringProperty, {
-        fontSize: 14,
-        fill: ClassicalMechanicsColors.textColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      }
-    );
-
     const panel = new Panel(
       new VBox({
         spacing: 15,
         align: "left",
         children: [
           presetRow,
-          lengthControl,
           massControl,
-          gravityControl,
+          lengthControl,
           dampingControl,
-          showVectorsCheckbox,
-          velocityCheckbox,
-          forceCheckbox,
-          accelerationCheckbox,
-          showGridCheckbox,
-          showDistanceToolCheckbox,
-          showProtractorCheckbox,
-          showStopwatchCheckbox,
+          gravityControl,
         ],
       }),
       {
@@ -609,8 +557,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
         cornerRadius: 5,
-        right: this.layoutBounds.maxX - 10,
-        top: this.layoutBounds.minY + 10,
+        // Position will be set after creation
       },
     );
 
@@ -666,7 +613,6 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     super.reset(); // Reset base view properties
 
     // Reset vector visibility properties
-    this.showVectorsProperty.reset();
     this.showVelocityProperty.reset();
     this.showForceProperty.reset();
     this.showAccelerationProperty.reset();
