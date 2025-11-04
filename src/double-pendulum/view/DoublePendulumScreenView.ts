@@ -470,7 +470,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
-    toolsPanel.bottom = this.layoutBounds.maxY - 80;
+    toolsPanel.bottom = this.layoutBounds.maxY - 10;
     this.addChild(toolsPanel);
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)

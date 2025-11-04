@@ -368,7 +368,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
-    toolsPanel.bottom = this.layoutBounds.maxY - 80;
+    toolsPanel.bottom = this.layoutBounds.maxY - 10;
     this.addChild(toolsPanel);
 
     // Listen for preset changes to apply configuration
