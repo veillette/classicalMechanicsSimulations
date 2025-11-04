@@ -364,6 +364,16 @@ export abstract class BaseScreenView<
     if (this.stopwatch) {
       this.stopwatch.reset();
     }
+
+    // Reset all visualization properties to their initial values
+    this.showDistanceToolProperty.reset();
+    this.showProtractorProperty.reset();
+    this.showStopwatchProperty.reset();
+
+    if (this.showGridProperty) {
+      this.showGridProperty.reset();
+    }
+
     // Subclasses can override to add custom reset behavior
   }
 
