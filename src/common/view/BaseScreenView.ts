@@ -105,8 +105,8 @@ export abstract class BaseScreenView<
       tipPositionProperty: tipPositionProperty,
       modelViewTransform: modelViewTransform,
       dragBounds: this.layoutBounds,
-      textColor: "black",
-      textBackgroundColor: "rgba(255, 255, 255, 0.8)",
+      textColor: ClassicalMechanicsColors.measuringTapeTextColorProperty,
+      textBackgroundColor: ClassicalMechanicsColors.measuringTapeTextBackgroundColorProperty,
       significantFigures: 2,
     });
     this.addChild(this.measuringTapeNode);
@@ -307,7 +307,8 @@ export abstract class BaseScreenView<
     this.addChild(this.infoPanel);
 
     const infoButton = new InfoButton({
-      iconFill: "rgb(50, 145, 184)",
+      iconFill: ClassicalMechanicsColors.infoButtonIconColorProperty,
+      scale: 0.5,
       listener: () => {
         this.infoPanel!.visible = !this.infoPanel!.visible;
       },

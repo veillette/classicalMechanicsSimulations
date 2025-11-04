@@ -77,12 +77,12 @@ export class SceneGridNode extends Node {
     const indicatorNode = new Node();
 
     // Convert view bounds to model bounds
-    const modelMinX = this.modelViewTransform.viewToModelX(this.viewBounds.minX);
+    const modelMaxX = this.modelViewTransform.viewToModelX(this.viewBounds.maxX);
     const modelMaxY = this.modelViewTransform.viewToModelY(this.viewBounds.maxY);
 
     // Position in model coordinates, aligned to gridlines
-    // Find the first gridline in from the left edge (add one grid spacing for padding)
-    const modelStartX = Math.ceil(modelMinX / this.gridSpacing) * this.gridSpacing + this.gridSpacing;
+    // Find the first gridline in from the right edge (subtract six grid spacing for padding)
+    const modelStartX = Math.ceil(modelMaxX / this.gridSpacing) * this.gridSpacing - 6* this.gridSpacing;
     // Find the first gridline up from the bottom (subtract one grid spacing for padding)
     const modelStartY = Math.floor(modelMaxY / this.gridSpacing) * this.gridSpacing - this.gridSpacing;
 

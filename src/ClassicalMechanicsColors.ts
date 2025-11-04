@@ -309,6 +309,45 @@ const ClassicalMechanicsColors = {
       projector: BLACK, // black dot for light background
     },
   ),
+
+  // Info button colors
+  infoButtonIconColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "infoButtonIconColor",
+    {
+      default: new Color(50, 145, 184), // light blue
+      projector: new Color(50, 145, 184), // same for both modes
+    },
+  ),
+
+  // Disabled/secondary text color
+  disabledTextColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "disabledTextColor",
+    {
+      default: new Color(80, 80, 80), // gray for disabled text on dark background
+      projector: new Color(120, 120, 120), // lighter gray for disabled text on light background
+    },
+  ),
+
+  // Measuring tape colors
+  measuringTapeTextColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "measuringTapeTextColor",
+    {
+      default: BLACK, // black text for light background on tape
+      projector: BLACK, // same for both modes
+    },
+  ),
+
+  measuringTapeTextBackgroundColorProperty: new ProfileColorProperty(
+    classicalMechanics,
+    "measuringTapeTextBackgroundColor",
+    {
+      default: new Color(255, 255, 255, 0.8), // semi-transparent white
+      projector: new Color(255, 255, 255, 0.8), // same for both modes
+    },
+  ),
 };
 
 // Register the namespace
