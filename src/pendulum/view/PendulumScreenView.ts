@@ -638,6 +638,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   }
 
   public override step(dt: number): void {
+    super.step(dt); // Step the stopwatch and other base view components
     this.model.step(dt);
 
     // Add data point to configurable graph

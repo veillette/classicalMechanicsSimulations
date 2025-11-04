@@ -648,6 +648,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   }
 
   public override step(dt: number): void {
+    super.step(dt); // Step the stopwatch and other base view components
     // Update model physics
     this.model.step(dt);
 
