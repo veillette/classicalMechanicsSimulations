@@ -8,9 +8,9 @@
 
 import { Circle, Line, Node, Path, Text } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
-import { Vector2, Utils } from "scenerystack/dot";
+import { Vector2 } from "scenerystack/dot";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import { Multilink, Property, type TReadOnlyProperty } from "scenerystack/axon";
+import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 // Constants for protractor appearance
@@ -35,9 +35,6 @@ export interface PendulumLabProtractorNodeOptions {
  * Protractor node that displays angle measurements for pendulum simulations.
  */
 export class PendulumLabProtractorNode extends Node {
-  // Override visible property from Node for TypeScript
-  public declare visible: boolean;
-
   /**
    * @param pendulumData - Data for the pendulum (angle, color, etc.)
    * @param modelViewTransform - Transform between model and view coordinates
@@ -70,7 +67,7 @@ export class PendulumLabProtractorNode extends Node {
       let tickLength: number;
 
       // Calculate the angle in radians
-      const currentAngle = Utils.toRadians(currentAngleDegrees);
+      const currentAngle = currentAngleDegrees * Math.PI / 180;
 
       // Determine tick length based on degree intervals
       if (currentAngleDegrees % 10 === 0) {
@@ -154,9 +151,9 @@ export class PendulumLabProtractorNode extends Node {
     // Function to update the degrees text
     const updateDegreesText = () => {
       const angle = pendulumData.angleProperty.value;
-      const degrees = Utils.toDegrees(angle);
+      const degrees = angle * 180 / Math.PI;
 
-      degreesText.string = `${Utils.toFixed(Math.abs(degrees), 0)}°`;
+      degreesText.string = `${Math.abs(degrees).toFixed(0)}°`;
 
       // Position text based on which side of vertical the pendulum is on
       if (angle < 0) {

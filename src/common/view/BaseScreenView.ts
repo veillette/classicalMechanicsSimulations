@@ -12,7 +12,7 @@ import {
   ProtractorNode,
   MeasuringTapeNode,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener } from "scenerystack/scenery";
+import { KeyboardListener, Node } from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
@@ -59,7 +59,7 @@ export abstract class BaseScreenView<
   );
   protected showStopwatchProperty: BooleanProperty = new BooleanProperty(false);
   protected measuringTapeNode: MeasuringTapeNode | null = null;
-  protected protractorNode: ProtractorNode | null = null;
+  protected protractorNode: Node | null = null;
   protected stopwatch: Stopwatch | null = null;
   protected stopwatchNode: StopwatchNode | null = null;
 

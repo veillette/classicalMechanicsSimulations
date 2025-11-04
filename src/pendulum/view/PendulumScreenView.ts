@@ -97,7 +97,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       {
         angleProperty: this.model.angleProperty,
         isDraggingProperty: this.isDraggingProperty,
-        color: ClassicalMechanicsColors.mass2FillColorProperty.value,
+        color: ClassicalMechanicsColors.mass2FillColorProperty.value.toCSS(),
         lengthProperty: this.model.lengthProperty,
       },
       this.modelViewTransform
