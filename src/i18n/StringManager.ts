@@ -181,6 +181,8 @@ export class StringManager {
       autoPauseDescriptionStringProperty: this.stringProperties.preferences.autoPauseDescriptionStringProperty,
       solverMethodStringProperty: this.stringProperties.preferences.solverMethodStringProperty,
       solverDescriptionStringProperty: this.stringProperties.preferences.solverDescriptionStringProperty,
+      springVisualizationStringProperty: this.stringProperties.preferences.springVisualizationStringProperty,
+      springVisualizationDescriptionStringProperty: this.stringProperties.preferences.springVisualizationDescriptionStringProperty,
     };
   }
 
@@ -220,6 +222,26 @@ export class StringManager {
       adaptiveRK45StringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveRK45StringProperty,
       adaptiveEulerStringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveEulerStringProperty,
       modifiedMidpointStringProperty: this.stringProperties.preferences.solverDescriptions.modifiedMidpointStringProperty,
+    };
+  }
+
+  /**
+   * Get spring type name string properties
+   */
+  public getSpringTypeNames() {
+    return {
+      classicStringProperty: this.stringProperties.preferences.springTypes.classicStringProperty,
+      parametricStringProperty: this.stringProperties.preferences.springTypes.parametricStringProperty,
+    };
+  }
+
+  /**
+   * Get spring type description string properties
+   */
+  public getSpringTypeDescriptions() {
+    return {
+      classicStringProperty: this.stringProperties.preferences.springTypeDescriptions.classicStringProperty,
+      parametricStringProperty: this.stringProperties.preferences.springTypeDescriptions.parametricStringProperty,
     };
   }
 

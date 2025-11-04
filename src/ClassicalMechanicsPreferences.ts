@@ -8,6 +8,7 @@
 import { BooleanProperty, EnumerationProperty } from "scenerystack/axon";
 import classicalMechanics from "./ClassicalMechanicsNamespace.js";
 import SolverType from "./common/model/SolverType.js";
+import { SpringVisualizationType } from "./common/view/SpringVisualizationType.js";
 
 /**
  * Preferences for the Classical Mechanics Simulations
@@ -25,6 +26,14 @@ const ClassicalMechanicsPreferences = {
    * Options: RK4, Adaptive RK45, Adaptive Euler, Modified Midpoint
    */
   solverTypeProperty: new EnumerationProperty(SolverType.RK4),
+
+  /**
+   * The spring visualization type to use for rendering springs.
+   * Options: Classic (simple coil pattern), Parametric (realistic 3D appearance)
+   */
+  springVisualizationTypeProperty: new EnumerationProperty(
+    SpringVisualizationType.CLASSIC,
+  ),
 
   /**
    * Whether to respect the user's prefers-reduced-motion setting.
