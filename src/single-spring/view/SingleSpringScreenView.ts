@@ -770,16 +770,19 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const massCenter = this.massNode.center;
 
     // Update velocity vector (vertical, pointing in direction of motion)
-    this.velocityVectorNode.setTailPosition(massCenter);
+    // Offset to the left of center to avoid overlap
+    this.velocityVectorNode.setTailPosition(massCenter.plusXY(-15, 0));
     this.velocityVectorNode.setVector(new Vector2(0, velocity));
 
-    // Update force vector (vertical)
-    this.forceVectorNode.setTailPosition(massCenter);
-    this.forceVectorNode.setVector(new Vector2(0, totalForce));
-
     // Update acceleration vector (vertical)
-    this.accelerationVectorNode.setTailPosition(massCenter);
+    // Offset to the right of center
+    this.accelerationVectorNode.setTailPosition(massCenter.plusXY(10, 0));
     this.accelerationVectorNode.setVector(new Vector2(0, acceleration));
+
+    // Update net force vector (vertical)
+    // Offset further to the right to avoid overlap with acceleration
+    this.forceVectorNode.setTailPosition(massCenter.plusXY(25, 0));
+    this.forceVectorNode.setVector(new Vector2(0, totalForce));
   }
 
   /**

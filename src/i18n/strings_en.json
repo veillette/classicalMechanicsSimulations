@@ -154,7 +154,7 @@
     "showGrid": "Show Grid",
     "velocity": "Velocity",
     "acceleration": "Acceleration",
-    "force": "Force",
+    "force": "Net Force",
     "grid": {
       "scaleLabel": "{{value}} m"
     },

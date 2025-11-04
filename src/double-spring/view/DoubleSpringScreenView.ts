@@ -898,24 +898,26 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const mass2Center = this.mass2Node.center;
 
     // Update vectors for mass 1 (vertical)
-    this.velocity1VectorNode.setTailPosition(mass1Center);
+    // Offset horizontally to avoid overlap: velocity left, acceleration right, force further right
+    this.velocity1VectorNode.setTailPosition(mass1Center.plusXY(-15, 0));
     this.velocity1VectorNode.setVector(new Vector2(0, v1));
 
-    this.force1VectorNode.setTailPosition(mass1Center);
-    this.force1VectorNode.setVector(new Vector2(0, force1));
-
-    this.acceleration1VectorNode.setTailPosition(mass1Center);
+    this.acceleration1VectorNode.setTailPosition(mass1Center.plusXY(10, 0));
     this.acceleration1VectorNode.setVector(new Vector2(0, acceleration1));
 
+    this.force1VectorNode.setTailPosition(mass1Center.plusXY(25, 0));
+    this.force1VectorNode.setVector(new Vector2(0, force1));
+
     // Update vectors for mass 2 (vertical)
-    this.velocity2VectorNode.setTailPosition(mass2Center);
+    // Offset horizontally to avoid overlap: velocity left, acceleration right, force further right
+    this.velocity2VectorNode.setTailPosition(mass2Center.plusXY(-15, 0));
     this.velocity2VectorNode.setVector(new Vector2(0, v2));
 
-    this.force2VectorNode.setTailPosition(mass2Center);
-    this.force2VectorNode.setVector(new Vector2(0, force2));
-
-    this.acceleration2VectorNode.setTailPosition(mass2Center);
+    this.acceleration2VectorNode.setTailPosition(mass2Center.plusXY(10, 0));
     this.acceleration2VectorNode.setVector(new Vector2(0, acceleration2));
+
+    this.force2VectorNode.setTailPosition(mass2Center.plusXY(25, 0));
+    this.force2VectorNode.setVector(new Vector2(0, force2));
   }
 
   /**
