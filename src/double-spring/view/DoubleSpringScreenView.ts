@@ -729,6 +729,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   }
 
   public override step(dt: number): void {
+    super.step(dt); // Step the stopwatch and other base view components
     this.model.step(dt);
 
     // Update vector visualizations

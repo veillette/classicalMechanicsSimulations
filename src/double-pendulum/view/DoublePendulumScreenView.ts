@@ -867,6 +867,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   }
 
   public override step(dt: number): void {
+    super.step(dt); // Step the stopwatch and other base view components
     this.model.step(dt);
     // Update visualization after physics step completes
     // This ensures all state variables are updated consistently before drawing
