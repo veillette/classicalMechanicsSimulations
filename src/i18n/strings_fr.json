@@ -81,6 +81,16 @@
       "adaptiveRK45": "Méthode à pas variable d'ordre 5. Contrôle automatique des erreurs, idéale pour les systèmes complexes.",
       "adaptiveEuler": "Méthode à pas variable d'ordre 2. Rapide et adaptative, bonne pour les problèmes lisses.",
       "modifiedMidpoint": "Méthode à pas fixe d'ordre 2. Excellente pour les systèmes oscillatoires comme les ressorts et les pendules."
+    },
+    "springVisualization": "Visualisation du Ressort",
+    "springVisualizationDescription": "Choisir le style visuel pour le rendu des ressorts dans la simulation",
+    "springTypes": {
+      "classic": "Classique",
+      "parametric": "Paramétrique"
+    },
+    "springTypeDescriptions": {
+      "classic": "Motif de spirale simple avec apparence 3D basique",
+      "parametric": "Ressort 3D réaliste avec courbes lisses et ombrage dégradé"
     }
   },
   "presets": {

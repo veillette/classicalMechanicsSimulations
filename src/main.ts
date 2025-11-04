@@ -19,6 +19,7 @@ import { StringManager } from "./i18n/StringManager.js";
 import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
 import SolverType from "./common/model/SolverType.js";
+import { SpringVisualizationType } from "./common/view/SpringVisualizationType.js";
 import ClassicalMechanicsAudioPreferencesNode from "./common/view/ClassicalMechanicsAudioPreferencesNode.js";
 import { KeyboardShortcutsNode } from "./common/view/KeyboardShortcutsNode.js";
 
@@ -31,6 +32,8 @@ onReadyToLaunch(() => {
   const preferencesLabels = stringManager.getPreferencesLabels();
   const solverNames = stringManager.getSolverNames();
   const solverDescriptions = stringManager.getSolverDescriptions();
+  const springTypeNames = stringManager.getSpringTypeNames();
+  const springTypeDescriptions = stringManager.getSpringTypeDescriptions();
 
   const simOptions = {
     webgl: true,
@@ -184,6 +187,74 @@ onReadyToLaunch(() => {
                 ],
               });
 
+              // Spring visualization preference
+              const springVisualizationRadioButtonGroup = new VerticalAquaRadioButtonGroup(
+                ClassicalMechanicsPreferences.springVisualizationTypeProperty,
+                [
+                  {
+                    value: SpringVisualizationType.CLASSIC,
+                    createNode: () => new VBox({
+                      align: "left",
+                      spacing: 4,
+                      children: [
+                        new Text(springTypeNames.classicStringProperty, {
+                          font: new PhetFont(14),
+                          fill: "black",
+                        }),
+                        new Text(springTypeDescriptions.classicStringProperty, {
+                          font: new PhetFont(11),
+                          fill: "rgb(80,80,80)",
+                          maxWidth: 550,
+                        }),
+                      ],
+                    }),
+                    tandemName: "classicSpringRadioButton",
+                  },
+                  {
+                    value: SpringVisualizationType.PARAMETRIC,
+                    createNode: () => new VBox({
+                      align: "left",
+                      spacing: 4,
+                      children: [
+                        new Text(springTypeNames.parametricStringProperty, {
+                          font: new PhetFont(14),
+                          fill: "black",
+                        }),
+                        new Text(springTypeDescriptions.parametricStringProperty, {
+                          font: new PhetFont(11),
+                          fill: "rgb(80,80,80)",
+                          maxWidth: 550,
+                        }),
+                      ],
+                    }),
+                    tandemName: "parametricSpringRadioButton",
+                  },
+                ],
+                {
+                  spacing: 12,
+                  radioButtonOptions: {
+                    radius: 8,
+                  },
+                },
+              );
+
+              const springVisualizationSection = new VBox({
+                align: "left",
+                spacing: 12,
+                children: [
+                  new Text(preferencesLabels.springVisualizationStringProperty, {
+                    font: new PhetFont({ size: 16, weight: "bold" }),
+                    fill: "black",
+                  }),
+                  new Text(preferencesLabels.springVisualizationDescriptionStringProperty, {
+                    font: new PhetFont(12),
+                    fill: "black",
+                    maxWidth: 600,
+                  }),
+                  springVisualizationRadioButtonGroup,
+                ],
+              });
+
               return new VBox({
                 align: "left",
                 spacing: 20,
@@ -191,6 +262,7 @@ onReadyToLaunch(() => {
                   autoPauseSection,
                   new HStrut(650), // Set minimum width
                   solverSection,
+                  springVisualizationSection,
                 ],
               });
             },

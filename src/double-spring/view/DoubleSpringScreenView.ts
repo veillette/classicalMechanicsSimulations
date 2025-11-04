@@ -10,11 +10,14 @@ import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
+import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
+import { SpringVisualizationType } from "../../common/view/SpringVisualizationType.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
@@ -28,8 +31,12 @@ type PresetOption = Preset | "Custom";
 export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly mass1Node: Rectangle;
   private readonly mass2Node: Rectangle;
-  private readonly spring1Node: SpringNode;
-  private readonly spring2Node: SpringNode;
+  private readonly classicSpring1Node: SpringNode;
+  private readonly parametricSpring1Node: ParametricSpringNode;
+  private currentSpring1Node: SpringNode | ParametricSpringNode;
+  private readonly classicSpring2Node: SpringNode;
+  private readonly parametricSpring2Node: ParametricSpringNode;
+  private currentSpring2Node: SpringNode | ParametricSpringNode;
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
   private readonly presetProperty: Property<PresetOption>;
@@ -90,21 +97,53 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     );
     this.addChild(wall);
 
-    // Spring 1 (wall to mass 1) - appearance will be updated based on spring constant
-    this.spring1Node = new SpringNode({
+    // Create both spring node types for spring 1 (only one will be visible at a time)
+    this.classicSpring1Node = new SpringNode({
       loops: 10,
       radius: 12,
       lineWidth: 3,
     });
-    this.addChild(this.spring1Node);
 
-    // Spring 2 (mass 1 to mass 2) - appearance will be updated based on spring constant
-    this.spring2Node = new SpringNode({
+    this.parametricSpring1Node = new ParametricSpringNode({
       loops: 10,
       radius: 12,
       lineWidth: 3,
     });
-    this.addChild(this.spring2Node);
+
+    // Create both spring node types for spring 2 (only one will be visible at a time)
+    this.classicSpring2Node = new SpringNode({
+      loops: 10,
+      radius: 12,
+      lineWidth: 3,
+    });
+
+    this.parametricSpring2Node = new ParametricSpringNode({
+      loops: 10,
+      radius: 12,
+      lineWidth: 3,
+    });
+
+    // Set initial spring nodes based on preference
+    const useParametric =
+      ClassicalMechanicsPreferences.springVisualizationTypeProperty.value ===
+      SpringVisualizationType.PARAMETRIC;
+
+    this.currentSpring1Node = useParametric
+      ? this.parametricSpring1Node
+      : this.classicSpring1Node;
+    this.currentSpring2Node = useParametric
+      ? this.parametricSpring2Node
+      : this.classicSpring2Node;
+
+    this.addChild(this.currentSpring1Node);
+    this.addChild(this.currentSpring2Node);
+
+    // Listen to spring visualization preference changes
+    ClassicalMechanicsPreferences.springVisualizationTypeProperty.link(
+      (springType) => {
+        this.switchSpringVisualization(springType);
+      }
+    );
 
     // Link spring constants to visual appearance
     this.model.springConstant1Property.link((k) => {
@@ -600,6 +639,36 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     return panel;
   }
 
+  /**
+   * Switch between classic and parametric spring visualization.
+   */
+  private switchSpringVisualization(
+    springType: SpringVisualizationType,
+  ): void {
+    // Remove current spring nodes
+    this.removeChild(this.currentSpring1Node);
+    this.removeChild(this.currentSpring2Node);
+
+    // Switch to new spring nodes
+    const useParametric = springType === SpringVisualizationType.PARAMETRIC;
+    this.currentSpring1Node = useParametric
+      ? this.parametricSpring1Node
+      : this.classicSpring1Node;
+    this.currentSpring2Node = useParametric
+      ? this.parametricSpring2Node
+      : this.classicSpring2Node;
+
+    // Add new spring nodes (insert before mass nodes to maintain z-order)
+    const mass1Index = this.indexOfChild(this.mass1Node);
+    this.insertChild(mass1Index, this.currentSpring1Node);
+    this.insertChild(mass1Index, this.currentSpring2Node);
+
+    // Update the new spring nodes to match current state
+    this.updateSpring1Appearance(this.model.springConstant1Property.value);
+    this.updateSpring2Appearance(this.model.springConstant2Property.value);
+    this.updateVisualization();
+  }
+
   private updateVisualization(): void {
     // Convert model positions to view coordinates (vertical configuration)
     // Positions are displacements from natural length
@@ -630,12 +699,12 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const mass2HalfHeight = this.mass2Node.height / 2;
 
     // Update spring endpoints (vertical springs)
-    this.spring1Node.setEndpoints(
+    this.currentSpring1Node.setEndpoints(
       this.fixedPoint,
       new Vector2(mass1ViewPos.x, mass1ViewPos.y - mass1HalfHeight), // Connect to top of mass 1
     );
 
-    this.spring2Node.setEndpoints(
+    this.currentSpring2Node.setEndpoints(
       new Vector2(mass1ViewPos.x, mass1ViewPos.y + mass1HalfHeight), // From bottom of mass 1
       new Vector2(mass2ViewPos.x, mass2ViewPos.y - mass2HalfHeight), // To top of mass 2
     );
@@ -655,8 +724,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const minRadius = 8, maxRadius = 20;
     const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
 
-    this.spring1Node.setLineWidth(lineWidth);
-    this.spring1Node.setRadius(radius);
+    this.currentSpring1Node.setLineWidth(lineWidth);
+    this.currentSpring1Node.setRadius(radius);
   }
 
   /**
@@ -673,8 +742,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const minRadius = 8, maxRadius = 20;
     const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
 
-    this.spring2Node.setLineWidth(lineWidth);
-    this.spring2Node.setRadius(radius);
+    this.currentSpring2Node.setLineWidth(lineWidth);
+    this.currentSpring2Node.setRadius(radius);
   }
 
   /**

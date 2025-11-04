@@ -10,6 +10,8 @@ import { Panel, ComboBox, Checkbox } from "scenerystack/sun";
 import { NumberControl } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
+import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
+import { SpringVisualizationType } from "../../common/view/SpringVisualizationType.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
@@ -17,6 +19,7 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { GridIcon } from "scenerystack/scenery-phet";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import {
@@ -32,7 +35,9 @@ type PresetOption = Preset | "Custom";
 
 export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly massNode: Rectangle;
-  private readonly springNode: SpringNode;
+  private readonly classicSpringNode: SpringNode;
+  private readonly parametricSpringNode: ParametricSpringNode;
+  private currentSpringNode: SpringNode | ParametricSpringNode;
   private readonly fixedPoint: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
   private readonly configurableGraph: ConfigurableGraph;
@@ -89,13 +94,34 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     );
     this.addChild(wall);
 
-    // Spring (appearance will be updated based on spring constant)
-    this.springNode = new SpringNode({
+    // Create both spring node types (only one will be visible at a time)
+    this.classicSpringNode = new SpringNode({
       loops: 12,
       radius: 15,
       lineWidth: 3,
     });
-    this.addChild(this.springNode);
+
+    this.parametricSpringNode = new ParametricSpringNode({
+      loops: 12,
+      radius: 15,
+      lineWidth: 3,
+    });
+
+    // Set initial spring node based on preference
+    this.currentSpringNode =
+      ClassicalMechanicsPreferences.springVisualizationTypeProperty.value ===
+      SpringVisualizationType.PARAMETRIC
+        ? this.parametricSpringNode
+        : this.classicSpringNode;
+
+    this.addChild(this.currentSpringNode);
+
+    // Listen to spring visualization preference changes
+    ClassicalMechanicsPreferences.springVisualizationTypeProperty.link(
+      (springType) => {
+        this.switchSpringVisualization(springType);
+      }
+    );
 
     // Link spring constant to visual appearance
     this.model.springConstantProperty.link((k) => {
@@ -568,6 +594,30 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   }
 
   /**
+   * Switch between classic and parametric spring visualization.
+   */
+  private switchSpringVisualization(
+    springType: SpringVisualizationType,
+  ): void {
+    // Remove current spring node
+    this.removeChild(this.currentSpringNode);
+
+    // Switch to new spring node
+    this.currentSpringNode =
+      springType === SpringVisualizationType.PARAMETRIC
+        ? this.parametricSpringNode
+        : this.classicSpringNode;
+
+    // Add new spring node (insert before mass node to maintain z-order)
+    const massIndex = this.indexOfChild(this.massNode);
+    this.insertChild(massIndex, this.currentSpringNode);
+
+    // Update the new spring node to match current state
+    this.updateSpringAppearance(this.model.springConstantProperty.value);
+    this.updateVisualization(this.model.positionProperty.value);
+  }
+
+  /**
    * Update the visual representation based on current position.
    */
   private updateVisualization(position: number): void {
@@ -586,7 +636,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Update spring endpoints (vertical spring from fixed point to top of mass)
     // Account for the mass height which varies with mass value
     const massHalfHeight = this.massNode.height / 2;
-    this.springNode.setEndpoints(
+    this.currentSpringNode.setEndpoints(
       this.fixedPoint,
       new Vector2(viewPosition.x, viewPosition.y - massHalfHeight), // Connect to top edge of mass
     );
@@ -606,8 +656,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const minRadius = 8, maxRadius = 22;
     const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
 
-    this.springNode.setLineWidth(lineWidth);
-    this.springNode.setRadius(radius);
+    this.currentSpringNode.setLineWidth(lineWidth);
+    this.currentSpringNode.setRadius(radius);
   }
 
   /**

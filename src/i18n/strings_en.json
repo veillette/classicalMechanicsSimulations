@@ -82,6 +82,16 @@
       "adaptiveEuler": "Variable-step 2nd order method. Fast and adaptive, good for smooth problems.",
       "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums."
     },
+    "springVisualization": "Spring Visualization",
+    "springVisualizationDescription": "Choose the visual style for rendering springs in the simulation",
+    "springTypes": {
+      "classic": "Classic",
+      "parametric": "Parametric"
+    },
+    "springTypeDescriptions": {
+      "classic": "Simple coil pattern with basic 3D appearance",
+      "parametric": "Realistic 3D spring with smooth curves and gradient shading"
+    },
     "audio": {
       "simVoicingOptions": "Simulation Voicing Options",
       "announceParameterChanges": "Announce parameter changes",
