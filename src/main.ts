@@ -19,7 +19,7 @@ import { StringManager } from "./i18n/StringManager.js";
 import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
 import SolverType from "./common/model/SolverType.js";
-import { SpringVisualizationType } from "./common/view/SpringVisualizationType.js";
+import SpringVisualizationType from "./common/view/SpringVisualizationType.js";
 import ClassicalMechanicsAudioPreferencesNode from "./common/view/ClassicalMechanicsAudioPreferencesNode.js";
 import { KeyboardShortcutsNode } from "./common/view/KeyboardShortcutsNode.js";
 

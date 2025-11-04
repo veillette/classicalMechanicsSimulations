@@ -5,7 +5,12 @@
  * The origin (0, 0) of this node is at its left center.
  * The front and back of the spring are drawn as separate paths to provide pseudo-3D visual cues.
  *
- * Adapted from PhET's ParametricSpringNode (scenery-phet) for use with scenerystack.
+ * NOTE: SceneryStack provides ParametricSpringNode, but it doesn't include the setEndpoints() method
+ * that is critical for these spring simulations. This custom implementation extends the basic
+ * ParametricSpringNode functionality to automatically adjust spring length and positioning between
+ * two points by manipulating xScale, translation, and rotation.
+ *
+ * Based on PhET's ParametricSpringNode (scenery-phet/js/ParametricSpringNode.ts).
  *
  * @author Martin Veillette (Berea College) - Original PhET implementation
  * @author Chris Malley (PixelZoom, Inc.) - Original PhET implementation

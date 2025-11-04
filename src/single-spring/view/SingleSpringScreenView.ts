@@ -11,7 +11,7 @@ import { NumberControl } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
-import { SpringVisualizationType } from "../../common/view/SpringVisualizationType.js";
+import SpringVisualizationType from "../../common/view/SpringVisualizationType.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
@@ -103,7 +103,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     this.parametricSpringNode = new ParametricSpringNode({
       loops: 12,
-      radius: 15,
+      radius: 4,
       lineWidth: 3,
     });
 
@@ -115,13 +115,6 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         : this.classicSpringNode;
 
     this.addChild(this.currentSpringNode);
-
-    // Listen to spring visualization preference changes
-    ClassicalMechanicsPreferences.springVisualizationTypeProperty.link(
-      (springType) => {
-        this.switchSpringVisualization(springType);
-      }
-    );
 
     // Link spring constant to visual appearance
     this.model.springConstantProperty.link((k) => {
@@ -173,6 +166,14 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Link model position and natural length to view
     this.model.positionProperty.link(this.updateVisualization.bind(this));
     this.model.naturalLengthProperty.link(() => this.updateVisualization(this.model.positionProperty.value));
+
+    // Listen to spring visualization preference changes
+    // Using lazyLink to avoid triggering during initialization
+    ClassicalMechanicsPreferences.springVisualizationTypeProperty.lazyLink(
+      (springType) => {
+        this.switchSpringVisualization(springType);
+      }
+    );
 
     // Initialize vector visibility properties
     this.showVectorsProperty = new BooleanProperty(false);

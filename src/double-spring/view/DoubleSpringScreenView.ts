@@ -11,7 +11,7 @@ import { NumberControl } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
-import { SpringVisualizationType } from "../../common/view/SpringVisualizationType.js";
+import SpringVisualizationType from "../../common/view/SpringVisualizationType.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -113,13 +113,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Create both spring node types for spring 2 (only one will be visible at a time)
     this.classicSpring2Node = new SpringNode({
       loops: 10,
-      radius: 12,
+      radius: 3,
       lineWidth: 3,
     });
 
     this.parametricSpring2Node = new ParametricSpringNode({
       loops: 10,
-      radius: 12,
+      radius: 3,
       lineWidth: 3,
     });
 
@@ -137,13 +137,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     this.addChild(this.currentSpring1Node);
     this.addChild(this.currentSpring2Node);
-
-    // Listen to spring visualization preference changes
-    ClassicalMechanicsPreferences.springVisualizationTypeProperty.link(
-      (springType) => {
-        this.switchSpringVisualization(springType);
-      }
-    );
 
     // Link spring constants to visual appearance
     this.model.springConstant1Property.link((k) => {
@@ -236,6 +229,14 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.model.position2Property.link(() => this.updateVisualization());
     this.model.naturalLength1Property.link(() => this.updateVisualization());
     this.model.naturalLength2Property.link(() => this.updateVisualization());
+
+    // Listen to spring visualization preference changes
+    // Using lazyLink to avoid triggering during initialization
+    ClassicalMechanicsPreferences.springVisualizationTypeProperty.lazyLink(
+      (springType) => {
+        this.switchSpringVisualization(springType);
+      }
+    );
 
     // Initialize vector visibility properties
     this.showVectorsProperty = new BooleanProperty(false);

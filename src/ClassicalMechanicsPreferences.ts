@@ -8,7 +8,7 @@
 import { BooleanProperty, EnumerationProperty } from "scenerystack/axon";
 import classicalMechanics from "./ClassicalMechanicsNamespace.js";
 import SolverType from "./common/model/SolverType.js";
-import { SpringVisualizationType } from "./common/view/SpringVisualizationType.js";
+import SpringVisualizationType from "./common/view/SpringVisualizationType.js";
 
 /**
  * Preferences for the Classical Mechanics Simulations
