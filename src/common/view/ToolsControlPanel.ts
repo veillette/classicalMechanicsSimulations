@@ -8,7 +8,9 @@ import { VBox, HBox, Text } from "scenerystack/scenery";
 import { Checkbox } from "scenerystack/sun";
 import { BooleanProperty, type ReadOnlyProperty } from "scenerystack/axon";
 import { GridIcon } from "scenerystack/scenery-phet";
+import { PhetFont } from "scenerystack";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+
 
 type ToolsControlPanelOptions = {
   showGridProperty: BooleanProperty;
@@ -34,7 +36,7 @@ export class ToolsControlPanel extends Panel {
         children: [
           gridIcon,
           new Text(options.gridLabelProperty, {
-            fontSize: 14,
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
         ],
@@ -47,7 +49,7 @@ export class ToolsControlPanel extends Panel {
     const showDistanceToolCheckbox = new Checkbox(
       options.showDistanceToolProperty,
       new Text(options.distanceToolLabelProperty, {
-        fontSize: 14,
+        font: new PhetFont({size: 14}),
         fill: ClassicalMechanicsColors.textColorProperty,
       }),
       {
@@ -58,7 +60,7 @@ export class ToolsControlPanel extends Panel {
     const showStopwatchCheckbox = new Checkbox(
       options.showStopwatchProperty,
       new Text(options.stopwatchLabelProperty, {
-        fontSize: 14,
+        font: new PhetFont({size: 14}),
         fill: ClassicalMechanicsColors.textColorProperty,
       }),
       {
@@ -77,7 +79,7 @@ export class ToolsControlPanel extends Panel {
       const showProtractorCheckbox = new Checkbox(
         options.showProtractorProperty,
         new Text(options.protractorLabelProperty, {
-          fontSize: 14,
+          font: new PhetFont({size: 14}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         {

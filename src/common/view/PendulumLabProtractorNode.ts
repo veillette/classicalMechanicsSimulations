@@ -12,6 +12,7 @@ import { Vector2 } from "scenerystack/dot";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { PhetFont } from "scenerystack";
 
 // Constants for protractor appearance
 const LINE_LENGTH_DEFAULT = 3.6;
@@ -143,7 +144,7 @@ export class PendulumLabProtractorNode extends Node {
     // Create text to display the angle in degrees
     const degreesText = new Text("0°", {
       centerY: 15,
-      font: "14px Arial",
+      font: new PhetFont({size: 14}),
       fill: pendulumColorProperty,
     });
     degreesLayer.addChild(degreesText);

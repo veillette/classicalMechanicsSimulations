@@ -9,6 +9,7 @@ import { Checkbox } from "scenerystack/sun";
 import { BooleanProperty, type ReadOnlyProperty } from "scenerystack/axon";
 import { PhetColorScheme, ArrowNode } from "scenerystack/scenery-phet";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import { PhetFont } from "scenerystack";
 
 type VectorControlPanelOptions = {
   showVelocityProperty: BooleanProperty;
@@ -27,7 +28,7 @@ export class VectorControlPanel extends Panel {
         spacing: 5,
         children: [
           new Text(options.velocityLabelProperty, {
-            fontSize: 12,
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
           new ArrowNode(0, 0, 15, 0, {
@@ -50,7 +51,7 @@ export class VectorControlPanel extends Panel {
         spacing: 5,
         children: [
           new Text(options.forceLabelProperty, {
-            fontSize: 12,
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
           new ArrowNode(0, 0, 15, 0, {
@@ -73,7 +74,7 @@ export class VectorControlPanel extends Panel {
         spacing: 5,
         children: [
           new Text(options.accelerationLabelProperty, {
-            fontSize: 12,
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
           new ArrowNode(0, 0, 15, 0, {

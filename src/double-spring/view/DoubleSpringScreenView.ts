@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, PhetFont } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -428,7 +428,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}), 
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -437,7 +437,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -456,7 +456,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      fontSize: 14,
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
@@ -623,34 +623,32 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       align: "left",
       children: [
         new Text("Double Spring System", {
-          fontSize: 18,
-          fontWeight: "bold",
+          font: new PhetFont({size: 18, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes.",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Equations of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
+          font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "<i>m</i>₁ d<sup>2</sup><i>x</i>₁/d<i>t</i><sup>2</sup> = -<i>k</i>₁<i>x</i>₁ + <i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)<br>" +
           "<i>m</i>₂ d<sup>2</sup><i>x</i>₂/d<i>t</i><sup>2</sup> = -<i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Where:", {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
@@ -658,7 +656,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           "• <i>k</i>₁, <i>k</i>₂ = spring constants (N/m)<br>" +
           "• <i>x</i>₁, <i>x</i>₂ = displacements from equilibrium (m)",
           {
-            font: "12px sans-serif",
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
             lineWrap: 400,
           }

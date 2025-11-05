@@ -17,7 +17,7 @@ import {
   RichText,
 } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, PhetFont } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
@@ -538,7 +538,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -547,7 +547,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -566,7 +566,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      fontSize: 14,
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
@@ -720,21 +720,19 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       align: "left",
       children: [
         new Text("Double Pendulum", {
-          fontSize: 18,
-          fontWeight: "bold",
+          font: new PhetFont({size: 18, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a double pendulum system, which exhibits rich dynamics including periodic motion and deterministic chaos depending on initial conditions and energy.",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Equations of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
+          font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
@@ -743,13 +741,13 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           "<i>m</i>₂<i>l</i>₂<sup>2</sup> θ̈₂ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₁ cos(θ₁-θ₂)<br>" +
           "- <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₁<sup>2</sup> sin(θ₁-θ₂) + <i>m</i>₂<i>gl</i>₂ sin(θ₂) = 0",
           {
-            font: "12px sans-serif",
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Where:", {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
@@ -758,7 +756,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
           "• θ₁, θ₂ = angles from vertical (rad)",
           {
-            font: "12px sans-serif",
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
             lineWrap: 400,
           }

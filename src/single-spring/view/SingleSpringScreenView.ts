@@ -30,6 +30,7 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
+import { PhetFont } from "scenerystack";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -378,7 +379,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -387,7 +388,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -406,7 +407,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      fontSize: 14,
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
@@ -538,33 +539,31 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       align: "left",
       children: [
         new Text("Single Spring System", {
-          fontSize: 18,
-          fontWeight: "bold",
+          font: new PhetFont({size: 18, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a mass attached to a spring, demonstrating simple harmonic motion with optional damping.",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Equation of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
+          font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "<i>m</i> d<sup>2</sup><i>x</i>/d<i>t</i><sup>2</sup> = -<i>kx</i> - <i>b</i> d<i>x</i>/d<i>t</i>",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Where:", {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
@@ -573,7 +572,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           "• <i>b</i> = damping coefficient (N·s/m)<br>" +
           "• <i>x</i> = displacement from equilibrium (m)",
           {
-            font: "12px sans-serif",
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
             lineWrap: 400,
           }

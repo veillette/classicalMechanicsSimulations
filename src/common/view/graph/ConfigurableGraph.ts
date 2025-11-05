@@ -25,6 +25,7 @@ import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 import { StringManager } from "../../../i18n/StringManager.js";
 import SimulationAnnouncer from "../../util/SimulationAnnouncer.js";
+import { PhetFont } from "scenerystack/scenery-phet";
 
 export default class ConfigurableGraph extends Node {
   private readonly availableProperties: PlottableProperty[];
@@ -153,7 +154,7 @@ export default class ConfigurableGraph extends Node {
       edge: "min",
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
-          fontSize: 10,
+          font: new PhetFont({size: 10}),  
           fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         }),
     });
@@ -163,7 +164,7 @@ export default class ConfigurableGraph extends Node {
       edge: "min",
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
-          fontSize: 10,
+          font: new PhetFont({size: 10}),
           fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         }),
     });
@@ -187,7 +188,7 @@ export default class ConfigurableGraph extends Node {
 
     // Create axis labels
     this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
-      fontSize: 12,
+      font: new PhetFont({size: 12}),
       fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       centerX: this.graphWidth / 2,
       top: this.graphHeight + 35,
@@ -195,7 +196,7 @@ export default class ConfigurableGraph extends Node {
     this.graphContentNode.addChild(this.xAxisLabelNode);
 
     this.yAxisLabelNode = new Text(this.formatAxisLabel(initialYProperty), {
-      fontSize: 12,
+      font: new PhetFont({size: 12}),
       fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       rotation: -Math.PI / 2,
       centerY: this.graphHeight / 2,
@@ -244,7 +245,7 @@ export default class ConfigurableGraph extends Node {
     const showGraphCheckbox = new Checkbox(
       this.graphVisibleProperty,
       new Text(graphLabels.showGraphStringProperty, {
-        fontSize: 14,
+        font: new PhetFont({size: 14}),
         fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       }),
       {
@@ -819,7 +820,7 @@ export default class ConfigurableGraph extends Node {
       value: prop,
       createNode: () =>
         new Text(prop.name, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
       tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
@@ -840,7 +841,7 @@ export default class ConfigurableGraph extends Node {
       value: prop,
       createNode: () =>
         new Text(prop.name, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
       tandemName: this.getNameValue(prop.name).replace(/\s/g, "") + "Item",
@@ -859,17 +860,17 @@ export default class ConfigurableGraph extends Node {
 
     // Create title in format "(Y vs X)"
     const leftParen = new Text("(", {
-      fontSize: 14,
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const vsText = new Text(" vs ", {
-      fontSize: 14,
+      font: new PhetFont({size: 14})  ,
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const rightParen = new Text(")", {
-      fontSize: 14,
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 

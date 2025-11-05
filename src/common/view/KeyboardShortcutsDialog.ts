@@ -7,6 +7,7 @@ import { VBox, HBox, Text, Node } from "scenerystack/scenery";
 import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { StringManager } from "../../i18n/StringManager.js";
+import { PhetFont } from "scenerystack";
 
 
 export class KeyboardShortcutsDialog extends Node {
@@ -58,8 +59,7 @@ export class KeyboardShortcutsDialog extends Node {
     const keyboardShortcutsStrings = stringManager.getKeyboardShortcutsStrings();
 
     const title = new Text(keyboardShortcutsStrings.titleStringProperty, {
-      fontSize: 18,
-      fontWeight: "bold",
+      font: new PhetFont({size: 18, weight: "bold"}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
@@ -75,13 +75,12 @@ export class KeyboardShortcutsDialog extends Node {
 
     const rows = shortcuts.map((shortcut) => {
       const keyText = new Text(shortcut.key, {
-        fontSize: 14,
-        fontWeight: "bold",
+        font: new PhetFont({size: 14, weight: "bold"}),
         fill: ClassicalMechanicsColors.textColorProperty,
       });
 
       const descText = new Text(shortcut.descriptionProperty, {
-        fontSize: 14,
+        font: new PhetFont({size: 14}),
         fill: ClassicalMechanicsColors.textColorProperty,
       });
 

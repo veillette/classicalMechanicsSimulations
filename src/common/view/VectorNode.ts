@@ -7,6 +7,7 @@ import { Node, Text, type TColor } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { Vector2 } from "scenerystack/dot";
 import { type TReadOnlyProperty } from "scenerystack/axon";
+import { PhetFont } from "scenerystack";
 
 export interface VectorNodeOptions {
   /**
@@ -79,7 +80,7 @@ export class VectorNode extends Node {
     // Create label if provided
     if (options.label) {
       this.labelText = new Text(options.label, {
-        fontSize: 12,
+        font: new PhetFont({size: 12}),
         fill: options.color,
       });
       this.addChild(this.labelText);

@@ -26,6 +26,7 @@ import { VectorNode } from "../../common/view/VectorNode.js";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
+import { PhetFont } from "scenerystack";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -364,7 +365,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -373,7 +374,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -392,7 +393,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      fontSize: 14,
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
@@ -500,33 +501,31 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       align: "left",
       children: [
         new Text("Simple Pendulum", {
-          fontSize: 18,
-          fontWeight: "bold",
+          font: new PhetFont({size: 18, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a simple pendulum, demonstrating periodic motion and energy conservation. At small angles, the motion approximates simple harmonic motion.",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Equation of Motion:", {
-          fontSize: 14,
-          fontWeight: "bold",
+          font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "<i>I</i> d<sup>2</sup>θ/d<i>t</i><sup>2</sup> = -<i>mgl</i> sin(θ) - <i>b</i> dθ/d<i>t</i>",
           {
-            font: "14px sans-serif",
+            font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 400,
           }
         ),
         new Text("Where:", {
-          fontSize: 12,
+          font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
@@ -537,7 +536,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           "• <i>b</i> = damping coefficient (N·m·s)<br>" +
           "• θ = angle from vertical (rad)",
           {
-            font: "12px sans-serif",
+            font: new PhetFont({size: 12}),
             fill: ClassicalMechanicsColors.textColorProperty,
             lineWrap: 400,
           }

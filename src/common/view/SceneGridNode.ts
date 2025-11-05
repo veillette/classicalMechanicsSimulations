@@ -15,7 +15,7 @@ import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { ArrowNode } from "scenerystack/scenery-phet";
-
+import { PhetFont } from "scenerystack";
 type SceneGridNodeOptions = NodeOptions & {
   gridSpacing?: number; // spacing in model coordinates (meters)
   scaleLabelProperty: TReadOnlyProperty<string>; // label for the scale indicator
@@ -111,7 +111,7 @@ export class SceneGridNode extends Node {
 
     // Label below the arrow
     const label = new Text(scaleLabelProperty, {
-      font: "14px sans-serif",
+      font: new PhetFont({size: 14}),
       fill: ClassicalMechanicsColors.textColorProperty,
       centerX: (viewStartX + viewEndX) / 2,
       top: viewStartY + 5,
