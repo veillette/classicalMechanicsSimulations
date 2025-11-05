@@ -36,6 +36,7 @@ import { Preset } from "../../common/model/Preset.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
+import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -65,6 +66,10 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private readonly showVelocityProperty: BooleanProperty;
   private readonly showForceProperty: BooleanProperty;
   private readonly showAccelerationProperty: BooleanProperty;
+
+  // Dragging state for protractor
+  private readonly isDraggingProperty: BooleanProperty;
+
   // Vectors for bob 1
   private readonly velocity1VectorNode: VectorNode;
   private readonly force1VectorNode: VectorNode;
@@ -100,9 +105,35 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Setup grid visualization (add early so it's behind other elements)
     this.setupGrid(0.5, this.modelViewTransform); // 0.5 meter spacing
 
-    // Setup measurement tools (distance tool, protractor, stopwatch)
-    // Position protractor at the pivot point for angle measurement
+    // Initialize dragging state
+    this.isDraggingProperty = new BooleanProperty(false);
+
+    // Setup measurement tools (distance tool, stopwatch)
+    // We'll set up the protractor separately with the PendulumLabProtractorNode
     this.setupMeasurementTools(this.modelViewTransform, this.pivotPoint);
+
+    // Replace the generic protractor with the PendulumLabProtractorNode
+    if (this.protractorNode) {
+      this.removeChild(this.protractorNode);
+    }
+
+    // Create the PendulumLabProtractorNode
+    const pendulumLabProtractor = new PendulumLabProtractorNode(
+      {
+        angleProperty: this.model.angle1Property,
+        isDraggingProperty: this.isDraggingProperty,
+        color: ClassicalMechanicsColors.mass1FillColorProperty.value.toCSS(),
+        lengthProperty: this.model.length1Property,
+      },
+      this.modelViewTransform
+    );
+    this.protractorNode = pendulumLabProtractor;
+    this.addChild(pendulumLabProtractor);
+
+    // Link visibility
+    this.showProtractorProperty.link((visible: boolean) => {
+      pendulumLabProtractor.visible = visible;
+    });
 
     // Trail for chaotic motion visualization
     this.trailPath = new Path(null, {
@@ -195,6 +226,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       new DragListener({
         translateNode: false,
         start: () => {
+          this.isDraggingProperty.value = true;
           SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingUpperBobStringProperty.value);
         },
         drag: (event) => {
@@ -206,6 +238,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           this.clearTrail();
         },
         end: () => {
+          this.isDraggingProperty.value = false;
           const angleDegrees = (this.model.angle1Property.value * 180 / Math.PI).toFixed(1);
           const template = a11yStrings.upperBobReleasedAtStringProperty.value;
           const announcement = template.replace('{{angle}}', angleDegrees);
@@ -219,6 +252,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       new DragListener({
         translateNode: false,
         start: () => {
+          this.isDraggingProperty.value = true;
           SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingLowerBobStringProperty.value);
         },
         drag: (event) => {
@@ -240,6 +274,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           this.clearTrail();
         },
         end: () => {
+          this.isDraggingProperty.value = false;
           const angleDegrees = (this.model.angle2Property.value * 180 / Math.PI).toFixed(1);
           const template = a11yStrings.lowerBobReleasedAtStringProperty.value;
           const announcement = template.replace('{{angle}}', angleDegrees);
