@@ -8,71 +8,94 @@ import { Node, Circle, Line, Rectangle } from "scenerystack/scenery";
 
 export class DoublePendulumScreenIcon extends ScreenIcon {
   public constructor() {
+    // Anchor dimensions
+    const ANCHOR_X = -25;
+    const ANCHOR_Y = -10;
+    const ANCHOR_WIDTH = 50;
+    const ANCHOR_HEIGHT = 10;
+    const ANCHOR_STROKE_WIDTH = 1;
+
+    // Pivot dimensions
+    const TOP_PIVOT_RADIUS = 4;
+    const MIDDLE_PIVOT_RADIUS = 3;
+    const PIVOT_STROKE_WIDTH = 1.5;
+
+    // First rod dimensions and angle
+    const ROD1_LENGTH = 60;
+    const ROD1_ANGLE = Math.PI / 7; // ~25 degrees
+    const ROD_STROKE_WIDTH = 2.5;
+
+    // Second rod dimensions and angle
+    const ROD2_LENGTH = 55;
+    const ROD2_ANGLE = -Math.PI / 4.5; // ~-40 degrees
+
+    // Bob dimensions
+    const BOB_RADIUS = 14;
+    const BOB_STROKE_WIDTH = 2;
+
+    // Icon proportions
+    const MAX_ICON_WIDTH_PROPORTION = 0.65;
+    const MAX_ICON_HEIGHT_PROPORTION = 0.85;
+
     // Create ceiling anchor
-    const anchor = new Rectangle(-25, -10, 50, 10, {
+    const anchor = new Rectangle(ANCHOR_X, ANCHOR_Y, ANCHOR_WIDTH, ANCHOR_HEIGHT, {
       fill: "#888888",
       stroke: "#555555",
-      lineWidth: 1,
+      lineWidth: ANCHOR_STROKE_WIDTH,
     });
 
     // Create top pivot point
-    const topPivot = new Circle(4, {
+    const topPivot = new Circle(TOP_PIVOT_RADIUS, {
       fill: "#555555",
       stroke: "#333333",
-      lineWidth: 1.5,
+      lineWidth: PIVOT_STROKE_WIDTH,
       centerX: 0,
       centerY: 0,
     });
 
     // First pendulum rod (at about 25 degrees)
-    const rod1Length = 60;
-    const angle1 = Math.PI / 7; // ~25 degrees
-    const rod1EndX = rod1Length * Math.sin(angle1);
-    const rod1EndY = rod1Length * Math.cos(angle1);
+    const rod1EndX = ROD1_LENGTH * Math.sin(ROD1_ANGLE);
+    const rod1EndY = ROD1_LENGTH * Math.cos(ROD1_ANGLE);
 
     const rod1 = new Line(0, 0, rod1EndX, rod1EndY, {
       stroke: "#666666",
-      lineWidth: 2.5,
+      lineWidth: ROD_STROKE_WIDTH,
       lineCap: "round",
     });
 
     // First bob
-    const bob1Radius = 14;
-    const bob1 = new Circle(bob1Radius, {
+    const bob1 = new Circle(BOB_RADIUS, {
       fill: "#4A90E2",
       stroke: "#2E5C8A",
-      lineWidth: 2,
+      lineWidth: BOB_STROKE_WIDTH,
       centerX: rod1EndX,
       centerY: rod1EndY,
     });
 
     // Middle pivot point
-    const middlePivot = new Circle(3, {
+    const middlePivot = new Circle(MIDDLE_PIVOT_RADIUS, {
       fill: "#555555",
       stroke: "#333333",
-      lineWidth: 1.5,
+      lineWidth: PIVOT_STROKE_WIDTH,
       centerX: rod1EndX,
       centerY: rod1EndY,
     });
 
     // Second pendulum rod (at a different angle, about -40 degrees relative to vertical)
-    const rod2Length = 55;
-    const angle2 = -Math.PI / 4.5; // ~-40 degrees
-    const rod2EndX = rod1EndX + rod2Length * Math.sin(angle2);
-    const rod2EndY = rod1EndY + rod2Length * Math.cos(angle2);
+    const rod2EndX = rod1EndX + ROD2_LENGTH * Math.sin(ROD2_ANGLE);
+    const rod2EndY = rod1EndY + ROD2_LENGTH * Math.cos(ROD2_ANGLE);
 
     const rod2 = new Line(rod1EndX, rod1EndY, rod2EndX, rod2EndY, {
       stroke: "#666666",
-      lineWidth: 2.5,
+      lineWidth: ROD_STROKE_WIDTH,
       lineCap: "round",
     });
 
     // Second bob
-    const bob2Radius = 14;
-    const bob2 = new Circle(bob2Radius, {
+    const bob2 = new Circle(BOB_RADIUS, {
       fill: "#E24A90",
       stroke: "#8A2E5C",
-      lineWidth: 2,
+      lineWidth: BOB_STROKE_WIDTH,
       centerX: rod2EndX,
       centerY: rod2EndY,
     });
@@ -84,8 +107,8 @@ export class DoublePendulumScreenIcon extends ScreenIcon {
 
     super(iconNode, {
       fill: "white",
-      maxIconWidthProportion: 0.65,
-      maxIconHeightProportion: 0.85,
+      maxIconWidthProportion: MAX_ICON_WIDTH_PROPORTION,
+      maxIconHeightProportion: MAX_ICON_HEIGHT_PROPORTION,
     });
   }
 }

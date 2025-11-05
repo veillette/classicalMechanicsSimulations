@@ -9,60 +9,91 @@ import { Shape } from "scenerystack/kite";
 
 export class DoubleSpringScreenIcon extends ScreenIcon {
   public constructor() {
+    // Spring dimensions
+    const SPRING_WIDTH = 25;
+    const NUMBER_OF_COILS = 6;
+    const SPRING_STROKE_WIDTH = 2.5;
+    const TOP_SPRING_HEIGHT = 50;
+    const MIDDLE_SPRING_HEIGHT = 45;
+
+    // Mass dimensions
+    const MASS_WIDTH = 45;
+    const MASS_HEIGHT = 35;
+    const MASS_STROKE_WIDTH = 2;
+
+    // Anchor dimensions
+    const ANCHOR_X = -25;
+    const ANCHOR_Y = -10;
+    const ANCHOR_WIDTH = 50;
+    const ANCHOR_HEIGHT = 10;
+    const ANCHOR_STROKE_WIDTH = 1;
+
+    // Positioning
+    const TOP_SPRING_X = 0;
+    const TOP_SPRING_Y = 0;
+    const MASS1_Y = 50;
+    const MIDDLE_SPRING_X = 0;
+    const MIDDLE_SPRING_Y = 85;
+    const MASS2_Y = 130;
+
+    // Icon proportions
+    const MAX_ICON_WIDTH_PROPORTION = 0.5;
+    const MAX_ICON_HEIGHT_PROPORTION = 0.85;
+
+    // Coil drawing constants
+    const FIRST_SEGMENT_FRACTION = 1 / 3;
+    const SECOND_SEGMENT_FRACTION = 2 / 3;
+
     // Helper function to create a spring shape
     const createSpring = (height: number, x: number, y: number) => {
-      const springWidth = 25;
-      const coils = 6;
-      const coilHeight = height / coils;
+      const coilHeight = height / NUMBER_OF_COILS;
 
       const springShape = new Shape();
       springShape.moveTo(x, y);
 
-      for (let i = 0; i < coils; i++) {
-        const y1 = y + i * coilHeight + coilHeight / 3;
-        const y2 = y + i * coilHeight + (2 * coilHeight) / 3;
+      for (let i = 0; i < NUMBER_OF_COILS; i++) {
+        const y1 = y + i * coilHeight + coilHeight * FIRST_SEGMENT_FRACTION;
+        const y2 = y + i * coilHeight + coilHeight * SECOND_SEGMENT_FRACTION;
         const y3 = y + (i + 1) * coilHeight;
 
-        springShape.lineTo(x + springWidth / 2, y1);
-        springShape.lineTo(x - springWidth / 2, y2);
+        springShape.lineTo(x + SPRING_WIDTH / 2, y1);
+        springShape.lineTo(x - SPRING_WIDTH / 2, y2);
         springShape.lineTo(x, y3);
       }
 
       return new Path(springShape, {
         stroke: "#666666",
-        lineWidth: 2.5,
+        lineWidth: SPRING_STROKE_WIDTH,
         lineCap: "round",
         lineJoin: "round",
       });
     };
 
     // Create ceiling anchor
-    const anchor = new Rectangle(-25, -10, 50, 10, {
+    const anchor = new Rectangle(ANCHOR_X, ANCHOR_Y, ANCHOR_WIDTH, ANCHOR_HEIGHT, {
       fill: "#888888",
       stroke: "#555555",
-      lineWidth: 1,
+      lineWidth: ANCHOR_STROKE_WIDTH,
     });
 
     // Create top spring
-    const topSpring = createSpring(50, 0, 0);
+    const topSpring = createSpring(TOP_SPRING_HEIGHT, TOP_SPRING_X, TOP_SPRING_Y);
 
     // Create first mass
-    const massWidth = 45;
-    const massHeight = 35;
-    const mass1 = new Rectangle(-massWidth / 2, 50, massWidth, massHeight, {
+    const mass1 = new Rectangle(-MASS_WIDTH / 2, MASS1_Y, MASS_WIDTH, MASS_HEIGHT, {
       fill: "#4A90E2",
       stroke: "#2E5C8A",
-      lineWidth: 2,
+      lineWidth: MASS_STROKE_WIDTH,
     });
 
     // Create middle spring
-    const middleSpring = createSpring(45, 0, 85);
+    const middleSpring = createSpring(MIDDLE_SPRING_HEIGHT, MIDDLE_SPRING_X, MIDDLE_SPRING_Y);
 
     // Create second mass
-    const mass2 = new Rectangle(-massWidth / 2, 130, massWidth, massHeight, {
+    const mass2 = new Rectangle(-MASS_WIDTH / 2, MASS2_Y, MASS_WIDTH, MASS_HEIGHT, {
       fill: "#E24A90",
       stroke: "#8A2E5C",
-      lineWidth: 2,
+      lineWidth: MASS_STROKE_WIDTH,
     });
 
     // Combine all elements
@@ -72,8 +103,8 @@ export class DoubleSpringScreenIcon extends ScreenIcon {
 
     super(iconNode, {
       fill: "white",
-      maxIconWidthProportion: 0.5,
-      maxIconHeightProportion: 0.85,
+      maxIconWidthProportion: MAX_ICON_WIDTH_PROPORTION,
+      maxIconHeightProportion: MAX_ICON_HEIGHT_PROPORTION,
     });
   }
 }
