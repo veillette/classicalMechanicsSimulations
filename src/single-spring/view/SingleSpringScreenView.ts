@@ -545,6 +545,30 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
    * Create the content for the info dialog.
    */
   protected createInfoDialogContent(): Node {
+    // Create formula nodes
+    const equation = new FormulaNode("m \\frac{d^2 x}{d t^2} = -kx - b \\frac{dx}{dt} + mg", {
+      maxWidth: 600,
+    });
+    const variablesList = new FormulaNode(
+      "\\begin{array}{l}" +
+      "\\bullet\\; m = \\text{mass (kg)}\\\\" +
+      "\\bullet\\; k = \\text{spring constant (N/m)}\\\\" +
+      "\\bullet\\; b = \\text{damping coefficient (N}\\cdot\\text{s/m)}\\\\" +
+      "\\bullet\\; x = \\text{displacement from equilibrium (m)}\\\\" +
+      "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}" +
+      "\\end{array}",
+      {
+        maxWidth: 600,
+      }
+    );
+
+    // Link text color property to formula nodes
+    // FormulaNode extends DOM, so we need to set the color via CSS
+    ClassicalMechanicsColors.textColorProperty.link((color) => {
+      equation.element.style.color = color.toCSS();
+      variablesList.element.style.color = color.toCSS();
+    });
+
     return new VBox({
       spacing: 10,
       align: "left",
@@ -558,32 +582,19 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
+            maxWidth: 600,
           }
         ),
         new Text("Equation of Motion:", {
           font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new FormulaNode("m \\frac{d^2 x}{d t^2} = -kx - b \\frac{dx}{dt}", {
-          fill: ClassicalMechanicsColors.textColorProperty,
-          maxWidth: 400,
-        }),
+        equation,
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "• <i>m</i> = mass (kg)<br>" +
-          "• <i>k</i> = spring constant (N/m)<br>" +
-          "• <i>b</i> = damping coefficient (N·s/m)<br>" +
-          "• <i>x</i> = displacement from equilibrium (m)",
-          {
-            font: new PhetFont({size: 12}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
+        variablesList,
       ],
     });
   }

@@ -508,6 +508,31 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
    * Create the content for the info dialog.
    */
   protected createInfoDialogContent(): Node {
+    // Create formula nodes
+    const equation = new FormulaNode("I \\frac{d^2 \\theta}{d t^2} = -mgl \\sin(\\theta) - b \\frac{d\\theta}{dt}", {
+      maxWidth: 600,
+    });
+    const variablesList = new FormulaNode(
+      "\\begin{array}{l}" +
+      "\\bullet\\; I = ml^2 = \\text{moment of inertia (kg}\\cdot\\text{m}^2\\text{)}\\\\" +
+      "\\bullet\\; m = \\text{mass (kg)}\\\\" +
+      "\\bullet\\; l = \\text{length (m)}\\\\" +
+      "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}\\\\" +
+      "\\bullet\\; b = \\text{damping coefficient (N}\\cdot\\text{m}\\cdot\\text{s)}\\\\" +
+      "\\bullet\\; \\theta = \\text{angle from vertical (rad)}" +
+      "\\end{array}",
+      {
+        maxWidth: 600,
+      }
+    );
+
+    // Link text color property to formula nodes
+    // FormulaNode extends DOM, so we need to set the color via CSS
+    ClassicalMechanicsColors.textColorProperty.link((color) => {
+      equation.element.style.color = color.toCSS();
+      variablesList.element.style.color = color.toCSS();
+    });
+
     return new VBox({
       spacing: 10,
       align: "left",
@@ -521,34 +546,19 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
+            maxWidth: 600,
           }
         ),
         new Text("Equation of Motion:", {
           font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new FormulaNode("I \\frac{d^2 \\theta}{d t^2} = -mgl \\sin(\\theta) - b \\frac{d\\theta}{dt}", {
-          fill: ClassicalMechanicsColors.textColorProperty,
-          maxWidth: 400,
-        }),
+        equation,
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "• <i>I</i> = <i>ml</i><sup>2</sup> = moment of inertia (kg·m²)<br>" +
-          "• <i>m</i> = mass (kg)<br>" +
-          "• <i>l</i> = length (m)<br>" +
-          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
-          "• <i>b</i> = damping coefficient (N·m·s)<br>" +
-          "• θ = angle from vertical (rad)",
-          {
-            font: new PhetFont({size: 12}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
+        variablesList,
       ],
     });
   }

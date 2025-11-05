@@ -727,6 +727,41 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
    * Create the content for the info dialog.
    */
   protected createInfoDialogContent(): Node {
+    // Create formula nodes
+    const equation1 = new FormulaNode(
+      "(m_1 + m_2)l_1^2 \\ddot{\\theta}_1 + m_2 l_1 l_2 \\ddot{\\theta}_2 \\cos(\\theta_1-\\theta_2) + m_2 l_1 l_2 \\dot{\\theta}_2^2 \\sin(\\theta_1-\\theta_2) + (m_1 + m_2)gl_1 \\sin(\\theta_1) = 0",
+      {
+        maxWidth: 500,
+        scale: 0.8,
+      }
+    );
+    const equation2 = new FormulaNode(
+      "m_2 l_2^2 \\ddot{\\theta}_2 + m_2 l_1 l_2 \\ddot{\\theta}_1 \\cos(\\theta_1-\\theta_2) - m_2 l_1 l_2 \\dot{\\theta}_1^2 \\sin(\\theta_1-\\theta_2) + m_2 g l_2 \\sin(\\theta_2) = 0",
+      {
+        maxWidth: 500,
+        scale: 0.8,
+      }
+    );
+    const variablesList = new FormulaNode(
+      "\\begin{array}{l}" +
+      "\\bullet\\; m_1, m_2 = \\text{masses (kg)}\\\\" +
+      "\\bullet\\; l_1, l_2 = \\text{lengths (m)}\\\\" +
+      "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}\\\\" +
+      "\\bullet\\; \\theta_1, \\theta_2 = \\text{angles from vertical (rad)}" +
+      "\\end{array}",
+      {
+        maxWidth: 600,
+      }
+    );
+
+    // Link text color property to formula nodes
+    // FormulaNode extends DOM, so we need to set the color via CSS
+    ClassicalMechanicsColors.textColorProperty.link((color) => {
+      equation1.element.style.color = color.toCSS();
+      equation2.element.style.color = color.toCSS();
+      variablesList.element.style.color = color.toCSS();
+    });
+
     return new VBox({
       spacing: 10,
       align: "left",
@@ -740,7 +775,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
+            maxWidth: 600,
           }
         ),
         new Text("Equations of Motion:", {
@@ -750,40 +785,13 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         new VBox({
           spacing: 8,
           align: "left",
-          children: [
-            new FormulaNode(
-              "(m_1 + m_2)l_1^2 \\ddot{\\theta}_1 + m_2 l_1 l_2 \\ddot{\\theta}_2 \\cos(\\theta_1-\\theta_2) + m_2 l_1 l_2 \\dot{\\theta}_2^2 \\sin(\\theta_1-\\theta_2) + (m_1 + m_2)gl_1 \\sin(\\theta_1) = 0",
-              {
-                fill: ClassicalMechanicsColors.textColorProperty,
-                maxWidth: 500,
-                scale: 0.8,
-              }
-            ),
-            new FormulaNode(
-              "m_2 l_2^2 \\ddot{\\theta}_2 + m_2 l_1 l_2 \\ddot{\\theta}_1 \\cos(\\theta_1-\\theta_2) - m_2 l_1 l_2 \\dot{\\theta}_1^2 \\sin(\\theta_1-\\theta_2) + m_2 g l_2 \\sin(\\theta_2) = 0",
-              {
-                fill: ClassicalMechanicsColors.textColorProperty,
-                maxWidth: 500,
-                scale: 0.8,
-              }
-            ),
-          ],
+          children: [equation1, equation2],
         }),
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
-          "• <i>l</i>₁, <i>l</i>₂ = lengths (m)<br>" +
-          "• <i>g</i> = gravitational acceleration (m/s²)<br>" +
-          "• θ₁, θ₂ = angles from vertical (rad)",
-          {
-            font: new PhetFont({size: 12}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
+        variablesList,
       ],
     });
   }

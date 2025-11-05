@@ -688,6 +688,33 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
    * Create the content for the info dialog.
    */
   protected createInfoDialogContent(): Node {
+    // Create formula nodes
+    const equation1 = new FormulaNode("m_1 \\frac{d^2 x_1}{d t^2} = -k_1 x_1 + k_2(x_2 - x_1) + m_1 g", {
+      maxWidth: 600,
+    });
+    const equation2 = new FormulaNode("m_2 \\frac{d^2 x_2}{d t^2} = -k_2(x_2 - x_1) + m_2 g", {
+      maxWidth: 600,
+    });
+    const variablesList = new FormulaNode(
+      "\\begin{array}{l}" +
+      "\\bullet\\; m_1, m_2 = \\text{masses (kg)}\\\\" +
+      "\\bullet\\; k_1, k_2 = \\text{spring constants (N/m)}\\\\" +
+      "\\bullet\\; x_1, x_2 = \\text{displacements from equilibrium (m)}\\\\" +
+      "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}" +
+      "\\end{array}",
+      {
+        maxWidth: 600,
+      }
+    );
+
+    // Link text color property to formula nodes
+    // FormulaNode extends DOM, so we need to set the color via CSS
+    ClassicalMechanicsColors.textColorProperty.link((color) => {
+      equation1.element.style.color = color.toCSS();
+      equation2.element.style.color = color.toCSS();
+      variablesList.element.style.color = color.toCSS();
+    });
+
     return new VBox({
       spacing: 10,
       align: "left",
@@ -701,7 +728,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
+            maxWidth: 600,
           }
         ),
         new Text("Equations of Motion:", {
@@ -711,31 +738,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         new VBox({
           spacing: 8,
           align: "left",
-          children: [
-            new FormulaNode("m_1 \\frac{d^2 x_1}{d t^2} = -k_1 x_1 + k_2(x_2 - x_1)", {
-              fill: ClassicalMechanicsColors.textColorProperty,
-              maxWidth: 400,
-            }),
-            new FormulaNode("m_2 \\frac{d^2 x_2}{d t^2} = -k_2(x_2 - x_1)", {
-              fill: ClassicalMechanicsColors.textColorProperty,
-              maxWidth: 400,
-            }),
-          ],
+          children: [equation1, equation2],
         }),
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "• <i>m</i>₁, <i>m</i>₂ = masses (kg)<br>" +
-          "• <i>k</i>₁, <i>k</i>₂ = spring constants (N/m)<br>" +
-          "• <i>x</i>₁, <i>x</i>₂ = displacements from equilibrium (m)",
-          {
-            font: new PhetFont({size: 12}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            lineWrap: 400,
-          }
-        ),
+        variablesList,
       ],
     });
   }
