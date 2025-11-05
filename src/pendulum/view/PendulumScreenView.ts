@@ -510,7 +510,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   protected createInfoDialogContent(): Node {
     // Create formula nodes
     const equation = new FormulaNode("I \\frac{d^2 \\theta}{d t^2} = -mgl \\sin(\\theta) - b \\frac{d\\theta}{dt}", {
-      maxWidth: 600,
+      maxWidth: 700,
     });
     const variablesList = new FormulaNode(
       "\\begin{array}{l}" +
@@ -522,7 +522,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       "\\bullet\\; \\theta = \\text{angle from vertical (rad)}" +
       "\\end{array}",
       {
-        maxWidth: 600,
+        maxWidth: 700,
       }
     );
 
@@ -534,7 +534,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
 
     return new VBox({
-      spacing: 10,
+      spacing: 20,
       align: "left",
       children: [
         new Text("Simple Pendulum", {
@@ -546,7 +546,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 600,
+            maxWidth: 700,
           }
         ),
         new Text("Equation of Motion:", {

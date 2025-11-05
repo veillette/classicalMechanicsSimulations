@@ -731,14 +731,14 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     const equation1 = new FormulaNode(
       "(m_1 + m_2)l_1^2 \\ddot{\\theta}_1 + m_2 l_1 l_2 \\ddot{\\theta}_2 \\cos(\\theta_1-\\theta_2) + m_2 l_1 l_2 \\dot{\\theta}_2^2 \\sin(\\theta_1-\\theta_2) + (m_1 + m_2)gl_1 \\sin(\\theta_1) = 0",
       {
-        maxWidth: 500,
+        maxWidth: 600,
         scale: 0.8,
       }
     );
     const equation2 = new FormulaNode(
       "m_2 l_2^2 \\ddot{\\theta}_2 + m_2 l_1 l_2 \\ddot{\\theta}_1 \\cos(\\theta_1-\\theta_2) - m_2 l_1 l_2 \\dot{\\theta}_1^2 \\sin(\\theta_1-\\theta_2) + m_2 g l_2 \\sin(\\theta_2) = 0",
       {
-        maxWidth: 500,
+        maxWidth: 600,
         scale: 0.8,
       }
     );
@@ -750,7 +750,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       "\\bullet\\; \\theta_1, \\theta_2 = \\text{angles from vertical (rad)}" +
       "\\end{array}",
       {
-        maxWidth: 600,
+        maxWidth: 700,
       }
     );
 
@@ -763,7 +763,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
 
     return new VBox({
-      spacing: 10,
+      spacing: 20,
       align: "left",
       children: [
         new Text("Double Pendulum", {
@@ -775,7 +775,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 600,
+            maxWidth: 700,
           }
         ),
         new Text("Equations of Motion:", {
@@ -783,7 +783,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new VBox({
-          spacing: 8,
+          spacing: 12,
           align: "left",
           children: [equation1, equation2],
         }),

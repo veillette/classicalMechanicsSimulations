@@ -547,7 +547,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   protected createInfoDialogContent(): Node {
     // Create formula nodes
     const equation = new FormulaNode("m \\frac{d^2 x}{d t^2} = -kx - b \\frac{dx}{dt} + mg", {
-      maxWidth: 600,
+      maxWidth: 700,
     });
     const variablesList = new FormulaNode(
       "\\begin{array}{l}" +
@@ -558,7 +558,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}" +
       "\\end{array}",
       {
-        maxWidth: 600,
+        maxWidth: 700,
       }
     );
 
@@ -570,7 +570,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     });
 
     return new VBox({
-      spacing: 10,
+      spacing: 20,
       align: "left",
       children: [
         new Text("Single Spring System", {
@@ -582,7 +582,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 600,
+            maxWidth: 700,
           }
         ),
         new Text("Equation of Motion:", {

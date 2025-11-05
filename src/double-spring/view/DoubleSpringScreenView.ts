@@ -690,10 +690,10 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   protected createInfoDialogContent(): Node {
     // Create formula nodes
     const equation1 = new FormulaNode("m_1 \\frac{d^2 x_1}{d t^2} = -k_1 x_1 + k_2(x_2 - x_1) + m_1 g", {
-      maxWidth: 600,
+      maxWidth: 700,
     });
     const equation2 = new FormulaNode("m_2 \\frac{d^2 x_2}{d t^2} = -k_2(x_2 - x_1) + m_2 g", {
-      maxWidth: 600,
+      maxWidth: 700,
     });
     const variablesList = new FormulaNode(
       "\\begin{array}{l}" +
@@ -703,7 +703,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}" +
       "\\end{array}",
       {
-        maxWidth: 600,
+        maxWidth: 700,
       }
     );
 
@@ -716,7 +716,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
 
     return new VBox({
-      spacing: 10,
+      spacing: 20,
       align: "left",
       children: [
         new Text("Double Spring System", {
@@ -728,7 +728,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 600,
+            maxWidth: 700,
           }
         ),
         new Text("Equations of Motion:", {
@@ -736,7 +736,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new VBox({
-          spacing: 8,
+          spacing: 12,
           align: "left",
           children: [equation1, equation2],
         }),
