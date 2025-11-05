@@ -5,7 +5,7 @@ import "./brand.js";
 // Import KaTeX and make it available globally for FormulaNode
 // Import CSS locally so it's bundled and works offline
 import "katex/dist/katex.min.css";
-import katex from "katex";
+import * as katex from "katex";
 
 // Extend Window interface to include katex
 declare global {
