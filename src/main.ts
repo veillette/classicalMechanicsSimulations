@@ -6,7 +6,15 @@ import "./brand.js";
 // Import CSS locally so it's bundled and works offline
 import "katex/dist/katex.min.css";
 import katex from "katex";
-(window as any).katex = katex;
+
+// Extend Window interface to include katex
+declare global {
+  interface Window {
+    katex: typeof katex;
+  }
+}
+
+window.katex = katex;
 
 import { onReadyToLaunch, Sim, PreferencesModel } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
