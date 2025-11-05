@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, PhetFont } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, PhetFont, FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -708,15 +708,20 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "<i>m</i>₁ d<sup>2</sup><i>x</i>₁/d<i>t</i><sup>2</sup> = -<i>k</i>₁<i>x</i>₁ + <i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)<br>" +
-          "<i>m</i>₂ d<sup>2</sup><i>x</i>₂/d<i>t</i><sup>2</sup> = -<i>k</i>₂(<i>x</i>₂ - <i>x</i>₁)",
-          {
-            font: new PhetFont({size: 14}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
+        new VBox({
+          spacing: 8,
+          align: "left",
+          children: [
+            new FormulaNode("m_1 \\frac{d^2 x_1}{d t^2} = -k_1 x_1 + k_2(x_2 - x_1)", {
+              fill: ClassicalMechanicsColors.textColorProperty,
+              maxWidth: 400,
+            }),
+            new FormulaNode("m_2 \\frac{d^2 x_2}{d t^2} = -k_2(x_2 - x_1)", {
+              fill: ClassicalMechanicsColors.textColorProperty,
+              maxWidth: 400,
+            }),
+          ],
+        }),
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,

@@ -2,6 +2,12 @@
 // order: init.ts => assert.ts => splash.ts => brand.ts => everything else (here)
 import "./brand.js";
 
+// Import KaTeX and make it available globally for FormulaNode
+// Import CSS locally so it's bundled and works offline
+import "katex/dist/katex.min.css";
+import katex from "katex";
+(window as any).katex = katex;
+
 import { onReadyToLaunch, Sim, PreferencesModel } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
 import { VBox, Text, HStrut } from "scenerystack/scenery";

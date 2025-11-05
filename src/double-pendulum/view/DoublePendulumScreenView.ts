@@ -17,7 +17,7 @@ import {
   RichText,
 } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, PhetFont } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, PhetFont, FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
@@ -747,17 +747,28 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "(<i>m</i>₁ + <i>m</i>₂)<i>l</i>₁<sup>2</sup> θ̈₁ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₂ cos(θ₁-θ₂)<br>" +
-          "+ <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₂<sup>2</sup> sin(θ₁-θ₂) + (<i>m</i>₁ + <i>m</i>₂)<i>gl</i>₁ sin(θ₁) = 0<br><br>" +
-          "<i>m</i>₂<i>l</i>₂<sup>2</sup> θ̈₂ + <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̈₁ cos(θ₁-θ₂)<br>" +
-          "- <i>m</i>₂<i>l</i>₁<i>l</i>₂ θ̇₁<sup>2</sup> sin(θ₁-θ₂) + <i>m</i>₂<i>gl</i>₂ sin(θ₂) = 0",
-          {
-            font: new PhetFont({size: 12}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
+        new VBox({
+          spacing: 8,
+          align: "left",
+          children: [
+            new FormulaNode(
+              "(m_1 + m_2)l_1^2 \\ddot{\\theta}_1 + m_2 l_1 l_2 \\ddot{\\theta}_2 \\cos(\\theta_1-\\theta_2) + m_2 l_1 l_2 \\dot{\\theta}_2^2 \\sin(\\theta_1-\\theta_2) + (m_1 + m_2)gl_1 \\sin(\\theta_1) = 0",
+              {
+                fill: ClassicalMechanicsColors.textColorProperty,
+                maxWidth: 500,
+                scale: 0.8,
+              }
+            ),
+            new FormulaNode(
+              "m_2 l_2^2 \\ddot{\\theta}_2 + m_2 l_1 l_2 \\ddot{\\theta}_1 \\cos(\\theta_1-\\theta_2) - m_2 l_1 l_2 \\dot{\\theta}_1^2 \\sin(\\theta_1-\\theta_2) + m_2 g l_2 \\sin(\\theta_2) = 0",
+              {
+                fill: ClassicalMechanicsColors.textColorProperty,
+                maxWidth: 500,
+                scale: 0.8,
+              }
+            ),
+          ],
+        }),
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,

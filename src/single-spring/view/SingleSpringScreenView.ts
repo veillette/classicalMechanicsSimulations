@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, FormulaNode, PhetFont } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -30,7 +30,6 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
-import { PhetFont } from "scenerystack";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -566,14 +565,10 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "<i>m</i> d<sup>2</sup><i>x</i>/d<i>t</i><sup>2</sup> = -<i>kx</i> - <i>b</i> d<i>x</i>/d<i>t</i>",
-          {
-            font: new PhetFont({size: 14}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
+        new FormulaNode("m \\frac{d^2 x}{d t^2} = -kx - b \\frac{dx}{dt}", {
+          fill: ClassicalMechanicsColors.textColorProperty,
+          maxWidth: 400,
+        }),
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,

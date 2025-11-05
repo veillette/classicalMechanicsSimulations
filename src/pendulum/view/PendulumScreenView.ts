@@ -7,7 +7,7 @@ import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme } from "scenerystack/scenery-phet";
+import { NumberControl, PhetColorScheme, FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -528,14 +528,10 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           font: new PhetFont({size: 14, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
-        new RichText(
-          "<i>I</i> d<sup>2</sup>θ/d<i>t</i><sup>2</sup> = -<i>mgl</i> sin(θ) - <i>b</i> dθ/d<i>t</i>",
-          {
-            font: new PhetFont({size: 14}),
-            fill: ClassicalMechanicsColors.textColorProperty,
-            maxWidth: 400,
-          }
-        ),
+        new FormulaNode("I \\frac{d^2 \\theta}{d t^2} = -mgl \\sin(\\theta) - b \\frac{d\\theta}{dt}", {
+          fill: ClassicalMechanicsColors.textColorProperty,
+          maxWidth: 400,
+        }),
         new Text("Where:", {
           font: new PhetFont({size: 12}),
           fill: ClassicalMechanicsColors.textColorProperty,
