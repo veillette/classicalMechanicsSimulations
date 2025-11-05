@@ -5,11 +5,11 @@
 
 import type { ReadOnlyProperty } from "scenerystack";
 
-export interface PresetConfiguration {
+export type PresetConfiguration = {
   [key: string]: number;
 }
 
-export interface Preset {
+export type Preset = {
   nameProperty: ReadOnlyProperty<string>;
   descriptionProperty: ReadOnlyProperty<string>;
   configuration: PresetConfiguration;

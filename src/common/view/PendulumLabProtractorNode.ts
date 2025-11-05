@@ -21,14 +21,14 @@ const RADIUS = 106;
 const TICK_5_LENGTH = 7.3;
 const TICK_10_LENGTH = 11;
 
-export interface PendulumData {
+export type PendulumData = {
   angleProperty: TReadOnlyProperty<number>;
   isDraggingProperty?: TReadOnlyProperty<boolean>;
   color?: string;
   lengthProperty: TReadOnlyProperty<number>;
 }
 
-export interface PendulumLabProtractorNodeOptions {
+export type PendulumLabProtractorNodeOptions = {
   pickable?: boolean;
 }
 

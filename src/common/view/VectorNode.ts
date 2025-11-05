@@ -9,7 +9,7 @@ import { Vector2 } from "scenerystack/dot";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import { PhetFont } from "scenerystack";
 
-export interface VectorNodeOptions {
+export type VectorNodeOptions = {
   /**
    * The color of the vector arrow
    */

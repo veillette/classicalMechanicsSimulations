@@ -33,7 +33,7 @@ import { SceneGridNode } from "./SceneGridNode.js";
 /**
  * Interface that all models must implement to work with BaseScreenView
  */
-export interface TimeControllableModel {
+export type TimeControllableModel = {
   isPlayingProperty: BooleanProperty;
   timeSpeedProperty: EnumerationProperty<TimeSpeed>;
   reset(): void;

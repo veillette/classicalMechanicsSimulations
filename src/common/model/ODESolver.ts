@@ -9,7 +9,7 @@ export type DerivativeFunction = (
   time: number,
 ) => void;
 
-export interface ODESolver {
+export type ODESolver = {
   /**
    * Perform one integration step.
    *
