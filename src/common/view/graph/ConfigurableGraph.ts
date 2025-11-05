@@ -623,22 +623,70 @@ export default class ConfigurableGraph extends Node {
       },
     });
 
+    // Add mouse drag support for Y-axis panning
+    let mouseDragStartY: number | null = null;
+    let mouseDragInitialYRange: Range | null = null;
+
+    const mouseDragListener = new DragListener({
+      start: (event) => {
+        mouseDragStartY = event.pointer.point.y;
+        mouseDragInitialYRange = this.chartTransform.modelYRange.copy();
+        this.isManuallyZoomed = true;
+      },
+
+      drag: (event) => {
+        if (mouseDragStartY !== null && mouseDragInitialYRange) {
+          const deltaY = event.pointer.point.y - mouseDragStartY;
+
+          // Convert delta to model coordinates
+          // Negative because screen Y increases downward, but model Y typically increases upward
+          const modelDeltaY = -deltaY * (mouseDragInitialYRange.getLength() / this.graphHeight);
+
+          const newYRange = new Range(
+            mouseDragInitialYRange.min + modelDeltaY,
+            mouseDragInitialYRange.max + modelDeltaY
+          );
+
+          this.chartTransform.setModelYRange(newYRange);
+          this.updateTickSpacing(this.chartTransform.modelXRange, newYRange);
+          this.updateTrail();
+        }
+      },
+
+      end: () => {
+        mouseDragStartY = null;
+        mouseDragInitialYRange = null;
+      },
+    });
+
+    this.yTickLabelSet.addInputListener(mouseDragListener);
+
     // Make Y-axis tick labels pickable so they can receive touch input
     this.yTickLabelSet.pickable = true;
+    this.yTickLabelSet.cursor = 'ns-resize';
 
-    // Add mouse wheel support for Y-axis scrolling
+    // Add mouse wheel support for Y-axis zooming (zoom vertically only)
     this.yTickLabelSet.addInputListener({
       wheel: (event) => {
         event.handle();
         const delta = event.domEvent!.deltaY;
-        const currentRange = this.chartTransform.modelYRange;
-        const panAmount = currentRange.getLength() * 0.1; // Pan by 10% of range
 
-        // Scroll up = pan up (increase Y values), scroll down = pan down (decrease Y values)
-        const newYRange = new Range(
-          currentRange.min + (delta > 0 ? -panAmount : panAmount),
-          currentRange.max + (delta > 0 ? -panAmount : panAmount)
-        );
+        // Get mouse position on Y-axis
+        const mouseY = event.pointer.point.y;
+        const viewMidpoint = new Vector2(this.graphWidth / 2, mouseY);
+        const localMidpoint = this.chartRectangle.globalToLocalPoint(viewMidpoint);
+        const modelCenterY = this.chartTransform.viewToModelPosition(localMidpoint).y;
+
+        const currentRange = this.chartTransform.modelYRange;
+
+        // Zoom in or out on Y-axis only
+        const zoomFactor = delta < 0 ? this.zoomFactor : 1 / this.zoomFactor;
+
+        // Calculate new Y range centered on mouse position
+        const yMin = modelCenterY - (modelCenterY - currentRange.min) / zoomFactor;
+        const yMax = modelCenterY + (currentRange.max - modelCenterY) / zoomFactor;
+
+        const newYRange = new Range(yMin, yMax);
 
         this.chartTransform.setModelYRange(newYRange);
         this.updateTickSpacing(this.chartTransform.modelXRange, newYRange);
@@ -758,22 +806,69 @@ export default class ConfigurableGraph extends Node {
       },
     });
 
+    // Add mouse drag support for X-axis panning
+    let mouseDragStartX: number | null = null;
+    let mouseDragInitialXRange: Range | null = null;
+
+    const mouseDragListener = new DragListener({
+      start: (event) => {
+        mouseDragStartX = event.pointer.point.x;
+        mouseDragInitialXRange = this.chartTransform.modelXRange.copy();
+        this.isManuallyZoomed = true;
+      },
+
+      drag: (event) => {
+        if (mouseDragStartX !== null && mouseDragInitialXRange) {
+          const deltaX = event.pointer.point.x - mouseDragStartX;
+
+          // Convert delta to model coordinates
+          const modelDeltaX = -deltaX * (mouseDragInitialXRange.getLength() / this.graphWidth);
+
+          const newXRange = new Range(
+            mouseDragInitialXRange.min + modelDeltaX,
+            mouseDragInitialXRange.max + modelDeltaX
+          );
+
+          this.chartTransform.setModelXRange(newXRange);
+          this.updateTickSpacing(newXRange, this.chartTransform.modelYRange);
+          this.updateTrail();
+        }
+      },
+
+      end: () => {
+        mouseDragStartX = null;
+        mouseDragInitialXRange = null;
+      },
+    });
+
+    this.xTickLabelSet.addInputListener(mouseDragListener);
+
     // Make X-axis tick labels pickable so they can receive touch input
     this.xTickLabelSet.pickable = true;
+    this.xTickLabelSet.cursor = 'ew-resize';
 
-    // Add mouse wheel support for X-axis scrolling
+    // Add mouse wheel support for X-axis zooming (zoom horizontally only)
     this.xTickLabelSet.addInputListener({
       wheel: (event) => {
         event.handle();
         const delta = event.domEvent!.deltaY;
-        const currentRange = this.chartTransform.modelXRange;
-        const panAmount = currentRange.getLength() * 0.1; // Pan by 10% of range
 
-        // Scroll down = pan right (increase X values), scroll up = pan left (decrease X values)
-        const newXRange = new Range(
-          currentRange.min + (delta > 0 ? panAmount : -panAmount),
-          currentRange.max + (delta > 0 ? panAmount : -panAmount)
-        );
+        // Get mouse position on X-axis
+        const mouseX = event.pointer.point.x;
+        const viewMidpoint = new Vector2(mouseX, this.graphHeight / 2);
+        const localMidpoint = this.chartRectangle.globalToLocalPoint(viewMidpoint);
+        const modelCenterX = this.chartTransform.viewToModelPosition(localMidpoint).x;
+
+        const currentRange = this.chartTransform.modelXRange;
+
+        // Zoom in or out on X-axis only
+        const zoomFactor = delta < 0 ? this.zoomFactor : 1 / this.zoomFactor;
+
+        // Calculate new X range centered on mouse position
+        const xMin = modelCenterX - (modelCenterX - currentRange.min) / zoomFactor;
+        const xMax = modelCenterX + (currentRange.max - modelCenterX) / zoomFactor;
+
+        const newXRange = new Range(xMin, xMax);
 
         this.chartTransform.setModelXRange(newXRange);
         this.updateTickSpacing(newXRange, this.chartTransform.modelYRange);
