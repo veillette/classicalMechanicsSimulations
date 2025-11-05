@@ -190,6 +190,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.showForceProperty = new BooleanProperty(true);
     this.showAccelerationProperty = new BooleanProperty(false);
 
+    // Explicitly set initial values to ensure reset() works correctly
+    this.showVelocityProperty.setInitialValue(true);
+    this.showForceProperty.setInitialValue(true);
+    this.showAccelerationProperty.setInitialValue(false);
+
     // Create vector nodes
     this.velocityVectorNode = new VectorNode({
       color: PhetColorScheme.VELOCITY,

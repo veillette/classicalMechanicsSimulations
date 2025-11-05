@@ -300,6 +300,11 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.showForceProperty = new BooleanProperty(true);
     this.showAccelerationProperty = new BooleanProperty(false);
 
+    // Explicitly set initial values to ensure reset() works correctly
+    this.showVelocityProperty.setInitialValue(true);
+    this.showForceProperty.setInitialValue(true);
+    this.showAccelerationProperty.setInitialValue(false);
+
     // Create vector nodes for bob 1
     this.velocity1VectorNode = new VectorNode({
       color: PhetColorScheme.VELOCITY,
