@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, HBox, Text, Circle, DragListener, type Pointer } from "scenerystack/scenery";
+import { Node, HBox, Text, Circle, Rectangle, DragListener, type Pointer } from "scenerystack/scenery";
 import { ComboBox, Checkbox } from "scenerystack/sun";
 import {
   ChartRectangle,
@@ -36,8 +36,14 @@ export default class ConfigurableGraph extends Node {
   private readonly chartTransform: ChartTransform;
   private readonly linePlot: LinePlot;
   private readonly chartRectangle: ChartRectangle;
-  private readonly graphWidth: number;
-  private readonly graphHeight: number;
+  private graphWidth: number;
+  private graphHeight: number;
+
+  // Drag and resize UI components
+  private readonly headerBar: Rectangle;
+  private readonly resizeHandles: Rectangle[] = [];
+  private readonly isDraggingProperty: BooleanProperty;
+  private readonly isResizingProperty: BooleanProperty;
 
   // Trail points
   private readonly trailNode: Node;
@@ -94,6 +100,10 @@ export default class ConfigurableGraph extends Node {
 
     // Property to control graph visibility
     this.graphVisibleProperty = new BooleanProperty(true);
+
+    // Properties for drag and resize states
+    this.isDraggingProperty = new BooleanProperty(false);
+    this.isResizingProperty = new BooleanProperty(false);
 
     // Create a container for all graph content
     this.graphContentNode = new Node();
@@ -238,7 +248,7 @@ export default class ConfigurableGraph extends Node {
       this.graphContentNode.visible = visible;
     });
 
-    // Create show/hide checkbox
+    // Create draggable header bar with checkbox
     const stringManager = StringManager.getInstance();
     const graphLabels = stringManager.getGraphLabels();
 
@@ -253,10 +263,28 @@ export default class ConfigurableGraph extends Node {
       },
     );
 
-    // Position checkbox at top of graph area
-    showGraphCheckbox.left = 0;
-    showGraphCheckbox.top = -30;
+    // Create header bar
+    const headerHeight = 30;
+    this.headerBar = new Rectangle(0, -headerHeight, this.graphWidth, headerHeight, 5, 5, {
+      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty.value.colorUtilsDarker(0.1),
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 2,
+      cursor: 'grab',
+    });
+
+    // Add checkbox to header
+    showGraphCheckbox.left = 10;
+    showGraphCheckbox.centerY = -headerHeight / 2;
+
+    // Add header bar and checkbox
+    this.addChild(this.headerBar);
     this.addChild(showGraphCheckbox);
+
+    // Setup drag functionality for the header
+    this.setupHeaderDrag();
+
+    // Create and setup resize handles
+    this.setupResizeHandles();
 
     // Add zoom and pan controls (non-intrusive mouse and keyboard)
     this.setupZoomControls();
@@ -264,6 +292,16 @@ export default class ConfigurableGraph extends Node {
     this.setupTouchZoomControls();
     this.setupYAxisTouchControls();
     this.setupXAxisTouchControls();
+
+    // Add visual feedback for drag and resize operations
+    this.isDraggingProperty.link((isDragging) => {
+      this.opacity = isDragging ? 0.8 : 1.0;
+      this.headerBar.cursor = isDragging ? 'grabbing' : 'grab';
+    });
+
+    this.isResizingProperty.link((isResizing) => {
+      this.opacity = isResizing ? 0.8 : 1.0;
+    });
 
     // Link visibility changes to announce using voicing
     this.graphVisibleProperty.link((visible) => {
@@ -743,6 +781,207 @@ export default class ConfigurableGraph extends Node {
         this.isManuallyZoomed = true;
       },
     });
+  }
+
+  /**
+   * Setup drag functionality for the header bar to move the entire graph
+   */
+  private setupHeaderDrag(): void {
+    let dragStartPosition: Vector2 | null = null;
+    let dragStartPointerPoint: Vector2 | null = null;
+
+    const dragListener = new DragListener({
+      start: (event) => {
+        // Record the starting position of the graph and pointer
+        dragStartPosition = new Vector2(this.x, this.y);
+        dragStartPointerPoint = event.pointer.point.copy();
+        this.isDraggingProperty.value = true;
+      },
+
+      drag: (event) => {
+        if (dragStartPosition && dragStartPointerPoint) {
+          // Move the entire graph node
+          const delta = event.pointer.point.minus(dragStartPointerPoint);
+          this.x = dragStartPosition.x + delta.x;
+          this.y = dragStartPosition.y + delta.y;
+        }
+      },
+
+      end: () => {
+        dragStartPosition = null;
+        dragStartPointerPoint = null;
+        this.isDraggingProperty.value = false;
+      },
+    });
+
+    this.headerBar.addInputListener(dragListener);
+  }
+
+  /**
+   * Setup resize handles at the corners of the graph
+   */
+  private setupResizeHandles(): void {
+    const handleSize = 12;
+    const handleOffset = -6; // Center the handle on the corner
+
+    // Define corner positions and cursors
+    const corners = [
+      { x: 0, y: 0, cursor: 'nwse-resize' }, // Top-left
+      { x: this.graphWidth, y: 0, cursor: 'nesw-resize' }, // Top-right
+      { x: 0, y: this.graphHeight, cursor: 'nesw-resize' }, // Bottom-left
+      { x: this.graphWidth, y: this.graphHeight, cursor: 'nwse-resize' }, // Bottom-right
+    ];
+
+    corners.forEach((corner, index) => {
+      const handle = new Rectangle(
+        corner.x + handleOffset,
+        corner.y + handleOffset,
+        handleSize,
+        handleSize,
+        2,
+        2,
+        {
+          fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+          stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+          lineWidth: 2,
+          cursor: corner.cursor,
+        }
+      );
+
+      this.resizeHandles.push(handle);
+      this.addChild(handle);
+
+      // Add drag listener for resizing
+      this.setupResizeHandleDrag(handle, index);
+    });
+  }
+
+  /**
+   * Setup drag listener for a resize handle
+   */
+  private setupResizeHandleDrag(handle: Rectangle, cornerIndex: number): void {
+    let dragStartGraphBounds: { width: number; height: number; x: number; y: number } | null = null;
+    let dragStartPointerPoint: Vector2 | null = null;
+
+    const dragListener = new DragListener({
+      start: (event) => {
+        dragStartGraphBounds = {
+          width: this.graphWidth,
+          height: this.graphHeight,
+          x: this.x,
+          y: this.y,
+        };
+        dragStartPointerPoint = event.pointer.point.copy();
+        this.isResizingProperty.value = true;
+      },
+
+      drag: (event) => {
+        if (!dragStartGraphBounds || !dragStartPointerPoint) return;
+
+        const delta = event.pointer.point.minus(dragStartPointerPoint);
+        let newWidth = dragStartGraphBounds.width;
+        let newHeight = dragStartGraphBounds.height;
+        let newX = dragStartGraphBounds.x;
+        let newY = dragStartGraphBounds.y;
+
+        // Minimum graph size
+        const minWidth = 200;
+        const minHeight = 150;
+
+        // Handle different corners
+        switch (cornerIndex) {
+          case 0: // Top-left
+            newWidth = Math.max(minWidth, dragStartGraphBounds.width - delta.x);
+            newHeight = Math.max(minHeight, dragStartGraphBounds.height - delta.y);
+            newX = dragStartGraphBounds.x + (dragStartGraphBounds.width - newWidth);
+            newY = dragStartGraphBounds.y + (dragStartGraphBounds.height - newHeight);
+            break;
+          case 1: // Top-right
+            newWidth = Math.max(minWidth, dragStartGraphBounds.width + delta.x);
+            newHeight = Math.max(minHeight, dragStartGraphBounds.height - delta.y);
+            newY = dragStartGraphBounds.y + (dragStartGraphBounds.height - newHeight);
+            break;
+          case 2: // Bottom-left
+            newWidth = Math.max(minWidth, dragStartGraphBounds.width - delta.x);
+            newHeight = Math.max(minHeight, dragStartGraphBounds.height + delta.y);
+            newX = dragStartGraphBounds.x + (dragStartGraphBounds.width - newWidth);
+            break;
+          case 3: // Bottom-right
+            newWidth = Math.max(minWidth, dragStartGraphBounds.width + delta.x);
+            newHeight = Math.max(minHeight, dragStartGraphBounds.height + delta.y);
+            break;
+        }
+
+        // Update graph size and position
+        this.resizeGraph(newWidth, newHeight);
+        this.x = newX;
+        this.y = newY;
+      },
+
+      end: () => {
+        dragStartGraphBounds = null;
+        dragStartPointerPoint = null;
+        this.isResizingProperty.value = false;
+      },
+    });
+
+    handle.addInputListener(dragListener);
+  }
+
+  /**
+   * Resize the graph to new dimensions
+   */
+  private resizeGraph(newWidth: number, newHeight: number): void {
+    this.graphWidth = newWidth;
+    this.graphHeight = newHeight;
+
+    // Update header bar
+    this.headerBar.setRect(0, -30, newWidth, 30);
+
+    // Update chart transform
+    this.chartTransform.setViewWidth(newWidth);
+    this.chartTransform.setViewHeight(newHeight);
+
+    // Update clipping area
+    const clippedDataContainer = this.graphContentNode.children.find(
+      (child) => child.clipArea !== undefined
+    );
+    if (clippedDataContainer) {
+      clippedDataContainer.clipArea = Shape.rect(0, 0, newWidth, newHeight);
+    }
+
+    // Update axis labels positions
+    this.xAxisLabelNode.centerX = newWidth / 2;
+    this.yAxisLabelNode.centerY = newHeight / 2;
+
+    // Update title panel position
+    const titlePanel = this.graphContentNode.children.find(
+      (child) => child instanceof HBox
+    );
+    if (titlePanel) {
+      titlePanel.centerX = newWidth / 2;
+    }
+
+    // Update resize handles positions
+    const handleOffset = -6;
+    const corners = [
+      { x: 0, y: 0 },
+      { x: newWidth, y: 0 },
+      { x: 0, y: newHeight },
+      { x: newWidth, y: newHeight },
+    ];
+
+    this.resizeHandles.forEach((handle, index) => {
+      handle.setRect(
+        corners[index].x + handleOffset,
+        corners[index].y + handleOffset,
+        12,
+        12
+      );
+    });
+
+    // Update trail with new transform
+    this.updateTrail();
   }
 
   /**
