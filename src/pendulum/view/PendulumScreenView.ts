@@ -298,20 +298,22 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       },
     ];
 
+    // Calculate graph width to not extend beyond the pendulum (at centerX)
+    const GRAPH_LEFT_MARGIN = 10;
+    const GRAPH_RIGHT_MARGIN = 20;
+    const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
+    const graphHeight = 300;
+
     // Create the configurable graph (time vs angle by default)
     this.configurableGraph = new ConfigurableGraph(
       availableProperties,
       availableProperties[5], // Time for x-axis
       availableProperties[0], // Angle for y-axis
-      450, // width
-      300, // height
+      graphWidth,
+      graphHeight,
       2000, // max data points
       this, // list parent for combo boxes
     );
-    // Position graph at the top left
-    // Position graph at lower left, not overlapping time controls
-    this.configurableGraph.left = this.layoutBounds.minX + 10;
-    this.configurableGraph.bottom = this.layoutBounds.maxY - 70; // Leave room for time controls
     this.addChild(this.configurableGraph);
 
     // Position control panel at the top right
@@ -331,6 +333,11 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     vectorPanel.left = this.layoutBounds.minX + 10;
     vectorPanel.top = this.layoutBounds.minY + 10;
     this.addChild(vectorPanel);
+
+    // Position graph beneath vector panel
+    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
+    this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
+    this.configurableGraph.top = vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
 
     // Create tools control panel
     const toolsPanel = new ToolsControlPanel({

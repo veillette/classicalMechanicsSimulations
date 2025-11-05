@@ -25,6 +25,10 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
+import {
+  ConfigurableGraph,
+  type PlottableProperty,
+} from "../../common/view/graph/index.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -45,6 +49,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly presetProperty: Property<PresetOption>;
   private readonly presets: Preset[];
   private isApplyingPreset: boolean = false;
+
+  // Graph component
+  private readonly configurableGraph: ConfigurableGraph;
 
   // Vector visualization
   private readonly showVelocityProperty: BooleanProperty;
@@ -343,8 +350,61 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     controlPanel.right = this.layoutBounds.maxX - 10;
     controlPanel.top = this.layoutBounds.minY + 10;
 
-    // Create vector control panel
+    // Create configurable graph with available properties
     const stringManager = StringManager.getInstance();
+    const propertyNames = stringManager.getGraphPropertyNames();
+    const availableProperties: PlottableProperty[] = [
+      {
+        name: propertyNames.positionStringProperty, // Will show as "Position" for position1
+        property: this.model.position1Property,
+        unit: "m",
+      },
+      {
+        name: propertyNames.positionStringProperty, // Will show as "Position" for position2
+        property: this.model.position2Property,
+        unit: "m",
+      },
+      {
+        name: propertyNames.velocityStringProperty, // Will show as "Velocity" for velocity1
+        property: this.model.velocity1Property,
+        unit: "m/s",
+      },
+      {
+        name: propertyNames.velocityStringProperty, // Will show as "Velocity" for velocity2
+        property: this.model.velocity2Property,
+        unit: "m/s",
+      },
+      {
+        name: propertyNames.totalEnergyStringProperty,
+        property: this.model.totalEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.timeStringProperty,
+        property: this.model.timeProperty,
+        unit: "s",
+      },
+    ];
+
+    // Calculate graph width to not extend beyond the spring (at centerX)
+    const GRAPH_LEFT_MARGIN = 10;
+    const GRAPH_RIGHT_MARGIN = 20;
+    const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
+    const graphHeight = 300;
+
+    // Create the configurable graph (position1 vs time by default)
+    this.configurableGraph = new ConfigurableGraph(
+      availableProperties,
+      availableProperties[5], // Time for x-axis
+      availableProperties[0], // Position1 for y-axis
+      graphWidth,
+      graphHeight,
+      2000, // max data points
+      this, // list parent for combo boxes
+    );
+    this.addChild(this.configurableGraph);
+
+    // Create vector control panel
     const visualizationLabels = stringManager.getVisualizationLabels();
     const vectorPanel = new VectorControlPanel({
       showVelocityProperty: this.showVelocityProperty,
@@ -357,6 +417,11 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     vectorPanel.left = this.layoutBounds.minX + 10;
     vectorPanel.top = this.layoutBounds.minY + 10;
     this.addChild(vectorPanel);
+
+    // Position graph beneath vector panel
+    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
+    this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
+    this.configurableGraph.top = vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
 
     // Create tools control panel
     const toolsPanel = new ToolsControlPanel({
@@ -801,6 +866,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.showForceProperty.reset();
     this.showAccelerationProperty.reset();
 
+    // Clear graph data
+    this.configurableGraph.clearData();
+
     // Update visualization to match reset model state
     this.updateVisualization();
   }
@@ -808,6 +876,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   public override step(dt: number): void {
     super.step(dt); // Step the stopwatch and other base view components
     this.model.step(dt);
+
+    // Add data point to configurable graph
+    this.configurableGraph.addDataPoint();
 
     // Update vector visualizations
     this.updateVectors();
@@ -901,6 +972,11 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Reset simulation time only (don't reset the parameters we just set!)
     this.model.timeProperty.value = 0;
+
+    // Clear the graph when switching presets (if it exists)
+    if (this.configurableGraph) {
+      this.configurableGraph.clearData();
+    }
 
     // Announce preset change
     const a11yStrings = this.getA11yStrings();
