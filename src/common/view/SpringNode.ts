@@ -1,6 +1,9 @@
 /**
  * Visual representation of a spring that can compress and extend.
  * Draws a realistic coil pattern that adjusts to the spring's current length.
+ *
+ * This implementation provides a simplified spring visualization with parameters
+ * that align with ParametricSpringNode, making the two implementations easily swappable.
  */
 
 import { Node, Path, type NodeOptions } from "scenerystack/scenery";
@@ -11,10 +14,14 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 
 type SpringNodeOptions = NodeOptions & {
   frontColorProperty?: ReadOnlyProperty<Color>;
+  middleColorProperty?: ReadOnlyProperty<Color>;
   backColorProperty?: ReadOnlyProperty<Color>;
   lineWidth?: number;
   loops?: number;
   radius?: number;
+  aspectRatio?: number;
+  leftEndLength?: number;
+  rightEndLength?: number;
 };
 
 export class SpringNode extends Node {
@@ -22,6 +29,9 @@ export class SpringNode extends Node {
   private readonly backPath: Path;
   private readonly loops: number;
   private radius: number;
+  private readonly aspectRatio: number;
+  private readonly leftEndLength: number;
+  private readonly rightEndLength: number;
   private lastStart: Vector2 | null = null;
   private lastEnd: Vector2 | null = null;
 
@@ -33,6 +43,9 @@ export class SpringNode extends Node {
 
     this.loops = options?.loops ?? 10;
     this.radius = options?.radius ?? 10;
+    this.aspectRatio = options?.aspectRatio ?? 4;
+    this.leftEndLength = options?.leftEndLength ?? 15;
+    this.rightEndLength = options?.rightEndLength ?? 25;
 
     const frontColorProperty =
       options?.frontColorProperty ??
@@ -78,6 +91,9 @@ export class SpringNode extends Node {
     const length = delta.magnitude;
     const angle = delta.angle;
 
+    // Calculate coil length (total length minus end sections)
+    const coilLength = length - this.leftEndLength - this.rightEndLength;
+
     // Points per loop (4 points make one complete coil)
     const pointsPerLoop = 4;
     const totalPoints = this.loops * pointsPerLoop;
@@ -85,18 +101,19 @@ export class SpringNode extends Node {
     const frontShape = new Shape();
     const backShape = new Shape();
 
-    // First point
+    // Start with left end horizontal line
     frontShape.moveTo(0, 0);
+    frontShape.lineTo(this.leftEndLength, 0);
 
     let isFront = true;
 
     for (let i = 1; i <= totalPoints; i++) {
       const t = i / totalPoints;
-      const x = t * length;
+      const x = this.leftEndLength + t * coilLength;
 
       // Alternate between +radius and -radius
       const phase = (i % pointsPerLoop) / pointsPerLoop;
-      const y = this.radius * Math.sin(phase * 2 * Math.PI);
+      const y = this.aspectRatio * this.radius * Math.sin(phase * 2 * Math.PI);
 
       // Alternate between front and back
       const wasfront = isFront;
@@ -119,7 +136,7 @@ export class SpringNode extends Node {
       }
     }
 
-    // Final point
+    // End with right end horizontal line
     frontShape.lineTo(length, 0);
 
     this.frontPath.shape = frontShape;
