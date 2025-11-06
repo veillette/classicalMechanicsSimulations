@@ -24,13 +24,13 @@ import { TimeSpeed } from "scenerystack/scenery-phet";
 import { Bounds2, Vector2 } from "scenerystack/dot";
 import { Dialog } from "scenerystack/sim";
 import type { DialogOptions } from "scenerystack/sim";
-import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.ts";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
-import { ConfigurableGraph } from "./graph/index.js";
+import ConfigurableGraph from "./graph/ConfigurableGraph.ts";
 
 /**
  * Interface that all models must implement to work with BaseScreenView

@@ -22,7 +22,7 @@ import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty } from "scenerystack/axon";
+import { Property } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import {
@@ -224,7 +224,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
-            this.modelViewTransform.viewToModelPosition(parentPoint);
+            this.modelViewTransform!.viewToModelPosition(parentPoint);
           this.model.position1Property.value = modelPosition.y; // Use Y coordinate for vertical
           this.model.velocity1Property.value = 0;
         },
@@ -246,7 +246,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
-            this.modelViewTransform.viewToModelPosition(parentPoint);
+            this.modelViewTransform!.viewToModelPosition(parentPoint);
           this.model.position2Property.value = modelPosition.y; // Use Y coordinate for vertical
           this.model.velocity2Property.value = 0;
         },
@@ -763,9 +763,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const mass1ModelPos = new Vector2(0, mass1TotalLength);
     const mass2ModelPos = new Vector2(0, mass2TotalLength);
     const mass1ViewPos =
-      this.modelViewTransform.modelToViewPosition(mass1ModelPos);
+      this.modelViewTransform!.modelToViewPosition(mass1ModelPos);
     const mass2ViewPos =
-      this.modelViewTransform.modelToViewPosition(mass2ModelPos);
+      this.modelViewTransform!.modelToViewPosition(mass2ModelPos);
 
     // Update mass positions
     this.mass1Node.center = mass1ViewPos;

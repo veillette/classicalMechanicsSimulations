@@ -562,7 +562,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Convert to view coordinates
     const viewBobPosition =
-      this.modelViewTransform.modelToViewPosition(modelBobPosition);
+      this.modelViewTransform!.modelToViewPosition(modelBobPosition);
 
     // Update bob position
     this.bobNode.center = viewBobPosition;
@@ -626,7 +626,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     const modelBobX = L * Math.sin(angle);
     const modelBobY = L * Math.cos(angle);
     const modelBobPosition = new Vector2(modelBobX, modelBobY);
-    const viewBobPosition = this.modelViewTransform.modelToViewPosition(modelBobPosition);
+    const viewBobPosition = this.modelViewTransform!.modelToViewPosition(modelBobPosition);
 
     // Calculate tangential direction (perpendicular to rod)
     const tangentX = Math.cos(angle);  // perpendicular to rod direction

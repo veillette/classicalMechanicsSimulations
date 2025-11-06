@@ -27,7 +27,7 @@ import {
 } from "../../common/view/graph/index.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property, BooleanProperty } from "scenerystack/axon";
+import { Property } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 
@@ -159,7 +159,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
           const modelPosition =
-            this.modelViewTransform.viewToModelPosition(parentPoint);
+            this.modelViewTransform!.viewToModelPosition(parentPoint);
           this.model.positionProperty.value = modelPosition.y; // Use Y coordinate for vertical
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
@@ -606,7 +606,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     const totalLength = naturalLength + position;
     const modelPosition = new Vector2(0, totalLength);
     const viewPosition =
-      this.modelViewTransform.modelToViewPosition(modelPosition);
+      this.modelViewTransform!.modelToViewPosition(modelPosition);
 
     // Update mass position
     this.massNode.center = viewPosition;

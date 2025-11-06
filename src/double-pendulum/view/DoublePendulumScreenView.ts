@@ -255,7 +255,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           const bob1ModelY = length1 * Math.cos(angle1);
           const bob1ModelPos = new Vector2(bob1ModelX, bob1ModelY);
           const bob1ViewPos =
-            this.modelViewTransform.modelToViewPosition(bob1ModelPos);
+            this.modelViewTransform!.modelToViewPosition(bob1ModelPos);
 
           // Calculate angle for bob 2 relative to bob 1
           const delta = parentPoint.minus(bob1ViewPos);
@@ -796,7 +796,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Convert bob 1 to view coordinates
     const bob1ViewPos =
-      this.modelViewTransform.modelToViewPosition(bob1ModelPos);
+      this.modelViewTransform!.modelToViewPosition(bob1ModelPos);
 
     // Calculate bob 2 position in model coordinates (relative to bob 1)
     const bob2ModelX = bob1ModelX + length2 * Math.sin(angle2);
@@ -805,7 +805,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Convert bob 2 to view coordinates
     const bob2ViewPos =
-      this.modelViewTransform.modelToViewPosition(bob2ModelPos);
+      this.modelViewTransform!.modelToViewPosition(bob2ModelPos);
 
     // Update bob positions
     this.bob1Node.center = bob1ViewPos;
