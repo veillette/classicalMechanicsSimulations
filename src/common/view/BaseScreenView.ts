@@ -22,8 +22,8 @@ import {
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { Bounds2, Vector2 } from "scenerystack/dot";
-import { Dialog } from "scenerystack/sun";
-import type { DialogOptions } from "scenerystack/sun";
+import { Dialog } from "scenerystack/sim";
+import type { DialogOptions } from "scenerystack/sim";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";

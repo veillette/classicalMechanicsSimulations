@@ -3,8 +3,8 @@
  * Extends Dialog to provide automatic close button and ESC key dismissal.
  */
 
-import { Dialog } from "scenerystack/sun";
-import type { DialogOptions } from "scenerystack/sun";
+import { Dialog } from "scenerystack/sim";
+import type { DialogOptions } from "scenerystack/sim";
 import { VBox, HBox, Text, Node } from "scenerystack/scenery";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { StringManager } from "../../i18n/StringManager.js";
