@@ -388,7 +388,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Calculate graph width to not extend beyond the spring (at centerX)
     const GRAPH_LEFT_MARGIN = 10;
-    const GRAPH_RIGHT_MARGIN = 20;
+    const GRAPH_RIGHT_MARGIN = 100;
     const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
     const graphHeight = 300;
 

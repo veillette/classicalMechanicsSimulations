@@ -294,7 +294,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Calculate graph width to not extend beyond the pendulum (at centerX)
     const GRAPH_LEFT_MARGIN = 10;
-    const GRAPH_RIGHT_MARGIN = 20;
+    const GRAPH_RIGHT_MARGIN = 100;
     const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
     const graphHeight = 300;
 
