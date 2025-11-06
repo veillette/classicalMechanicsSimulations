@@ -748,7 +748,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       "\\bullet\\; l_1, l_2 = \\text{lengths (m)}\\\\" +
       "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}\\\\" +
       "\\bullet\\; \\theta_1, \\theta_2 = \\text{angles from vertical (rad)}\\\\" +
-      "\\bullet\\; b = \\text{damping coefficient (N·m·s)}" +
+      "\\bullet\\; b = \\text{damping coefficient (N}\\cdot\\text{m}\\cdot\\text{s)}" +
       "\\end{array}",
       {
         maxWidth: 750,
