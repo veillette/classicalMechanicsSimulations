@@ -76,7 +76,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Fixed point for spring attachment (top of screen, centered horizontally)
-    this.fixedPoint = new Vector2(this.layoutBounds.centerX, 100);
+    // Position the fixed point at the wall location for proper attachment
+    const wallY = 80;
+    this.fixedPoint = new Vector2(this.layoutBounds.centerX, wallY);
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
     // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
@@ -96,9 +98,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Wall (horizontal bar at top)
     const wall = new Line(
       this.layoutBounds.centerX-20,
-      this.fixedPoint.y - 20,
+      wallY,
       this.layoutBounds.centerX+20,
-      this.fixedPoint.y - 20,
+      wallY,
       {
         stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
@@ -111,12 +113,16 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       loops: 10,
       radius: 12,
       lineWidth: 3,
+      leftEndLength: 5,
+      rightEndLength: 5,
     });
 
     this.parametricSpring1Node = new ParametricSpringNode({
       loops: 10,
       radius: 12,
       lineWidth: 3,
+      leftEndLength: 5,
+      rightEndLength: 5,
     });
 
     // Create both spring node types for spring 2 (only one will be visible at a time)
@@ -124,12 +130,16 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       loops: 10,
       radius: 3,
       lineWidth: 3,
+      leftEndLength: 5,
+      rightEndLength: 5,
     });
 
     this.parametricSpring2Node = new ParametricSpringNode({
       loops: 10,
       radius: 3,
       lineWidth: 3,
+      leftEndLength: 5,
+      rightEndLength: 5,
     });
 
     // Set initial spring nodes based on preference

@@ -65,7 +65,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.presetProperty = new Property<PresetOption>(this.presets[0]);
 
     // Fixed point for spring attachment (top of screen, centered horizontally)
-    this.fixedPoint = new Vector2(this.layoutBounds.centerX, 100);
+    // Position the fixed point at the wall location for proper attachment
+    const wallY = 80;
+    this.fixedPoint = new Vector2(this.layoutBounds.centerX, wallY);
 
     // Create modelViewTransform: maps model coordinates (meters) to view coordinates (pixels)
     // Maps model origin (0, 0) to the fixed point, with 50 pixels per meter
@@ -85,9 +87,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Wall visualization (horizontal bar at top)
     const wall = new Line(
       this.layoutBounds.centerX-20,
-      this.fixedPoint.y - 20,
+      wallY,
       this.layoutBounds.centerX+20,
-      this.fixedPoint.y - 20,
+      wallY,
       {
         stroke: ClassicalMechanicsColors.rodStrokeColorProperty,
         lineWidth: 4,
@@ -100,12 +102,16 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       loops: 12,
       radius: 15,
       lineWidth: 3,
+      leftEndLength: 5,
+      rightEndLength: 5,
     });
 
     this.parametricSpringNode = new ParametricSpringNode({
       loops: 12,
       radius: 4,
       lineWidth: 3,
+      leftEndLength: 5,
+      rightEndLength: 5,
     });
 
     // Set initial spring node based on preference
