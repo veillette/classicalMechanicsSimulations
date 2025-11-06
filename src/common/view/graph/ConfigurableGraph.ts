@@ -17,6 +17,7 @@ import { Range, Vector2 } from "scenerystack/dot";
 import {
   Property,
   BooleanProperty,
+  DerivedProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
 import { Orientation } from "scenerystack/phet-core";
@@ -243,9 +244,12 @@ export default class ConfigurableGraph extends Node {
     // Add the graph content container
     this.addChild(this.graphContentNode);
 
-    // Link visibility property to the content node
+    // Link visibility property to the content node and resize handles
     this.graphVisibleProperty.link((visible) => {
       this.graphContentNode.visible = visible;
+      this.resizeHandles.forEach((handle) => {
+        handle.visible = visible;
+      });
     });
 
     // Create draggable header bar with checkbox
@@ -263,10 +267,14 @@ export default class ConfigurableGraph extends Node {
       },
     );
 
-    // Create header bar
+    // Create header bar with dynamic fill that darkens the control panel background
     const headerHeight = 30;
+    const headerFillProperty = new DerivedProperty(
+      [ClassicalMechanicsColors.controlPanelBackgroundColorProperty],
+      (backgroundColor) => backgroundColor.colorUtilsDarker(0.1)
+    );
     this.headerBar = new Rectangle(0, -headerHeight, this.graphWidth, headerHeight, 5, 5, {
-      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty.value.colorUtilsDarker(0.1),
+      fill: headerFillProperty,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       lineWidth: 2,
       cursor: 'grab',
@@ -1047,6 +1055,7 @@ export default class ConfigurableGraph extends Node {
 
     // Update axis labels positions
     this.xAxisLabelNode.centerX = newWidth / 2;
+    this.xAxisLabelNode.top = newHeight + 35;
     this.yAxisLabelNode.centerY = newHeight / 2;
 
     // Update title panel position
