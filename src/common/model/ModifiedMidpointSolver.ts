@@ -41,14 +41,6 @@ export class ModifiedMidpointSolver implements ODESolver {
   }
 
   /**
-   * Set the number of substeps for the modified midpoint method.
-   * Higher values give better accuracy but require more computation.
-   */
-  public setNumSubsteps(n: number): void {
-    this.numSubsteps = Math.max(2, Math.floor(n));
-  }
-
-  /**
    * Perform one step of the modified midpoint method.
    */
   private stepOnce(

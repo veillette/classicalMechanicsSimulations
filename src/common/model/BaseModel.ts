@@ -130,23 +130,6 @@ export abstract class BaseModel {
   }
 
   /**
-   * Set the fixed timestep for the physics solver.
-   * Smaller values provide more accuracy but require more computation.
-   *
-   * @param dt - Fixed timestep in seconds
-   */
-  public setPhysicsTimeStep(dt: number): void {
-    this.solver.setFixedTimeStep(dt);
-  }
-
-  /**
-   * Get the current physics timestep.
-   */
-  public getPhysicsTimeStep(): number {
-    return this.solver.getFixedTimeStep();
-  }
-
-  /**
    * Get the current state vector for physics integration.
    * Subclasses must implement this to return their state variables.
    *

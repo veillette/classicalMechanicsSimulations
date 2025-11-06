@@ -45,13 +45,6 @@ export class AdaptiveRK45Solver implements ODESolver {
   }
 
   /**
-   * Set the error tolerance for adaptive stepping.
-   */
-  public setTolerance(tol: number): void {
-    this.tolerance = tol;
-  }
-
-  /**
    * Perform one RK45 step with error estimation.
    */
   private stepOnce(

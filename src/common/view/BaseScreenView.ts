@@ -471,17 +471,6 @@ export abstract class BaseScreenView<
   }
 
   /**
-   * Announce a message using the voicing system.
-   * This method is deprecated but kept for backwards compatibility with subclasses.
-   * Subclasses should use SimulationAnnouncer directly instead.
-   * @param message - The message to announce
-   * @deprecated Use SimulationAnnouncer methods directly instead
-   */
-  protected announceToScreenReader(message: string): void {
-    SimulationAnnouncer.announce(message);
-  }
-
-  /**
    * Set up listeners for accessibility-related state changes.
    */
   private setupAccessibilityListeners(): void {
