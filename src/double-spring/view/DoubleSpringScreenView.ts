@@ -45,13 +45,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly parametricSpring2Node: ParametricSpringNode;
   private currentSpring2Node: SpringNode | ParametricSpringNode;
   private readonly fixedPoint: Vector2;
-  private readonly modelViewTransform: ModelViewTransform2;
   private readonly presetProperty: Property<PresetOption>;
   private readonly presets: Preset[];
   private isApplyingPreset: boolean = false;
-
-  // Graph component
-  private readonly configurableGraph: ConfigurableGraph;
 
   // Vectors for mass 1
   private readonly velocity1VectorNode: VectorNode;
@@ -879,21 +875,15 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   }
 
   public override reset(): void {
-    super.reset(); // Reset base view properties (including vector visibility properties)
-
-    // Clear graph data
-    this.configurableGraph.clearData();
+    super.reset(); // Reset base view properties (including vector visibility properties and graph)
 
     // Update visualization to match reset model state
     this.updateVisualization();
   }
 
   public override step(dt: number): void {
-    super.step(dt); // Step the stopwatch and other base view components
+    super.step(dt); // Step the stopwatch, graph, and other base view components
     this.model.step(dt);
-
-    // Add data point to configurable graph
-    this.configurableGraph.addDataPoint();
 
     // Update vector visualizations
     this.updateVectors();
