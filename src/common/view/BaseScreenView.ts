@@ -30,6 +30,7 @@ import { StringManager } from "../../i18n/StringManager.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
+import { ConfigurableGraph } from "./graph/index.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -70,6 +71,12 @@ export abstract class BaseScreenView<
   protected showVelocityProperty: BooleanProperty = new BooleanProperty(false);
   protected showForceProperty: BooleanProperty = new BooleanProperty(false);
   protected showAccelerationProperty: BooleanProperty = new BooleanProperty(false);
+
+  // Graph component (available to all screens)
+  protected configurableGraph: ConfigurableGraph | null = null;
+
+  // Model-view transform (available to all screens)
+  protected modelViewTransform: ModelViewTransform2 | null = null;
 
   // Info dialog
   private infoDialog: Dialog | null = null;
@@ -437,6 +444,11 @@ export abstract class BaseScreenView<
     this.showForceProperty.reset();
     this.showAccelerationProperty.reset();
 
+    // Clear graph data if graph exists
+    if (this.configurableGraph) {
+      this.configurableGraph.clearData();
+    }
+
     // Subclasses can override to add custom reset behavior
   }
 
@@ -449,6 +461,12 @@ export abstract class BaseScreenView<
     if (this.stopwatch && dt > 0) {
       this.stopwatch.step(dt);
     }
+
+    // Add data point to graph if it exists (only for forward time)
+    if (this.configurableGraph && dt > 0) {
+      this.configurableGraph.addDataPoint();
+    }
+
     // Subclasses can override to add their own step behavior
   }
 
