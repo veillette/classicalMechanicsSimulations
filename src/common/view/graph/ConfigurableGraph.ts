@@ -124,10 +124,7 @@ export default class ConfigurableGraph extends Node {
     this.graphContentNode.addChild(this.chartRectangle);
 
     // Create grid lines, tick marks, and tick labels
-    const initialSpacing = GraphDataManager.prototype.calculateTickSpacing.call(
-      { calculateTickSpacing: GraphDataManager.prototype.calculateTickSpacing },
-      initialRange.getLength()
-    );
+    const initialSpacing = GraphDataManager.calculateTickSpacing(initialRange.getLength());
 
     this.verticalGridLineSet = new GridLineSet(this.chartTransform, Orientation.VERTICAL, initialSpacing, {
       stroke: ClassicalMechanicsColors.graphGridColorProperty,

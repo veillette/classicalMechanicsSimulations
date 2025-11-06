@@ -144,8 +144,8 @@ export default class GraphDataManager {
    */
   public updateTickSpacing(xRange: Range, yRange: Range): void {
     // Calculate appropriate tick spacing (aim for ~5 ticks to avoid clutter)
-    const xSpacing = this.calculateTickSpacing(xRange.getLength());
-    const ySpacing = this.calculateTickSpacing(yRange.getLength());
+    const xSpacing = GraphDataManager.calculateTickSpacing(xRange.getLength());
+    const ySpacing = GraphDataManager.calculateTickSpacing(yRange.getLength());
 
     this.verticalGridLineSet.setSpacing(ySpacing);
     this.horizontalGridLineSet.setSpacing(xSpacing);
@@ -156,9 +156,10 @@ export default class GraphDataManager {
   }
 
   /**
-   * Calculate appropriate tick spacing for a given range
+   * Calculate appropriate tick spacing for a given range.
+   * This is a static utility method that doesn't depend on instance state.
    */
-  public calculateTickSpacing(rangeLength: number): number {
+  public static calculateTickSpacing(rangeLength: number): number {
     // Handle edge cases
     if (!isFinite(rangeLength) || rangeLength <= 0) {
       return 1;
