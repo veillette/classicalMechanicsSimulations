@@ -309,7 +309,8 @@ export abstract class BaseScreenView<
     };
 
     this.infoDialog = new Dialog(infoContent, dialogOptions);
-    this.addChild(this.infoDialog);
+    // Note: Dialog should NOT be added as a child - it manages its own display layer
+    // this.addChild(this.infoDialog);
 
     const infoButton = new InfoButton({
       iconFill: ClassicalMechanicsColors.infoButtonIconColorProperty,
