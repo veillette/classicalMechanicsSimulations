@@ -1,57 +1,33 @@
 /**
  * Dialog that displays available keyboard shortcuts for the simulation.
+ * Extends Dialog to provide automatic close button and ESC key dismissal.
  */
 
-import { Panel } from "scenerystack/sun";
+import { Dialog } from "scenerystack/sun";
+import type { DialogOptions } from "scenerystack/sun";
 import { VBox, HBox, Text, Node } from "scenerystack/scenery";
-import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import { PhetFont } from "scenerystack";
 
 
-export class KeyboardShortcutsDialog extends Node {
-  private readonly panel: Panel;
-  private readonly isShownProperty: BooleanProperty;
-
+export class KeyboardShortcutsDialog extends Dialog {
   public constructor() {
-    super();
+    const content = KeyboardShortcutsDialog.createContent();
 
-    this.isShownProperty = new BooleanProperty(false);
-
-    this.panel = new Panel(KeyboardShortcutsDialog.createContent(), {
+    const options: DialogOptions = {
       fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 5,
-      xMargin: 20,
-      yMargin: 15,
-    });
+      xSpacing: 20,
+      ySpacing: 15,
+      closeButtonListener: () => {
+        this.hide();
+      },
+    };
 
-    this.addChild(this.panel);
-
-    // Position in center of screen
-    this.panel.centerX = 512;
-    this.panel.centerY = 384;
-
-    // Link visibility
-    this.isShownProperty.link((visible) => {
-      this.visible = visible;
-    });
-  }
-
-  /**
-   * Show the dialog
-   */
-  public show(): void {
-    this.isShownProperty.value = true;
-  }
-
-  /**
-   * Hide the dialog
-   */
-  public hide(): void {
-    this.isShownProperty.value = false;
+    super(content, options);
   }
 
   private static createContent(): Node {

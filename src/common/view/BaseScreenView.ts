@@ -22,7 +22,8 @@ import {
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { Bounds2, Vector2 } from "scenerystack/dot";
-import { Panel } from "scenerystack/sun";
+import { Dialog } from "scenerystack/sun";
+import type { DialogOptions } from "scenerystack/sun";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -65,8 +66,8 @@ export abstract class BaseScreenView<
   protected stopwatch: Stopwatch | null = null;
   protected stopwatchNode: StopwatchNode | null = null;
 
-  // Info panel
-  private infoPanel: Panel | null = null;
+  // Info dialog
+  private infoDialog: Dialog | null = null;
 
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
@@ -292,25 +293,33 @@ export abstract class BaseScreenView<
     });
     this.addChild(resetButton);
 
-    // Info button and panel
+    // Info button and dialog
     const infoContent = this.createInfoDialogContent();
-    this.infoPanel = new Panel(infoContent, {
+
+    const dialogOptions: DialogOptions = {
       fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
       lineWidth: 2,
-      xMargin: 20,
-      yMargin: 15,
+      xSpacing: 20,
+      ySpacing: 15,
       cornerRadius: 10,
-      center: this.layoutBounds.center,
-      visible: false,
-    });
-    this.addChild(this.infoPanel);
+      closeButtonListener: () => {
+        this.infoDialog!.hide();
+      },
+    };
+
+    this.infoDialog = new Dialog(infoContent, dialogOptions);
+    this.addChild(this.infoDialog);
 
     const infoButton = new InfoButton({
       iconFill: ClassicalMechanicsColors.infoButtonIconColorProperty,
       scale: 0.5,
       listener: () => {
-        this.infoPanel!.visible = !this.infoPanel!.visible;
+        if (this.infoDialog!.isShowingProperty.value) {
+          this.infoDialog!.hide();
+        } else {
+          this.infoDialog!.show();
+        }
       },
       right: this.layoutBounds.maxX - 60,
       bottom: this.layoutBounds.maxY - 10,
