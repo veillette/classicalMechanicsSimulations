@@ -112,8 +112,9 @@ export abstract class BaseScreenView<
     });
     this.addChild(this.measuringTapeNode);
 
-    this.measuringTapeNode.left = 10;
-    this.measuringTapeNode.top = 10;
+    // Position measuring tape near the toolbox at bottom left
+    this.measuringTapeNode.left = this.layoutBounds.minX + 160;
+    this.measuringTapeNode.bottom = this.layoutBounds.maxY - 15;
 
     // Link visibility
     this.showDistanceToolProperty.link((visible) => {
@@ -145,10 +146,11 @@ export abstract class BaseScreenView<
     }
 
     // Stopwatch tool (SceneryStack component)
+    // Position near the toolbox at bottom left
     this.stopwatch = new Stopwatch({
       position: new Vector2(
-        this.layoutBounds.minX + 100,
-        this.layoutBounds.minY + 50,
+        this.layoutBounds.minX + 160,
+        this.layoutBounds.maxY - 120,
       ),
       isVisible: false,
     });
