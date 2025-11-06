@@ -42,7 +42,7 @@ export class SpringNode extends Node {
     super();
 
     this.loops = options?.loops ?? 10;
-    this.radius = options?.radius ?? 10;
+    this.radius = options?.radius ?? 3;
     this.aspectRatio = options?.aspectRatio ?? 4;
     this.leftEndLength = options?.leftEndLength ?? 15;
     this.rightEndLength = options?.rightEndLength ?? 25;
@@ -53,7 +53,7 @@ export class SpringNode extends Node {
     const backColorProperty =
       options?.backColorProperty ??
       ClassicalMechanicsColors.springBackColorProperty;
-    const lineWidth = options?.lineWidth ?? 3;
+    const lineWidth = options?.lineWidth ?? 1;
 
     // Back part of spring (goes behind)
     this.backPath = new Path(null, {

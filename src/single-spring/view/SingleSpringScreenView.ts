@@ -100,16 +100,16 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Create both spring node types (only one will be visible at a time)
     this.classicSpringNode = new SpringNode({
       loops: 12,
-      radius: 15,
-      lineWidth: 3,
+      radius: 5,
+      lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
     });
 
     this.parametricSpringNode = new ParametricSpringNode({
       loops: 12,
-      radius: 4,
-      lineWidth: 3,
+      radius: 1,
+      lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
     });
@@ -644,13 +644,13 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
    * Stiffer springs (higher k) appear beefier (thicker lines, wider coils).
    */
   private updateSpringAppearance(springConstant: number): void {
-    // Map spring constant [1, 50] to lineWidth [2, 7]
+    // Map spring constant [1, 50] to lineWidth [1, 2.5]
     const minK = 1, maxK = 50;
-    const minLineWidth = 2, maxLineWidth = 7;
+    const minLineWidth = 1, maxLineWidth = 2.5;
     const lineWidth = minLineWidth + (springConstant - minK) * (maxLineWidth - minLineWidth) / (maxK - minK);
 
-    // Map spring constant [1, 50] to radius [8, 22]
-    const minRadius = 8, maxRadius = 22;
+    // Map spring constant [1, 50] to radius [3, 7]
+    const minRadius = 3, maxRadius = 7;
     const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
 
     this.currentSpringNode.setLineWidth(lineWidth);
