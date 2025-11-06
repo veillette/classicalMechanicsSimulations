@@ -51,7 +51,12 @@ export class StringManager {
   /**
    * Get screen name string properties
    */
-  public getScreenNames() {
+  public getScreenNames(): {
+    singleSpringStringProperty: ReadOnlyProperty<string>;
+    doubleSpringStringProperty: ReadOnlyProperty<string>;
+    pendulumStringProperty: ReadOnlyProperty<string>;
+    doublePendulumStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       singleSpringStringProperty:
         this.stringProperties.screens.singleSpringStringProperty,
@@ -67,7 +72,21 @@ export class StringManager {
   /**
    * Get control label string properties
    */
-  public getControlLabels() {
+  public getControlLabels(): {
+    massStringProperty: ReadOnlyProperty<string>;
+    mass1StringProperty: ReadOnlyProperty<string>;
+    mass2StringProperty: ReadOnlyProperty<string>;
+    springConstantStringProperty: ReadOnlyProperty<string>;
+    springConstant1StringProperty: ReadOnlyProperty<string>;
+    springConstant2StringProperty: ReadOnlyProperty<string>;
+    dampingStringProperty: ReadOnlyProperty<string>;
+    damping1StringProperty: ReadOnlyProperty<string>;
+    damping2StringProperty: ReadOnlyProperty<string>;
+    lengthStringProperty: ReadOnlyProperty<string>;
+    length1StringProperty: ReadOnlyProperty<string>;
+    length2StringProperty: ReadOnlyProperty<string>;
+    gravityStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       massStringProperty: this.stringProperties.controls.massStringProperty,
       mass1StringProperty: this.stringProperties.controls.mass1StringProperty,
@@ -97,7 +116,14 @@ export class StringManager {
   /**
    * Get unit string properties
    */
-  public getUnitStrings() {
+  public getUnitStrings(): {
+    kilogramsStringProperty: ReadOnlyProperty<string>;
+    newtonsPerMeterStringProperty: ReadOnlyProperty<string>;
+    newtonSecondsPerMeterStringProperty: ReadOnlyProperty<string>;
+    newtonMeterSecondsStringProperty: ReadOnlyProperty<string>;
+    metersStringProperty: ReadOnlyProperty<string>;
+    metersPerSecondSquaredStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       kilogramsStringProperty:
         this.stringProperties.units.kilogramsStringProperty,
@@ -116,7 +142,19 @@ export class StringManager {
   /**
    * Get graph label string properties
    */
-  public getGraphLabels() {
+  public getGraphLabels(): {
+    showGraphStringProperty: ReadOnlyProperty<string>;
+    xAxisLabelStringProperty: ReadOnlyProperty<string>;
+    yAxisLabelStringProperty: ReadOnlyProperty<string>;
+    xStringProperty: ReadOnlyProperty<string>;
+    yStringProperty: ReadOnlyProperty<string>;
+    timeStringProperty: ReadOnlyProperty<string>;
+    valueStringProperty: ReadOnlyProperty<string>;
+    line1StringProperty: ReadOnlyProperty<string>;
+    line2StringProperty: ReadOnlyProperty<string>;
+    line3StringProperty: ReadOnlyProperty<string>;
+    angleAndVelocityStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       // Graph controls
       showGraphStringProperty: this.stringProperties.graph.showGraphStringProperty,
@@ -146,7 +184,20 @@ export class StringManager {
   /**
    * Get graph property name string properties
    */
-  public getGraphPropertyNames() {
+  public getGraphPropertyNames(): {
+    positionStringProperty: ReadOnlyProperty<string>;
+    velocityStringProperty: ReadOnlyProperty<string>;
+    angleStringProperty: ReadOnlyProperty<string>;
+    angularVelocityStringProperty: ReadOnlyProperty<string>;
+    angle1StringProperty: ReadOnlyProperty<string>;
+    angle2StringProperty: ReadOnlyProperty<string>;
+    angularVelocity1StringProperty: ReadOnlyProperty<string>;
+    angularVelocity2StringProperty: ReadOnlyProperty<string>;
+    kineticEnergyStringProperty: ReadOnlyProperty<string>;
+    potentialEnergyStringProperty: ReadOnlyProperty<string>;
+    totalEnergyStringProperty: ReadOnlyProperty<string>;
+    timeStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       positionStringProperty: this.stringProperties.graph.properties.positionStringProperty,
       velocityStringProperty: this.stringProperties.graph.properties.velocityStringProperty,
@@ -166,7 +217,9 @@ export class StringManager {
   /**
    * Get time control string properties
    */
-  public getTimeControlLabels() {
+  public getTimeControlLabels(): {
+    autoPauseWhenTabHiddenStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       autoPauseWhenTabHiddenStringProperty: this.stringProperties.timeControls.autoPauseWhenTabHiddenStringProperty,
     };
@@ -175,7 +228,14 @@ export class StringManager {
   /**
    * Get preferences string properties
    */
-  public getPreferencesLabels() {
+  public getPreferencesLabels(): {
+    autoPauseWhenTabHiddenStringProperty: ReadOnlyProperty<string>;
+    autoPauseDescriptionStringProperty: ReadOnlyProperty<string>;
+    solverMethodStringProperty: ReadOnlyProperty<string>;
+    solverDescriptionStringProperty: ReadOnlyProperty<string>;
+    springVisualizationStringProperty: ReadOnlyProperty<string>;
+    springVisualizationDescriptionStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       autoPauseWhenTabHiddenStringProperty: this.stringProperties.preferences.autoPauseWhenTabHiddenStringProperty,
       autoPauseDescriptionStringProperty: this.stringProperties.preferences.autoPauseDescriptionStringProperty,
@@ -189,7 +249,12 @@ export class StringManager {
   /**
    * Get solver name string properties
    */
-  public getSolverNames() {
+  public getSolverNames(): {
+    rk4StringProperty: ReadOnlyProperty<string>;
+    adaptiveRK45StringProperty: ReadOnlyProperty<string>;
+    adaptiveEulerStringProperty: ReadOnlyProperty<string>;
+    modifiedMidpointStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       rk4StringProperty: this.stringProperties.preferences.solvers.rk4StringProperty,
       adaptiveRK45StringProperty: this.stringProperties.preferences.solvers.adaptiveRK45StringProperty,
@@ -201,7 +266,15 @@ export class StringManager {
   /**
    * Get audio preferences label string properties
    */
-  public getAudioPreferencesLabels() {
+  public getAudioPreferencesLabels(): {
+    simVoicingOptionsStringProperty: ReadOnlyProperty<string>;
+    announceParameterChangesStringProperty: ReadOnlyProperty<string>;
+    parameterAnnouncementsDescriptionStringProperty: ReadOnlyProperty<string>;
+    announceStateChangesStringProperty: ReadOnlyProperty<string>;
+    stateAnnouncementsDescriptionStringProperty: ReadOnlyProperty<string>;
+    announceDragInteractionsStringProperty: ReadOnlyProperty<string>;
+    dragAnnouncementsDescriptionStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       simVoicingOptionsStringProperty: this.stringProperties.preferences.audio.simVoicingOptionsStringProperty,
       announceParameterChangesStringProperty: this.stringProperties.preferences.audio.announceParameterChangesStringProperty,
@@ -216,7 +289,12 @@ export class StringManager {
   /**
    * Get solver description string properties
    */
-  public getSolverDescriptions() {
+  public getSolverDescriptions(): {
+    rk4StringProperty: ReadOnlyProperty<string>;
+    adaptiveRK45StringProperty: ReadOnlyProperty<string>;
+    adaptiveEulerStringProperty: ReadOnlyProperty<string>;
+    modifiedMidpointStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       rk4StringProperty: this.stringProperties.preferences.solverDescriptions.rk4StringProperty,
       adaptiveRK45StringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveRK45StringProperty,
@@ -228,7 +306,10 @@ export class StringManager {
   /**
    * Get spring type name string properties
    */
-  public getSpringTypeNames() {
+  public getSpringTypeNames(): {
+    classicStringProperty: ReadOnlyProperty<string>;
+    parametricStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       classicStringProperty: this.stringProperties.preferences.springTypes.classicStringProperty,
       parametricStringProperty: this.stringProperties.preferences.springTypes.parametricStringProperty,
@@ -238,7 +319,10 @@ export class StringManager {
   /**
    * Get spring type description string properties
    */
-  public getSpringTypeDescriptions() {
+  public getSpringTypeDescriptions(): {
+    classicStringProperty: ReadOnlyProperty<string>;
+    parametricStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       classicStringProperty: this.stringProperties.preferences.springTypeDescriptions.classicStringProperty,
       parametricStringProperty: this.stringProperties.preferences.springTypeDescriptions.parametricStringProperty,
@@ -248,7 +332,10 @@ export class StringManager {
   /**
    * Get preset common string properties
    */
-  public getPresetLabels() {
+  public getPresetLabels(): {
+    labelStringProperty: ReadOnlyProperty<string>;
+    customStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       labelStringProperty: this.stringProperties.presets.labelStringProperty,
       customStringProperty: this.stringProperties.presets.customStringProperty,
@@ -258,7 +345,18 @@ export class StringManager {
   /**
    * Get single spring preset string properties
    */
-  public getSingleSpringPresets() {
+  public getSingleSpringPresets(): {
+    lightAndBouncyStringProperty: ReadOnlyProperty<string>;
+    lightAndBouncyDescStringProperty: ReadOnlyProperty<string>;
+    heavyAndSlowStringProperty: ReadOnlyProperty<string>;
+    heavyAndSlowDescStringProperty: ReadOnlyProperty<string>;
+    criticallyDampedStringProperty: ReadOnlyProperty<string>;
+    criticallyDampedDescStringProperty: ReadOnlyProperty<string>;
+    underdampedStringProperty: ReadOnlyProperty<string>;
+    underdampedDescStringProperty: ReadOnlyProperty<string>;
+    overdampedStringProperty: ReadOnlyProperty<string>;
+    overdampedDescStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       lightAndBouncyStringProperty: this.stringProperties.presets.singleSpring.lightAndBouncyStringProperty,
       lightAndBouncyDescStringProperty: this.stringProperties.presets.singleSpring.lightAndBouncyDescStringProperty,
@@ -276,7 +374,16 @@ export class StringManager {
   /**
    * Get double spring preset string properties
    */
-  public getDoubleSpringPresets() {
+  public getDoubleSpringPresets(): {
+    symmetricStringProperty: ReadOnlyProperty<string>;
+    symmetricDescStringProperty: ReadOnlyProperty<string>;
+    asymmetricMassesStringProperty: ReadOnlyProperty<string>;
+    asymmetricMassesDescStringProperty: ReadOnlyProperty<string>;
+    differentSpringsStringProperty: ReadOnlyProperty<string>;
+    differentSpringsDescStringProperty: ReadOnlyProperty<string>;
+    coupledResonanceStringProperty: ReadOnlyProperty<string>;
+    coupledResonanceDescStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       symmetricStringProperty: this.stringProperties.presets.doubleSpring.symmetricStringProperty,
       symmetricDescStringProperty: this.stringProperties.presets.doubleSpring.symmetricDescStringProperty,
@@ -292,7 +399,16 @@ export class StringManager {
   /**
    * Get pendulum preset string properties
    */
-  public getPendulumPresets() {
+  public getPendulumPresets(): {
+    shortAndFastStringProperty: ReadOnlyProperty<string>;
+    shortAndFastDescStringProperty: ReadOnlyProperty<string>;
+    longAndSlowStringProperty: ReadOnlyProperty<string>;
+    longAndSlowDescStringProperty: ReadOnlyProperty<string>;
+    smallAngleStringProperty: ReadOnlyProperty<string>;
+    smallAngleDescStringProperty: ReadOnlyProperty<string>;
+    largeAmplitudeStringProperty: ReadOnlyProperty<string>;
+    largeAmplitudeDescStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       shortAndFastStringProperty: this.stringProperties.presets.pendulum.shortAndFastStringProperty,
       shortAndFastDescStringProperty: this.stringProperties.presets.pendulum.shortAndFastDescStringProperty,
@@ -308,7 +424,16 @@ export class StringManager {
   /**
    * Get double pendulum preset string properties
    */
-  public getDoublePendulumPresets() {
+  public getDoublePendulumPresets(): {
+    synchronizedStringProperty: ReadOnlyProperty<string>;
+    synchronizedDescStringProperty: ReadOnlyProperty<string>;
+    chaoticDanceStringProperty: ReadOnlyProperty<string>;
+    chaoticDanceDescStringProperty: ReadOnlyProperty<string>;
+    counterRotationStringProperty: ReadOnlyProperty<string>;
+    counterRotationDescStringProperty: ReadOnlyProperty<string>;
+    energyTransferStringProperty: ReadOnlyProperty<string>;
+    energyTransferDescStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       synchronizedStringProperty: this.stringProperties.presets.doublePendulum.synchronizedStringProperty,
       synchronizedDescStringProperty: this.stringProperties.presets.doublePendulum.synchronizedDescStringProperty,
@@ -324,7 +449,21 @@ export class StringManager {
   /**
    * Get visualization string properties
    */
-  public getVisualizationLabels() {
+  public getVisualizationLabels(): {
+    showVectorsStringProperty: ReadOnlyProperty<string>;
+    showEnergyChartStringProperty: ReadOnlyProperty<string>;
+    showGridStringProperty: ReadOnlyProperty<string>;
+    velocityStringProperty: ReadOnlyProperty<string>;
+    accelerationStringProperty: ReadOnlyProperty<string>;
+    forceStringProperty: ReadOnlyProperty<string>;
+    gridScaleLabelStringProperty: ReadOnlyProperty<string>;
+    kineticStringProperty: ReadOnlyProperty<string>;
+    potentialStringProperty: ReadOnlyProperty<string>;
+    totalStringProperty: ReadOnlyProperty<string>;
+    showDistanceToolStringProperty: ReadOnlyProperty<string>;
+    showProtractorStringProperty: ReadOnlyProperty<string>;
+    showStopwatchStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       showVectorsStringProperty: this.stringProperties.visualization.showVectorsStringProperty,
       showEnergyChartStringProperty: this.stringProperties.visualization.showEnergyChartStringProperty,
@@ -345,7 +484,53 @@ export class StringManager {
   /**
    * Get accessibility announcement string properties
    */
-  public getAccessibilityStrings() {
+  public getAccessibilityStrings(): {
+    simulationResetStringProperty: ReadOnlyProperty<string>;
+    simulationPlayingStringProperty: ReadOnlyProperty<string>;
+    simulationPausedStringProperty: ReadOnlyProperty<string>;
+    simulationStartedStringProperty: ReadOnlyProperty<string>;
+    steppedForwardStringProperty: ReadOnlyProperty<string>;
+    steppedBackwardStringProperty: ReadOnlyProperty<string>;
+    speedChangedStringProperty: ReadOnlyProperty<string>;
+    draggingMassStringProperty: ReadOnlyProperty<string>;
+    draggingMass1StringProperty: ReadOnlyProperty<string>;
+    draggingMass2StringProperty: ReadOnlyProperty<string>;
+    draggingBobStringProperty: ReadOnlyProperty<string>;
+    draggingUpperBobStringProperty: ReadOnlyProperty<string>;
+    draggingLowerBobStringProperty: ReadOnlyProperty<string>;
+    massReleasedAtStringProperty: ReadOnlyProperty<string>;
+    mass1ReleasedAtStringProperty: ReadOnlyProperty<string>;
+    mass2ReleasedAtStringProperty: ReadOnlyProperty<string>;
+    bobReleasedAtStringProperty: ReadOnlyProperty<string>;
+    upperBobReleasedAtStringProperty: ReadOnlyProperty<string>;
+    lowerBobReleasedAtStringProperty: ReadOnlyProperty<string>;
+    massChangedStringProperty: ReadOnlyProperty<string>;
+    springConstantChangedStringProperty: ReadOnlyProperty<string>;
+    dampingChangedStringProperty: ReadOnlyProperty<string>;
+    lengthChangedStringProperty: ReadOnlyProperty<string>;
+    gravityChangedStringProperty: ReadOnlyProperty<string>;
+    presetAppliedStringProperty: ReadOnlyProperty<string>;
+    graphShownStringProperty: ReadOnlyProperty<string>;
+    graphHiddenStringProperty: ReadOnlyProperty<string>;
+    xAxisChangedStringProperty: ReadOnlyProperty<string>;
+    yAxisChangedStringProperty: ReadOnlyProperty<string>;
+    velocityVectorsShownStringProperty: ReadOnlyProperty<string>;
+    velocityVectorsHiddenStringProperty: ReadOnlyProperty<string>;
+    forceVectorsShownStringProperty: ReadOnlyProperty<string>;
+    forceVectorsHiddenStringProperty: ReadOnlyProperty<string>;
+    accelerationVectorsShownStringProperty: ReadOnlyProperty<string>;
+    accelerationVectorsHiddenStringProperty: ReadOnlyProperty<string>;
+    gridShownStringProperty: ReadOnlyProperty<string>;
+    gridHiddenStringProperty: ReadOnlyProperty<string>;
+    distanceToolShownStringProperty: ReadOnlyProperty<string>;
+    distanceToolHiddenStringProperty: ReadOnlyProperty<string>;
+    protractorShownStringProperty: ReadOnlyProperty<string>;
+    protractorHiddenStringProperty: ReadOnlyProperty<string>;
+    stopwatchShownStringProperty: ReadOnlyProperty<string>;
+    stopwatchHiddenStringProperty: ReadOnlyProperty<string>;
+    solverChangedStringProperty: ReadOnlyProperty<string>;
+    springVisualizationChangedStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       // Simulation state
       simulationResetStringProperty: this.stringProperties.accessibility.simulation.resetStringProperty,
@@ -411,7 +596,18 @@ export class StringManager {
   /**
    * Get keyboard shortcuts string properties
    */
-  public getKeyboardShortcutsStrings() {
+  public getKeyboardShortcutsStrings(): {
+    titleStringProperty: ReadOnlyProperty<string>;
+    simulationControlsStringProperty: ReadOnlyProperty<string>;
+    graphInteractionsStringProperty: ReadOnlyProperty<string>;
+    playPauseSimulationStringProperty: ReadOnlyProperty<string>;
+    resetSimulationStringProperty: ReadOnlyProperty<string>;
+    stepBackwardStringProperty: ReadOnlyProperty<string>;
+    stepForwardStringProperty: ReadOnlyProperty<string>;
+    resetZoomStringProperty: ReadOnlyProperty<string>;
+    zoomInOutStringProperty: ReadOnlyProperty<string>;
+    panViewStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       titleStringProperty: this.stringProperties.keyboardShortcuts.titleStringProperty,
       simulationControlsStringProperty: this.stringProperties.keyboardShortcuts.simulationControlsStringProperty,
@@ -429,7 +625,12 @@ export class StringManager {
   /**
    * Get voicing content for Single Spring screen
    */
-  public getSingleSpringVoicingStrings() {
+  public getSingleSpringVoicingStrings(): {
+    playAreaStringProperty: ReadOnlyProperty<string>;
+    controlAreaStringProperty: ReadOnlyProperty<string>;
+    detailsStringProperty: ReadOnlyProperty<string>;
+    hintStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       playAreaStringProperty: this.stringProperties.voicing.singleSpring.playAreaStringProperty,
       controlAreaStringProperty: this.stringProperties.voicing.singleSpring.controlAreaStringProperty,
@@ -441,7 +642,12 @@ export class StringManager {
   /**
    * Get voicing content for Double Spring screen
    */
-  public getDoubleSpringVoicingStrings() {
+  public getDoubleSpringVoicingStrings(): {
+    playAreaStringProperty: ReadOnlyProperty<string>;
+    controlAreaStringProperty: ReadOnlyProperty<string>;
+    detailsStringProperty: ReadOnlyProperty<string>;
+    hintStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       playAreaStringProperty: this.stringProperties.voicing.doubleSpring.playAreaStringProperty,
       controlAreaStringProperty: this.stringProperties.voicing.doubleSpring.controlAreaStringProperty,
@@ -453,7 +659,12 @@ export class StringManager {
   /**
    * Get voicing content for Pendulum screen
    */
-  public getPendulumVoicingStrings() {
+  public getPendulumVoicingStrings(): {
+    playAreaStringProperty: ReadOnlyProperty<string>;
+    controlAreaStringProperty: ReadOnlyProperty<string>;
+    detailsStringProperty: ReadOnlyProperty<string>;
+    hintStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       playAreaStringProperty: this.stringProperties.voicing.pendulum.playAreaStringProperty,
       controlAreaStringProperty: this.stringProperties.voicing.pendulum.controlAreaStringProperty,
@@ -465,7 +676,12 @@ export class StringManager {
   /**
    * Get voicing content for Double Pendulum screen
    */
-  public getDoublePendulumVoicingStrings() {
+  public getDoublePendulumVoicingStrings(): {
+    playAreaStringProperty: ReadOnlyProperty<string>;
+    controlAreaStringProperty: ReadOnlyProperty<string>;
+    detailsStringProperty: ReadOnlyProperty<string>;
+    hintStringProperty: ReadOnlyProperty<string>;
+  } {
     return {
       playAreaStringProperty: this.stringProperties.voicing.doublePendulum.playAreaStringProperty,
       controlAreaStringProperty: this.stringProperties.voicing.doublePendulum.controlAreaStringProperty,
@@ -478,7 +694,7 @@ export class StringManager {
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */
-  public getAllStringProperties() {
+  public getAllStringProperties(): typeof this.stringProperties {
     return this.stringProperties;
   }
 }
