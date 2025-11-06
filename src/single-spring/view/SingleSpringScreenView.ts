@@ -3,7 +3,7 @@
  * Displays a mass attached to a spring that can be dragged and oscillates.
  */
 
-import { type ScreenViewOptions } from "scenerystack/sim";
+import { type ScreenViewOptions, ScreenSummaryContent } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
@@ -25,7 +25,7 @@ import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
-import { Property } from "scenerystack/axon";
+import { Property, DerivedProperty } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 
@@ -50,6 +50,29 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(model, options);
+
+    // Setup screen summary content for voicing
+    const voicingStrings = StringManager.getInstance().getSingleSpringVoicingStrings();
+
+    // Create dynamic details content that updates with model state
+    const detailsStringProperty = new DerivedProperty(
+      [voicingStrings.detailsStringProperty, model.positionProperty, model.velocityProperty, model.springConstantProperty, model.totalEnergyProperty],
+      (template, position, velocity, springConstant, energy) => {
+        const force = -springConstant * position; // Spring force F = -kx
+        return template
+          .replace('{{position}}', position.toFixed(2))
+          .replace('{{velocity}}', velocity.toFixed(2))
+          .replace('{{force}}', force.toFixed(2))
+          .replace('{{energy}}', energy.toFixed(2));
+      }
+    );
+
+    this.setScreenSummaryContent(new ScreenSummaryContent({
+      playAreaContent: voicingStrings.playAreaStringProperty,
+      controlAreaContent: voicingStrings.controlAreaStringProperty,
+      currentDetailsContent: detailsStringProperty,
+      interactionHintContent: voicingStrings.hintStringProperty,
+    }));
 
     // Get available presets
     this.presets = SingleSpringPresets.getPresets();

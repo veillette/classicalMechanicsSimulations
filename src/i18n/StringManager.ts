@@ -427,6 +427,54 @@ export class StringManager {
   }
 
   /**
+   * Get voicing content for Single Spring screen
+   */
+  public getSingleSpringVoicingStrings() {
+    return {
+      playAreaStringProperty: this.stringProperties.voicing.singleSpring.playAreaStringProperty,
+      controlAreaStringProperty: this.stringProperties.voicing.singleSpring.controlAreaStringProperty,
+      detailsStringProperty: this.stringProperties.voicing.singleSpring.detailsStringProperty,
+      hintStringProperty: this.stringProperties.voicing.singleSpring.hintStringProperty,
+    };
+  }
+
+  /**
+   * Get voicing content for Double Spring screen
+   */
+  public getDoubleSpringVoicingStrings() {
+    return {
+      playAreaStringProperty: this.stringProperties.voicing.doubleSpring.playAreaStringProperty,
+      controlAreaStringProperty: this.stringProperties.voicing.doubleSpring.controlAreaStringProperty,
+      detailsStringProperty: this.stringProperties.voicing.doubleSpring.detailsStringProperty,
+      hintStringProperty: this.stringProperties.voicing.doubleSpring.hintStringProperty,
+    };
+  }
+
+  /**
+   * Get voicing content for Pendulum screen
+   */
+  public getPendulumVoicingStrings() {
+    return {
+      playAreaStringProperty: this.stringProperties.voicing.pendulum.playAreaStringProperty,
+      controlAreaStringProperty: this.stringProperties.voicing.pendulum.controlAreaStringProperty,
+      detailsStringProperty: this.stringProperties.voicing.pendulum.detailsStringProperty,
+      hintStringProperty: this.stringProperties.voicing.pendulum.hintStringProperty,
+    };
+  }
+
+  /**
+   * Get voicing content for Double Pendulum screen
+   */
+  public getDoublePendulumVoicingStrings() {
+    return {
+      playAreaStringProperty: this.stringProperties.voicing.doublePendulum.playAreaStringProperty,
+      controlAreaStringProperty: this.stringProperties.voicing.doublePendulum.controlAreaStringProperty,
+      detailsStringProperty: this.stringProperties.voicing.doublePendulum.detailsStringProperty,
+      hintStringProperty: this.stringProperties.voicing.doublePendulum.hintStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */

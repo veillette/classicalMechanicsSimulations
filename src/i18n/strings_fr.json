@@ -232,5 +232,31 @@
     "resetZoom": "Réinitialiser le zoom automatique",
     "zoomInOut": "Zoomer / Dézoomer",
     "panView": "Déplacer la vue"
+  },
+  "voicing": {
+    "singleSpring": {
+      "playArea": "Une masse attachée à un ressort fixé à un mur. La masse oscille verticalement lorsqu'elle est déplacée de l'équilibre.",
+      "controlArea": "Ajustez la masse, la constante du ressort, l'amortissement et la gravité. Choisissez parmi des préréglages ou créez des configurations personnalisées. Visualisez des graphiques de position, vitesse et énergie au fil du temps.",
+      "details": "Masse à {{position}} mètres, vitesse {{velocity}} mètres par seconde. Force du ressort {{force}} newtons. Énergie totale {{energy}} joules.",
+      "hint": "Faites glisser la masse vers le haut ou vers le bas pour démarrer l'oscillation. Appuyez sur lecture pour regarder le mouvement. Essayez de modifier les paramètres pour voir comment ils affectent l'oscillation."
+    },
+    "doubleSpring": {
+      "playArea": "Deux masses connectées par des ressorts en série. Le système crée des motifs d'oscillation complexes incluant des modes normaux et des figures de Lissajous.",
+      "controlArea": "Ajustez les masses, les constantes de ressort, l'amortissement et la gravité pour chaque masse et ressort. Choisissez parmi des préréglages démontrant différents modes d'oscillation. Visualisez des graphiques des positions, vitesses et énergies.",
+      "details": "Masse 1 à {{position1}} mètres, Masse 2 à {{position2}} mètres. Vitesses de {{velocity1}} et {{velocity2}} mètres par seconde. Énergie totale {{energy}} joules.",
+      "hint": "Faites glisser l'une ou l'autre masse pour la déplacer. Essayez de les faire glisser dans la même direction pour le mode symétrique, ou dans des directions opposées pour le mode anti-symétrique. Appuyez sur lecture pour voir le mouvement résultant."
+    },
+    "pendulum": {
+      "playArea": "Un pendule simple avec un pendule suspendu à un point de pivot. Le pendule présente un comportement non linéaire à grands angles, démontrant les limites de l'approximation des petits angles.",
+      "controlArea": "Ajustez la longueur du pendule, la masse du pendule, l'amortissement et la gravité. Choisissez parmi des préréglages montrant différents régimes d'amortissement. Visualisez des graphiques d'angle, vitesse angulaire et énergie au fil du temps.",
+      "details": "Angle du pendule {{angle}} degrés de la verticale, vitesse angulaire {{angularVelocity}} radians par seconde. Énergie potentielle {{potentialEnergy}} joules, énergie cinétique {{kineticEnergy}} joules.",
+      "hint": "Faites glisser le pendule pour changer l'angle. Essayez de petits angles pour voir le mouvement harmonique simple, ou de grands angles pour observer le comportement non linéaire. Appuyez sur lecture pour regarder le pendule se balancer."
+    },
+    "doublePendulum": {
+      "playArea": "Un double pendule avec deux pendules. Ce système chaotique démontre une dépendance sensible aux conditions initiales - de minuscules changements dans la position de départ conduisent à un mouvement radicalement différent.",
+      "controlArea": "Ajustez les longueurs et masses des deux segments de pendule, plus l'amortissement et la gravité. Choisissez parmi des préréglages montrant le transfert d'énergie et le mouvement chaotique. La traînée de mouvement visualise le chemin chaotique.",
+      "details": "Pendule supérieur à {{angle1}} degrés, pendule inférieur à {{angle2}} degrés. Vitesses angulaires {{angularVelocity1}} et {{angularVelocity2}} radians par seconde. Énergie totale {{energy}} joules.",
+      "hint": "Faites glisser l'un ou l'autre pendule pour définir les conditions initiales. Même de minuscules différences créent des résultats radicalement différents. Appuyez sur lecture et regardez la danse chaotique. Essayez la traînée de mouvement pour voir le chemin complexe."
+    }
   }
 }

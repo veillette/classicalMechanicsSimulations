@@ -241,5 +241,31 @@
     "resetZoom": "Reset zoom to auto-scale",
     "zoomInOut": "Zoom in/out",
     "panView": "Pan view"
+  },
+  "voicing": {
+    "singleSpring": {
+      "playArea": "A mass attached to a spring fixed to a wall. The mass oscillates vertically when displaced from equilibrium.",
+      "controlArea": "Adjust mass, spring constant, damping, and gravity. Choose from presets or create custom configurations. View graphs of position, velocity, and energy over time.",
+      "details": "Mass at {{position}} meters, velocity {{velocity}} meters per second. Spring force {{force}} newtons. Total energy {{energy}} joules.",
+      "hint": "Drag the mass up or down to start oscillation. Press play to watch the motion. Try changing parameters to see how they affect the oscillation."
+    },
+    "doubleSpring": {
+      "playArea": "Two masses connected by springs in a series. The system creates complex oscillation patterns including normal modes and Lissajous figures.",
+      "controlArea": "Adjust masses, spring constants, damping, and gravity for each mass and spring. Choose from presets demonstrating different oscillation modes. View graphs of positions, velocities, and energies.",
+      "details": "Mass 1 at {{position1}} meters, Mass 2 at {{position2}} meters. Velocities are {{velocity1}} and {{velocity2}} meters per second. Total energy {{energy}} joules.",
+      "hint": "Drag either mass to displace it. Try dragging them in the same direction for symmetric mode, or opposite directions for anti-symmetric mode. Press play to see the resulting motion."
+    },
+    "pendulum": {
+      "playArea": "A simple pendulum with a bob suspended from a pivot point. The pendulum exhibits nonlinear behavior at large angles, demonstrating the limits of the small-angle approximation.",
+      "controlArea": "Adjust pendulum length, bob mass, damping, and gravity. Choose from presets showing different damping regimes. View graphs of angle, angular velocity, and energy over time.",
+      "details": "Pendulum angle {{angle}} degrees from vertical, angular velocity {{angularVelocity}} radians per second. Potential energy {{potentialEnergy}} joules, kinetic energy {{kineticEnergy}} joules.",
+      "hint": "Drag the bob to change the angle. Try small angles to see simple harmonic motion, or large angles to observe nonlinear behavior. Press play to watch the pendulum swing."
+    },
+    "doublePendulum": {
+      "playArea": "A double pendulum with two bobs. This chaotic system demonstrates sensitive dependence on initial conditions - tiny changes in starting position lead to dramatically different motion.",
+      "controlArea": "Adjust lengths and masses of both pendulum segments, plus damping and gravity. Choose from presets showing energy transfer and chaotic motion. The motion trail visualizes the chaotic path.",
+      "details": "Upper bob at {{angle1}} degrees, lower bob at {{angle2}} degrees. Angular velocities {{angularVelocity1}} and {{angularVelocity2}} radians per second. Total energy {{energy}} joules.",
+      "hint": "Drag either bob to set initial conditions. Even tiny differences create wildly different outcomes. Press play and watch the chaotic dance. Try the motion trail to see the complex path."
+    }
   }
 }
