@@ -41,13 +41,6 @@ export class AdaptiveEulerSolver implements ODESolver {
   }
 
   /**
-   * Set the error tolerance for adaptive stepping.
-   */
-  public setTolerance(tol: number): void {
-    this.tolerance = tol;
-  }
-
-  /**
    * Perform one adaptive Euler-Heun step with error estimation.
    */
   private stepOnce(

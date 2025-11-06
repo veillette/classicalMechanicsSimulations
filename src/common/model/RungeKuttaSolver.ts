@@ -132,18 +132,4 @@ export class RungeKuttaSolver implements ODESolver {
     return currentTime;
   }
 
-  /**
-   * Legacy method for backward compatibility.
-   * Takes a single step with the exact dt provided (no sub-stepping).
-   *
-   * @deprecated Use step() instead, which handles sub-stepping automatically
-   */
-  public stepExact(
-    state: number[],
-    derivativeFn: DerivativeFunction,
-    time: number,
-    dt: number,
-  ): void {
-    this.stepOnce(state, derivativeFn, time, dt);
-  }
 }

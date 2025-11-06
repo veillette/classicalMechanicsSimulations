@@ -123,12 +123,6 @@ class SimulationAnnouncer {
     voicingUtteranceQueue.addToBack(utterance);
   }
 
-  /**
-   * Announce a custom message with high priority (interrupts current announcements)
-   */
-  public announceImportant(message: string): void {
-    this.announce(message, 5); // High priority
-  }
 }
 
 // Export singleton instance for convenience
