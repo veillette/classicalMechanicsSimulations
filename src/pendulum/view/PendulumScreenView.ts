@@ -12,10 +12,8 @@ import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import {
-  ConfigurableGraph,
-  type PlottableProperty,
-} from "../../common/view/graph/index.js";
+import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
+import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";

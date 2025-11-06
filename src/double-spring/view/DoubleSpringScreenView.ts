@@ -25,10 +25,8 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
-import {
-  ConfigurableGraph,
-  type PlottableProperty,
-} from "../../common/view/graph/index.js";
+import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
+import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";

@@ -21,10 +21,8 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
-import {
-  ConfigurableGraph,
-  type PlottableProperty,
-} from "../../common/view/graph/index.js";
+import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
+import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property } from "scenerystack/axon";

@@ -25,10 +25,8 @@ import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { BooleanProperty, Property } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
-import {
-  ConfigurableGraph,
-  type PlottableProperty,
-} from "../../common/view/graph/index.js";
+import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
+import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoublePendulumPresets } from "../model/DoublePendulumPresets.js";
