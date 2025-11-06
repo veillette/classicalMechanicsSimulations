@@ -276,6 +276,7 @@ export class StringManager {
     dragAnnouncementsDescriptionStringProperty: ReadOnlyProperty<string>;
   } {
     // Type assertion needed due to TypeScript's limitations with deeply nested conditional types
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const audioProps = this.stringProperties.preferences.audio as any;
     return {
       simVoicingOptionsStringProperty: audioProps.simVoicingOptionsStringProperty as ReadOnlyProperty<string>,
