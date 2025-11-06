@@ -66,6 +66,11 @@ export abstract class BaseScreenView<
   protected stopwatch: Stopwatch | null = null;
   protected stopwatchNode: StopwatchNode | null = null;
 
+  // Vector visualization properties (available to all screens)
+  protected showVelocityProperty: BooleanProperty = new BooleanProperty(false);
+  protected showForceProperty: BooleanProperty = new BooleanProperty(false);
+  protected showAccelerationProperty: BooleanProperty = new BooleanProperty(false);
+
   // Info dialog
   private infoDialog: Dialog | null = null;
 
@@ -426,6 +431,11 @@ export abstract class BaseScreenView<
     if (this.showGridProperty) {
       this.showGridProperty.reset();
     }
+
+    // Reset vector visualization properties
+    this.showVelocityProperty.reset();
+    this.showForceProperty.reset();
+    this.showAccelerationProperty.reset();
 
     // Subclasses can override to add custom reset behavior
   }
