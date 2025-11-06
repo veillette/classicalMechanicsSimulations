@@ -10,6 +10,8 @@ import { BooleanProperty, type ReadOnlyProperty } from "scenerystack/axon";
 import { GridIcon } from "scenerystack/scenery-phet";
 import { PhetFont } from "scenerystack";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
+import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 
 
 type ToolsControlPanelOptions = {
@@ -21,6 +23,14 @@ type ToolsControlPanelOptions = {
   distanceToolLabelProperty: ReadOnlyProperty<string>;
   protractorLabelProperty?: ReadOnlyProperty<string>; // Optional for spring screens
   stopwatchLabelProperty: ReadOnlyProperty<string>;
+  gridShownStringProperty: ReadOnlyProperty<string>;
+  gridHiddenStringProperty: ReadOnlyProperty<string>;
+  distanceToolShownStringProperty: ReadOnlyProperty<string>;
+  distanceToolHiddenStringProperty: ReadOnlyProperty<string>;
+  protractorShownStringProperty?: ReadOnlyProperty<string>;
+  protractorHiddenStringProperty?: ReadOnlyProperty<string>;
+  stopwatchShownStringProperty: ReadOnlyProperty<string>;
+  stopwatchHiddenStringProperty: ReadOnlyProperty<string>;
 };
 
 export class ToolsControlPanel extends Panel {
@@ -104,5 +114,47 @@ export class ToolsControlPanel extends Panel {
       lineWidth: 1,
       cornerRadius: 5,
     });
+
+    // Add accessibility announcements for tool visibility changes
+    options.showGridProperty.lazyLink((showGrid) => {
+      if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+        const announcement = showGrid
+          ? options.gridShownStringProperty.value
+          : options.gridHiddenStringProperty.value;
+        SimulationAnnouncer.announceSimulationState(announcement);
+      }
+    });
+
+    options.showDistanceToolProperty.lazyLink((showDistanceTool) => {
+      if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+        const announcement = showDistanceTool
+          ? options.distanceToolShownStringProperty.value
+          : options.distanceToolHiddenStringProperty.value;
+        SimulationAnnouncer.announceSimulationState(announcement);
+      }
+    });
+
+    options.showStopwatchProperty.lazyLink((showStopwatch) => {
+      if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+        const announcement = showStopwatch
+          ? options.stopwatchShownStringProperty.value
+          : options.stopwatchHiddenStringProperty.value;
+        SimulationAnnouncer.announceSimulationState(announcement);
+      }
+    });
+
+    // Add protractor announcements if provided (for pendulum screens)
+    if (options.showProtractorProperty && options.protractorShownStringProperty && options.protractorHiddenStringProperty) {
+      const protractorShownString = options.protractorShownStringProperty;
+      const protractorHiddenString = options.protractorHiddenStringProperty;
+      options.showProtractorProperty.lazyLink((showProtractor) => {
+        if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+          const announcement = showProtractor
+            ? protractorShownString.value
+            : protractorHiddenString.value;
+          SimulationAnnouncer.announceSimulationState(announcement);
+        }
+      });
+    }
   }
 }

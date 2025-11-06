@@ -383,6 +383,28 @@ export class StringManager {
       graphHiddenStringProperty: this.stringProperties.accessibility.graph.hiddenStringProperty,
       xAxisChangedStringProperty: this.stringProperties.accessibility.graph.xAxisChangedStringProperty,
       yAxisChangedStringProperty: this.stringProperties.accessibility.graph.yAxisChangedStringProperty,
+
+      // Visualization changes
+      velocityVectorsShownStringProperty: this.stringProperties.accessibility.visualization.velocityVectorsShownStringProperty,
+      velocityVectorsHiddenStringProperty: this.stringProperties.accessibility.visualization.velocityVectorsHiddenStringProperty,
+      forceVectorsShownStringProperty: this.stringProperties.accessibility.visualization.forceVectorsShownStringProperty,
+      forceVectorsHiddenStringProperty: this.stringProperties.accessibility.visualization.forceVectorsHiddenStringProperty,
+      accelerationVectorsShownStringProperty: this.stringProperties.accessibility.visualization.accelerationVectorsShownStringProperty,
+      accelerationVectorsHiddenStringProperty: this.stringProperties.accessibility.visualization.accelerationVectorsHiddenStringProperty,
+
+      // Tool visibility changes
+      gridShownStringProperty: this.stringProperties.accessibility.tools.gridShownStringProperty,
+      gridHiddenStringProperty: this.stringProperties.accessibility.tools.gridHiddenStringProperty,
+      distanceToolShownStringProperty: this.stringProperties.accessibility.tools.distanceToolShownStringProperty,
+      distanceToolHiddenStringProperty: this.stringProperties.accessibility.tools.distanceToolHiddenStringProperty,
+      protractorShownStringProperty: this.stringProperties.accessibility.tools.protractorShownStringProperty,
+      protractorHiddenStringProperty: this.stringProperties.accessibility.tools.protractorHiddenStringProperty,
+      stopwatchShownStringProperty: this.stringProperties.accessibility.tools.stopwatchShownStringProperty,
+      stopwatchHiddenStringProperty: this.stringProperties.accessibility.tools.stopwatchHiddenStringProperty,
+
+      // Preference changes
+      solverChangedStringProperty: this.stringProperties.accessibility.preferences.solverChangedStringProperty,
+      springVisualizationChangedStringProperty: this.stringProperties.accessibility.preferences.springVisualizationChangedStringProperty,
     };
   }
 

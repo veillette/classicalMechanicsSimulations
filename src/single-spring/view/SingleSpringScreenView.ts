@@ -340,6 +340,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       velocityLabelProperty: visualizationLabels.velocityStringProperty,
       forceLabelProperty: visualizationLabels.forceStringProperty,
       accelerationLabelProperty: visualizationLabels.accelerationStringProperty,
+      velocityVectorsShownStringProperty: a11yStrings.velocityVectorsShownStringProperty,
+      velocityVectorsHiddenStringProperty: a11yStrings.velocityVectorsHiddenStringProperty,
+      forceVectorsShownStringProperty: a11yStrings.forceVectorsShownStringProperty,
+      forceVectorsHiddenStringProperty: a11yStrings.forceVectorsHiddenStringProperty,
+      accelerationVectorsShownStringProperty: a11yStrings.accelerationVectorsShownStringProperty,
+      accelerationVectorsHiddenStringProperty: a11yStrings.accelerationVectorsHiddenStringProperty,
     });
     vectorPanel.left = this.layoutBounds.minX + 10;
     vectorPanel.top = this.layoutBounds.minY + 10;
@@ -358,6 +364,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       gridLabelProperty: visualizationLabels.showGridStringProperty,
       distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
       stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
+      gridShownStringProperty: a11yStrings.gridShownStringProperty,
+      gridHiddenStringProperty: a11yStrings.gridHiddenStringProperty,
+      distanceToolShownStringProperty: a11yStrings.distanceToolShownStringProperty,
+      distanceToolHiddenStringProperty: a11yStrings.distanceToolHiddenStringProperty,
+      stopwatchShownStringProperty: a11yStrings.stopwatchShownStringProperty,
+      stopwatchHiddenStringProperty: a11yStrings.stopwatchHiddenStringProperty,
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
     toolsPanel.bottom = this.layoutBounds.maxY - 10;

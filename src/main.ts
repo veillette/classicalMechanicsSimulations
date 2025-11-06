@@ -36,6 +36,7 @@ import SolverType from "./common/model/SolverType.js";
 import SpringVisualizationType from "./common/view/SpringVisualizationType.js";
 import ClassicalMechanicsAudioPreferencesNode from "./common/view/ClassicalMechanicsAudioPreferencesNode.js";
 import { KeyboardShortcutsNode } from "./common/view/KeyboardShortcutsNode.js";
+import SimulationAnnouncer from "./common/util/SimulationAnnouncer.js";
 
 onReadyToLaunch(() => {
   // Get the string manager instance
@@ -285,6 +286,43 @@ onReadyToLaunch(() => {
       },
     }),
   };
+
+  // Add accessibility announcements for preference changes
+  const a11yStrings = stringManager.getAccessibilityStrings();
+
+  ClassicalMechanicsPreferences.solverTypeProperty.lazyLink((solverType) => {
+    if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+      let solverName = "";
+      switch (solverType) {
+        case SolverType.RK4:
+          solverName = solverNames.rk4StringProperty.value;
+          break;
+        case SolverType.ADAPTIVE_RK45:
+          solverName = solverNames.adaptiveRK45StringProperty.value;
+          break;
+        case SolverType.ADAPTIVE_EULER:
+          solverName = solverNames.adaptiveEulerStringProperty.value;
+          break;
+        case SolverType.MODIFIED_MIDPOINT:
+          solverName = solverNames.modifiedMidpointStringProperty.value;
+          break;
+      }
+      const template = a11yStrings.solverChangedStringProperty.value;
+      const announcement = template.replace('{{solver}}', solverName);
+      SimulationAnnouncer.announceSimulationState(announcement);
+    }
+  });
+
+  ClassicalMechanicsPreferences.springVisualizationTypeProperty.lazyLink((springType) => {
+    if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+      const springTypeName = springType === SpringVisualizationType.CLASSIC
+        ? springTypeNames.classicStringProperty.value
+        : springTypeNames.parametricStringProperty.value;
+      const template = a11yStrings.springVisualizationChangedStringProperty.value;
+      const announcement = template.replace('{{type}}', springTypeName);
+      SimulationAnnouncer.announceSimulationState(announcement);
+    }
+  });
 
   const keyboardHelpNode = new KeyboardShortcutsNode();
 

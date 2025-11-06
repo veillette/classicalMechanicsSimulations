@@ -197,6 +197,28 @@
       "hidden": "Graphique masqué",
       "xAxisChanged": "Axe X changé à {{property}}",
       "yAxisChanged": "Axe Y changé à {{property}}"
+    },
+    "visualization": {
+      "velocityVectorsShown": "Vecteurs de vitesse affichés",
+      "velocityVectorsHidden": "Vecteurs de vitesse masqués",
+      "forceVectorsShown": "Vecteurs de force affichés",
+      "forceVectorsHidden": "Vecteurs de force masqués",
+      "accelerationVectorsShown": "Vecteurs d'accélération affichés",
+      "accelerationVectorsHidden": "Vecteurs d'accélération masqués"
+    },
+    "tools": {
+      "gridShown": "Grille affichée",
+      "gridHidden": "Grille masquée",
+      "distanceToolShown": "Outil de distance affiché",
+      "distanceToolHidden": "Outil de distance masqué",
+      "protractorShown": "Rapporteur affiché",
+      "protractorHidden": "Rapporteur masqué",
+      "stopwatchShown": "Chronomètre affiché",
+      "stopwatchHidden": "Chronomètre masqué"
+    },
+    "preferences": {
+      "solverChanged": "Solveur changé à {{solver}}",
+      "springVisualizationChanged": "Visualisation du ressort changée à {{type}}"
     }
   },
   "keyboardShortcuts": {

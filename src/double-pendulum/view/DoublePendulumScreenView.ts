@@ -71,6 +71,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
     super(model, options);
 
+    // Get accessibility strings for announcements
+    const a11yStrings = this.getA11yStrings();
+
     // Get available presets
     this.presets = DoublePendulumPresets.getPresets();
 
@@ -210,7 +213,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
 
     // Drag listener for bob 1 with accessibility announcements
-    const a11yStrings = this.getA11yStrings();
     this.bob1Node.addInputListener(
       new DragListener({
         translateNode: false,
@@ -479,6 +481,12 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       velocityLabelProperty: visualizationLabels.velocityStringProperty,
       forceLabelProperty: visualizationLabels.forceStringProperty,
       accelerationLabelProperty: visualizationLabels.accelerationStringProperty,
+      velocityVectorsShownStringProperty: a11yStrings.velocityVectorsShownStringProperty,
+      velocityVectorsHiddenStringProperty: a11yStrings.velocityVectorsHiddenStringProperty,
+      forceVectorsShownStringProperty: a11yStrings.forceVectorsShownStringProperty,
+      forceVectorsHiddenStringProperty: a11yStrings.forceVectorsHiddenStringProperty,
+      accelerationVectorsShownStringProperty: a11yStrings.accelerationVectorsShownStringProperty,
+      accelerationVectorsHiddenStringProperty: a11yStrings.accelerationVectorsHiddenStringProperty,
     });
     vectorPanel.left = this.layoutBounds.minX + 10;
     vectorPanel.top = this.layoutBounds.minY + 10;
@@ -499,6 +507,14 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
       protractorLabelProperty: visualizationLabels.showProtractorStringProperty,
       stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
+      gridShownStringProperty: a11yStrings.gridShownStringProperty,
+      gridHiddenStringProperty: a11yStrings.gridHiddenStringProperty,
+      distanceToolShownStringProperty: a11yStrings.distanceToolShownStringProperty,
+      distanceToolHiddenStringProperty: a11yStrings.distanceToolHiddenStringProperty,
+      stopwatchShownStringProperty: a11yStrings.stopwatchShownStringProperty,
+      stopwatchHiddenStringProperty: a11yStrings.stopwatchHiddenStringProperty,
+      protractorShownStringProperty: a11yStrings.protractorShownStringProperty,
+      protractorHiddenStringProperty: a11yStrings.protractorHiddenStringProperty,
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
     toolsPanel.bottom = this.layoutBounds.maxY - 10;

@@ -206,6 +206,28 @@
       "hidden": "Graph hidden",
       "xAxisChanged": "X-axis changed to {{property}}",
       "yAxisChanged": "Y-axis changed to {{property}}"
+    },
+    "visualization": {
+      "velocityVectorsShown": "Velocity vectors shown",
+      "velocityVectorsHidden": "Velocity vectors hidden",
+      "forceVectorsShown": "Force vectors shown",
+      "forceVectorsHidden": "Force vectors hidden",
+      "accelerationVectorsShown": "Acceleration vectors shown",
+      "accelerationVectorsHidden": "Acceleration vectors hidden"
+    },
+    "tools": {
+      "gridShown": "Grid shown",
+      "gridHidden": "Grid hidden",
+      "distanceToolShown": "Distance tool shown",
+      "distanceToolHidden": "Distance tool hidden",
+      "protractorShown": "Protractor shown",
+      "protractorHidden": "Protractor hidden",
+      "stopwatchShown": "Stopwatch shown",
+      "stopwatchHidden": "Stopwatch hidden"
+    },
+    "preferences": {
+      "solverChanged": "Solver changed to {{solver}}",
+      "springVisualizationChanged": "Spring visualization changed to {{type}}"
     }
   },
   "keyboardShortcuts": {
