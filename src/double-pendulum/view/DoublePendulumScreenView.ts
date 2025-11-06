@@ -62,11 +62,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   // Graph component
   private readonly configurableGraph: ConfigurableGraph;
 
-  // Vector visualization
-  private readonly showVelocityProperty: BooleanProperty;
-  private readonly showForceProperty: BooleanProperty;
-  private readonly showAccelerationProperty: BooleanProperty;
-
   // Dragging state for protractor
   private readonly isDraggingProperty: BooleanProperty;
 
@@ -295,12 +290,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       this.clearTrail();
     });
 
-    // Initialize vector visibility properties
-    this.showVelocityProperty = new BooleanProperty(true);
-    this.showForceProperty = new BooleanProperty(true);
-    this.showAccelerationProperty = new BooleanProperty(false);
-
-    // Explicitly set initial values to ensure reset() works correctly
+    // Initialize vector visibility properties (from base class)
     this.showVelocityProperty.setInitialValue(true);
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
@@ -907,12 +897,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   }
 
   public override reset(): void {
-    super.reset(); // Reset base view properties
-
-    // Reset vector visibility properties
-    this.showVelocityProperty.reset();
-    this.showForceProperty.reset();
-    this.showAccelerationProperty.reset();
+    super.reset(); // Reset base view properties (including vector visibility properties)
 
     // Reset trail visibility
     this.trailVisibleProperty.reset();
