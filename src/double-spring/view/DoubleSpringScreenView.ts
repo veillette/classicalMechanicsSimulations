@@ -111,16 +111,16 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Create both spring node types for spring 1 (only one will be visible at a time)
     this.classicSpring1Node = new SpringNode({
       loops: 10,
-      radius: 12,
-      lineWidth: 3,
+      radius: 4,
+      lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
     });
 
     this.parametricSpring1Node = new ParametricSpringNode({
       loops: 10,
-      radius: 12,
-      lineWidth: 3,
+      radius: 4,
+      lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
     });
@@ -128,16 +128,16 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Create both spring node types for spring 2 (only one will be visible at a time)
     this.classicSpring2Node = new SpringNode({
       loops: 10,
-      radius: 3,
-      lineWidth: 3,
+      radius: 1,
+      lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
     });
 
     this.parametricSpring2Node = new ParametricSpringNode({
       loops: 10,
-      radius: 3,
-      lineWidth: 3,
+      radius: 1,
+      lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
     });
@@ -822,13 +822,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
    * Stiffer springs (higher k) appear beefier (thicker lines, wider coils).
    */
   private updateSpring1Appearance(springConstant: number): void {
-    // Map spring constant [1, 50] to lineWidth [2, 7]
+    // Map spring constant [1, 50] to lineWidth [1, 2.5]
     const minK = 1, maxK = 50;
-    const minLineWidth = 2, maxLineWidth = 7;
+    const minLineWidth = 1, maxLineWidth = 2.5;
     const lineWidth = minLineWidth + (springConstant - minK) * (maxLineWidth - minLineWidth) / (maxK - minK);
 
-    // Map spring constant [1, 50] to radius [8, 20]
-    const minRadius = 8, maxRadius = 20;
+    // Map spring constant [1, 50] to radius [3, 7]
+    const minRadius = 3, maxRadius = 7;
     const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
 
     this.currentSpring1Node.setLineWidth(lineWidth);
@@ -840,13 +840,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
    * Stiffer springs (higher k) appear beefier (thicker lines, wider coils).
    */
   private updateSpring2Appearance(springConstant: number): void {
-    // Map spring constant [1, 50] to lineWidth [2, 7]
+    // Map spring constant [1, 50] to lineWidth [1, 2.5]
     const minK = 1, maxK = 50;
-    const minLineWidth = 2, maxLineWidth = 7;
+    const minLineWidth = 1, maxLineWidth = 2.5;
     const lineWidth = minLineWidth + (springConstant - minK) * (maxLineWidth - minLineWidth) / (maxK - minK);
 
-    // Map spring constant [1, 50] to radius [8, 20]
-    const minRadius = 8, maxRadius = 20;
+    // Map spring constant [1, 50] to radius [3, 7]
+    const minRadius = 3, maxRadius = 7;
     const radius = minRadius + (springConstant - minK) * (maxRadius - minRadius) / (maxK - minK);
 
     this.currentSpring2Node.setLineWidth(lineWidth);

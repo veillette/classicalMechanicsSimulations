@@ -66,10 +66,10 @@ export class ParametricSpringNode extends Node {
     super();
 
     this.loops = options?.loops ?? 10;
-    this.radius = options?.radius ?? 10;
+    this.radius = options?.radius ?? 3;
     this.aspectRatio = options?.aspectRatio ?? 4;
     this.pointsPerLoop = options?.pointsPerLoop ?? 40;
-    this.lineWidth = options?.lineWidth ?? 3;
+    this.lineWidth = options?.lineWidth ?? 1;
     this.phase = options?.phase ?? Math.PI;
     this.deltaPhase = options?.deltaPhase ?? Math.PI / 2;
     this.xScale = options?.xScale ?? 2.5;
