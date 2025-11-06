@@ -282,13 +282,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     );
 
     // Initialize vector visibility properties
-    this.showVelocityProperty = new BooleanProperty(true);
-    this.showForceProperty = new BooleanProperty(true);
+    this.showVelocityProperty = new BooleanProperty(false);
+    this.showForceProperty = new BooleanProperty(false);
     this.showAccelerationProperty = new BooleanProperty(false);
 
     // Explicitly set initial values to ensure reset() works correctly
-    this.showVelocityProperty.setInitialValue(true);
-    this.showForceProperty.setInitialValue(true);
+    this.showVelocityProperty.setInitialValue(false);
+    this.showForceProperty.setInitialValue(false);
     this.showAccelerationProperty.setInitialValue(false);
 
     // Create vector nodes for mass 1
