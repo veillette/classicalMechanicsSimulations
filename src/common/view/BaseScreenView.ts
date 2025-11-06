@@ -233,7 +233,7 @@ export abstract class BaseScreenView<
   /**
    * Get accessibility strings from StringManager
    */
-  protected getA11yStrings() {
+  protected getA11yStrings(): ReturnType<typeof StringManager.prototype.getAccessibilityStrings> {
     return StringManager.getInstance().getAccessibilityStrings();
   }
 
