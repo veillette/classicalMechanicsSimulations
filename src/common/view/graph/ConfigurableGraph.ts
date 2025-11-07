@@ -256,14 +256,14 @@ export default class ConfigurableGraph extends Node {
       SimulationAnnouncer.announceGraphChange(announcement);
     });
 
-    // Add the graph content container
-    this.addChild(this.graphContentNode);
-
     // Create header bar (checkbox is now in ToolsControlPanel)
     this.headerBar = controlsPanel.createHeaderBar();
 
-    // Add header bar
+    // Add header bar first (so it's behind the combo boxes in z-order)
     this.addChild(this.headerBar);
+
+    // Add the graph content container (so combo boxes appear in front of header bar)
+    this.addChild(this.graphContentNode);
 
     // Initialize interaction handler
     this.interactionHandler = new GraphInteractionHandler(
