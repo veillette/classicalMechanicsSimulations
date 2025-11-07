@@ -212,17 +212,23 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Drag listeners with accessibility announcements
     const a11yStrings = this.getA11yStrings();
+    let dragOffsetModel1 = 0; // Track the offset in model coordinates for mass1
     this.mass1Node.addInputListener(
       new DragListener({
         translateNode: false,
-        start: () => {
+        start: (event) => {
+          // Calculate initial offset in model coordinates
+          const parentPoint = this.globalToLocalPoint(event.pointer.point);
+          const pointerModelY = this.modelViewTransform!.viewToModelY(parentPoint.y);
+          const currentModelPosition = this.model.position1Property.value;
+          dragOffsetModel1 = currentModelPosition - pointerModelY;
           SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingMass1StringProperty.value);
         },
         drag: (event) => {
+          // Apply offset in model coordinates
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const modelPosition =
-            this.modelViewTransform!.viewToModelPosition(parentPoint);
-          this.model.position1Property.value = modelPosition.y; // Use Y coordinate for vertical
+          const pointerModelY = this.modelViewTransform!.viewToModelY(parentPoint.y);
+          this.model.position1Property.value = pointerModelY + dragOffsetModel1;
           this.model.velocity1Property.value = 0;
         },
         end: () => {
@@ -234,17 +240,23 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       }),
     );
 
+    let dragOffsetModel2 = 0; // Track the offset in model coordinates for mass2
     this.mass2Node.addInputListener(
       new DragListener({
         translateNode: false,
-        start: () => {
+        start: (event) => {
+          // Calculate initial offset in model coordinates
+          const parentPoint = this.globalToLocalPoint(event.pointer.point);
+          const pointerModelY = this.modelViewTransform!.viewToModelY(parentPoint.y);
+          const currentModelPosition = this.model.position2Property.value;
+          dragOffsetModel2 = currentModelPosition - pointerModelY;
           SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingMass2StringProperty.value);
         },
         drag: (event) => {
+          // Apply offset in model coordinates
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const modelPosition =
-            this.modelViewTransform!.viewToModelPosition(parentPoint);
-          this.model.position2Property.value = modelPosition.y; // Use Y coordinate for vertical
+          const pointerModelY = this.modelViewTransform!.viewToModelY(parentPoint.y);
+          this.model.position2Property.value = pointerModelY + dragOffsetModel2;
           this.model.velocity2Property.value = 0;
         },
         end: () => {

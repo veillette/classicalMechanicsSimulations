@@ -170,17 +170,23 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Add drag listener to mass with accessibility announcements
     const a11yStrings = this.getA11yStrings();
+    let dragOffsetModel = 0; // Track the offset in model coordinates
     this.massNode.addInputListener(
       new DragListener({
         translateNode: false,
-        start: () => {
+        start: (event) => {
+          // Calculate initial offset in model coordinates
+          const parentPoint = this.globalToLocalPoint(event.pointer.point);
+          const pointerModelY = this.modelViewTransform!.viewToModelY(parentPoint.y);
+          const currentModelPosition = this.model.positionProperty.value;
+          dragOffsetModel = currentModelPosition - pointerModelY;
           SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingMassStringProperty.value);
         },
         drag: (event) => {
+          // Apply offset in model coordinates
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
-          const modelPosition =
-            this.modelViewTransform!.viewToModelPosition(parentPoint);
-          this.model.positionProperty.value = modelPosition.y; // Use Y coordinate for vertical
+          const pointerModelY = this.modelViewTransform!.viewToModelY(parentPoint.y);
+          this.model.positionProperty.value = pointerModelY + dragOffsetModel;
           // Reset velocity when dragging
           this.model.velocityProperty.value = 0;
         },
