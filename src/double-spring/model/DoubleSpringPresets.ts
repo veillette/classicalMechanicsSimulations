@@ -23,7 +23,7 @@ export class DoubleSpringPresets {
           damping1: 0.1,          // Light damping (N·s/m)
           damping2: 0.1,
           position1: 1.0,         // Symmetrical initial positions (m)
-          position2: 2.0,
+          position2: 1.5,
         },
       },
       {
