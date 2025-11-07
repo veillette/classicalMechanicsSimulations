@@ -526,64 +526,43 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Fix z-order: Reorder elements to ensure correct layering
     // Required order (back to front): grid, trail, panels, pendulum elements, vectors, common controls, graph, measurement tools
 
-    // Move trail path to be above grid but below panels
-    this.removeChild(this.trailPath);
-    this.addChild(this.trailPath);
-    // Move trail back behind pendulum elements (it should stay low in z-order)
+    // Keep trail path behind pendulum elements (it should stay low in z-order)
     this.trailPath.moveToBack();
     if (this.sceneGridNode) {
-      this.trailPath.moveToBack();
       this.sceneGridNode.moveToBack();
     }
 
-    // Move pendulum elements above panels by removing and re-adding them
-    this.removeChild(this.pivotNode);
-    this.removeChild(this.rod1Node);
-    this.removeChild(this.rod2Node);
-    this.removeChild(this.bob1Node);
-    this.removeChild(this.bob1ReferenceDot);
-    this.removeChild(this.bob2Node);
-    this.removeChild(this.bob2ReferenceDot);
-    this.addChild(this.pivotNode);
-    this.addChild(this.rod1Node);
-    this.addChild(this.rod2Node);
-    this.addChild(this.bob1Node);
-    this.addChild(this.bob1ReferenceDot);
-    this.addChild(this.bob2Node);
-    this.addChild(this.bob2ReferenceDot);
+    // Move pendulum elements to front (above panels)
+    this.pivotNode.moveToFront();
+    this.rod1Node.moveToFront();
+    this.rod2Node.moveToFront();
+    this.bob1Node.moveToFront();
+    this.bob1ReferenceDot.moveToFront();
+    this.bob2Node.moveToFront();
+    this.bob2ReferenceDot.moveToFront();
 
-    // Move vector nodes to be above pendulum elements
-    this.removeChild(this.velocity1VectorNode);
-    this.removeChild(this.force1VectorNode);
-    this.removeChild(this.acceleration1VectorNode);
-    this.removeChild(this.velocity2VectorNode);
-    this.removeChild(this.force2VectorNode);
-    this.removeChild(this.acceleration2VectorNode);
-    this.addChild(this.velocity1VectorNode);
-    this.addChild(this.force1VectorNode);
-    this.addChild(this.acceleration1VectorNode);
-    this.addChild(this.velocity2VectorNode);
-    this.addChild(this.force2VectorNode);
-    this.addChild(this.acceleration2VectorNode);
+    // Move vector nodes to front (above pendulum elements)
+    this.velocity1VectorNode.moveToFront();
+    this.force1VectorNode.moveToFront();
+    this.acceleration1VectorNode.moveToFront();
+    this.velocity2VectorNode.moveToFront();
+    this.force2VectorNode.moveToFront();
+    this.acceleration2VectorNode.moveToFront();
 
-    // Move configurable graph to be near the top (below measurement tools)
+    // Move configurable graph to front (below measurement tools)
     if (this.configurableGraph) {
-      this.removeChild(this.configurableGraph);
-      this.addChild(this.configurableGraph);
+      this.configurableGraph.moveToFront();
     }
 
     // Move measurement tools to the very top (highest z-order)
     if (this.measuringTapeNode) {
-      this.removeChild(this.measuringTapeNode);
-      this.addChild(this.measuringTapeNode);
+      this.measuringTapeNode.moveToFront();
     }
     if (this.stopwatchNode) {
-      this.removeChild(this.stopwatchNode);
-      this.addChild(this.stopwatchNode);
+      this.stopwatchNode.moveToFront();
     }
     if (this.protractorNode) {
-      this.removeChild(this.protractorNode);
-      this.addChild(this.protractorNode);
+      this.protractorNode.moveToFront();
     }
 
     // Add additional keyboard shortcut for trail toggle

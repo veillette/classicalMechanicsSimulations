@@ -404,36 +404,27 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Fix z-order: Reorder elements to ensure correct layering
     // Required order (back to front): grid, panels, spring elements, vectors, common controls, graph, measurement tools
 
-    // Move spring and mass elements above panels by removing and re-adding them
-    this.removeChild(this.currentSpringNode);
-    this.removeChild(this.massNode);
-    this.removeChild(this.massReferenceLine);
-    this.addChild(this.currentSpringNode);
-    this.addChild(this.massNode);
-    this.addChild(this.massReferenceLine);
+    // Move spring and mass elements to front (above panels)
+    this.currentSpringNode.moveToFront();
+    this.massNode.moveToFront();
+    this.massReferenceLine.moveToFront();
 
-    // Move vector nodes to be above spring/mass elements
-    this.removeChild(this.velocityVectorNode);
-    this.removeChild(this.forceVectorNode);
-    this.removeChild(this.accelerationVectorNode);
-    this.addChild(this.velocityVectorNode);
-    this.addChild(this.forceVectorNode);
-    this.addChild(this.accelerationVectorNode);
+    // Move vector nodes to front (above spring/mass elements)
+    this.velocityVectorNode.moveToFront();
+    this.forceVectorNode.moveToFront();
+    this.accelerationVectorNode.moveToFront();
 
-    // Move configurable graph to be near the top (below measurement tools)
+    // Move configurable graph to front (below measurement tools)
     if (this.configurableGraph) {
-      this.removeChild(this.configurableGraph);
-      this.addChild(this.configurableGraph);
+      this.configurableGraph.moveToFront();
     }
 
     // Move measurement tools to the very top (highest z-order)
     if (this.measuringTapeNode) {
-      this.removeChild(this.measuringTapeNode);
-      this.addChild(this.measuringTapeNode);
+      this.measuringTapeNode.moveToFront();
     }
     if (this.stopwatchNode) {
-      this.removeChild(this.stopwatchNode);
-      this.addChild(this.stopwatchNode);
+      this.stopwatchNode.moveToFront();
     }
 
     // Initial visualization

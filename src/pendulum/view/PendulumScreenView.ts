@@ -368,42 +368,31 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Fix z-order: Reorder elements to ensure correct layering
     // Required order (back to front): grid, panels, pendulum elements, vectors, common controls, graph, measurement tools
 
-    // Move pendulum elements above panels by removing and re-adding them
-    this.removeChild(this.pivotNode);
-    this.removeChild(this.rodNode);
-    this.removeChild(this.bobNode);
-    this.removeChild(this.bobReferenceDot);
-    this.addChild(this.pivotNode);
-    this.addChild(this.rodNode);
-    this.addChild(this.bobNode);
-    this.addChild(this.bobReferenceDot);
+    // Move pendulum elements to front (above panels)
+    this.pivotNode.moveToFront();
+    this.rodNode.moveToFront();
+    this.bobNode.moveToFront();
+    this.bobReferenceDot.moveToFront();
 
-    // Move vector nodes to be above pendulum elements
-    this.removeChild(this.velocityVectorNode);
-    this.removeChild(this.forceVectorNode);
-    this.removeChild(this.accelerationVectorNode);
-    this.addChild(this.velocityVectorNode);
-    this.addChild(this.forceVectorNode);
-    this.addChild(this.accelerationVectorNode);
+    // Move vector nodes to front (above pendulum elements)
+    this.velocityVectorNode.moveToFront();
+    this.forceVectorNode.moveToFront();
+    this.accelerationVectorNode.moveToFront();
 
-    // Move configurable graph to be near the top (below measurement tools)
+    // Move configurable graph to front (below measurement tools)
     if (this.configurableGraph) {
-      this.removeChild(this.configurableGraph);
-      this.addChild(this.configurableGraph);
+      this.configurableGraph.moveToFront();
     }
 
     // Move measurement tools to the very top (highest z-order)
     if (this.measuringTapeNode) {
-      this.removeChild(this.measuringTapeNode);
-      this.addChild(this.measuringTapeNode);
+      this.measuringTapeNode.moveToFront();
     }
     if (this.stopwatchNode) {
-      this.removeChild(this.stopwatchNode);
-      this.addChild(this.stopwatchNode);
+      this.stopwatchNode.moveToFront();
     }
     if (this.protractorNode) {
-      this.removeChild(this.protractorNode);
-      this.addChild(this.protractorNode);
+      this.protractorNode.moveToFront();
     }
 
     // Initial visualization

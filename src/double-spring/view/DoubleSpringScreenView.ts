@@ -493,48 +493,33 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Fix z-order: Reorder elements to ensure correct layering
     // Required order (back to front): grid, panels, spring elements, vectors, common controls, graph, measurement tools
 
-    // Move spring and mass elements above panels by removing and re-adding them
-    this.removeChild(this.currentSpring1Node);
-    this.removeChild(this.currentSpring2Node);
-    this.removeChild(this.mass1Node);
-    this.removeChild(this.mass1ReferenceLine);
-    this.removeChild(this.mass2Node);
-    this.removeChild(this.mass2ReferenceLine);
-    this.addChild(this.currentSpring1Node);
-    this.addChild(this.currentSpring2Node);
-    this.addChild(this.mass1Node);
-    this.addChild(this.mass1ReferenceLine);
-    this.addChild(this.mass2Node);
-    this.addChild(this.mass2ReferenceLine);
+    // Move spring and mass elements to front (above panels)
+    this.currentSpring1Node.moveToFront();
+    this.currentSpring2Node.moveToFront();
+    this.mass1Node.moveToFront();
+    this.mass1ReferenceLine.moveToFront();
+    this.mass2Node.moveToFront();
+    this.mass2ReferenceLine.moveToFront();
 
-    // Move vector nodes to be above spring/mass elements
-    this.removeChild(this.velocity1VectorNode);
-    this.removeChild(this.force1VectorNode);
-    this.removeChild(this.acceleration1VectorNode);
-    this.removeChild(this.velocity2VectorNode);
-    this.removeChild(this.force2VectorNode);
-    this.removeChild(this.acceleration2VectorNode);
-    this.addChild(this.velocity1VectorNode);
-    this.addChild(this.force1VectorNode);
-    this.addChild(this.acceleration1VectorNode);
-    this.addChild(this.velocity2VectorNode);
-    this.addChild(this.force2VectorNode);
-    this.addChild(this.acceleration2VectorNode);
+    // Move vector nodes to front (above spring/mass elements)
+    this.velocity1VectorNode.moveToFront();
+    this.force1VectorNode.moveToFront();
+    this.acceleration1VectorNode.moveToFront();
+    this.velocity2VectorNode.moveToFront();
+    this.force2VectorNode.moveToFront();
+    this.acceleration2VectorNode.moveToFront();
 
-    // Move configurable graph to be near the top (below measurement tools)
+    // Move configurable graph to front (below measurement tools)
     if (this.configurableGraph) {
-      this.removeChild(this.configurableGraph);
-      this.addChild(this.configurableGraph);
+      this.configurableGraph.moveToFront();
     }
 
     // Move measurement tools to the very top (highest z-order)
     if (this.measuringTapeNode) {
-      this.removeChild(this.measuringTapeNode);
-      this.addChild(this.measuringTapeNode);
+      this.measuringTapeNode.moveToFront();
     }
     if (this.stopwatchNode) {
-      this.removeChild(this.stopwatchNode);
-      this.addChild(this.stopwatchNode);
+      this.stopwatchNode.moveToFront();
     }
 
     // Initial visualization
