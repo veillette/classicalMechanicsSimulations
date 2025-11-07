@@ -227,7 +227,6 @@ export default class ConfigurableGraph extends Node {
       this.availableProperties,
       this.xPropertyProperty,
       this.yPropertyProperty,
-      this.graphVisibleProperty,
       this.graphWidth
     );
 
@@ -260,17 +259,11 @@ export default class ConfigurableGraph extends Node {
     // Add the graph content container
     this.addChild(this.graphContentNode);
 
-    // Create header bar with checkbox
-    const { headerBar, checkbox } = controlsPanel.createHeaderBar();
-    this.headerBar = headerBar;
+    // Create header bar (checkbox is now in ToolsControlPanel)
+    this.headerBar = controlsPanel.createHeaderBar();
 
-    // Position checkbox in header
-    checkbox.left = 10;
-    checkbox.centerY = -15; // -headerHeight / 2
-
-    // Add header bar and checkbox
+    // Add header bar
     this.addChild(this.headerBar);
-    this.addChild(checkbox);
 
     // Initialize interaction handler
     this.interactionHandler = new GraphInteractionHandler(
@@ -313,13 +306,7 @@ export default class ConfigurableGraph extends Node {
       this.opacity = isResizing ? 0.8 : 1.0;
     });
 
-    // Link visibility changes to announce using voicing
-    this.graphVisibleProperty.link((visible) => {
-      const announcement = visible
-        ? a11yStrings.graphShownStringProperty.value
-        : a11yStrings.graphHiddenStringProperty.value;
-      SimulationAnnouncer.announceGraphChange(announcement);
-    });
+    // Note: Visibility change announcements are now handled by ToolsControlPanel
   }
 
   /**

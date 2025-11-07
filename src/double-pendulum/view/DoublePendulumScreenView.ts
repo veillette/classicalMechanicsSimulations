@@ -481,15 +481,18 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.positionConfigurableGraph(vectorPanel);
 
     // Create tools control panel
+    const graphLabels = stringManager.getGraphLabels();
     const toolsPanel = new ToolsControlPanel({
       showGridProperty: this.showGridProperty!,
       showDistanceToolProperty: this.showDistanceToolProperty,
       showProtractorProperty: this.showProtractorProperty,
       showStopwatchProperty: this.showStopwatchProperty,
+      showGraphProperty: this.getGraphVisibilityProperty()!,
       gridLabelProperty: visualizationLabels.showGridStringProperty,
       distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
       protractorLabelProperty: visualizationLabels.showProtractorStringProperty,
       stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
+      graphLabelProperty: graphLabels.showGraphStringProperty,
       gridShownStringProperty: a11yStrings.gridShownStringProperty,
       gridHiddenStringProperty: a11yStrings.gridHiddenStringProperty,
       distanceToolShownStringProperty: a11yStrings.distanceToolShownStringProperty,
@@ -498,6 +501,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       stopwatchHiddenStringProperty: a11yStrings.stopwatchHiddenStringProperty,
       protractorShownStringProperty: a11yStrings.protractorShownStringProperty,
       protractorHiddenStringProperty: a11yStrings.protractorHiddenStringProperty,
+      graphShownStringProperty: a11yStrings.graphShownStringProperty,
+      graphHiddenStringProperty: a11yStrings.graphHiddenStringProperty,
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
     toolsPanel.bottom = this.layoutBounds.maxY - 10;

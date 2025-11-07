@@ -1,36 +1,31 @@
 /**
  * Creates UI controls for the configurable graph including:
  * - Title panel with axis selection combo boxes
- * - Show/hide checkbox
  * - Header bar
  */
 
 import { Node, HBox, Text, Rectangle } from "scenerystack/scenery";
-import { ComboBox, Checkbox } from "scenerystack/sun";
-import { Property, BooleanProperty, DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
+import { ComboBox } from "scenerystack/sun";
+import { Property, DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
 import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
-import { StringManager } from "../../../i18n/StringManager.js";
 import { PhetFont } from "scenerystack/scenery-phet";
 
 export default class GraphControlsPanel {
   private readonly availableProperties: PlottableProperty[];
   private readonly xPropertyProperty: Property<PlottableProperty>;
   private readonly yPropertyProperty: Property<PlottableProperty>;
-  private readonly graphVisibleProperty: BooleanProperty;
   private readonly graphWidth: number;
 
   public constructor(
     availableProperties: PlottableProperty[],
     xPropertyProperty: Property<PlottableProperty>,
     yPropertyProperty: Property<PlottableProperty>,
-    graphVisibleProperty: BooleanProperty,
     graphWidth: number
   ) {
     this.availableProperties = availableProperties;
     this.xPropertyProperty = xPropertyProperty;
     this.yPropertyProperty = yPropertyProperty;
-    this.graphVisibleProperty = graphVisibleProperty;
     this.graphWidth = graphWidth;
   }
 
@@ -112,23 +107,9 @@ export default class GraphControlsPanel {
   }
 
   /**
-   * Create the header bar with checkbox
+   * Create the header bar (without checkbox - checkbox is now in ToolsControlPanel)
    */
-  public createHeaderBar(): { headerBar: Rectangle; checkbox: Checkbox } {
-    const stringManager = StringManager.getInstance();
-    const graphLabels = stringManager.getGraphLabels();
-
-    const showGraphCheckbox = new Checkbox(
-      this.graphVisibleProperty,
-      new Text(graphLabels.showGraphStringProperty, {
-        font: new PhetFont({size: 14}),
-        fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      }),
-      {
-        boxWidth: 16,
-      },
-    );
-
+  public createHeaderBar(): Rectangle {
     // Create header bar with dynamic fill that darkens the control panel background
     const headerHeight = 30;
     const headerFillProperty = new DerivedProperty(
@@ -142,7 +123,7 @@ export default class GraphControlsPanel {
       cursor: 'grab',
     });
 
-    return { headerBar, checkbox: showGraphCheckbox };
+    return headerBar;
   }
 
   /**

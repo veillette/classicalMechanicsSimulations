@@ -363,19 +363,24 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.positionConfigurableGraph(vectorPanel);
 
     // Create tools control panel
+    const graphLabels = stringManager.getGraphLabels();
     const toolsPanel = new ToolsControlPanel({
       showGridProperty: this.showGridProperty!,
       showDistanceToolProperty: this.showDistanceToolProperty,
       showStopwatchProperty: this.showStopwatchProperty,
+      showGraphProperty: this.getGraphVisibilityProperty()!,
       gridLabelProperty: visualizationLabels.showGridStringProperty,
       distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
       stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
+      graphLabelProperty: graphLabels.showGraphStringProperty,
       gridShownStringProperty: a11yStrings.gridShownStringProperty,
       gridHiddenStringProperty: a11yStrings.gridHiddenStringProperty,
       distanceToolShownStringProperty: a11yStrings.distanceToolShownStringProperty,
       distanceToolHiddenStringProperty: a11yStrings.distanceToolHiddenStringProperty,
       stopwatchShownStringProperty: a11yStrings.stopwatchShownStringProperty,
       stopwatchHiddenStringProperty: a11yStrings.stopwatchHiddenStringProperty,
+      graphShownStringProperty: a11yStrings.graphShownStringProperty,
+      graphHiddenStringProperty: a11yStrings.graphHiddenStringProperty,
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
     toolsPanel.bottom = this.layoutBounds.maxY - 10;

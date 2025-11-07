@@ -289,6 +289,16 @@ export abstract class BaseScreenView<
   }
 
   /**
+   * Get the graph visibility property for use in ToolsControlPanel.
+   * @returns The graph visibility property, or null if no graph exists
+   */
+  protected getGraphVisibilityProperty(): BooleanProperty | null {
+    // Access the private graphVisibleProperty through a type assertion
+    // This is safe because ConfigurableGraph has this property
+    return this.configurableGraph ? (this.configurableGraph as any).graphVisibleProperty : null;
+  }
+
+  /**
    * Get accessibility strings from StringManager
    */
   protected getA11yStrings(): ReturnType<typeof StringManager.prototype.getAccessibilityStrings> {
