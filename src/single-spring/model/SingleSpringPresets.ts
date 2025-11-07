@@ -17,7 +17,7 @@ export class SingleSpringPresets {
         descriptionProperty: presetStrings.heavyAndSlowDescStringProperty,
         configuration: {
           mass: 5.0,              // Heavy mass (kg)
-          springConstant: 5,      // Soft spring (N/m)
+          springConstant: 15,      // Soft spring (N/m)
           damping: 0.5,           // Moderate damping (N·s/m)
           position: 1.0,          // Initial displacement (m)
         },
@@ -26,8 +26,8 @@ export class SingleSpringPresets {
         nameProperty: presetStrings.lightAndBouncyStringProperty,
         descriptionProperty: presetStrings.lightAndBouncyDescStringProperty,
         configuration: {
-          mass: 0.5,              // Light mass (kg)
-          springConstant: 50,     // Stiff spring (N/m)
+          mass: 2.0,              // Light mass (kg)
+          springConstant: 30,     // Stiff spring (N/m)
           damping: 0.1,           // Light damping (N·s/m)
           position: 1.0,          // Initial displacement (m)
         },

@@ -45,7 +45,7 @@ export class SingleSpringModel extends BaseModel {
     this.velocityProperty = new NumberProperty(0.0); // m/s
 
     // Initialize parameters
-    this.massProperty = new NumberProperty(1.0); // kg
+    this.massProperty = new NumberProperty(3.0); // kg
     this.springConstantProperty = new NumberProperty(20.0); // N/m (increased from 10 to keep mass on screen)
     this.dampingProperty = new NumberProperty(0.1); // N*s/m
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
