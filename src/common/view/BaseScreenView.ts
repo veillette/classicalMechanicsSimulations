@@ -111,8 +111,17 @@ export abstract class BaseScreenView<
       multiplier: 1,
     });
 
-    const basePositionProperty = new Property(new Vector2(0, 0));
-    const tipPositionProperty = new Property(new Vector2(2, 0));
+    // tool checkbox visibility properties
+    this.showDistanceToolProperty = new BooleanProperty(false);
+    this.showProtractorProperty = new BooleanProperty(false);
+    this.showStopwatchProperty = new BooleanProperty(false);
+
+
+
+    // Position measuring tape near the toolbox at bottom left
+    const baseLocation = new Vector2(this.layoutBounds.minX + 300, this.layoutBounds.maxY -20);
+    const basePositionProperty = new Property( modelViewTransform.viewToModelPosition( baseLocation));
+    const tipPositionProperty = new Property( basePositionProperty.value.plus(new Vector2(1,0)));
 
     this.measuringTapeNode = new MeasuringTapeNode(unitsProperty, {
       basePositionProperty: basePositionProperty,
@@ -122,23 +131,16 @@ export abstract class BaseScreenView<
       textColor: ClassicalMechanicsColors.measuringTapeTextColorProperty,
       textBackgroundColor: ClassicalMechanicsColors.measuringTapeTextBackgroundColorProperty,
       significantFigures: 2,
+      visibleProperty: this.showDistanceToolProperty,
     });
     this.addChild(this.measuringTapeNode);
-
-    // Position measuring tape near the toolbox at bottom left
-    this.measuringTapeNode.left = this.layoutBounds.minX + 160;
-    this.measuringTapeNode.bottom = this.layoutBounds.maxY - 15;
-
-    // Link visibility
-    this.showDistanceToolProperty.link((visible) => {
-      this.measuringTapeNode!.visible = visible;
-    });
 
     // Protractor tool (SceneryStack component) - only for pendulum screens
     if (includeProtractor) {
       this.protractorNode = new ProtractorNode({
         rotatable: true,
         angle: 0,
+        visibleProperty: this.showProtractorProperty
       });
 
       // Position the protractor
@@ -152,10 +154,6 @@ export abstract class BaseScreenView<
 
       this.addChild(this.protractorNode);
 
-      // Link visibility
-      this.showProtractorProperty.link((visible) => {
-        this.protractorNode!.visible = visible;
-      });
     }
 
     // Stopwatch tool (SceneryStack component)
@@ -163,13 +161,14 @@ export abstract class BaseScreenView<
     this.stopwatch = new Stopwatch({
       position: new Vector2(
         this.layoutBounds.minX + 160,
-        this.layoutBounds.maxY - 120,
+        this.layoutBounds.maxY - 80,
       ),
-      isVisible: false,
+      isVisible: this.showStopwatchProperty.value,
     });
 
     this.stopwatchNode = new StopwatchNode(this.stopwatch, {
       dragBoundsProperty: new Property(this.layoutBounds),
+      visibleProperty: this.showStopwatchProperty,
     });
     this.addChild(this.stopwatchNode);
 
@@ -220,15 +219,9 @@ export abstract class BaseScreenView<
     this.sceneGridNode = new SceneGridNode(modelViewTransform, bounds, {
       gridSpacing: gridSpacing,
       scaleLabelProperty: gridScaleLabel,
+      visibleProperty: this.showGridProperty,
     });
     this.addChild(this.sceneGridNode);
-
-    // Link grid visibility
-    this.showGridProperty.link((visible) => {
-      if (this.sceneGridNode) {
-        this.sceneGridNode.visible = visible;
-      }
-    });
   }
 
   /**
