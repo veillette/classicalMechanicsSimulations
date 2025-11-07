@@ -401,6 +401,32 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
+    // Fix z-order: Reorder elements to ensure correct layering
+    // Required order (back to front): grid, panels, spring elements, vectors, common controls, graph, measurement tools
+
+    // Move spring and mass elements to front (above panels)
+    this.currentSpringNode.moveToFront();
+    this.massNode.moveToFront();
+    this.massReferenceLine.moveToFront();
+
+    // Move vector nodes to front (above spring/mass elements)
+    this.velocityVectorNode.moveToFront();
+    this.forceVectorNode.moveToFront();
+    this.accelerationVectorNode.moveToFront();
+
+    // Move configurable graph to front (below measurement tools)
+    if (this.configurableGraph) {
+      this.configurableGraph.moveToFront();
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.measuringTapeNode.moveToFront();
+    }
+    if (this.stopwatchNode) {
+      this.stopwatchNode.moveToFront();
+    }
+
     // Initial visualization
     this.updateVisualization(this.model.positionProperty.value);
   }

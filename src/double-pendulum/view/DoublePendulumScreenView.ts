@@ -523,6 +523,48 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
+    // Fix z-order: Reorder elements to ensure correct layering
+    // Required order (back to front): grid, trail, panels, pendulum elements, vectors, common controls, graph, measurement tools
+
+    // Keep trail path behind pendulum elements (it should stay low in z-order)
+    this.trailPath.moveToBack();
+    if (this.sceneGridNode) {
+      this.sceneGridNode.moveToBack();
+    }
+
+    // Move pendulum elements to front (above panels)
+    this.pivotNode.moveToFront();
+    this.rod1Node.moveToFront();
+    this.rod2Node.moveToFront();
+    this.bob1Node.moveToFront();
+    this.bob1ReferenceDot.moveToFront();
+    this.bob2Node.moveToFront();
+    this.bob2ReferenceDot.moveToFront();
+
+    // Move vector nodes to front (above pendulum elements)
+    this.velocity1VectorNode.moveToFront();
+    this.force1VectorNode.moveToFront();
+    this.acceleration1VectorNode.moveToFront();
+    this.velocity2VectorNode.moveToFront();
+    this.force2VectorNode.moveToFront();
+    this.acceleration2VectorNode.moveToFront();
+
+    // Move configurable graph to front (below measurement tools)
+    if (this.configurableGraph) {
+      this.configurableGraph.moveToFront();
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.measuringTapeNode.moveToFront();
+    }
+    if (this.stopwatchNode) {
+      this.stopwatchNode.moveToFront();
+    }
+    if (this.protractorNode) {
+      this.protractorNode.moveToFront();
+    }
+
     // Add additional keyboard shortcut for trail toggle
     const trailKeyboardListener = new KeyboardListener({
       keys: ["t"],

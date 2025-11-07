@@ -490,6 +490,38 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
+    // Fix z-order: Reorder elements to ensure correct layering
+    // Required order (back to front): grid, panels, spring elements, vectors, common controls, graph, measurement tools
+
+    // Move spring and mass elements to front (above panels)
+    this.currentSpring1Node.moveToFront();
+    this.currentSpring2Node.moveToFront();
+    this.mass1Node.moveToFront();
+    this.mass1ReferenceLine.moveToFront();
+    this.mass2Node.moveToFront();
+    this.mass2ReferenceLine.moveToFront();
+
+    // Move vector nodes to front (above spring/mass elements)
+    this.velocity1VectorNode.moveToFront();
+    this.force1VectorNode.moveToFront();
+    this.acceleration1VectorNode.moveToFront();
+    this.velocity2VectorNode.moveToFront();
+    this.force2VectorNode.moveToFront();
+    this.acceleration2VectorNode.moveToFront();
+
+    // Move configurable graph to front (below measurement tools)
+    if (this.configurableGraph) {
+      this.configurableGraph.moveToFront();
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.measuringTapeNode.moveToFront();
+    }
+    if (this.stopwatchNode) {
+      this.stopwatchNode.moveToFront();
+    }
+
     // Initial visualization
     this.updateVisualization();
   }

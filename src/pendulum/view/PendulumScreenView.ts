@@ -365,6 +365,36 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
+    // Fix z-order: Reorder elements to ensure correct layering
+    // Required order (back to front): grid, panels, pendulum elements, vectors, common controls, graph, measurement tools
+
+    // Move pendulum elements to front (above panels)
+    this.pivotNode.moveToFront();
+    this.rodNode.moveToFront();
+    this.bobNode.moveToFront();
+    this.bobReferenceDot.moveToFront();
+
+    // Move vector nodes to front (above pendulum elements)
+    this.velocityVectorNode.moveToFront();
+    this.forceVectorNode.moveToFront();
+    this.accelerationVectorNode.moveToFront();
+
+    // Move configurable graph to front (below measurement tools)
+    if (this.configurableGraph) {
+      this.configurableGraph.moveToFront();
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.measuringTapeNode.moveToFront();
+    }
+    if (this.stopwatchNode) {
+      this.stopwatchNode.moveToFront();
+    }
+    if (this.protractorNode) {
+      this.protractorNode.moveToFront();
+    }
+
     // Initial visualization
     this.updateVisualization();
   }
