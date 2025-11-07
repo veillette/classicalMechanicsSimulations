@@ -322,8 +322,7 @@ export default class GraphInteractionHandler {
             const deltaY = globalPoint.y - singleTouchStartY;
 
             // Convert delta to model coordinates
-            // Negative because screen Y increases downward, but model Y typically increases upward
-            const modelDeltaY = -deltaY * (initialYRange.getLength() / this.graphHeight);
+            const modelDeltaY = deltaY * (initialYRange.getLength() / this.graphHeight);
 
             const newYRange = new Range(
               initialYRange.min + modelDeltaY,
@@ -404,8 +403,7 @@ export default class GraphInteractionHandler {
           const deltaY = event.pointer.point.y - mouseDragStartY;
 
           // Convert delta to model coordinates
-          // Negative because screen Y increases downward, but model Y typically increases upward
-          const modelDeltaY = -deltaY * (mouseDragInitialYRange.getLength() / this.graphHeight);
+          const modelDeltaY = deltaY * (mouseDragInitialYRange.getLength() / this.graphHeight);
 
           const newYRange = new Range(
             mouseDragInitialYRange.min + modelDeltaY,

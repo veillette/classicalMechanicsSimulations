@@ -288,9 +288,10 @@ export default class ConfigurableGraph extends Node {
     const resizeHandles = this.interactionHandler.createResizeHandles();
     resizeHandles.forEach(handle => this.addChild(handle));
 
-    // Link visibility property to the content node and resize handles
+    // Link visibility property to the content node, header bar, and resize handles
     this.graphVisibleProperty.link((visible) => {
       this.graphContentNode.visible = visible;
+      this.headerBar.visible = visible;
       resizeHandles.forEach((handle) => {
         handle.visible = visible;
       });
