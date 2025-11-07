@@ -233,7 +233,7 @@ export default class ConfigurableGraph extends Node {
     // Create title panel with combo boxes for axis selection
     const titlePanel = controlsPanel.createTitlePanel(listParent);
     titlePanel.centerX = this.graphWidth / 2;
-    titlePanel.bottom = -10;
+    titlePanel.bottom = -5;
     this.graphContentNode.addChild(titlePanel);
 
     // Update labels when axes change and announce using voicing
