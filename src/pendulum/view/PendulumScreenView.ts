@@ -365,6 +365,47 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
+    // Fix z-order: Reorder elements to ensure correct layering
+    // Required order (back to front): grid, panels, pendulum elements, vectors, common controls, graph, measurement tools
+
+    // Move pendulum elements above panels by removing and re-adding them
+    this.removeChild(this.pivotNode);
+    this.removeChild(this.rodNode);
+    this.removeChild(this.bobNode);
+    this.removeChild(this.bobReferenceDot);
+    this.addChild(this.pivotNode);
+    this.addChild(this.rodNode);
+    this.addChild(this.bobNode);
+    this.addChild(this.bobReferenceDot);
+
+    // Move vector nodes to be above pendulum elements
+    this.removeChild(this.velocityVectorNode);
+    this.removeChild(this.forceVectorNode);
+    this.removeChild(this.accelerationVectorNode);
+    this.addChild(this.velocityVectorNode);
+    this.addChild(this.forceVectorNode);
+    this.addChild(this.accelerationVectorNode);
+
+    // Move configurable graph to be near the top (below measurement tools)
+    if (this.configurableGraph) {
+      this.removeChild(this.configurableGraph);
+      this.addChild(this.configurableGraph);
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.removeChild(this.measuringTapeNode);
+      this.addChild(this.measuringTapeNode);
+    }
+    if (this.stopwatchNode) {
+      this.removeChild(this.stopwatchNode);
+      this.addChild(this.stopwatchNode);
+    }
+    if (this.protractorNode) {
+      this.removeChild(this.protractorNode);
+      this.addChild(this.protractorNode);
+    }
+
     // Initial visualization
     this.updateVisualization();
   }

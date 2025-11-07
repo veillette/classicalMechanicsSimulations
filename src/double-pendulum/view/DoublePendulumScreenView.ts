@@ -523,6 +523,69 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
+    // Fix z-order: Reorder elements to ensure correct layering
+    // Required order (back to front): grid, trail, panels, pendulum elements, vectors, common controls, graph, measurement tools
+
+    // Move trail path to be above grid but below panels
+    this.removeChild(this.trailPath);
+    this.addChild(this.trailPath);
+    // Move trail back behind pendulum elements (it should stay low in z-order)
+    this.trailPath.moveToBack();
+    if (this.sceneGridNode) {
+      this.trailPath.moveToBack();
+      this.sceneGridNode.moveToBack();
+    }
+
+    // Move pendulum elements above panels by removing and re-adding them
+    this.removeChild(this.pivotNode);
+    this.removeChild(this.rod1Node);
+    this.removeChild(this.rod2Node);
+    this.removeChild(this.bob1Node);
+    this.removeChild(this.bob1ReferenceDot);
+    this.removeChild(this.bob2Node);
+    this.removeChild(this.bob2ReferenceDot);
+    this.addChild(this.pivotNode);
+    this.addChild(this.rod1Node);
+    this.addChild(this.rod2Node);
+    this.addChild(this.bob1Node);
+    this.addChild(this.bob1ReferenceDot);
+    this.addChild(this.bob2Node);
+    this.addChild(this.bob2ReferenceDot);
+
+    // Move vector nodes to be above pendulum elements
+    this.removeChild(this.velocity1VectorNode);
+    this.removeChild(this.force1VectorNode);
+    this.removeChild(this.acceleration1VectorNode);
+    this.removeChild(this.velocity2VectorNode);
+    this.removeChild(this.force2VectorNode);
+    this.removeChild(this.acceleration2VectorNode);
+    this.addChild(this.velocity1VectorNode);
+    this.addChild(this.force1VectorNode);
+    this.addChild(this.acceleration1VectorNode);
+    this.addChild(this.velocity2VectorNode);
+    this.addChild(this.force2VectorNode);
+    this.addChild(this.acceleration2VectorNode);
+
+    // Move configurable graph to be near the top (below measurement tools)
+    if (this.configurableGraph) {
+      this.removeChild(this.configurableGraph);
+      this.addChild(this.configurableGraph);
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.removeChild(this.measuringTapeNode);
+      this.addChild(this.measuringTapeNode);
+    }
+    if (this.stopwatchNode) {
+      this.removeChild(this.stopwatchNode);
+      this.addChild(this.stopwatchNode);
+    }
+    if (this.protractorNode) {
+      this.removeChild(this.protractorNode);
+      this.addChild(this.protractorNode);
+    }
+
     // Add additional keyboard shortcut for trail toggle
     const trailKeyboardListener = new KeyboardListener({
       keys: ["t"],
