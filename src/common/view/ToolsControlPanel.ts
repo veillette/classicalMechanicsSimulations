@@ -19,10 +19,12 @@ type ToolsControlPanelOptions = {
   showDistanceToolProperty: BooleanProperty;
   showStopwatchProperty: BooleanProperty;
   showProtractorProperty?: BooleanProperty; // Optional for spring screens
+  showGraphProperty?: BooleanProperty; // Optional - for configurable graph
   gridLabelProperty: ReadOnlyProperty<string>;
   distanceToolLabelProperty: ReadOnlyProperty<string>;
   protractorLabelProperty?: ReadOnlyProperty<string>; // Optional for spring screens
   stopwatchLabelProperty: ReadOnlyProperty<string>;
+  graphLabelProperty?: ReadOnlyProperty<string>; // Optional - for configurable graph
   gridShownStringProperty: ReadOnlyProperty<string>;
   gridHiddenStringProperty: ReadOnlyProperty<string>;
   distanceToolShownStringProperty: ReadOnlyProperty<string>;
@@ -31,6 +33,8 @@ type ToolsControlPanelOptions = {
   protractorHiddenStringProperty?: ReadOnlyProperty<string>;
   stopwatchShownStringProperty: ReadOnlyProperty<string>;
   stopwatchHiddenStringProperty: ReadOnlyProperty<string>;
+  graphShownStringProperty?: ReadOnlyProperty<string>;
+  graphHiddenStringProperty?: ReadOnlyProperty<string>;
 };
 
 export class ToolsControlPanel extends Panel {
@@ -100,6 +104,22 @@ export class ToolsControlPanel extends Panel {
       children.splice(2, 0, showProtractorCheckbox);
     }
 
+    // Add graph checkbox if provided (for configurable graph)
+    if (options.showGraphProperty && options.graphLabelProperty) {
+      const showGraphCheckbox = new Checkbox(
+        options.showGraphProperty,
+        new Text(options.graphLabelProperty, {
+          font: new PhetFont({size: 14}),
+          fill: ClassicalMechanicsColors.textColorProperty,
+        }),
+        {
+          boxWidth: 16,
+        }
+      );
+      // Add graph checkbox at the end
+      children.push(showGraphCheckbox);
+    }
+
     const content = new VBox({
       spacing: 8,
       align: "left",
@@ -152,6 +172,20 @@ export class ToolsControlPanel extends Panel {
           const announcement = showProtractor
             ? protractorShownString.value
             : protractorHiddenString.value;
+          SimulationAnnouncer.announceSimulationState(announcement);
+        }
+      });
+    }
+
+    // Add graph announcements if provided (for configurable graph)
+    if (options.showGraphProperty && options.graphShownStringProperty && options.graphHiddenStringProperty) {
+      const graphShownString = options.graphShownStringProperty;
+      const graphHiddenString = options.graphHiddenStringProperty;
+      options.showGraphProperty.lazyLink((showGraph) => {
+        if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
+          const announcement = showGraph
+            ? graphShownString.value
+            : graphHiddenString.value;
           SimulationAnnouncer.announceSimulationState(announcement);
         }
       });
