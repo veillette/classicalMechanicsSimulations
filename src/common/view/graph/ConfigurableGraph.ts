@@ -96,7 +96,7 @@ export default class ConfigurableGraph extends Node {
     this.yPropertyProperty = new Property(initialYProperty);
 
     // Property to control graph visibility
-    this.graphVisibleProperty = new BooleanProperty(true);
+    this.graphVisibleProperty = new BooleanProperty(false);
 
     // Properties for drag and resize states
     this.isDraggingProperty = new BooleanProperty(false);

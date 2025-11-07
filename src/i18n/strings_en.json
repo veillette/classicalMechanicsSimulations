@@ -30,7 +30,7 @@
     "metersPerSecondSquared": "{{value}} m/s²"
   },
   "graph": {
-    "showGraph": "Show Graph",
+    "showGraph": "Graph",
     "xAxisLabel": "X-axis:",
     "yAxisLabel": "Y-axis:",
     "axis": {
@@ -151,7 +151,7 @@
   "visualization": {
     "showVectors": "Show Vectors",
     "showEnergyChart": "Show Energy Chart",
-    "showGrid": "Show Grid",
+    "showGrid": "Grid",
     "velocity": "Velocity",
     "acceleration": "Acceleration",
     "force": "Net Force",
