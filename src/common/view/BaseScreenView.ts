@@ -123,11 +123,19 @@ export abstract class BaseScreenView<
     const basePositionProperty = new Property( modelViewTransform.viewToModelPosition( baseLocation));
     const tipPositionProperty = new Property( basePositionProperty.value.plus(new Vector2(1,0)));
 
+    // Convert drag bounds from view to model coordinates
+    const modelDragBounds = new Bounds2(
+      modelViewTransform.viewToModelX(this.layoutBounds.minX),
+      modelViewTransform.viewToModelY(this.layoutBounds.minY),
+      modelViewTransform.viewToModelX(this.layoutBounds.maxX),
+      modelViewTransform.viewToModelY(this.layoutBounds.maxY)
+    );
+
     this.measuringTapeNode = new MeasuringTapeNode(unitsProperty, {
       basePositionProperty: basePositionProperty,
       tipPositionProperty: tipPositionProperty,
       modelViewTransform: modelViewTransform,
-      dragBounds: this.layoutBounds,
+      dragBounds: modelDragBounds,
       textColor: ClassicalMechanicsColors.measuringTapeTextColorProperty,
       textBackgroundColor: ClassicalMechanicsColors.measuringTapeTextBackgroundColorProperty,
       significantFigures: 2,
