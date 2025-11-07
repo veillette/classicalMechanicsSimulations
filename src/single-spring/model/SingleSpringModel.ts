@@ -40,12 +40,13 @@ export class SingleSpringModel extends BaseModel {
     super();
 
     // Initialize state
-    this.positionProperty = new NumberProperty(2.0); // meters (positive downward from natural length)
+    // Start at equilibrium position: x_eq = m*g/k = 1.0*9.8/20.0 = 0.49 m
+    this.positionProperty = new NumberProperty(0.5); // meters (positive downward from natural length)
     this.velocityProperty = new NumberProperty(0.0); // m/s
 
     // Initialize parameters
     this.massProperty = new NumberProperty(1.0); // kg
-    this.springConstantProperty = new NumberProperty(10.0); // N/m
+    this.springConstantProperty = new NumberProperty(20.0); // N/m (increased from 10 to keep mass on screen)
     this.dampingProperty = new NumberProperty(0.1); // N*s/m
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
     this.naturalLengthProperty = new NumberProperty(1.0); // meters

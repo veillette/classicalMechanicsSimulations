@@ -465,6 +465,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.model.mass2Property.lazyLink(detectCustomChange);
     this.model.springConstant1Property.lazyLink(detectCustomChange);
     this.model.springConstant2Property.lazyLink(detectCustomChange);
+    this.model.damping1Property.lazyLink(detectCustomChange);
+    this.model.damping2Property.lazyLink(detectCustomChange);
     this.model.gravityProperty.lazyLink(detectCustomChange);
 
     // Add accessibility announcements for parameter changes
@@ -479,6 +481,12 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
     this.model.springConstant2Property.lazyLink((springConstant) => {
       SimulationAnnouncer.announceParameterChange(`Spring 2 constant changed to ${springConstant.toFixed(0)} newtons per meter`);
+    });
+    this.model.damping1Property.lazyLink((damping) => {
+      SimulationAnnouncer.announceParameterChange(`Damping 1 changed to ${damping.toFixed(2)} newton seconds per meter`);
+    });
+    this.model.damping2Property.lazyLink((damping) => {
+      SimulationAnnouncer.announceParameterChange(`Damping 2 changed to ${damping.toFixed(2)} newton seconds per meter`);
     });
     this.model.gravityProperty.lazyLink((gravity) => {
       SimulationAnnouncer.announceParameterChange(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
@@ -650,6 +658,44 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       },
     );
 
+    const damping1Control = new NumberControl(
+      controlLabels.damping1StringProperty,
+      this.model.damping1Property,
+      new Range(0.0, 2.0),
+      {
+        delta: 0.05,
+        numberDisplayOptions: {
+          decimalPlaces: 2,
+          valuePattern: "{0} N·s/m",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
+        sliderOptions: {
+          thumbFill: ClassicalMechanicsColors.mass1FillColorProperty,
+        },
+      },
+    );
+
+    const damping2Control = new NumberControl(
+      controlLabels.damping2StringProperty,
+      this.model.damping2Property,
+      new Range(0.0, 2.0),
+      {
+        delta: 0.05,
+        numberDisplayOptions: {
+          decimalPlaces: 2,
+          valuePattern: "{0} N·s/m",
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
+        sliderOptions: {
+          thumbFill: ClassicalMechanicsColors.mass2FillColorProperty,
+        },
+      },
+    );
+
     const gravityControl = new NumberControl(
       controlLabels.gravityStringProperty,
       this.model.gravityProperty,
@@ -676,6 +722,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           mass2Control,
           spring1Control,
           spring2Control,
+          damping1Control,
+          damping2Control,
           gravityControl,
         ],
       }),
@@ -728,16 +776,17 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
    */
   protected createInfoDialogContent(): Node {
     // Create formula nodes
-    const equation1 = new FormulaNode("m_1 \\frac{d^2 x_1}{d t^2} = -k_1 x_1 + k_2(x_2 - x_1) + m_1 g", {
+    const equation1 = new FormulaNode("m_1 \\frac{d^2 x_1}{d t^2} = -k_1 x_1 + k_2(x_2 - x_1) - b_1\\frac{d x_1}{d t} + m_1 g", {
       maxWidth: 700,
     });
-    const equation2 = new FormulaNode("m_2 \\frac{d^2 x_2}{d t^2} = -k_2(x_2 - x_1) + m_2 g", {
+    const equation2 = new FormulaNode("m_2 \\frac{d^2 x_2}{d t^2} = -k_2(x_2 - x_1) - b_2\\frac{d x_2}{d t} + m_2 g", {
       maxWidth: 700,
     });
     const variablesList = new FormulaNode(
       "\\begin{array}{l}" +
       "\\bullet\\; m_1, m_2 = \\text{masses (kg)}\\\\" +
       "\\bullet\\; k_1, k_2 = \\text{spring constants (N/m)}\\\\" +
+      "\\bullet\\; b_1, b_2 = \\text{damping coefficients (N}\\!\\cdot\\!\\text{s/m)}\\\\" +
       "\\bullet\\; x_1, x_2 = \\text{displacements from equilibrium (m)}\\\\" +
       "\\bullet\\; g = \\text{gravitational acceleration (m/s}^2\\text{)}" +
       "\\end{array}",
@@ -763,7 +812,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
-          "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes.",
+          "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes. Damping can be added to observe energy dissipation.",
           {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,

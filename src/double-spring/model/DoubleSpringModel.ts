@@ -44,18 +44,19 @@ export class DoubleSpringModel extends BaseModel {
     super();
 
     // Initialize state
-    this.position1Property = new NumberProperty(1.5); // meters (positive downward from natural length)
+    // Start at equilibrium: x1_eq ≈ 0.98 m, x2_eq ≈ 1.47 m (with k=20 N/m)
+    this.position1Property = new NumberProperty(1.0); // meters (positive downward from natural length)
     this.velocity1Property = new NumberProperty(0.0); // m/s
-    this.position2Property = new NumberProperty(3.0); // meters (positive downward from natural length)
+    this.position2Property = new NumberProperty(1.5); // meters (positive downward from natural length)
     this.velocity2Property = new NumberProperty(0.0); // m/s
 
     // Initialize parameters
     this.mass1Property = new NumberProperty(1.0); // kg
     this.mass2Property = new NumberProperty(1.0); // kg
-    this.springConstant1Property = new NumberProperty(10.0); // N/m
-    this.springConstant2Property = new NumberProperty(10.0); // N/m
-    this.damping1Property = new NumberProperty(0.1); // N*s/m
-    this.damping2Property = new NumberProperty(0.1); // N*s/m
+    this.springConstant1Property = new NumberProperty(20.0); // N/m (increased from 10 to keep masses on screen)
+    this.springConstant2Property = new NumberProperty(20.0); // N/m (increased from 10 to keep masses on screen)
+    this.damping1Property = new NumberProperty(0.0); // N*s/m (no damping initially)
+    this.damping2Property = new NumberProperty(0.0); // N*s/m (no damping initially)
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
     this.naturalLength1Property = new NumberProperty(0.8); // meters
     this.naturalLength2Property = new NumberProperty(0.8); // meters
