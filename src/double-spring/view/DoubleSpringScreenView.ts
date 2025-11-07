@@ -25,7 +25,6 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
-import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 
 // Custom preset type to include "Custom" option
@@ -386,23 +385,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       },
     ];
 
-    // Calculate graph width to not extend beyond the spring (at centerX)
-    const GRAPH_LEFT_MARGIN = 10;
-    const GRAPH_RIGHT_MARGIN = 100;
-    const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
-    const graphHeight = 300;
-
-    // Create the configurable graph (position1 vs time by default)
-    this.configurableGraph = new ConfigurableGraph(
-      availableProperties,
-      availableProperties[5], // Time for x-axis
-      availableProperties[0], // Position1 for y-axis
-      graphWidth,
-      graphHeight,
-      2000, // max data points
-      this, // list parent for combo boxes
-    );
-    this.addChild(this.configurableGraph);
+    // Setup the configurable graph (position1 vs time by default)
+    this.setupConfigurableGraph(availableProperties, 0);
+    this.addChild(this.configurableGraph!);
 
     // Create vector control panel
     const visualizationLabels = stringManager.getVisualizationLabels();
@@ -425,9 +410,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(vectorPanel);
 
     // Position graph beneath vector panel
-    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
-    this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
-    this.configurableGraph.top = vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
+    this.positionConfigurableGraph(vectorPanel);
 
     // Create tools control panel
     const toolsPanel = new ToolsControlPanel({

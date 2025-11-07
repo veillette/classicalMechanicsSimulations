@@ -12,7 +12,6 @@ import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
-import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
@@ -292,23 +291,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       },
     ];
 
-    // Calculate graph width to not extend beyond the pendulum (at centerX)
-    const GRAPH_LEFT_MARGIN = 10;
-    const GRAPH_RIGHT_MARGIN = 100;
-    const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
-    const graphHeight = 300;
-
-    // Create the configurable graph (time vs angle by default)
-    this.configurableGraph = new ConfigurableGraph(
-      availableProperties,
-      availableProperties[5], // Time for x-axis
-      availableProperties[0], // Angle for y-axis
-      graphWidth,
-      graphHeight,
-      2000, // max data points
-      this, // list parent for combo boxes
-    );
-    this.addChild(this.configurableGraph);
+    // Setup the configurable graph (angle vs time by default)
+    this.setupConfigurableGraph(availableProperties, 0);
+    this.addChild(this.configurableGraph!);
 
     // Position control panel at the top right
     controlPanel.right = this.layoutBounds.maxX - 10;
@@ -335,9 +320,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.addChild(vectorPanel);
 
     // Position graph beneath vector panel
-    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
-    this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
-    this.configurableGraph.top = vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
+    this.positionConfigurableGraph(vectorPanel);
 
     // Create tools control panel
     const toolsPanel = new ToolsControlPanel({

@@ -31,6 +31,7 @@ import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
 import ConfigurableGraph from "./graph/ConfigurableGraph.ts";
+import type { PlottableProperty } from "./graph/PlottableProperty.ts";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -228,6 +229,63 @@ export abstract class BaseScreenView<
         this.sceneGridNode.visible = visible;
       }
     });
+  }
+
+  /**
+   * Setup the configurable graph with standard configuration.
+   * Call this after creating the available properties array in the subclass constructor.
+   * @param availableProperties - Array of plottable properties for the graph
+   * @param defaultYAxisIndex - Index of the default property for the y-axis
+   * @returns The created ConfigurableGraph instance
+   */
+  protected setupConfigurableGraph(
+    availableProperties: PlottableProperty[],
+    defaultYAxisIndex: number,
+  ): ConfigurableGraph {
+    // Constants for graph layout
+    const GRAPH_LEFT_MARGIN = 10;
+    const GRAPH_RIGHT_MARGIN = 100;
+    const GRAPH_HEIGHT = 300;
+    const MAX_DATA_POINTS = 2000;
+
+    // Calculate graph width to not extend beyond the center line
+    const graphWidth =
+      this.layoutBounds.centerX -
+      this.layoutBounds.minX -
+      GRAPH_LEFT_MARGIN -
+      GRAPH_RIGHT_MARGIN;
+
+    // Time property is always the last item in availableProperties
+    const timePropertyIndex = availableProperties.length - 1;
+
+    // Create the configurable graph
+    this.configurableGraph = new ConfigurableGraph(
+      availableProperties,
+      availableProperties[timePropertyIndex], // Time for x-axis
+      availableProperties[defaultYAxisIndex], // Default property for y-axis
+      graphWidth,
+      GRAPH_HEIGHT,
+      MAX_DATA_POINTS,
+      this, // list parent for combo boxes
+    );
+
+    return this.configurableGraph;
+  }
+
+  /**
+   * Position the configurable graph beneath the vector panel.
+   * Call this after both the graph and vector panel have been created and added as children.
+   * @param vectorPanel - The vector control panel node to position beneath
+   */
+  protected positionConfigurableGraph(vectorPanel: Node): void {
+    const GRAPH_LEFT_MARGIN = 10;
+    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
+
+    if (this.configurableGraph) {
+      this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
+      this.configurableGraph.top =
+        vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
+    }
   }
 
   /**
