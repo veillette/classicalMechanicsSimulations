@@ -159,7 +159,7 @@ export default class ConfigurableGraph extends Node {
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
           font: new PhetFont({size: 10}),
-          fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+          fill: ClassicalMechanicsColors.graphLabelColorProperty,
         }),
     });
     this.graphContentNode.addChild(this.xTickLabelSet);
@@ -169,7 +169,7 @@ export default class ConfigurableGraph extends Node {
       createLabel: (value: number) =>
         new Text(value.toFixed(2), {
           font: new PhetFont({size: 10}),
-          fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+          fill: ClassicalMechanicsColors.graphLabelColorProperty,
         }),
     });
     this.graphContentNode.addChild(this.yTickLabelSet);
@@ -193,7 +193,7 @@ export default class ConfigurableGraph extends Node {
     // Create axis labels
     this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
       font: new PhetFont({size: 12}),
-      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
       centerX: this.graphWidth / 2,
       top: this.graphHeight + 35,
     });
@@ -201,7 +201,7 @@ export default class ConfigurableGraph extends Node {
 
     this.yAxisLabelNode = new Text(this.formatAxisLabel(initialYProperty), {
       font: new PhetFont({size: 12}),
-      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      fill: ClassicalMechanicsColors.graphLabelColorProperty,
       rotation: -Math.PI / 2,
       centerY: this.graphHeight / 2,
       right: -35,
