@@ -21,7 +21,6 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { BaseScreenView } from "../../common/view/BaseScreenView.js";
 import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
-import ConfigurableGraph from "../../common/view/graph/ConfigurableGraph.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
@@ -332,23 +331,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       },
     ];
 
-    // Calculate graph width to not extend beyond the spring (at centerX)
-    const GRAPH_LEFT_MARGIN = 10;
-    const GRAPH_RIGHT_MARGIN = 100;
-    const graphWidth = this.layoutBounds.centerX - this.layoutBounds.minX - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN;
-    const graphHeight = 300;
-
-    // Create the configurable graph (position vs time by default)
-    this.configurableGraph = new ConfigurableGraph(
-      availableProperties,
-      availableProperties[5], // Time for x-axis
-      availableProperties[0], // Position for y-axis
-      graphWidth,
-      graphHeight,
-      2000, // max data points
-      this, // list parent for combo boxes
-    );
-    this.addChild(this.configurableGraph);
+    // Setup the configurable graph (position vs time by default)
+    this.setupConfigurableGraph(availableProperties, 0);
+    this.addChild(this.configurableGraph!);
 
     // Position control panel at the top right
     controlPanel.right = this.layoutBounds.maxX - 10;
@@ -375,9 +360,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.addChild(vectorPanel);
 
     // Position graph beneath vector panel
-    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
-    this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
-    this.configurableGraph.top = vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
+    this.positionConfigurableGraph(vectorPanel);
 
     // Create tools control panel
     const toolsPanel = new ToolsControlPanel({
