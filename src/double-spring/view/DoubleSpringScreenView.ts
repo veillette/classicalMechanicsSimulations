@@ -117,7 +117,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Create both spring node types for spring 2 (only one will be visible at a time)
     this.classicSpring2Node = new SpringNode({
       loops: 10,
-      radius: 1,
+      radius: 4,
       lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,
@@ -125,7 +125,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     this.parametricSpring2Node = new ParametricSpringNode({
       loops: 10,
-      radius: 1,
+      radius: 4,
       lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,

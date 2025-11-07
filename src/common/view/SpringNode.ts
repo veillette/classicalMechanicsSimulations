@@ -137,7 +137,17 @@ export class SpringNode extends Node {
     }
 
     // End with right end horizontal line
-    frontShape.lineTo(length, 0);
+    // First return to centerline, then draw horizontal end
+    const lastCoilX = this.leftEndLength + coilLength;
+    if (isFront) {
+      frontShape.lineTo(lastCoilX, 0);
+      frontShape.lineTo(length, 0);
+    } else {
+      backShape.lineTo(lastCoilX, 0);
+      backShape.moveTo(lastCoilX, 0);
+      frontShape.moveTo(lastCoilX, 0);
+      frontShape.lineTo(length, 0);
+    }
 
     this.frontPath.shape = frontShape;
     this.backPath.shape = backShape;

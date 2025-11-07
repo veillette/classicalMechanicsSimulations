@@ -123,7 +123,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     this.parametricSpringNode = new ParametricSpringNode({
       loops: 12,
-      radius: 1,
+      radius: 5,
       lineWidth: 1,
       leftEndLength: 5,
       rightEndLength: 5,

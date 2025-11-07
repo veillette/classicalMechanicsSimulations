@@ -175,16 +175,27 @@ export class ParametricSpringNode extends Node {
     }
 
     // horizontal line at right end
+    // First return to centerline (y=0), then draw horizontal end line
     const lastCoilPoint = coilPoints[numberOfCoilPoints - 1];
-    const p = new Vector2(
-      lastCoilPoint.x + this.rightEndLength,
-      lastCoilPoint.y,
-    );
-    this.springPoints.push(p);
+
+    // Calculate the total length of the spring shape to ensure it reaches the endpoint
+    // This must match the naturalLength calculation in setEndpoints()
+    const totalLength = this.leftEndLength + this.rightEndLength + 2 * this.radius + this.xScale * this.loops * this.radius;
+
+    const centerPoint = new Vector2(lastCoilPoint.x, 0);
+    const endPoint = new Vector2(totalLength, 0);
+
+    this.springPoints.push(centerPoint);
+    this.springPoints.push(endPoint);
+
     if (wasFront) {
-      this.frontShape.lineToPoint(p);
+      this.frontShape.lineToPoint(centerPoint);
+      this.frontShape.lineToPoint(endPoint);
     } else {
-      this.backShape.lineToPoint(p);
+      this.backShape.lineToPoint(centerPoint);
+      // Switch to front path for the horizontal end line
+      this.frontShape.moveToPoint(centerPoint);
+      this.frontShape.lineToPoint(endPoint);
     }
 
     this.frontPath.shape = this.frontShape;
