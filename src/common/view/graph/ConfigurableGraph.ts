@@ -402,4 +402,11 @@ export default class ConfigurableGraph extends Node {
   public getYProperty(): PlottableProperty {
     return this.yPropertyProperty.value;
   }
+
+  /**
+   * Get the graph visibility property
+   */
+  public getGraphVisibleProperty(): BooleanProperty {
+    return this.graphVisibleProperty;
+  }
 }

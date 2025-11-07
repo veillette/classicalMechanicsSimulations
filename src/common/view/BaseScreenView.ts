@@ -293,9 +293,7 @@ export abstract class BaseScreenView<
    * @returns The graph visibility property, or null if no graph exists
    */
   protected getGraphVisibilityProperty(): BooleanProperty | null {
-    // Access the private graphVisibleProperty through a type assertion
-    // This is safe because ConfigurableGraph has this property
-    return this.configurableGraph ? (this.configurableGraph as any).graphVisibleProperty : null;
+    return this.configurableGraph ? this.configurableGraph.getGraphVisibleProperty() : null;
   }
 
   /**
