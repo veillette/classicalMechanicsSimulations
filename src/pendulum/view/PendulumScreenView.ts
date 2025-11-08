@@ -290,121 +290,20 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     controlPanel.right = this.layoutBounds.maxX - 10;
     controlPanel.top = this.layoutBounds.minY + 10;
 
-    // Create vector control panel
-    const visualizationLabels = stringManager.getVisualizationLabels();
-    const vectorPanel = new VectorControlPanel({
-      velocity: {
-        showProperty: this.showVelocityProperty,
-        labelProperty: visualizationLabels.velocityStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.velocityVectorsShownStringProperty,
-          hidden: a11yStrings.velocityVectorsHiddenStringProperty,
-        },
-      },
-      force: {
-        showProperty: this.showForceProperty,
-        labelProperty: visualizationLabels.forceStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.forceVectorsShownStringProperty,
-          hidden: a11yStrings.forceVectorsHiddenStringProperty,
-        },
-      },
-      acceleration: {
-        showProperty: this.showAccelerationProperty,
-        labelProperty: visualizationLabels.accelerationStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.accelerationVectorsShownStringProperty,
-          hidden: a11yStrings.accelerationVectorsHiddenStringProperty,
-        },
-      },
-    });
-    vectorPanel.left = this.layoutBounds.minX + 10;
-    vectorPanel.top = this.layoutBounds.minY + 10;
-    this.addChild(vectorPanel);
+    // Setup vector and tools panels using base class method (includes protractor for pendulum)
+    this.setupVectorAndToolsPanels(true);
 
     // Position graph beneath vector panel
-    this.positionConfigurableGraph(vectorPanel);
-
-    // Create tools control panel
-    const graphLabels = stringManager.getGraphLabels();
-    const toolsPanel = new ToolsControlPanel({
-      grid: {
-        showProperty: this.showGridProperty!,
-        labelProperty: visualizationLabels.showGridStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.gridShownStringProperty,
-          hidden: a11yStrings.gridHiddenStringProperty,
-        },
-      },
-      distance: {
-        showProperty: this.showDistanceToolProperty,
-        labelProperty: visualizationLabels.showDistanceToolStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.distanceToolShownStringProperty,
-          hidden: a11yStrings.distanceToolHiddenStringProperty,
-        },
-      },
-      stopwatch: {
-        showProperty: this.showStopwatchProperty,
-        labelProperty: visualizationLabels.showStopwatchStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.stopwatchShownStringProperty,
-          hidden: a11yStrings.stopwatchHiddenStringProperty,
-        },
-      },
-      protractor: {
-        showProperty: this.showProtractorProperty,
-        labelProperty: visualizationLabels.showProtractorStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.protractorShownStringProperty,
-          hidden: a11yStrings.protractorHiddenStringProperty,
-        },
-      },
-      graph: {
-        showProperty: this.getGraphVisibilityProperty()!,
-        labelProperty: graphLabels.showGraphStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.graphShownStringProperty,
-          hidden: a11yStrings.graphHiddenStringProperty,
-        },
-      },
-    });
-    toolsPanel.left = this.layoutBounds.minX + 10;
-    toolsPanel.bottom = this.layoutBounds.maxY - 10;
-    this.addChild(toolsPanel);
+    this.positionConfigurableGraph(this.vectorPanel!);
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
-    // Fix z-order: Reorder elements to ensure correct layering
-    // Required order (back to front): grid, panels, pendulum elements, vectors, common controls, graph, measurement tools
-
-    // Move pendulum elements to front (above panels)
-    this.pivotNode.moveToFront();
-    this.rodNode.moveToFront();
-    this.bobNode.moveToFront();
-    this.bobReferenceDot.moveToFront();
-
-    // Move vector nodes to front (above pendulum elements)
-    this.velocityVectorNode.moveToFront();
-    this.forceVectorNode.moveToFront();
-    this.accelerationVectorNode.moveToFront();
-
-    // Move configurable graph to front (below measurement tools)
-    if (this.configurableGraph) {
-      this.configurableGraph.moveToFront();
-    }
-
-    // Move measurement tools to the very top (highest z-order)
-    if (this.measuringTapeNode) {
-      this.measuringTapeNode.moveToFront();
-    }
-    if (this.stopwatchNode) {
-      this.stopwatchNode.moveToFront();
-    }
-    if (this.protractorNode) {
-      this.protractorNode.moveToFront();
-    }
+    // Manage z-order using base class method
+    this.manageZOrder(
+      [this.pivotNode, this.rodNode, this.bobNode, this.bobReferenceDot],
+      [this.velocityVectorNode, this.forceVectorNode, this.accelerationVectorNode],
+    );
 
     // Initial visualization
     this.updateVisualization();

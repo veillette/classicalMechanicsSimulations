@@ -12,18 +12,22 @@ import {
   ProtractorNode,
   MeasuringTapeNode,
   InfoButton,
+  NumberControl,
+  PhetFont,
 } from "scenerystack/scenery-phet";
-import { KeyboardListener, Node } from "scenerystack/scenery";
+import { KeyboardListener, Node, HBox, VBox, Text } from "scenerystack/scenery";
 import {
   BooleanProperty,
   EnumerationProperty,
   DerivedProperty,
   Property,
+  TReadOnlyProperty,
 } from "scenerystack/axon";
 import { TimeSpeed } from "scenerystack/scenery-phet";
-import { Bounds2, Vector2 } from "scenerystack/dot";
+import { Bounds2, Vector2, Range } from "scenerystack/dot";
 import { Dialog } from "scenerystack/sim";
 import type { DialogOptions } from "scenerystack/sim";
+import { Panel, ComboBox } from "scenerystack/sun";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.ts";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -32,6 +36,19 @@ import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { SceneGridNode } from "./SceneGridNode.js";
 import ConfigurableGraph from "./graph/ConfigurableGraph.ts";
 import type { PlottableProperty } from "./graph/PlottableProperty.ts";
+import { Preset } from "../model/Preset.js";
+import { VectorControlPanel } from "./VectorControlPanel.js";
+import { ToolsControlPanel } from "./ToolsControlPanel.js";
+import {
+  FONT_SIZE_BODY_TEXT,
+  FONT_SIZE_SECONDARY_LABEL,
+} from "./FontSizeConstants.js";
+import {
+  SPACING_SMALL,
+  SPACING_MEDIUM,
+  PANEL_MARGIN_X,
+  PANEL_MARGIN_Y,
+} from "./UILayoutConstants.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -42,6 +59,20 @@ export type TimeControllableModel = {
   reset(): void;
   step(dt: number, forceStep?: boolean): void;
 }
+
+/**
+ * Type definition for control panel parameters.
+ * Used to configure NumberControl instances with standard styling.
+ */
+export type ControlPanelParameter = {
+  labelProperty: TReadOnlyProperty<string>;
+  property: Property<number>;
+  range: Range;
+  delta: number;
+  decimalPlaces: number;
+  units: string;
+  thumbFill?: TReadOnlyProperty<import("scenerystack/scenery").Color>;
+};
 
 export abstract class BaseScreenView<
   T extends TimeControllableModel,
@@ -81,6 +112,16 @@ export abstract class BaseScreenView<
 
   // Info dialog
   private infoDialog: Dialog | null = null;
+
+  // Preset management (available to all screens)
+  protected presetProperty: Property<Preset | "Custom"> | null = null;
+  protected presets: Preset[] = [];
+  protected isApplyingPreset: boolean = false;
+
+  // Control panels (available to all screens)
+  protected controlPanel: Node | null = null;
+  protected vectorPanel: Node | null = null;
+  protected toolsPanel: Node | null = null;
 
   protected constructor(model: T, options?: ScreenViewOptions) {
     super(options);
@@ -557,5 +598,287 @@ export abstract class BaseScreenView<
       const announcement = template.replace("{{speed}}", speed.name);
       SimulationAnnouncer.announceSimulationState(announcement);
     });
+  }
+
+  /**
+   * Create a preset selector ComboBox with standard styling.
+   * @param presetProperty - Property to bind the preset selection to
+   * @param presets - Array of available presets
+   * @returns HBox containing the preset selector
+   */
+  protected createPresetSelector(
+    presetProperty: Property<Preset | "Custom">,
+    presets: Preset[],
+  ): Node {
+    const stringManager = StringManager.getInstance();
+    const presetLabels = stringManager.getPresetLabels();
+
+    // Create preset selector items
+    const presetItems: Array<{
+      value: Preset | "Custom";
+      createNode: () => Node;
+      tandemName: string;
+    }> = [
+      // Add "Custom" option first
+      {
+        value: "Custom",
+        createNode: () =>
+          new Text(presetLabels.customStringProperty, {
+            font: new PhetFont({ size: FONT_SIZE_BODY_TEXT }),
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        tandemName: "customPresetItem",
+      },
+      // Add all presets
+      ...presets.map((preset, index) => ({
+        value: preset,
+        createNode: () =>
+          new Text(preset.nameProperty, {
+            font: new PhetFont({ size: FONT_SIZE_BODY_TEXT }),
+            fill: ClassicalMechanicsColors.textColorProperty,
+          }),
+        tandemName: `preset${index}Item`,
+      })),
+    ];
+
+    const presetSelector = new ComboBox(presetProperty, presetItems, this, {
+      cornerRadius: 5,
+      xMargin: 8,
+      yMargin: 4,
+      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    });
+
+    const presetLabel = new Text(presetLabels.labelStringProperty, {
+      font: new PhetFont({ size: FONT_SIZE_SECONDARY_LABEL }),
+      fill: ClassicalMechanicsColors.textColorProperty,
+    });
+
+    return new HBox({
+      spacing: SPACING_SMALL,
+      children: [presetLabel, presetSelector],
+    });
+  }
+
+  /**
+   * Create a NumberControl with standard styling.
+   * @param parameter - Parameter configuration object
+   * @returns NumberControl instance
+   */
+  protected createNumberControl(parameter: ControlPanelParameter): NumberControl {
+    return new NumberControl(
+      parameter.labelProperty,
+      parameter.property,
+      parameter.range,
+      {
+        delta: parameter.delta,
+        numberDisplayOptions: {
+          decimalPlaces: parameter.decimalPlaces,
+          valuePattern: `{0} ${parameter.units}`,
+        },
+        titleNodeOptions: {
+          fill: ClassicalMechanicsColors.textColorProperty,
+        },
+        sliderOptions: parameter.thumbFill
+          ? {
+              thumbFill: parameter.thumbFill,
+            }
+          : undefined,
+      },
+    );
+  }
+
+  /**
+   * Wrap controls in a Panel with standard styling.
+   * @param children - Array of control nodes
+   * @returns Panel containing the controls
+   */
+  protected wrapInPanel(children: Node[]): Panel {
+    return new Panel(
+      new VBox({
+        spacing: SPACING_MEDIUM,
+        align: "left",
+        children: children,
+      }),
+      {
+        xMargin: PANEL_MARGIN_X,
+        yMargin: PANEL_MARGIN_Y,
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+        lineWidth: 1,
+        cornerRadius: 5,
+      },
+    );
+  }
+
+  /**
+   * Setup preset management infrastructure.
+   * Subclasses should call this and provide their preset configuration.
+   * @param presets - Array of available presets
+   * @param applyPresetCallback - Function to apply a preset to the model
+   * @param detectCustomChangeProperties - Array of properties to monitor for custom changes
+   */
+  protected setupPresetManagement(
+    presets: Preset[],
+    applyPresetCallback: (preset: Preset) => void,
+    detectCustomChangeProperties: Property<number>[],
+  ): void {
+    this.presets = presets;
+    this.presetProperty = new Property<Preset | "Custom">(presets[0]);
+
+    // Listen for preset changes to apply configuration
+    this.presetProperty.link((preset) => {
+      if (preset !== "Custom" && !this.isApplyingPreset) {
+        applyPresetCallback(preset);
+      }
+    });
+
+    // Listen to model parameter changes to detect user modifications
+    const detectCustomChange = () => {
+      if (!this.isApplyingPreset && this.presetProperty!.value !== "Custom") {
+        this.presetProperty!.value = "Custom";
+      }
+    };
+
+    detectCustomChangeProperties.forEach((property) => {
+      property.lazyLink(detectCustomChange);
+    });
+  }
+
+  /**
+   * Setup vector and tools control panels with standard configuration.
+   * Call this after the graph has been created.
+   * @param includeProtractor - Whether to include protractor in tools panel
+   */
+  protected setupVectorAndToolsPanels(includeProtractor: boolean = true): void {
+    const stringManager = StringManager.getInstance();
+    const visualizationLabels = stringManager.getVisualizationLabels();
+    const graphLabels = stringManager.getGraphLabels();
+    const a11yStrings = this.getA11yStrings();
+
+    // Create vector control panel
+    this.vectorPanel = new VectorControlPanel({
+      velocity: {
+        showProperty: this.showVelocityProperty,
+        labelProperty: visualizationLabels.velocityStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.velocityVectorsShownStringProperty,
+          hidden: a11yStrings.velocityVectorsHiddenStringProperty,
+        },
+      },
+      force: {
+        showProperty: this.showForceProperty,
+        labelProperty: visualizationLabels.forceStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.forceVectorsShownStringProperty,
+          hidden: a11yStrings.forceVectorsHiddenStringProperty,
+        },
+      },
+      acceleration: {
+        showProperty: this.showAccelerationProperty,
+        labelProperty: visualizationLabels.accelerationStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.accelerationVectorsShownStringProperty,
+          hidden: a11yStrings.accelerationVectorsHiddenStringProperty,
+        },
+      },
+    });
+    this.vectorPanel.left = this.layoutBounds.minX + 10;
+    this.vectorPanel.top = this.layoutBounds.minY + 10;
+    this.addChild(this.vectorPanel);
+
+    // Create tools control panel configuration
+    const toolsConfig: any = {
+      grid: {
+        showProperty: this.showGridProperty!,
+        labelProperty: visualizationLabels.showGridStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.gridShownStringProperty,
+          hidden: a11yStrings.gridHiddenStringProperty,
+        },
+      },
+      distance: {
+        showProperty: this.showDistanceToolProperty,
+        labelProperty: visualizationLabels.showDistanceToolStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.distanceToolShownStringProperty,
+          hidden: a11yStrings.distanceToolHiddenStringProperty,
+        },
+      },
+      stopwatch: {
+        showProperty: this.showStopwatchProperty,
+        labelProperty: visualizationLabels.showStopwatchStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.stopwatchShownStringProperty,
+          hidden: a11yStrings.stopwatchHiddenStringProperty,
+        },
+      },
+      graph: {
+        showProperty: this.getGraphVisibilityProperty()!,
+        labelProperty: graphLabels.showGraphStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.graphShownStringProperty,
+          hidden: a11yStrings.graphHiddenStringProperty,
+        },
+      },
+    };
+
+    // Add protractor if requested
+    if (includeProtractor) {
+      toolsConfig.protractor = {
+        showProperty: this.showProtractorProperty,
+        labelProperty: visualizationLabels.showProtractorStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.protractorShownStringProperty,
+          hidden: a11yStrings.protractorHiddenStringProperty,
+        },
+      };
+    }
+
+    this.toolsPanel = new ToolsControlPanel(toolsConfig);
+    this.toolsPanel.left = this.layoutBounds.minX + 10;
+    this.toolsPanel.bottom = this.layoutBounds.maxY - 10;
+    this.addChild(this.toolsPanel);
+  }
+
+  /**
+   * Manage z-order of common elements to ensure correct layering.
+   * Call this after all children have been added.
+   * @param simulationElements - Array of simulation-specific elements (pendulum, spring, etc.)
+   * @param vectorElements - Array of vector visualization nodes
+   */
+  protected manageZOrder(
+    simulationElements: Node[],
+    vectorElements: Node[],
+  ): void {
+    // Move grid to back if it exists
+    if (this.sceneGridNode) {
+      this.sceneGridNode.moveToBack();
+    }
+
+    // Move simulation elements to front (above panels)
+    simulationElements.forEach((element) => element.moveToFront());
+
+    // Move vector nodes to front (above simulation elements)
+    vectorElements.forEach((element) => element.moveToFront());
+
+    // Move configurable graph to front (below measurement tools)
+    if (this.configurableGraph) {
+      this.configurableGraph.moveToFront();
+    }
+
+    // Move measurement tools to the very top (highest z-order)
+    if (this.measuringTapeNode) {
+      this.measuringTapeNode.moveToFront();
+    }
+    if (this.stopwatchNode) {
+      this.stopwatchNode.moveToFront();
+    }
+    if (this.protractorNode) {
+      this.protractorNode.moveToFront();
+    }
   }
 }
