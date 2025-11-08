@@ -17,7 +17,7 @@ import {
   RichText,
 } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, PhetFont, FormulaNode } from "scenerystack/scenery-phet";
+import { NumberControl, PhetFont, FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";

@@ -7,7 +7,7 @@ import { type ScreenViewOptions, ScreenSummaryContent } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
 import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetColorScheme, FormulaNode, PhetFont } from "scenerystack/scenery-phet";
+import { NumberControl, FormulaNode, PhetFont } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
