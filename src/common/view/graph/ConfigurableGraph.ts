@@ -188,7 +188,7 @@ export default class ConfigurableGraph extends Node {
     const clipMargin = 8;
     const clippedDataContainer = new Node({
       children: [this.linePlot, this.trailNode],
-      clipArea: Shape.rect(-clipMargin, -clipMargin, width + clipMargin, height + clipMargin),
+      clipArea: Shape.rect(-clipMargin, -clipMargin, width + 2 * clipMargin, height + 2 * clipMargin),
     });
     this.graphContentNode.addChild(clippedDataContainer);
 
@@ -352,7 +352,7 @@ export default class ConfigurableGraph extends Node {
       (child) => child.clipArea !== undefined
     );
     if (clippedDataContainer) {
-      clippedDataContainer.clipArea = Shape.rect(-clipMargin, -clipMargin, newWidth + clipMargin, newHeight + clipMargin);
+      clippedDataContainer.clipArea = Shape.rect(-clipMargin, -clipMargin, newWidth + 2 * clipMargin, newHeight + 2 * clipMargin);
     }
 
     // Update axis labels positions
