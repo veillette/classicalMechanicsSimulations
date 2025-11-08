@@ -30,6 +30,13 @@ import {
   FONT_SIZE_SECONDARY_LABEL,
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
+import {
+  SPACING_SMALL,
+  SPACING_MEDIUM,
+  SPACING_LARGE,
+  PANEL_MARGIN_X,
+  PANEL_MARGIN_Y,
+} from "../../common/view/UILayoutConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -417,7 +424,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
 
     const presetRow = new HBox({
-      spacing: 10,
+      spacing: SPACING_SMALL,
       children: [presetLabel, presetSelector],
     });
 
@@ -487,7 +494,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     const panel = new Panel(
       new VBox({
-        spacing: 15,
+        spacing: SPACING_MEDIUM,
         align: "left",
         children: [
           presetRow,
@@ -498,8 +505,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
         ],
       }),
       {
-        xMargin: 10,
-        yMargin: 10,
+        xMargin: PANEL_MARGIN_X,
+        yMargin: PANEL_MARGIN_Y,
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
@@ -541,7 +548,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
 
     return new VBox({
-      spacing: 20,
+      spacing: SPACING_LARGE,
       align: "left",
       children: [
         new Text("Simple Pendulum", {
