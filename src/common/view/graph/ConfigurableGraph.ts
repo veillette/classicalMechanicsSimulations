@@ -3,7 +3,7 @@
  * This provides a flexible way to explore relationships between any two quantities.
  */
 
-import { Node, HBox, Text } from "scenerystack/scenery";
+import { Node, HBox, Text, Rectangle, FireListener } from "scenerystack/scenery";
 import {
   ChartRectangle,
   ChartTransform,
@@ -66,6 +66,9 @@ export default class ConfigurableGraph extends Node {
   // Module instances
   private readonly dataManager: GraphDataManager;
   private readonly interactionHandler: GraphInteractionHandler;
+
+  // Rescale button
+  private readonly rescaleButton: Node;
 
   /**
    * @param availableProperties - List of properties that can be plotted
@@ -237,6 +240,51 @@ export default class ConfigurableGraph extends Node {
     titlePanel.centerX = this.graphWidth / 2;
     titlePanel.bottom = -5;
     this.graphContentNode.addChild(titlePanel);
+
+    // Create rescale button
+    const buttonSize = 24;
+    const buttonPadding = 4;
+    const rescaleText = new Text('↻', {
+      font: new PhetFont({ size: 16, weight: 'bold' }),
+      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    });
+
+    const rescaleButtonBackground = new Rectangle(0, 0, buttonSize, buttonSize, 3, 3, {
+      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      lineWidth: 1,
+      cursor: 'pointer',
+    });
+
+    this.rescaleButton = new Node({
+      children: [rescaleButtonBackground, rescaleText],
+      left: buttonPadding,
+      top: buttonPadding,
+    });
+
+    // Center the text in the button
+    rescaleText.center = rescaleButtonBackground.center;
+
+    // Add hover effect
+    this.rescaleButton.addInputListener({
+      enter: () => {
+        rescaleButtonBackground.opacity = 0.8;
+      },
+      exit: () => {
+        rescaleButtonBackground.opacity = 1.0;
+      },
+    });
+
+    // Add click handler
+    this.rescaleButton.addInputListener(new FireListener({
+      fire: () => {
+        // Reset manual zoom flag and rescale to fit data
+        this.dataManager.setManuallyZoomed(false);
+        this.dataManager.updateAxisRanges();
+      },
+    }));
+
+    this.graphContentNode.addChild(this.rescaleButton);
 
     // Update labels when axes change and announce using voicing
     const a11yStrings = StringManager.getInstance().getAccessibilityStrings();
