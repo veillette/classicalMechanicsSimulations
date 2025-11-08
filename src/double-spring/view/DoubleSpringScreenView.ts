@@ -388,80 +388,11 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.setupConfigurableGraph(availableProperties, 0);
     this.addChild(this.configurableGraph!);
 
-    // Create vector control panel
-    const visualizationLabels = stringManager.getVisualizationLabels();
-    const vectorPanel = new VectorControlPanel({
-      velocity: {
-        showProperty: this.showVelocityProperty,
-        labelProperty: visualizationLabels.velocityStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.velocityVectorsShownStringProperty,
-          hidden: a11yStrings.velocityVectorsHiddenStringProperty,
-        },
-      },
-      force: {
-        showProperty: this.showForceProperty,
-        labelProperty: visualizationLabels.forceStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.forceVectorsShownStringProperty,
-          hidden: a11yStrings.forceVectorsHiddenStringProperty,
-        },
-      },
-      acceleration: {
-        showProperty: this.showAccelerationProperty,
-        labelProperty: visualizationLabels.accelerationStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.accelerationVectorsShownStringProperty,
-          hidden: a11yStrings.accelerationVectorsHiddenStringProperty,
-        },
-      },
-    });
-    vectorPanel.left = this.layoutBounds.minX + 10;
-    vectorPanel.top = this.layoutBounds.minY + 10;
-    this.addChild(vectorPanel);
+    // Setup vector and tools panels using base class method (no protractor for spring screens)
+    this.setupVectorAndToolsPanels(false);
 
     // Position graph beneath vector panel
-    this.positionConfigurableGraph(vectorPanel);
-
-    // Create tools control panel
-    const graphLabels = stringManager.getGraphLabels();
-    const toolsPanel = new ToolsControlPanel({
-      grid: {
-        showProperty: this.showGridProperty!,
-        labelProperty: visualizationLabels.showGridStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.gridShownStringProperty,
-          hidden: a11yStrings.gridHiddenStringProperty,
-        },
-      },
-      distance: {
-        showProperty: this.showDistanceToolProperty,
-        labelProperty: visualizationLabels.showDistanceToolStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.distanceToolShownStringProperty,
-          hidden: a11yStrings.distanceToolHiddenStringProperty,
-        },
-      },
-      stopwatch: {
-        showProperty: this.showStopwatchProperty,
-        labelProperty: visualizationLabels.showStopwatchStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.stopwatchShownStringProperty,
-          hidden: a11yStrings.stopwatchHiddenStringProperty,
-        },
-      },
-      graph: {
-        showProperty: this.getGraphVisibilityProperty()!,
-        labelProperty: graphLabels.showGraphStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.graphShownStringProperty,
-          hidden: a11yStrings.graphHiddenStringProperty,
-        },
-      },
-    });
-    toolsPanel.left = this.layoutBounds.minX + 10;
-    toolsPanel.bottom = this.layoutBounds.maxY - 10;
-    this.addChild(toolsPanel);
+    this.positionConfigurableGraph(this.vectorPanel!);
 
     // Listen for preset changes to apply configuration
     this.presetProperty.link((preset) => {
@@ -513,37 +444,25 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
-    // Fix z-order: Reorder elements to ensure correct layering
-    // Required order (back to front): grid, panels, spring elements, vectors, common controls, graph, measurement tools
-
-    // Move spring and mass elements to front (above panels)
-    this.currentSpring1Node.moveToFront();
-    this.currentSpring2Node.moveToFront();
-    this.mass1Node.moveToFront();
-    this.mass1ReferenceLine.moveToFront();
-    this.mass2Node.moveToFront();
-    this.mass2ReferenceLine.moveToFront();
-
-    // Move vector nodes to front (above spring/mass elements)
-    this.velocity1VectorNode.moveToFront();
-    this.force1VectorNode.moveToFront();
-    this.acceleration1VectorNode.moveToFront();
-    this.velocity2VectorNode.moveToFront();
-    this.force2VectorNode.moveToFront();
-    this.acceleration2VectorNode.moveToFront();
-
-    // Move configurable graph to front (below measurement tools)
-    if (this.configurableGraph) {
-      this.configurableGraph.moveToFront();
-    }
-
-    // Move measurement tools to the very top (highest z-order)
-    if (this.measuringTapeNode) {
-      this.measuringTapeNode.moveToFront();
-    }
-    if (this.stopwatchNode) {
-      this.stopwatchNode.moveToFront();
-    }
+    // Manage z-order using base class method
+    this.manageZOrder(
+      [
+        this.currentSpring1Node,
+        this.currentSpring2Node,
+        this.mass1Node,
+        this.mass1ReferenceLine,
+        this.mass2Node,
+        this.mass2ReferenceLine,
+      ],
+      [
+        this.velocity1VectorNode,
+        this.force1VectorNode,
+        this.acceleration1VectorNode,
+        this.velocity2VectorNode,
+        this.force2VectorNode,
+        this.acceleration2VectorNode,
+      ],
+    );
 
     // Initial visualization
     this.updateVisualization();
