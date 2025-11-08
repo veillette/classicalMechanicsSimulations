@@ -26,6 +26,14 @@ import { Property } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import {
+  DOUBLE_SPRING_LOOPS,
+  DOUBLE_SPRING_RADIUS,
+  SPRING_LINE_WIDTH,
+  SPRING_LEFT_END_LENGTH,
+  SPRING_RIGHT_END_LENGTH,
+} from "../../common/view/SpringVisualizationConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -99,36 +107,36 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Create both spring node types for spring 1 (only one will be visible at a time)
     this.classicSpring1Node = new SpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     this.parametricSpring1Node = new ParametricSpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     // Create both spring node types for spring 2 (only one will be visible at a time)
     this.classicSpring2Node = new SpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     this.parametricSpring2Node = new ParametricSpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     // Set initial spring nodes based on preference
@@ -287,54 +295,23 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes for mass 1
-    this.velocity1VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₁",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors1 = VectorNodeFactory.createVectorNodes("₁");
+    this.velocity1VectorNode = vectors1.velocity;
+    this.force1VectorNode = vectors1.force;
+    this.acceleration1VectorNode = vectors1.acceleration;
+
     this.addChild(this.velocity1VectorNode);
-
-    this.force1VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force1VectorNode);
-
-    this.acceleration1VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration1VectorNode);
 
-    // Create vector nodes for mass 2
-    this.velocity2VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₂",
-      minMagnitude: 0.05,
-    });
+    const vectors2 = VectorNodeFactory.createVectorNodes("₂");
+    this.velocity2VectorNode = vectors2.velocity;
+    this.force2VectorNode = vectors2.force;
+    this.acceleration2VectorNode = vectors2.acceleration;
+
     this.addChild(this.velocity2VectorNode);
-
-    this.force2VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force2VectorNode);
-
-    this.acceleration2VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes

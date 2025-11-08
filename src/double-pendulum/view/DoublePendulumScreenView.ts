@@ -34,6 +34,7 @@ import { VectorNode } from "../../common/view/VectorNode.js";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -290,54 +291,23 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes for bob 1
-    this.velocity1VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₁",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors1 = VectorNodeFactory.createVectorNodes("₁");
+    this.velocity1VectorNode = vectors1.velocity;
+    this.force1VectorNode = vectors1.force;
+    this.acceleration1VectorNode = vectors1.acceleration;
+
     this.addChild(this.velocity1VectorNode);
-
-    this.force1VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force1VectorNode);
-
-    this.acceleration1VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration1VectorNode);
 
-    // Create vector nodes for bob 2
-    this.velocity2VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₂",
-      minMagnitude: 0.05,
-    });
+    const vectors2 = VectorNodeFactory.createVectorNodes("₂");
+    this.velocity2VectorNode = vectors2.velocity;
+    this.force2VectorNode = vectors2.force;
+    this.acceleration2VectorNode = vectors2.acceleration;
+
     this.addChild(this.velocity2VectorNode);
-
-    this.force2VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force2VectorNode);
-
-    this.acceleration2VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes

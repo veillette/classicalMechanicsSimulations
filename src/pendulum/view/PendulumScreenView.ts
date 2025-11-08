@@ -24,6 +24,7 @@ import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtract
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PhetFont } from "scenerystack";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -178,43 +179,23 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes
-    this.velocityVectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50, // 50 pixels per m/s
-      label: "v",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors = VectorNodeFactory.createVectorNodes();
+    this.velocityVectorNode = vectors.velocity;
+    this.forceVectorNode = vectors.force;
+    this.accelerationVectorNode = vectors.acceleration;
+
     this.addChild(this.velocityVectorNode);
-
-    this.forceVectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10, // 10 pixels per Newton
-      label: "F",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.forceVectorNode);
-
-    this.accelerationVectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20, // 20 pixels per m/s²
-      label: "a",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.accelerationVectorNode);
 
     // Link visibility properties to vector nodes
-    this.showVelocityProperty.link((showVelocity) => {
-      this.velocityVectorNode.setVectorVisible(showVelocity);
-    });
-
-    this.showForceProperty.link((showForce) => {
-      this.forceVectorNode.setVectorVisible(showForce);
-    });
-
-    this.showAccelerationProperty.link((showAcceleration) => {
-      this.accelerationVectorNode.setVectorVisible(showAcceleration);
-    });
+    VectorNodeFactory.linkVectorVisibility(
+      vectors,
+      this.showVelocityProperty,
+      this.showForceProperty,
+      this.showAccelerationProperty
+    );
 
     // Control panel
     const controlPanel = this.createControlPanel();
