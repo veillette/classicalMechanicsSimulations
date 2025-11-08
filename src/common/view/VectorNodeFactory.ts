@@ -29,25 +29,26 @@ export interface VectorNodes {
 export class VectorNodeFactory {
   /**
    * Create a set of vector nodes for a single mass/bob with standard parameters.
+   * @param labelSuffix - Optional suffix to add to labels (e.g., "₁" or "₂" for multiple masses)
    */
-  public static createVectorNodes(): VectorNodes {
+  public static createVectorNodes(labelSuffix: string = ""): VectorNodes {
     return {
       velocity: new VectorNode({
         color: PhetColorScheme.VELOCITY,
         scale: VELOCITY_VECTOR_SCALE,
-        label: "v",
+        label: "v" + labelSuffix,
         minMagnitude: VELOCITY_MIN_MAGNITUDE,
       }),
       force: new VectorNode({
         color: PhetColorScheme.APPLIED_FORCE,
         scale: FORCE_VECTOR_SCALE,
-        label: "F",
+        label: "F" + labelSuffix,
         minMagnitude: FORCE_MIN_MAGNITUDE,
       }),
       acceleration: new VectorNode({
         color: PhetColorScheme.ACCELERATION,
         scale: ACCELERATION_VECTOR_SCALE,
-        label: "a",
+        label: "a" + labelSuffix,
         minMagnitude: ACCELERATION_MIN_MAGNITUDE,
       }),
     };

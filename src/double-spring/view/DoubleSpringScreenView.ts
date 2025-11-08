@@ -26,6 +26,26 @@ import { Property } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import {
+  DOUBLE_SPRING_LOOPS,
+  DOUBLE_SPRING_RADIUS,
+  SPRING_LINE_WIDTH,
+  SPRING_LEFT_END_LENGTH,
+  SPRING_RIGHT_END_LENGTH,
+} from "../../common/view/SpringVisualizationConstants.js";
+import {
+  FONT_SIZE_BODY_TEXT,
+  FONT_SIZE_SECONDARY_LABEL,
+  FONT_SIZE_SCREEN_TITLE,
+} from "../../common/view/FontSizeConstants.js";
+import {
+  SPACING_SMALL,
+  SPACING_MEDIUM,
+  SPACING_LARGE,
+  PANEL_MARGIN_X,
+  PANEL_MARGIN_Y,
+} from "../../common/view/UILayoutConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -99,36 +119,36 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Create both spring node types for spring 1 (only one will be visible at a time)
     this.classicSpring1Node = new SpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     this.parametricSpring1Node = new ParametricSpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     // Create both spring node types for spring 2 (only one will be visible at a time)
     this.classicSpring2Node = new SpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     this.parametricSpring2Node = new ParametricSpringNode({
-      loops: 10,
-      radius: 4,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: DOUBLE_SPRING_LOOPS,
+      radius: DOUBLE_SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     // Set initial spring nodes based on preference
@@ -287,54 +307,23 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes for mass 1
-    this.velocity1VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₁",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors1 = VectorNodeFactory.createVectorNodes("₁");
+    this.velocity1VectorNode = vectors1.velocity;
+    this.force1VectorNode = vectors1.force;
+    this.acceleration1VectorNode = vectors1.acceleration;
+
     this.addChild(this.velocity1VectorNode);
-
-    this.force1VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force1VectorNode);
-
-    this.acceleration1VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration1VectorNode);
 
-    // Create vector nodes for mass 2
-    this.velocity2VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₂",
-      minMagnitude: 0.05,
-    });
+    const vectors2 = VectorNodeFactory.createVectorNodes("₂");
+    this.velocity2VectorNode = vectors2.velocity;
+    this.force2VectorNode = vectors2.force;
+    this.acceleration2VectorNode = vectors2.acceleration;
+
     this.addChild(this.velocity2VectorNode);
-
-    this.force2VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force2VectorNode);
-
-    this.acceleration2VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes
@@ -545,7 +534,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: 12}), 
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -554,7 +543,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -573,12 +562,12 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: 14}),
+      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const presetRow = new HBox({
-      spacing: 10,
+      spacing: SPACING_SMALL,
       children: [presetLabel, presetSelector],
     });
 
@@ -714,7 +703,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     const panel = new Panel(
       new VBox({
-        spacing: 15,
+        spacing: SPACING_MEDIUM,
         align: "left",
         children: [
           presetRow,
@@ -728,8 +717,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         ],
       }),
       {
-        xMargin: 10,
-        yMargin: 10,
+        xMargin: PANEL_MARGIN_X,
+        yMargin: PANEL_MARGIN_Y,
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
@@ -804,23 +793,23 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
 
     return new VBox({
-      spacing: 20,
+      spacing: SPACING_LARGE,
       align: "left",
       children: [
         new Text("Double Spring System", {
-          font: new PhetFont({size: 18, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SCREEN_TITLE, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models two masses connected by springs in series, demonstrating coupled oscillations and normal modes. Damping can be added to observe energy dissipation.",
           {
-            font: new PhetFont({size: 14}),
+            font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 700,
           }
         ),
         new Text("Equations of Motion:", {
-          font: new PhetFont({size: 14, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new VBox({
@@ -829,7 +818,7 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
           children: [equation1, equation2],
         }),
         new Text("Where:", {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         variablesList,

@@ -34,6 +34,19 @@ import { VectorNode } from "../../common/view/VectorNode.js";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import {
+  FONT_SIZE_BODY_TEXT,
+  FONT_SIZE_SECONDARY_LABEL,
+  FONT_SIZE_SCREEN_TITLE,
+} from "../../common/view/FontSizeConstants.js";
+import {
+  SPACING_SMALL,
+  SPACING_MEDIUM,
+  SPACING_LARGE,
+  PANEL_MARGIN_X,
+  PANEL_MARGIN_Y,
+} from "../../common/view/UILayoutConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -290,54 +303,23 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes for bob 1
-    this.velocity1VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₁",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors1 = VectorNodeFactory.createVectorNodes("₁");
+    this.velocity1VectorNode = vectors1.velocity;
+    this.force1VectorNode = vectors1.force;
+    this.acceleration1VectorNode = vectors1.acceleration;
+
     this.addChild(this.velocity1VectorNode);
-
-    this.force1VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force1VectorNode);
-
-    this.acceleration1VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₁",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration1VectorNode);
 
-    // Create vector nodes for bob 2
-    this.velocity2VectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50,
-      label: "v₂",
-      minMagnitude: 0.05,
-    });
+    const vectors2 = VectorNodeFactory.createVectorNodes("₂");
+    this.velocity2VectorNode = vectors2.velocity;
+    this.force2VectorNode = vectors2.force;
+    this.acceleration2VectorNode = vectors2.acceleration;
+
     this.addChild(this.velocity2VectorNode);
-
-    this.force2VectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10,
-      label: "F₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.force2VectorNode);
-
-    this.acceleration2VectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20,
-      label: "a₂",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.acceleration2VectorNode);
 
     // Link visibility properties to vector nodes
@@ -580,7 +562,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -589,7 +571,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -608,12 +590,12 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: 14}),
+      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const presetRow = new HBox({
-      spacing: 10,
+      spacing: SPACING_SMALL,
       children: [presetLabel, presetSelector],
     });
 
@@ -727,7 +709,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     const panel = new Panel(
       new VBox({
-        spacing: 15,
+        spacing: SPACING_MEDIUM,
         align: "left",
         children: [
           presetRow,
@@ -740,8 +722,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         ],
       }),
       {
-        xMargin: 10,
-        yMargin: 10,
+        xMargin: PANEL_MARGIN_X,
+        yMargin: PANEL_MARGIN_Y,
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
@@ -794,23 +776,23 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
 
     return new VBox({
-      spacing: 20,
+      spacing: SPACING_LARGE,
       align: "left",
       children: [
         new Text("Double Pendulum", {
-          font: new PhetFont({size: 18, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SCREEN_TITLE, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a double pendulum system, which exhibits rich dynamics including periodic motion and deterministic chaos depending on initial conditions and energy.",
           {
-            font: new PhetFont({size: 14}),
+            font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 700,
           }
         ),
         new Text("Equations of Motion:", {
-          font: new PhetFont({size: 14, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new VBox({
@@ -819,7 +801,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           children: [equation1, equation2],
         }),
         new Text("Where:", {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         variablesList,

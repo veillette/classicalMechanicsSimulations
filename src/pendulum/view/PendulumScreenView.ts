@@ -24,6 +24,19 @@ import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtract
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PhetFont } from "scenerystack";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import {
+  FONT_SIZE_BODY_TEXT,
+  FONT_SIZE_SECONDARY_LABEL,
+  FONT_SIZE_SCREEN_TITLE,
+} from "../../common/view/FontSizeConstants.js";
+import {
+  SPACING_SMALL,
+  SPACING_MEDIUM,
+  SPACING_LARGE,
+  PANEL_MARGIN_X,
+  PANEL_MARGIN_Y,
+} from "../../common/view/UILayoutConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -178,43 +191,23 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes
-    this.velocityVectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50, // 50 pixels per m/s
-      label: "v",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors = VectorNodeFactory.createVectorNodes();
+    this.velocityVectorNode = vectors.velocity;
+    this.forceVectorNode = vectors.force;
+    this.accelerationVectorNode = vectors.acceleration;
+
     this.addChild(this.velocityVectorNode);
-
-    this.forceVectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10, // 10 pixels per Newton
-      label: "F",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.forceVectorNode);
-
-    this.accelerationVectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20, // 20 pixels per m/s²
-      label: "a",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.accelerationVectorNode);
 
     // Link visibility properties to vector nodes
-    this.showVelocityProperty.link((showVelocity) => {
-      this.velocityVectorNode.setVectorVisible(showVelocity);
-    });
-
-    this.showForceProperty.link((showForce) => {
-      this.forceVectorNode.setVectorVisible(showForce);
-    });
-
-    this.showAccelerationProperty.link((showAcceleration) => {
-      this.accelerationVectorNode.setVectorVisible(showAcceleration);
-    });
+    VectorNodeFactory.linkVectorVisibility(
+      vectors,
+      this.showVelocityProperty,
+      this.showForceProperty,
+      this.showAccelerationProperty
+    );
 
     // Control panel
     const controlPanel = this.createControlPanel();
@@ -398,7 +391,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -407,7 +400,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -426,12 +419,12 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: 14}),
+      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const presetRow = new HBox({
-      spacing: 10,
+      spacing: SPACING_SMALL,
       children: [presetLabel, presetSelector],
     });
 
@@ -501,7 +494,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     const panel = new Panel(
       new VBox({
-        spacing: 15,
+        spacing: SPACING_MEDIUM,
         align: "left",
         children: [
           presetRow,
@@ -512,8 +505,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
         ],
       }),
       {
-        xMargin: 10,
-        yMargin: 10,
+        xMargin: PANEL_MARGIN_X,
+        yMargin: PANEL_MARGIN_Y,
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
@@ -555,28 +548,28 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     });
 
     return new VBox({
-      spacing: 20,
+      spacing: SPACING_LARGE,
       align: "left",
       children: [
         new Text("Simple Pendulum", {
-          font: new PhetFont({size: 18, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SCREEN_TITLE, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a simple pendulum, demonstrating periodic motion and energy conservation. At small angles, the motion approximates simple harmonic motion.",
           {
-            font: new PhetFont({size: 14}),
+            font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 700,
           }
         ),
         new Text("Equation of Motion:", {
-          font: new PhetFont({size: 14, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         equation,
         new Text("Where:", {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         variablesList,

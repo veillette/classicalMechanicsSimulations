@@ -27,6 +27,26 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property, DerivedProperty } from "scenerystack/axon";
 import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
+import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import {
+  SINGLE_SPRING_LOOPS,
+  SPRING_RADIUS,
+  SPRING_LINE_WIDTH,
+  SPRING_LEFT_END_LENGTH,
+  SPRING_RIGHT_END_LENGTH,
+} from "../../common/view/SpringVisualizationConstants.js";
+import {
+  FONT_SIZE_BODY_TEXT,
+  FONT_SIZE_SECONDARY_LABEL,
+  FONT_SIZE_SCREEN_TITLE,
+} from "../../common/view/FontSizeConstants.js";
+import {
+  SPACING_SMALL,
+  SPACING_MEDIUM,
+  SPACING_LARGE,
+  PANEL_MARGIN_X,
+  PANEL_MARGIN_Y,
+} from "../../common/view/UILayoutConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -114,19 +134,19 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     // Create both spring node types (only one will be visible at a time)
     this.classicSpringNode = new SpringNode({
-      loops: 12,
-      radius: 5,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: SINGLE_SPRING_LOOPS,
+      radius: SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     this.parametricSpringNode = new ParametricSpringNode({
-      loops: 12,
-      radius: 5,
-      lineWidth: 1,
-      leftEndLength: 5,
-      rightEndLength: 5,
+      loops: SINGLE_SPRING_LOOPS,
+      radius: SPRING_RADIUS,
+      lineWidth: SPRING_LINE_WIDTH,
+      leftEndLength: SPRING_LEFT_END_LENGTH,
+      rightEndLength: SPRING_RIGHT_END_LENGTH,
     });
 
     // Set initial spring node based on preference
@@ -216,43 +236,23 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.showForceProperty.setInitialValue(true);
     this.showAccelerationProperty.setInitialValue(false);
 
-    // Create vector nodes
-    this.velocityVectorNode = new VectorNode({
-      color: PhetColorScheme.VELOCITY,
-      scale: 50, // 50 pixels per m/s
-      label: "v",
-      minMagnitude: 0.05,
-    });
+    // Create vector nodes using factory
+    const vectors = VectorNodeFactory.createVectorNodes();
+    this.velocityVectorNode = vectors.velocity;
+    this.forceVectorNode = vectors.force;
+    this.accelerationVectorNode = vectors.acceleration;
+
     this.addChild(this.velocityVectorNode);
-
-    this.forceVectorNode = new VectorNode({
-      color: PhetColorScheme.APPLIED_FORCE,
-      scale: 10, // 10 pixels per Newton
-      label: "F",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.forceVectorNode);
-
-    this.accelerationVectorNode = new VectorNode({
-      color: PhetColorScheme.ACCELERATION,
-      scale: 20, // 20 pixels per m/s²
-      label: "a",
-      minMagnitude: 0.1,
-    });
     this.addChild(this.accelerationVectorNode);
 
     // Link visibility properties to vector nodes
-    this.showVelocityProperty.link((showVelocity) => {
-      this.velocityVectorNode.setVectorVisible(showVelocity);
-    });
-
-    this.showForceProperty.link((showForce) => {
-      this.forceVectorNode.setVectorVisible(showForce);
-    });
-
-    this.showAccelerationProperty.link((showAcceleration) => {
-      this.accelerationVectorNode.setVectorVisible(showAcceleration);
-    });
+    VectorNodeFactory.linkVectorVisibility(
+      vectors,
+      this.showVelocityProperty,
+      this.showForceProperty,
+      this.showAccelerationProperty
+    );
 
     // Control panel
     const controlPanel = this.createControlPanel();
@@ -439,7 +439,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -448,7 +448,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -467,12 +467,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: 14}),
+      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
     const presetRow = new HBox({
-      spacing: 10,
+      spacing: SPACING_SMALL,
       children: [presetLabel, presetSelector],
     });
 
@@ -542,7 +542,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
 
     const panel = new Panel(
       new VBox({
-        spacing: 15,
+        spacing: SPACING_MEDIUM,
         align: "left",
         children: [
           presetRow,
@@ -553,8 +553,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         ],
       }),
       {
-        xMargin: 10,
-        yMargin: 10,
+        xMargin: PANEL_MARGIN_X,
+        yMargin: PANEL_MARGIN_Y,
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         lineWidth: 1,
@@ -619,28 +619,28 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     });
 
     return new VBox({
-      spacing: 20,
+      spacing: SPACING_LARGE,
       align: "left",
       children: [
         new Text("Single Spring System", {
-          font: new PhetFont({size: 18, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SCREEN_TITLE, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a mass attached to a spring, demonstrating simple harmonic motion with optional damping.",
           {
-            font: new PhetFont({size: 14}),
+            font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 700,
           }
         ),
         new Text("Equation of Motion:", {
-          font: new PhetFont({size: 14, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         equation,
         new Text("Where:", {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         variablesList,

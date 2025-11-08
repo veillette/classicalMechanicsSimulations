@@ -13,9 +13,14 @@ export const SINGLE_SPRING_LOOPS = 12;
 export const DOUBLE_SPRING_LOOPS = 10;
 
 /**
- * Radius of spring coils (pixels)
+ * Radius of spring coils for single spring (pixels)
  */
 export const SPRING_RADIUS = 5;
+
+/**
+ * Radius of spring coils for double spring (pixels)
+ */
+export const DOUBLE_SPRING_RADIUS = 4;
 
 /**
  * Spring stroke width
