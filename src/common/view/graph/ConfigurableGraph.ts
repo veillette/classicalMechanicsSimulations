@@ -47,6 +47,9 @@ export default class ConfigurableGraph extends Node {
   // Trail points
   private readonly trailNode: Node;
 
+  // Clipped data container for line plot and trail
+  private readonly clippedDataContainer: Node;
+
   // Visibility control
   private readonly graphVisibleProperty: BooleanProperty;
   private readonly graphContentNode: Node;
@@ -189,11 +192,11 @@ export default class ConfigurableGraph extends Node {
     // Wrap line plot and trail in a clipped container to prevent overflow
     // Add margin to prevent clipping of line strokes (lineWidth=2) and trail circles (radius up to 5px)
     const clipMargin = 8;
-    const clippedDataContainer = new Node({
+    this.clippedDataContainer = new Node({
       children: [this.linePlot, this.trailNode],
       clipArea: Shape.rect(-clipMargin, -clipMargin, width + 2 * clipMargin, height + 2 * clipMargin),
     });
-    this.graphContentNode.addChild(clippedDataContainer);
+    this.graphContentNode.addChild(this.clippedDataContainer);
 
     // Create axis labels
     this.xAxisLabelNode = new Text(this.formatAxisLabel(initialXProperty), {
@@ -390,18 +393,14 @@ export default class ConfigurableGraph extends Node {
     // Update header bar
     GraphControlsPanel.updateHeaderBarWidth(this.headerBar, newWidth);
 
+    // Update clipping area BEFORE updating chart transform to prevent temporary clipping during resize
+    // Add margin to prevent clipping of line strokes (lineWidth=2) and trail circles (radius up to 5px)
+    const clipMargin = 8;
+    this.clippedDataContainer.clipArea = Shape.rect(-clipMargin, -clipMargin, newWidth + 2 * clipMargin, newHeight + 2 * clipMargin);
+
     // Update chart transform
     this.chartTransform.setViewWidth(newWidth);
     this.chartTransform.setViewHeight(newHeight);
-
-    // Update clipping area with margin to prevent clipping of strokes and circles
-    const clipMargin = 8;
-    const clippedDataContainer = this.graphContentNode.children.find(
-      (child) => child.clipArea !== undefined
-    );
-    if (clippedDataContainer) {
-      clippedDataContainer.clipArea = Shape.rect(-clipMargin, -clipMargin, newWidth + 2 * clipMargin, newHeight + 2 * clipMargin);
-    }
 
     // Update axis labels positions
     this.xAxisLabelNode.centerX = newWidth / 2;
