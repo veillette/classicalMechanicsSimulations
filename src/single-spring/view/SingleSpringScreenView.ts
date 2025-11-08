@@ -343,109 +343,20 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     controlPanel.right = this.layoutBounds.maxX - 10;
     controlPanel.top = this.layoutBounds.minY + 10;
 
-    // Create vector control panel
-    const visualizationLabels = stringManager.getVisualizationLabels();
-    const vectorPanel = new VectorControlPanel({
-      velocity: {
-        showProperty: this.showVelocityProperty,
-        labelProperty: visualizationLabels.velocityStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.velocityVectorsShownStringProperty,
-          hidden: a11yStrings.velocityVectorsHiddenStringProperty,
-        },
-      },
-      force: {
-        showProperty: this.showForceProperty,
-        labelProperty: visualizationLabels.forceStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.forceVectorsShownStringProperty,
-          hidden: a11yStrings.forceVectorsHiddenStringProperty,
-        },
-      },
-      acceleration: {
-        showProperty: this.showAccelerationProperty,
-        labelProperty: visualizationLabels.accelerationStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.accelerationVectorsShownStringProperty,
-          hidden: a11yStrings.accelerationVectorsHiddenStringProperty,
-        },
-      },
-    });
-    vectorPanel.left = this.layoutBounds.minX + 10;
-    vectorPanel.top = this.layoutBounds.minY + 10;
-    this.addChild(vectorPanel);
+    // Setup vector and tools panels using base class method (no protractor for spring screens)
+    this.setupVectorAndToolsPanels(false);
 
     // Position graph beneath vector panel
-    this.positionConfigurableGraph(vectorPanel);
-
-    // Create tools control panel
-    const graphLabels = stringManager.getGraphLabels();
-    const toolsPanel = new ToolsControlPanel({
-      grid: {
-        showProperty: this.showGridProperty!,
-        labelProperty: visualizationLabels.showGridStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.gridShownStringProperty,
-          hidden: a11yStrings.gridHiddenStringProperty,
-        },
-      },
-      distance: {
-        showProperty: this.showDistanceToolProperty,
-        labelProperty: visualizationLabels.showDistanceToolStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.distanceToolShownStringProperty,
-          hidden: a11yStrings.distanceToolHiddenStringProperty,
-        },
-      },
-      stopwatch: {
-        showProperty: this.showStopwatchProperty,
-        labelProperty: visualizationLabels.showStopwatchStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.stopwatchShownStringProperty,
-          hidden: a11yStrings.stopwatchHiddenStringProperty,
-        },
-      },
-      graph: {
-        showProperty: this.getGraphVisibilityProperty()!,
-        labelProperty: graphLabels.showGraphStringProperty,
-        a11yStrings: {
-          shown: a11yStrings.graphShownStringProperty,
-          hidden: a11yStrings.graphHiddenStringProperty,
-        },
-      },
-    });
-    toolsPanel.left = this.layoutBounds.minX + 10;
-    toolsPanel.bottom = this.layoutBounds.maxY - 10;
-    this.addChild(toolsPanel);
+    this.positionConfigurableGraph(this.vectorPanel!);
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
-    // Fix z-order: Reorder elements to ensure correct layering
-    // Required order (back to front): grid, panels, spring elements, vectors, common controls, graph, measurement tools
-
-    // Move spring and mass elements to front (above panels)
-    this.currentSpringNode.moveToFront();
-    this.massNode.moveToFront();
-    this.massReferenceLine.moveToFront();
-
-    // Move vector nodes to front (above spring/mass elements)
-    this.velocityVectorNode.moveToFront();
-    this.forceVectorNode.moveToFront();
-    this.accelerationVectorNode.moveToFront();
-
-    // Move configurable graph to front (below measurement tools)
-    if (this.configurableGraph) {
-      this.configurableGraph.moveToFront();
-    }
-
-    // Move measurement tools to the very top (highest z-order)
-    if (this.measuringTapeNode) {
-      this.measuringTapeNode.moveToFront();
-    }
-    if (this.stopwatchNode) {
-      this.stopwatchNode.moveToFront();
-    }
+    // Manage z-order using base class method
+    this.manageZOrder(
+      [this.currentSpringNode, this.massNode, this.massReferenceLine],
+      [this.velocityVectorNode, this.forceVectorNode, this.accelerationVectorNode],
+    );
 
     // Initial visualization
     this.updateVisualization(this.model.positionProperty.value);
