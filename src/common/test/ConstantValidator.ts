@@ -4,7 +4,7 @@
  */
 
 import { VELOCITY_VECTOR_SCALE, FORCE_VECTOR_SCALE, ACCELERATION_VECTOR_SCALE } from "../view/VectorScaleConstants.js";
-import { MAX_DATA_POINTS } from "../view/graph/GraphDataConstants.js";
+import { MAX_TRAIL_POINTS } from "../view/graph/GraphDataConstants.js";
 import { GRAPH_HEIGHT, GRAPH_LEFT_MARGIN, GRAPH_RIGHT_MARGIN, DIALOG_MEDIUM_MAX_WIDTH } from "../view/DialogAndPanelConstants.js";
 
 /**
@@ -39,31 +39,31 @@ export class ConstantValidator {
   }
 
   /**
-   * Validate MAX_DATA_POINTS is reasonable for memory usage
+   * Validate MAX_TRAIL_POINTS is reasonable for memory usage
    */
   private validateMaxDataPoints(): void {
     const MIN_SAFE = 100;
     const MAX_SAFE = 10000;
 
-    if (MAX_DATA_POINTS < MIN_SAFE) {
+    if (MAX_TRAIL_POINTS < MIN_SAFE) {
       this.addResult({
-        name: "MAX_DATA_POINTS too small",
+        name: "MAX_TRAIL_POINTS too small",
         passed: false,
-        message: `MAX_DATA_POINTS (${MAX_DATA_POINTS}) is below minimum safe value (${MIN_SAFE}). Users won't be able to see enough data history.`,
+        message: `MAX_TRAIL_POINTS (${MAX_TRAIL_POINTS}) is below minimum safe value (${MIN_SAFE}). Users won't be able to see enough data history.`,
         severity: "critical",
       });
-    } else if (MAX_DATA_POINTS > MAX_SAFE) {
+    } else if (MAX_TRAIL_POINTS > MAX_SAFE) {
       this.addResult({
-        name: "MAX_DATA_POINTS too large",
+        name: "MAX_TRAIL_POINTS too large",
         passed: false,
-        message: `MAX_DATA_POINTS (${MAX_DATA_POINTS}) exceeds maximum safe value (${MAX_SAFE}). This may cause memory issues.`,
+        message: `MAX_TRAIL_POINTS (${MAX_TRAIL_POINTS}) exceeds maximum safe value (${MAX_SAFE}). This may cause memory issues.`,
         severity: "critical",
       });
     } else {
       this.addResult({
-        name: "MAX_DATA_POINTS",
+        name: "MAX_TRAIL_POINTS",
         passed: true,
-        message: `MAX_DATA_POINTS (${MAX_DATA_POINTS}) is within safe range [${MIN_SAFE}, ${MAX_SAFE}]`,
+        message: `MAX_TRAIL_POINTS (${MAX_TRAIL_POINTS}) is within safe range [${MIN_SAFE}, ${MAX_SAFE}]`,
         severity: "info",
       });
     }

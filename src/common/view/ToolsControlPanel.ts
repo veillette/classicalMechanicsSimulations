@@ -28,7 +28,7 @@ export interface ToolConfig {
 /**
  * Options for the ToolsControlPanel
  */
-type ToolsControlPanelOptions = {
+export type ToolsControlPanelOptions = {
   grid: ToolConfig;
   distance: ToolConfig;
   stopwatch: ToolConfig;

@@ -38,7 +38,7 @@ import ConfigurableGraph from "./graph/ConfigurableGraph.ts";
 import type { PlottableProperty } from "./graph/PlottableProperty.ts";
 import { Preset } from "../model/Preset.js";
 import { VectorControlPanel } from "./VectorControlPanel.js";
-import { ToolsControlPanel } from "./ToolsControlPanel.js";
+import { ToolsControlPanel, type ToolsControlPanelOptions } from "./ToolsControlPanel.js";
 import {
   FONT_SIZE_BODY_TEXT,
   FONT_SIZE_SECONDARY_LABEL,
@@ -791,7 +791,7 @@ export abstract class BaseScreenView<
     this.addChild(this.vectorPanel);
 
     // Create tools control panel configuration
-    const toolsConfig: any = {
+    const toolsConfig: ToolsControlPanelOptions = {
       grid: {
         showProperty: this.showGridProperty!,
         labelProperty: visualizationLabels.showGridStringProperty,

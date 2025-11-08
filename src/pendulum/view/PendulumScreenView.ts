@@ -5,7 +5,7 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
-import { Circle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
+import { Circle, Line, VBox, Node, Text, RichText } from "scenerystack/scenery";
 import { FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
@@ -20,8 +20,6 @@ import { Preset } from "../../common/model/Preset.js";
 import { Property, BooleanProperty } from "scenerystack/axon";
 import { VectorNode } from "../../common/view/VectorNode.js";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
-import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
-import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PhetFont } from "scenerystack";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
 import { ParameterControlPanel } from "../../common/view/ParameterControlPanel.js";
@@ -32,11 +30,7 @@ import {
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
 import {
-  SPACING_SMALL,
-  SPACING_MEDIUM,
   SPACING_LARGE,
-  PANEL_MARGIN_X,
-  PANEL_MARGIN_Y,
 } from "../../common/view/UILayoutConstants.js";
 
 export class PendulumScreenView extends BaseScreenView<PendulumModel> {
@@ -45,9 +39,9 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly rodNode: Line;
   private readonly pivotNode: Circle;
   private readonly pivotPoint: Vector2;
-  private readonly presetProperty: Property<PresetOption>;
-  private readonly presets: Preset[];
-  private isApplyingPreset: boolean = false;
+  protected readonly presetProperty: Property<PresetOption>;
+  protected readonly presets: Preset[];
+  protected isApplyingPreset: boolean = false;
 
   // Vector visualization
   private readonly velocityVectorNode: VectorNode;
@@ -59,9 +53,6 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
   public constructor(model: PendulumModel, options?: ScreenViewOptions) {
     super(model, options);
-
-    // Get accessibility strings for announcements
-    const a11yStrings = this.getA11yStrings();
 
     // Get available presets
     this.presets = PendulumPresets.getPresets();
