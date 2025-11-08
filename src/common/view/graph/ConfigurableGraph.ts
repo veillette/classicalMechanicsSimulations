@@ -184,9 +184,11 @@ export default class ConfigurableGraph extends Node {
     this.trailNode = new Node();
 
     // Wrap line plot and trail in a clipped container to prevent overflow
+    // Add margin to prevent clipping of line strokes (lineWidth=2) and trail circles (radius up to 5px)
+    const clipMargin = 8;
     const clippedDataContainer = new Node({
       children: [this.linePlot, this.trailNode],
-      clipArea: Shape.rect(0, 0, width, height),
+      clipArea: Shape.rect(-clipMargin, -clipMargin, width + clipMargin, height + clipMargin),
     });
     this.graphContentNode.addChild(clippedDataContainer);
 
@@ -344,12 +346,13 @@ export default class ConfigurableGraph extends Node {
     this.chartTransform.setViewWidth(newWidth);
     this.chartTransform.setViewHeight(newHeight);
 
-    // Update clipping area
+    // Update clipping area with margin to prevent clipping of strokes and circles
+    const clipMargin = 8;
     const clippedDataContainer = this.graphContentNode.children.find(
       (child) => child.clipArea !== undefined
     );
     if (clippedDataContainer) {
-      clippedDataContainer.clipArea = Shape.rect(0, 0, newWidth, newHeight);
+      clippedDataContainer.clipArea = Shape.rect(-clipMargin, -clipMargin, newWidth + clipMargin, newHeight + clipMargin);
     }
 
     // Update axis labels positions
