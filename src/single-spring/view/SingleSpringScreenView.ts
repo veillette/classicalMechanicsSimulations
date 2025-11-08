@@ -5,7 +5,7 @@
 
 import { type ScreenViewOptions, ScreenSummaryContent } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
-import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
+import { Rectangle, Line, VBox, Node, Text, RichText } from "scenerystack/scenery";
 import { FormulaNode, PhetFont } from "scenerystack/scenery-phet";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
@@ -24,8 +24,6 @@ import type { PlottableProperty } from "../../common/view/graph/PlottablePropert
 import { SingleSpringPresets } from "../model/SingleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property, DerivedProperty } from "scenerystack/axon";
-import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
-import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
 import { ParameterControlPanel } from "../../common/view/ParameterControlPanel.js";
 import { type PresetOption } from "../../common/view/PresetSelectorFactory.js";
@@ -42,11 +40,7 @@ import {
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
 import {
-  SPACING_SMALL,
-  SPACING_MEDIUM,
   SPACING_LARGE,
-  PANEL_MARGIN_X,
-  PANEL_MARGIN_Y,
 } from "../../common/view/UILayoutConstants.js";
 
 export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
@@ -56,9 +50,9 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly parametricSpringNode: ParametricSpringNode;
   private currentSpringNode: SpringNode | ParametricSpringNode;
   private readonly fixedPoint: Vector2;
-  private readonly presetProperty: Property<PresetOption>;
-  private readonly presets: Preset[];
-  private isApplyingPreset: boolean = false;
+  protected readonly presetProperty: Property<PresetOption>;
+  protected readonly presets: Preset[];
+  protected isApplyingPreset: boolean = false;
 
   // Vector visualization
   private readonly velocityVectorNode: VectorNode;

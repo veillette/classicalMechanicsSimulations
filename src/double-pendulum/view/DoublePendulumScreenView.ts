@@ -9,7 +9,6 @@ import {
   Circle,
   Line,
   VBox,
-  HBox,
   Node,
   Text,
   Path,
@@ -30,8 +29,6 @@ import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoublePendulumPresets } from "../model/DoublePendulumPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { VectorNode } from "../../common/view/VectorNode.js";
-import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
-import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
 import { ParameterControlPanel } from "../../common/view/ParameterControlPanel.js";
@@ -42,11 +39,7 @@ import {
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
 import {
-  SPACING_SMALL,
-  SPACING_MEDIUM,
   SPACING_LARGE,
-  PANEL_MARGIN_X,
-  PANEL_MARGIN_Y,
 } from "../../common/view/UILayoutConstants.js";
 
 export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel> {
@@ -62,9 +55,9 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private readonly trailPoints: Vector2[] = [];
   private readonly maxTrailPoints: number = 500;
   private readonly trailVisibleProperty: BooleanProperty;
-  private readonly presetProperty: Property<PresetOption>;
-  private readonly presets: Preset[];
-  private isApplyingPreset: boolean = false;
+  protected readonly presetProperty: Property<PresetOption>;
+  protected readonly presets: Preset[];
+  protected isApplyingPreset: boolean = false;
 
   // Dragging state for protractor
   private readonly isDraggingProperty: BooleanProperty;

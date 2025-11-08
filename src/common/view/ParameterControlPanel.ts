@@ -3,11 +3,11 @@
  * Provides a standardized panel with preset selector and parameter controls.
  */
 
-import { Panel, NumberControl } from "scenerystack/sun";
+import { Panel } from "scenerystack/sun";
 import { VBox, HBox, Text, Node, TColor } from "scenerystack/scenery";
 import { Property, TReadOnlyProperty, NumberProperty } from "scenerystack/axon";
 import { Range } from "scenerystack/dot";
-import { PhetFont } from "scenerystack/scenery-phet";
+import { PhetFont, NumberControl, type NumberControlOptions } from "scenerystack/scenery-phet";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { createPresetSelector, PresetOption } from "./PresetSelectorFactory.js";
 import { Preset } from "../model/Preset.js";
@@ -78,7 +78,7 @@ export class ParameterControlPanel extends Panel {
 
     // Create parameter controls
     const parameterControls = options.parameters.map((paramConfig) => {
-      const controlOptions: any = {
+      const controlOptions: NumberControlOptions = {
         delta: paramConfig.delta,
         numberDisplayOptions: {
           decimalPlaces: paramConfig.decimalPlaces,

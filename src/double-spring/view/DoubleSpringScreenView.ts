@@ -5,7 +5,7 @@
 
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
-import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
+import { Rectangle, Line, VBox, Node, Text, RichText } from "scenerystack/scenery";
 import { PhetFont, FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
@@ -22,8 +22,6 @@ import SimulationAnnouncer from "../../common/util/SimulationAnnouncer.js";
 import { DoubleSpringPresets } from "../model/DoubleSpringPresets.js";
 import { Preset } from "../../common/model/Preset.js";
 import { Property } from "scenerystack/axon";
-import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
-import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
 import { ParameterControlPanel } from "../../common/view/ParameterControlPanel.js";
@@ -41,11 +39,7 @@ import {
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
 import {
-  SPACING_SMALL,
-  SPACING_MEDIUM,
   SPACING_LARGE,
-  PANEL_MARGIN_X,
-  PANEL_MARGIN_Y,
 } from "../../common/view/UILayoutConstants.js";
 
 export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
@@ -60,9 +54,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly parametricSpring2Node: ParametricSpringNode;
   private currentSpring2Node: SpringNode | ParametricSpringNode;
   private readonly fixedPoint: Vector2;
-  private readonly presetProperty: Property<PresetOption>;
-  private readonly presets: Preset[];
-  private isApplyingPreset: boolean = false;
+  protected readonly presetProperty: Property<PresetOption>;
+  protected readonly presets: Preset[];
+  protected isApplyingPreset: boolean = false;
 
   // Vectors for mass 1
   private readonly velocity1VectorNode: VectorNode;
