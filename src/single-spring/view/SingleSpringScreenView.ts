@@ -348,18 +348,30 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Create vector control panel
     const visualizationLabels = stringManager.getVisualizationLabels();
     const vectorPanel = new VectorControlPanel({
-      showVelocityProperty: this.showVelocityProperty,
-      showForceProperty: this.showForceProperty,
-      showAccelerationProperty: this.showAccelerationProperty,
-      velocityLabelProperty: visualizationLabels.velocityStringProperty,
-      forceLabelProperty: visualizationLabels.forceStringProperty,
-      accelerationLabelProperty: visualizationLabels.accelerationStringProperty,
-      velocityVectorsShownStringProperty: a11yStrings.velocityVectorsShownStringProperty,
-      velocityVectorsHiddenStringProperty: a11yStrings.velocityVectorsHiddenStringProperty,
-      forceVectorsShownStringProperty: a11yStrings.forceVectorsShownStringProperty,
-      forceVectorsHiddenStringProperty: a11yStrings.forceVectorsHiddenStringProperty,
-      accelerationVectorsShownStringProperty: a11yStrings.accelerationVectorsShownStringProperty,
-      accelerationVectorsHiddenStringProperty: a11yStrings.accelerationVectorsHiddenStringProperty,
+      velocity: {
+        showProperty: this.showVelocityProperty,
+        labelProperty: visualizationLabels.velocityStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.velocityVectorsShownStringProperty,
+          hidden: a11yStrings.velocityVectorsHiddenStringProperty,
+        },
+      },
+      force: {
+        showProperty: this.showForceProperty,
+        labelProperty: visualizationLabels.forceStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.forceVectorsShownStringProperty,
+          hidden: a11yStrings.forceVectorsHiddenStringProperty,
+        },
+      },
+      acceleration: {
+        showProperty: this.showAccelerationProperty,
+        labelProperty: visualizationLabels.accelerationStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.accelerationVectorsShownStringProperty,
+          hidden: a11yStrings.accelerationVectorsHiddenStringProperty,
+        },
+      },
     });
     vectorPanel.left = this.layoutBounds.minX + 10;
     vectorPanel.top = this.layoutBounds.minY + 10;
@@ -371,22 +383,38 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Create tools control panel
     const graphLabels = stringManager.getGraphLabels();
     const toolsPanel = new ToolsControlPanel({
-      showGridProperty: this.showGridProperty!,
-      showDistanceToolProperty: this.showDistanceToolProperty,
-      showStopwatchProperty: this.showStopwatchProperty,
-      showGraphProperty: this.getGraphVisibilityProperty()!,
-      gridLabelProperty: visualizationLabels.showGridStringProperty,
-      distanceToolLabelProperty: visualizationLabels.showDistanceToolStringProperty,
-      stopwatchLabelProperty: visualizationLabels.showStopwatchStringProperty,
-      graphLabelProperty: graphLabels.showGraphStringProperty,
-      gridShownStringProperty: a11yStrings.gridShownStringProperty,
-      gridHiddenStringProperty: a11yStrings.gridHiddenStringProperty,
-      distanceToolShownStringProperty: a11yStrings.distanceToolShownStringProperty,
-      distanceToolHiddenStringProperty: a11yStrings.distanceToolHiddenStringProperty,
-      stopwatchShownStringProperty: a11yStrings.stopwatchShownStringProperty,
-      stopwatchHiddenStringProperty: a11yStrings.stopwatchHiddenStringProperty,
-      graphShownStringProperty: a11yStrings.graphShownStringProperty,
-      graphHiddenStringProperty: a11yStrings.graphHiddenStringProperty,
+      grid: {
+        showProperty: this.showGridProperty!,
+        labelProperty: visualizationLabels.showGridStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.gridShownStringProperty,
+          hidden: a11yStrings.gridHiddenStringProperty,
+        },
+      },
+      distance: {
+        showProperty: this.showDistanceToolProperty,
+        labelProperty: visualizationLabels.showDistanceToolStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.distanceToolShownStringProperty,
+          hidden: a11yStrings.distanceToolHiddenStringProperty,
+        },
+      },
+      stopwatch: {
+        showProperty: this.showStopwatchProperty,
+        labelProperty: visualizationLabels.showStopwatchStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.stopwatchShownStringProperty,
+          hidden: a11yStrings.stopwatchHiddenStringProperty,
+        },
+      },
+      graph: {
+        showProperty: this.getGraphVisibilityProperty()!,
+        labelProperty: graphLabels.showGraphStringProperty,
+        a11yStrings: {
+          shown: a11yStrings.graphShownStringProperty,
+          hidden: a11yStrings.graphHiddenStringProperty,
+        },
+      },
     });
     toolsPanel.left = this.layoutBounds.minX + 10;
     toolsPanel.bottom = this.layoutBounds.maxY - 10;

@@ -9,6 +9,18 @@ import { Node, Circle } from "scenerystack/scenery";
 import type { ChartTransform, LinePlot, GridLineSet, TickMarkSet, TickLabelSet } from "scenerystack/bamboo";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 
+/**
+ * Configuration for grid lines, tick marks, and tick labels
+ */
+export interface GridVisualizationConfig {
+  verticalGridLineSet: GridLineSet;
+  horizontalGridLineSet: GridLineSet;
+  xTickMarkSet: TickMarkSet;
+  yTickMarkSet: TickMarkSet;
+  xTickLabelSet: TickLabelSet;
+  yTickLabelSet: TickLabelSet;
+}
+
 export default class GraphDataManager {
   private readonly dataPoints: Vector2[] = [];
   private readonly maxDataPoints: number;
@@ -31,23 +43,18 @@ export default class GraphDataManager {
     linePlot: LinePlot,
     trailNode: Node,
     maxDataPoints: number,
-    verticalGridLineSet: GridLineSet,
-    horizontalGridLineSet: GridLineSet,
-    xTickMarkSet: TickMarkSet,
-    yTickMarkSet: TickMarkSet,
-    xTickLabelSet: TickLabelSet,
-    yTickLabelSet: TickLabelSet
+    gridConfig: GridVisualizationConfig
   ) {
     this.chartTransform = chartTransform;
     this.linePlot = linePlot;
     this.trailNode = trailNode;
     this.maxDataPoints = maxDataPoints;
-    this.verticalGridLineSet = verticalGridLineSet;
-    this.horizontalGridLineSet = horizontalGridLineSet;
-    this.xTickMarkSet = xTickMarkSet;
-    this.yTickMarkSet = yTickMarkSet;
-    this.xTickLabelSet = xTickLabelSet;
-    this.yTickLabelSet = yTickLabelSet;
+    this.verticalGridLineSet = gridConfig.verticalGridLineSet;
+    this.horizontalGridLineSet = gridConfig.horizontalGridLineSet;
+    this.xTickMarkSet = gridConfig.xTickMarkSet;
+    this.yTickMarkSet = gridConfig.yTickMarkSet;
+    this.xTickLabelSet = gridConfig.xTickLabelSet;
+    this.yTickLabelSet = gridConfig.yTickLabelSet;
   }
 
   /**
