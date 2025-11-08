@@ -13,28 +13,27 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 
+/**
+ * Configuration for a single tool
+ */
+export interface ToolConfig {
+  showProperty: BooleanProperty;
+  labelProperty: ReadOnlyProperty<string>;
+  a11yStrings: {
+    shown: ReadOnlyProperty<string>;
+    hidden: ReadOnlyProperty<string>;
+  };
+}
 
+/**
+ * Options for the ToolsControlPanel
+ */
 type ToolsControlPanelOptions = {
-  showGridProperty: BooleanProperty;
-  showDistanceToolProperty: BooleanProperty;
-  showStopwatchProperty: BooleanProperty;
-  showProtractorProperty?: BooleanProperty; // Optional for spring screens
-  showGraphProperty?: BooleanProperty; // Optional - for configurable graph
-  gridLabelProperty: ReadOnlyProperty<string>;
-  distanceToolLabelProperty: ReadOnlyProperty<string>;
-  protractorLabelProperty?: ReadOnlyProperty<string>; // Optional for spring screens
-  stopwatchLabelProperty: ReadOnlyProperty<string>;
-  graphLabelProperty?: ReadOnlyProperty<string>; // Optional - for configurable graph
-  gridShownStringProperty: ReadOnlyProperty<string>;
-  gridHiddenStringProperty: ReadOnlyProperty<string>;
-  distanceToolShownStringProperty: ReadOnlyProperty<string>;
-  distanceToolHiddenStringProperty: ReadOnlyProperty<string>;
-  protractorShownStringProperty?: ReadOnlyProperty<string>;
-  protractorHiddenStringProperty?: ReadOnlyProperty<string>;
-  stopwatchShownStringProperty: ReadOnlyProperty<string>;
-  stopwatchHiddenStringProperty: ReadOnlyProperty<string>;
-  graphShownStringProperty?: ReadOnlyProperty<string>;
-  graphHiddenStringProperty?: ReadOnlyProperty<string>;
+  grid: ToolConfig;
+  distance: ToolConfig;
+  stopwatch: ToolConfig;
+  protractor?: ToolConfig; // Optional for spring screens
+  graph?: ToolConfig; // Optional - for configurable graph
 };
 
 export class ToolsControlPanel extends Panel {
@@ -44,12 +43,12 @@ export class ToolsControlPanel extends Panel {
     });
 
     const showGridCheckbox = new Checkbox(
-      options.showGridProperty,
+      options.grid.showProperty,
       new HBox({
         spacing: 5,
         children: [
           gridIcon,
-          new Text(options.gridLabelProperty, {
+          new Text(options.grid.labelProperty, {
             font: new PhetFont({size: 14}),
             fill: ClassicalMechanicsColors.textColorProperty,
           }),
@@ -61,8 +60,8 @@ export class ToolsControlPanel extends Panel {
     );
 
     const showDistanceToolCheckbox = new Checkbox(
-      options.showDistanceToolProperty,
-      new Text(options.distanceToolLabelProperty, {
+      options.distance.showProperty,
+      new Text(options.distance.labelProperty, {
         font: new PhetFont({size: 14}),
         fill: ClassicalMechanicsColors.textColorProperty,
       }),
@@ -72,8 +71,8 @@ export class ToolsControlPanel extends Panel {
     );
 
     const showStopwatchCheckbox = new Checkbox(
-      options.showStopwatchProperty,
-      new Text(options.stopwatchLabelProperty, {
+      options.stopwatch.showProperty,
+      new Text(options.stopwatch.labelProperty, {
         font: new PhetFont({size: 14}),
         fill: ClassicalMechanicsColors.textColorProperty,
       }),
@@ -89,10 +88,10 @@ export class ToolsControlPanel extends Panel {
     ];
 
     // Add protractor checkbox if provided (for pendulum screens)
-    if (options.showProtractorProperty && options.protractorLabelProperty) {
+    if (options.protractor) {
       const showProtractorCheckbox = new Checkbox(
-        options.showProtractorProperty,
-        new Text(options.protractorLabelProperty, {
+        options.protractor.showProperty,
+        new Text(options.protractor.labelProperty, {
           font: new PhetFont({size: 14}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
@@ -105,10 +104,10 @@ export class ToolsControlPanel extends Panel {
     }
 
     // Add graph checkbox if provided (for configurable graph)
-    if (options.showGraphProperty && options.graphLabelProperty) {
+    if (options.graph) {
       const showGraphCheckbox = new Checkbox(
-        options.showGraphProperty,
-        new Text(options.graphLabelProperty, {
+        options.graph.showProperty,
+        new Text(options.graph.labelProperty, {
           font: new PhetFont({size: 14}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
@@ -136,56 +135,52 @@ export class ToolsControlPanel extends Panel {
     });
 
     // Add accessibility announcements for tool visibility changes
-    options.showGridProperty.lazyLink((showGrid) => {
+    options.grid.showProperty.lazyLink((showGrid) => {
       if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
         const announcement = showGrid
-          ? options.gridShownStringProperty.value
-          : options.gridHiddenStringProperty.value;
+          ? options.grid.a11yStrings.shown.value
+          : options.grid.a11yStrings.hidden.value;
         SimulationAnnouncer.announceSimulationState(announcement);
       }
     });
 
-    options.showDistanceToolProperty.lazyLink((showDistanceTool) => {
+    options.distance.showProperty.lazyLink((showDistanceTool) => {
       if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
         const announcement = showDistanceTool
-          ? options.distanceToolShownStringProperty.value
-          : options.distanceToolHiddenStringProperty.value;
+          ? options.distance.a11yStrings.shown.value
+          : options.distance.a11yStrings.hidden.value;
         SimulationAnnouncer.announceSimulationState(announcement);
       }
     });
 
-    options.showStopwatchProperty.lazyLink((showStopwatch) => {
+    options.stopwatch.showProperty.lazyLink((showStopwatch) => {
       if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
         const announcement = showStopwatch
-          ? options.stopwatchShownStringProperty.value
-          : options.stopwatchHiddenStringProperty.value;
+          ? options.stopwatch.a11yStrings.shown.value
+          : options.stopwatch.a11yStrings.hidden.value;
         SimulationAnnouncer.announceSimulationState(announcement);
       }
     });
 
     // Add protractor announcements if provided (for pendulum screens)
-    if (options.showProtractorProperty && options.protractorShownStringProperty && options.protractorHiddenStringProperty) {
-      const protractorShownString = options.protractorShownStringProperty;
-      const protractorHiddenString = options.protractorHiddenStringProperty;
-      options.showProtractorProperty.lazyLink((showProtractor) => {
+    if (options.protractor) {
+      options.protractor.showProperty.lazyLink((showProtractor) => {
         if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
           const announcement = showProtractor
-            ? protractorShownString.value
-            : protractorHiddenString.value;
+            ? options.protractor!.a11yStrings.shown.value
+            : options.protractor!.a11yStrings.hidden.value;
           SimulationAnnouncer.announceSimulationState(announcement);
         }
       });
     }
 
     // Add graph announcements if provided (for configurable graph)
-    if (options.showGraphProperty && options.graphShownStringProperty && options.graphHiddenStringProperty) {
-      const graphShownString = options.graphShownStringProperty;
-      const graphHiddenString = options.graphHiddenStringProperty;
-      options.showGraphProperty.lazyLink((showGraph) => {
+    if (options.graph) {
+      options.graph.showProperty.lazyLink((showGraph) => {
         if (ClassicalMechanicsPreferences.announceStateChangesProperty.value) {
           const announcement = showGraph
-            ? graphShownString.value
-            : graphHiddenString.value;
+            ? options.graph!.a11yStrings.shown.value
+            : options.graph!.a11yStrings.hidden.value;
           SimulationAnnouncer.announceSimulationState(announcement);
         }
       });

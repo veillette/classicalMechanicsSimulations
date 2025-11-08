@@ -222,12 +222,14 @@ export default class ConfigurableGraph extends Node {
       this.linePlot,
       this.trailNode,
       maxDataPoints,
-      this.verticalGridLineSet,
-      this.horizontalGridLineSet,
-      this.xTickMarkSet,
-      this.yTickMarkSet,
-      this.xTickLabelSet,
-      this.yTickLabelSet
+      {
+        verticalGridLineSet: this.verticalGridLineSet,
+        horizontalGridLineSet: this.horizontalGridLineSet,
+        xTickMarkSet: this.xTickMarkSet,
+        yTickMarkSet: this.yTickMarkSet,
+        xTickLabelSet: this.xTickLabelSet,
+        yTickLabelSet: this.yTickLabelSet,
+      }
     );
 
     // Create controls panel helper
@@ -320,17 +322,25 @@ export default class ConfigurableGraph extends Node {
 
     // Initialize interaction handler
     this.interactionHandler = new GraphInteractionHandler(
-      this.chartTransform,
-      this.chartRectangle,
-      this.dataManager,
-      this.headerBar,
-      this, // graph node
-      this.isDraggingProperty,
-      this.isResizingProperty,
-      this.xTickLabelSet,
-      this.yTickLabelSet,
-      this.graphWidth,
-      this.graphHeight,
+      {
+        chartTransform: this.chartTransform,
+        chartRectangle: this.chartRectangle,
+        dataManager: this.dataManager,
+      },
+      {
+        isDraggingProperty: this.isDraggingProperty,
+        isResizingProperty: this.isResizingProperty,
+      },
+      {
+        headerBar: this.headerBar,
+        graphNode: this,
+        xTickLabelSet: this.xTickLabelSet,
+        yTickLabelSet: this.yTickLabelSet,
+      },
+      {
+        width: this.graphWidth,
+        height: this.graphHeight,
+      },
       this.resizeGraph.bind(this)
     );
 

@@ -15,6 +15,41 @@ import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 import type GraphDataManager from "./GraphDataManager.js";
 
+/**
+ * Configuration for the chart and its data management
+ */
+export interface ChartConfig {
+  chartTransform: ChartTransform;
+  chartRectangle: ChartRectangle;
+  dataManager: GraphDataManager;
+}
+
+/**
+ * UI state properties for graph interactions
+ */
+export interface GraphUIState {
+  isDraggingProperty: BooleanProperty;
+  isResizingProperty: BooleanProperty;
+}
+
+/**
+ * UI elements that the interaction handler needs to reference
+ */
+export interface GraphUIElements {
+  headerBar: Rectangle;
+  graphNode: Node;
+  xTickLabelSet: TickLabelSet;
+  yTickLabelSet: TickLabelSet;
+}
+
+/**
+ * Graph dimensions
+ */
+export interface GraphDimensions {
+  width: number;
+  height: number;
+}
+
 export default class GraphInteractionHandler {
   private readonly chartTransform: ChartTransform;
   private readonly chartRectangle: ChartRectangle;
@@ -38,30 +73,23 @@ export default class GraphInteractionHandler {
   private graphHeight: number;
 
   public constructor(
-    chartTransform: ChartTransform,
-    chartRectangle: ChartRectangle,
-    dataManager: GraphDataManager,
-    headerBar: Rectangle,
-    graphNode: Node,
-    isDraggingProperty: BooleanProperty,
-    isResizingProperty: BooleanProperty,
-    xTickLabelSet: TickLabelSet,
-    yTickLabelSet: TickLabelSet,
-    graphWidth: number,
-    graphHeight: number,
+    chartConfig: ChartConfig,
+    uiState: GraphUIState,
+    uiElements: GraphUIElements,
+    dimensions: GraphDimensions,
     onResize: (width: number, height: number) => void
   ) {
-    this.chartTransform = chartTransform;
-    this.chartRectangle = chartRectangle;
-    this.dataManager = dataManager;
-    this.headerBar = headerBar;
-    this.graphNode = graphNode;
-    this.isDraggingProperty = isDraggingProperty;
-    this.isResizingProperty = isResizingProperty;
-    this.xTickLabelSet = xTickLabelSet;
-    this.yTickLabelSet = yTickLabelSet;
-    this.graphWidth = graphWidth;
-    this.graphHeight = graphHeight;
+    this.chartTransform = chartConfig.chartTransform;
+    this.chartRectangle = chartConfig.chartRectangle;
+    this.dataManager = chartConfig.dataManager;
+    this.headerBar = uiElements.headerBar;
+    this.graphNode = uiElements.graphNode;
+    this.isDraggingProperty = uiState.isDraggingProperty;
+    this.isResizingProperty = uiState.isResizingProperty;
+    this.xTickLabelSet = uiElements.xTickLabelSet;
+    this.yTickLabelSet = uiElements.yTickLabelSet;
+    this.graphWidth = dimensions.width;
+    this.graphHeight = dimensions.height;
     this.onResize = onResize;
   }
 
