@@ -21,11 +21,15 @@ import {
   type TReadOnlyProperty,
 } from "scenerystack/axon";
 import { BaseModel } from "../../common/model/BaseModel.js";
+import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
 export class PendulumModel extends BaseModel {
   // State variables
   public readonly angleProperty: NumberProperty;
   public readonly angularVelocityProperty: NumberProperty;
+
+  // State property mapper for cleaner state management
+  private readonly stateMapper: StatePropertyMapper;
 
   // Physics parameters
   public readonly lengthProperty: NumberProperty;
@@ -74,6 +78,12 @@ export class PendulumModel extends BaseModel {
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
       (ke, pe) => ke + pe,
     );
+
+    // Initialize state mapper with properties in state order
+    this.stateMapper = new StatePropertyMapper([
+      this.angleProperty,
+      this.angularVelocityProperty,
+    ]);
   }
 
   /**
@@ -81,7 +91,7 @@ export class PendulumModel extends BaseModel {
    * @returns [angle, angularVelocity]
    */
   protected getState(): number[] {
-    return [this.angleProperty.value, this.angularVelocityProperty.value];
+    return this.stateMapper.getState();
   }
 
   /**
@@ -89,8 +99,7 @@ export class PendulumModel extends BaseModel {
    * @param state - [angle, angularVelocity]
    */
   protected setState(state: number[]): void {
-    this.angleProperty.value = state[0];
-    this.angularVelocityProperty.value = state[1];
+    this.stateMapper.setState(state);
   }
 
   /**

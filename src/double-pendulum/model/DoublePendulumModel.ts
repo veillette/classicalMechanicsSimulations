@@ -20,6 +20,7 @@ import {
   type TReadOnlyProperty,
 } from "scenerystack/axon";
 import { BaseModel } from "../../common/model/BaseModel.js";
+import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
 export class DoublePendulumModel extends BaseModel {
   // State variables
@@ -27,6 +28,9 @@ export class DoublePendulumModel extends BaseModel {
   public readonly angularVelocity1Property: NumberProperty;
   public readonly angle2Property: NumberProperty;
   public readonly angularVelocity2Property: NumberProperty;
+
+  // State property mapper for cleaner state management
+  private readonly stateMapper: StatePropertyMapper;
 
   // Physics parameters
   public readonly length1Property: NumberProperty;
@@ -105,6 +109,14 @@ export class DoublePendulumModel extends BaseModel {
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
       (ke, pe) => ke + pe,
     );
+
+    // Initialize state mapper with properties in state order
+    this.stateMapper = new StatePropertyMapper([
+      this.angle1Property,
+      this.angularVelocity1Property,
+      this.angle2Property,
+      this.angularVelocity2Property,
+    ]);
   }
 
   /**
@@ -112,12 +124,7 @@ export class DoublePendulumModel extends BaseModel {
    * @returns [angle1, angularVelocity1, angle2, angularVelocity2]
    */
   protected getState(): number[] {
-    return [
-      this.angle1Property.value,
-      this.angularVelocity1Property.value,
-      this.angle2Property.value,
-      this.angularVelocity2Property.value,
-    ];
+    return this.stateMapper.getState();
   }
 
   /**
@@ -125,10 +132,7 @@ export class DoublePendulumModel extends BaseModel {
    * @param state - [angle1, angularVelocity1, angle2, angularVelocity2]
    */
   protected setState(state: number[]): void {
-    this.angle1Property.value = state[0];
-    this.angularVelocity1Property.value = state[1];
-    this.angle2Property.value = state[2];
-    this.angularVelocity2Property.value = state[3];
+    this.stateMapper.setState(state);
   }
 
   /**

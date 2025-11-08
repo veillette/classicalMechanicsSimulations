@@ -16,6 +16,7 @@ import {
   type TReadOnlyProperty,
 } from "scenerystack/axon";
 import { BaseModel } from "../../common/model/BaseModel.js";
+import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
 export class DoubleSpringModel extends BaseModel {
   // State variables for mass 1
@@ -25,6 +26,9 @@ export class DoubleSpringModel extends BaseModel {
   // State variables for mass 2
   public readonly position2Property: NumberProperty;
   public readonly velocity2Property: NumberProperty;
+
+  // State property mapper for cleaner state management
+  private readonly stateMapper: StatePropertyMapper;
 
   // Physics parameters
   public readonly mass1Property: NumberProperty;
@@ -82,6 +86,14 @@ export class DoubleSpringModel extends BaseModel {
         return ke1 + ke2 + pe1 + pe2;
       },
     );
+
+    // Initialize state mapper with properties in state order
+    this.stateMapper = new StatePropertyMapper([
+      this.position1Property,
+      this.velocity1Property,
+      this.position2Property,
+      this.velocity2Property,
+    ]);
   }
 
   /**
@@ -89,12 +101,7 @@ export class DoubleSpringModel extends BaseModel {
    * @returns [position1, velocity1, position2, velocity2]
    */
   protected getState(): number[] {
-    return [
-      this.position1Property.value,
-      this.velocity1Property.value,
-      this.position2Property.value,
-      this.velocity2Property.value,
-    ];
+    return this.stateMapper.getState();
   }
 
   /**
@@ -102,10 +109,7 @@ export class DoubleSpringModel extends BaseModel {
    * @param state - [position1, velocity1, position2, velocity2]
    */
   protected setState(state: number[]): void {
-    this.position1Property.value = state[0];
-    this.velocity1Property.value = state[1];
-    this.position2Property.value = state[2];
-    this.velocity2Property.value = state[3];
+    this.stateMapper.setState(state);
   }
 
   /**

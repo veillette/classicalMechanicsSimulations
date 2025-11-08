@@ -18,11 +18,15 @@ import {
   type TReadOnlyProperty,
 } from "scenerystack/axon";
 import { BaseModel } from "../../common/model/BaseModel.js";
+import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
 export class SingleSpringModel extends BaseModel {
   // State variables
   public readonly positionProperty: NumberProperty;
   public readonly velocityProperty: NumberProperty;
+
+  // State property mapper for cleaner state management
+  private readonly stateMapper: StatePropertyMapper;
 
   // Physics parameters
   public readonly massProperty: NumberProperty;
@@ -67,6 +71,12 @@ export class SingleSpringModel extends BaseModel {
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
       (ke, pe) => ke + pe,
     );
+
+    // Initialize state mapper with properties in state order
+    this.stateMapper = new StatePropertyMapper([
+      this.positionProperty,
+      this.velocityProperty,
+    ]);
   }
 
   /**
@@ -74,7 +84,7 @@ export class SingleSpringModel extends BaseModel {
    * @returns [position, velocity]
    */
   protected getState(): number[] {
-    return [this.positionProperty.value, this.velocityProperty.value];
+    return this.stateMapper.getState();
   }
 
   /**
@@ -82,8 +92,7 @@ export class SingleSpringModel extends BaseModel {
    * @param state - [position, velocity]
    */
   protected setState(state: number[]): void {
-    this.positionProperty.value = state[0];
-    this.velocityProperty.value = state[1];
+    this.stateMapper.setState(state);
   }
 
   /**

@@ -6,8 +6,7 @@
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { DoubleSpringModel } from "../model/DoubleSpringModel.js";
 import { Rectangle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
-import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, PhetFont, FormulaNode } from "scenerystack/scenery-phet";
+import { PhetFont, FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -27,6 +26,8 @@ import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import type { PlottableProperty } from "../../common/view/graph/PlottableProperty.js";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import { ParameterControlPanel } from "../../common/view/ParameterControlPanel.js";
+import { type PresetOption } from "../../common/view/PresetSelectorFactory.js";
 import {
   DOUBLE_SPRING_LOOPS,
   DOUBLE_SPRING_RADIUS,
@@ -46,9 +47,6 @@ import {
   PANEL_MARGIN_X,
   PANEL_MARGIN_Y,
 } from "../../common/view/UILayoutConstants.js";
-
-// Custom preset type to include "Custom" option
-type PresetOption = Preset | "Custom";
 
 export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly mass1Node: Rectangle;
@@ -556,206 +554,77 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
 
-    // Create preset selector
-    const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
-      // Add "Custom" option first
-      {
-        value: "Custom",
-        createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        tandemName: "customPresetItem",
-      },
-      // Add all presets
-      ...this.presets.map((preset, index) => ({
-        value: preset,
-        createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        tandemName: `preset${index}Item`,
-      })),
-    ];
-
-    const presetSelector = new ComboBox(this.presetProperty, presetItems, this, {
-      cornerRadius: 5,
-      xMargin: 8,
-      yMargin: 4,
-      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-    });
-
-    const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
-      fill: ClassicalMechanicsColors.textColorProperty,
-    });
-
-    const presetRow = new HBox({
-      spacing: SPACING_SMALL,
-      children: [presetLabel, presetSelector],
-    });
-
-    const mass1Control = new NumberControl(
-      controlLabels.mass1StringProperty,
-      this.model.mass1Property,
-      new Range(0.1, 5.0),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
+    return new ParameterControlPanel({
+      presetProperty: this.presetProperty,
+      presets: this.presets,
+      customLabelProperty: presetLabels.customStringProperty,
+      presetLabelProperty: presetLabels.labelStringProperty,
+      listParent: this,
+      parameters: [
+        {
+          labelProperty: controlLabels.mass1StringProperty,
+          property: this.model.mass1Property,
+          range: new Range(0.1, 5.0),
+          delta: 0.1,
           decimalPlaces: 1,
-          valuePattern: "{0} kg",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-        sliderOptions: {
+          unit: "kg",
           thumbFill: ClassicalMechanicsColors.mass1FillColorProperty,
         },
-      },
-    );
-
-    const mass2Control = new NumberControl(
-      controlLabels.mass2StringProperty,
-      this.model.mass2Property,
-      new Range(0.1, 5.0),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.mass2StringProperty,
+          property: this.model.mass2Property,
+          range: new Range(0.1, 5.0),
+          delta: 0.1,
           decimalPlaces: 1,
-          valuePattern: "{0} kg",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-        sliderOptions: {
+          unit: "kg",
           thumbFill: ClassicalMechanicsColors.mass2FillColorProperty,
         },
-      },
-    );
-
-    const spring1Control = new NumberControl(
-      controlLabels.springConstant1StringProperty,
-      this.model.springConstant1Property,
-      new Range(1.0, 50.0),
-      {
-        delta: 1.0,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.springConstant1StringProperty,
+          property: this.model.springConstant1Property,
+          range: new Range(1.0, 50.0),
+          delta: 1.0,
           decimalPlaces: 0,
-          valuePattern: "{0} N/m",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-        sliderOptions: {
+          unit: "N/m",
           thumbFill: ClassicalMechanicsColors.mass1FillColorProperty,
         },
-      },
-    );
-
-    const spring2Control = new NumberControl(
-      controlLabels.springConstant2StringProperty,
-      this.model.springConstant2Property,
-      new Range(1.0, 50.0),
-      {
-        delta: 1.0,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.springConstant2StringProperty,
+          property: this.model.springConstant2Property,
+          range: new Range(1.0, 50.0),
+          delta: 1.0,
           decimalPlaces: 0,
-          valuePattern: "{0} N/m",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-        sliderOptions: {
+          unit: "N/m",
           thumbFill: ClassicalMechanicsColors.mass2FillColorProperty,
         },
-      },
-    );
-
-    const damping1Control = new NumberControl(
-      controlLabels.damping1StringProperty,
-      this.model.damping1Property,
-      new Range(0.0, 2.0),
-      {
-        delta: 0.05,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.damping1StringProperty,
+          property: this.model.damping1Property,
+          range: new Range(0.0, 2.0),
+          delta: 0.05,
           decimalPlaces: 2,
-          valuePattern: "{0} N·s/m",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-        sliderOptions: {
+          unit: "N·s/m",
           thumbFill: ClassicalMechanicsColors.mass1FillColorProperty,
         },
-      },
-    );
-
-    const damping2Control = new NumberControl(
-      controlLabels.damping2StringProperty,
-      this.model.damping2Property,
-      new Range(0.0, 2.0),
-      {
-        delta: 0.05,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.damping2StringProperty,
+          property: this.model.damping2Property,
+          range: new Range(0.0, 2.0),
+          delta: 0.05,
           decimalPlaces: 2,
-          valuePattern: "{0} N·s/m",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-        sliderOptions: {
+          unit: "N·s/m",
           thumbFill: ClassicalMechanicsColors.mass2FillColorProperty,
         },
-      },
-    );
-
-    const gravityControl = new NumberControl(
-      controlLabels.gravityStringProperty,
-      this.model.gravityProperty,
-      new Range(0.0, 20.0),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.gravityStringProperty,
+          property: this.model.gravityProperty,
+          range: new Range(0.0, 20.0),
+          delta: 0.1,
           decimalPlaces: 1,
-          valuePattern: "{0} m/s²",
+          unit: "m/s²",
         },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-      },
-    );
-
-    const panel = new Panel(
-      new VBox({
-        spacing: SPACING_MEDIUM,
-        align: "left",
-        children: [
-          presetRow,
-          mass1Control,
-          mass2Control,
-          spring1Control,
-          spring2Control,
-          damping1Control,
-          damping2Control,
-          gravityControl,
-        ],
-      }),
-      {
-        xMargin: PANEL_MARGIN_X,
-        yMargin: PANEL_MARGIN_Y,
-        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-        lineWidth: 1,
-        cornerRadius: 5,
-        // Position will be set after creation
-      },
-    );
-
-    return panel;
+      ],
+    });
   }
 
   /**

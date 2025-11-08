@@ -6,8 +6,7 @@
 import { type ScreenViewOptions } from "scenerystack/sim";
 import { PendulumModel } from "../model/PendulumModel.js";
 import { Circle, Line, VBox, HBox, Node, Text, RichText } from "scenerystack/scenery";
-import { Panel, ComboBox } from "scenerystack/sun";
-import { NumberControl, FormulaNode } from "scenerystack/scenery-phet";
+import { FormulaNode } from "scenerystack/scenery-phet";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -25,6 +24,8 @@ import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PhetFont } from "scenerystack";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import { ParameterControlPanel } from "../../common/view/ParameterControlPanel.js";
+import { type PresetOption } from "../../common/view/PresetSelectorFactory.js";
 import {
   FONT_SIZE_BODY_TEXT,
   FONT_SIZE_SECONDARY_LABEL,
@@ -37,9 +38,6 @@ import {
   PANEL_MARGIN_X,
   PANEL_MARGIN_Y,
 } from "../../common/view/UILayoutConstants.js";
-
-// Custom preset type to include "Custom" option
-type PresetOption = Preset | "Custom";
 
 export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly bobNode: Circle;
@@ -417,137 +415,47 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     const controlLabels = stringManager.getControlLabels();
     const presetLabels = stringManager.getPresetLabels();
 
-    // Create preset selector
-    const presetItems: Array<{ value: PresetOption; createNode: () => Node; tandemName: string }> = [
-      // Add "Custom" option first
-      {
-        value: "Custom",
-        createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        tandemName: "customPresetItem",
-      },
-      // Add all presets
-      ...this.presets.map((preset, index) => ({
-        value: preset,
-        createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
-          fill: ClassicalMechanicsColors.textColorProperty,
-        }),
-        tandemName: `preset${index}Item`,
-      })),
-    ];
-
-    const presetSelector = new ComboBox(this.presetProperty, presetItems, this, {
-      cornerRadius: 5,
-      xMargin: 8,
-      yMargin: 4,
-      buttonFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      buttonStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      listFill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      listStroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      highlightFill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-    });
-
-    const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
-      fill: ClassicalMechanicsColors.textColorProperty,
-    });
-
-    const presetRow = new HBox({
-      spacing: SPACING_SMALL,
-      children: [presetLabel, presetSelector],
-    });
-
-    const lengthControl = new NumberControl(
-      controlLabels.lengthStringProperty,
-      this.model.lengthProperty,
-      new Range(0.5, 3.0),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
+    return new ParameterControlPanel({
+      presetProperty: this.presetProperty,
+      presets: this.presets,
+      customLabelProperty: presetLabels.customStringProperty,
+      presetLabelProperty: presetLabels.labelStringProperty,
+      listParent: this,
+      parameters: [
+        {
+          labelProperty: controlLabels.massStringProperty,
+          property: this.model.massProperty,
+          range: new Range(0.1, 5.0),
+          delta: 0.1,
           decimalPlaces: 1,
-          valuePattern: "{0} m",
+          unit: "kg",
         },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-      },
-    );
-
-    const massControl = new NumberControl(
-      controlLabels.massStringProperty,
-      this.model.massProperty,
-      new Range(0.1, 5.0),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.lengthStringProperty,
+          property: this.model.lengthProperty,
+          range: new Range(0.5, 3.0),
+          delta: 0.1,
           decimalPlaces: 1,
-          valuePattern: "{0} kg",
+          unit: "m",
         },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-      },
-    );
-
-    const gravityControl = new NumberControl(
-      controlLabels.gravityStringProperty,
-      this.model.gravityProperty,
-      new Range(0.0, 20.0),
-      {
-        delta: 0.5,
-        numberDisplayOptions: {
-          decimalPlaces: 1,
-          valuePattern: "{0} m/s²",
-        },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
-        },
-      },
-    );
-
-    const dampingControl = new NumberControl(
-      controlLabels.dampingStringProperty,
-      this.model.dampingProperty,
-      new Range(0.0, 2.0),
-      {
-        delta: 0.05,
-        numberDisplayOptions: {
+        {
+          labelProperty: controlLabels.dampingStringProperty,
+          property: this.model.dampingProperty,
+          range: new Range(0.0, 2.0),
+          delta: 0.05,
           decimalPlaces: 2,
-          valuePattern: "{0} N·m·s",
+          unit: "N·m·s",
         },
-        titleNodeOptions: {
-          fill: ClassicalMechanicsColors.textColorProperty,
+        {
+          labelProperty: controlLabels.gravityStringProperty,
+          property: this.model.gravityProperty,
+          range: new Range(0.0, 20.0),
+          delta: 0.5,
+          decimalPlaces: 1,
+          unit: "m/s²",
         },
-      },
-    );
-
-    const panel = new Panel(
-      new VBox({
-        spacing: SPACING_MEDIUM,
-        align: "left",
-        children: [
-          presetRow,
-          massControl,
-          lengthControl,
-          dampingControl,
-          gravityControl,
-        ],
-      }),
-      {
-        xMargin: PANEL_MARGIN_X,
-        yMargin: PANEL_MARGIN_Y,
-        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-        lineWidth: 1,
-        cornerRadius: 5,
-        // Position will be set after creation
-      },
-    );
-
-    return panel;
+      ],
+    });
   }
 
   /**
