@@ -35,6 +35,11 @@ import { VectorControlPanel } from "../../common/view/VectorControlPanel.js";
 import { ToolsControlPanel } from "../../common/view/ToolsControlPanel.js";
 import { PendulumLabProtractorNode } from "../../common/view/PendulumLabProtractorNode.js";
 import { VectorNodeFactory } from "../../common/view/VectorNodeFactory.js";
+import {
+  FONT_SIZE_BODY_TEXT,
+  FONT_SIZE_SECONDARY_LABEL,
+  FONT_SIZE_SCREEN_TITLE,
+} from "../../common/view/FontSizeConstants.js";
 
 // Custom preset type to include "Custom" option
 type PresetOption = Preset | "Custom";
@@ -550,7 +555,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       {
         value: "Custom",
         createNode: () => new Text(presetLabels.customStringProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: "customPresetItem",
@@ -559,7 +564,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       ...this.presets.map((preset, index) => ({
         value: preset,
         createNode: () => new Text(preset.nameProperty, {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         tandemName: `preset${index}Item`,
@@ -578,7 +583,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     });
 
     const presetLabel = new Text(presetLabels.labelStringProperty, {
-      font: new PhetFont({size: 14}),
+      font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
       fill: ClassicalMechanicsColors.textColorProperty,
     });
 
@@ -768,19 +773,19 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       align: "left",
       children: [
         new Text("Double Pendulum", {
-          font: new PhetFont({size: 18, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SCREEN_TITLE, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new RichText(
           "This simulation models a double pendulum system, which exhibits rich dynamics including periodic motion and deterministic chaos depending on initial conditions and energy.",
           {
-            font: new PhetFont({size: 14}),
+            font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL}),
             fill: ClassicalMechanicsColors.textColorProperty,
             maxWidth: 700,
           }
         ),
         new Text("Equations of Motion:", {
-          font: new PhetFont({size: 14, weight: "bold"}),
+          font: new PhetFont({size: FONT_SIZE_SECONDARY_LABEL, weight: "bold"}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         new VBox({
@@ -789,7 +794,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           children: [equation1, equation2],
         }),
         new Text("Where:", {
-          font: new PhetFont({size: 12}),
+          font: new PhetFont({size: FONT_SIZE_BODY_TEXT}),
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         variablesList,
