@@ -65,8 +65,8 @@ export class DoublePendulumScreenIcon extends ScreenIcon {
 
     // First bob
     const bob1 = new Circle(BOB_RADIUS, {
-      fill: "#4A90E2",
-      stroke: "#2E5C8A",
+      fill: "#64AAFF",
+      stroke: "#468CDC",
       lineWidth: BOB_STROKE_WIDTH,
       centerX: rod1EndX,
       centerY: rod1EndY,
@@ -93,8 +93,8 @@ export class DoublePendulumScreenIcon extends ScreenIcon {
 
     // Second bob
     const bob2 = new Circle(BOB_RADIUS, {
-      fill: "#E24A90",
-      stroke: "#8A2E5C",
+      fill: "#FF9632",
+      stroke: "#E67814",
       lineWidth: BOB_STROKE_WIDTH,
       centerX: rod2EndX,
       centerY: rod2EndY,

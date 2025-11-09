@@ -81,8 +81,8 @@ export class DoubleSpringScreenIcon extends ScreenIcon {
 
     // Create first mass
     const mass1 = new Rectangle(-MASS_WIDTH / 2, MASS1_Y, MASS_WIDTH, MASS_HEIGHT, {
-      fill: "#4A90E2",
-      stroke: "#2E5C8A",
+      fill: "#64AAFF",
+      stroke: "#468CDC",
       lineWidth: MASS_STROKE_WIDTH,
     });
 
@@ -91,8 +91,8 @@ export class DoubleSpringScreenIcon extends ScreenIcon {
 
     // Create second mass
     const mass2 = new Rectangle(-MASS_WIDTH / 2, MASS2_Y, MASS_WIDTH, MASS_HEIGHT, {
-      fill: "#E24A90",
-      stroke: "#8A2E5C",
+      fill: "#FF9632",
+      stroke: "#E67814",
       lineWidth: MASS_STROKE_WIDTH,
     });
 
