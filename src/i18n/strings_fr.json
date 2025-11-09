@@ -49,7 +49,11 @@
     },
     "properties": {
       "position": "Position",
+      "position1": "Position 1",
+      "position2": "Position 2",
       "velocity": "Vitesse",
+      "velocity1": "Vitesse 1",
+      "velocity2": "Vitesse 2",
       "angle": "Angle",
       "angularVelocity": "Vitesse Angulaire",
       "angle1": "Angle 1",

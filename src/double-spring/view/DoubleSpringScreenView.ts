@@ -347,22 +347,22 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     const propertyNames = stringManager.getGraphPropertyNames();
     const availableProperties: PlottableProperty[] = [
       {
-        name: propertyNames.positionStringProperty, // Will show as "Position" for position1
+        name: propertyNames.position1StringProperty,
         property: this.model.position1Property,
         unit: "m",
       },
       {
-        name: propertyNames.positionStringProperty, // Will show as "Position" for position2
+        name: propertyNames.position2StringProperty,
         property: this.model.position2Property,
         unit: "m",
       },
       {
-        name: propertyNames.velocityStringProperty, // Will show as "Velocity" for velocity1
+        name: propertyNames.velocity1StringProperty,
         property: this.model.velocity1Property,
         unit: "m/s",
       },
       {
-        name: propertyNames.velocityStringProperty, // Will show as "Velocity" for velocity2
+        name: propertyNames.velocity2StringProperty,
         property: this.model.velocity2Property,
         unit: "m/s",
       },
