@@ -186,7 +186,11 @@ export class StringManager {
    */
   public getGraphPropertyNames(): {
     positionStringProperty: ReadOnlyProperty<string>;
+    position1StringProperty: ReadOnlyProperty<string>;
+    position2StringProperty: ReadOnlyProperty<string>;
     velocityStringProperty: ReadOnlyProperty<string>;
+    velocity1StringProperty: ReadOnlyProperty<string>;
+    velocity2StringProperty: ReadOnlyProperty<string>;
     angleStringProperty: ReadOnlyProperty<string>;
     angularVelocityStringProperty: ReadOnlyProperty<string>;
     angle1StringProperty: ReadOnlyProperty<string>;
@@ -200,7 +204,11 @@ export class StringManager {
   } {
     return {
       positionStringProperty: this.stringProperties.graph.properties.positionStringProperty,
+      position1StringProperty: this.stringProperties.graph.properties.position1StringProperty,
+      position2StringProperty: this.stringProperties.graph.properties.position2StringProperty,
       velocityStringProperty: this.stringProperties.graph.properties.velocityStringProperty,
+      velocity1StringProperty: this.stringProperties.graph.properties.velocity1StringProperty,
+      velocity2StringProperty: this.stringProperties.graph.properties.velocity2StringProperty,
       angleStringProperty: this.stringProperties.graph.properties.angleStringProperty,
       angularVelocityStringProperty: this.stringProperties.graph.properties.angularVelocityStringProperty,
       angle1StringProperty: this.stringProperties.graph.properties.angle1StringProperty,
