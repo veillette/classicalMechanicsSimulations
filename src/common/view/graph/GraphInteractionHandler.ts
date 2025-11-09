@@ -897,4 +897,64 @@ export default class GraphInteractionHandler {
       this.dataManager.updateAxisRanges();
     }
   }
+
+  /**
+   * Zoom in centered on the graph
+   */
+  public zoomIn(): void {
+    // Zoom centered on the middle of the chart
+    const centerPoint = new Vector2(this.graphWidth / 2, this.graphHeight / 2);
+    this.zoom(this.zoomFactor, centerPoint);
+  }
+
+  /**
+   * Zoom out centered on the graph
+   */
+  public zoomOut(): void {
+    // Zoom out centered on the middle of the chart
+    const centerPoint = new Vector2(this.graphWidth / 2, this.graphHeight / 2);
+    this.zoom(1 / this.zoomFactor, centerPoint);
+  }
+
+  /**
+   * Pan the graph in a given direction by 10% of the current range
+   */
+  public pan(direction: 'left' | 'right' | 'up' | 'down'): void {
+    this.dataManager.setManuallyZoomed(true);
+
+    const currentXRange = this.chartTransform.modelXRange;
+    const currentYRange = this.chartTransform.modelYRange;
+
+    // Pan by 10% of the current range
+    const xDelta = (currentXRange.max - currentXRange.min) * 0.1;
+    const yDelta = (currentYRange.max - currentYRange.min) * 0.1;
+
+    let newXRange = currentXRange;
+    let newYRange = currentYRange;
+
+    switch (direction) {
+      case 'left':
+        newXRange = new Range(currentXRange.min - xDelta, currentXRange.max - xDelta);
+        break;
+      case 'right':
+        newXRange = new Range(currentXRange.min + xDelta, currentXRange.max + xDelta);
+        break;
+      case 'up':
+        newYRange = new Range(currentYRange.min + yDelta, currentYRange.max + yDelta);
+        break;
+      case 'down':
+        newYRange = new Range(currentYRange.min - yDelta, currentYRange.max - yDelta);
+        break;
+    }
+
+    // Update the chart transform
+    this.chartTransform.setModelXRange(newXRange);
+    this.chartTransform.setModelYRange(newYRange);
+
+    // Update tick spacing
+    this.dataManager.updateTickSpacing(newXRange, newYRange);
+
+    // Update trail with new transform
+    this.dataManager.updateTrail();
+  }
 }
