@@ -856,9 +856,14 @@ export default class GraphInteractionHandler {
 
   /**
    * Zoom the graph by a given factor, centered on a point
+   * @param factor - Zoom factor (>1 zooms in, <1 zooms out)
+   * @param centerPoint - Point to zoom around (in view coordinates)
+   * @param setManualFlag - Whether to set the manual zoom flag (default: true)
    */
-  private zoom(factor: number, centerPoint: Vector2): void {
-    this.dataManager.setManuallyZoomed(true);
+  private zoom(factor: number, centerPoint: Vector2, setManualFlag: boolean = true): void {
+    if (setManualFlag) {
+      this.dataManager.setManuallyZoomed(true);
+    }
 
     const currentXRange = this.chartTransform.modelXRange;
     const currentYRange = this.chartTransform.modelYRange;
@@ -900,28 +905,29 @@ export default class GraphInteractionHandler {
 
   /**
    * Zoom in centered on the graph
+   * Note: Does not disable auto-rescaling, allowing the graph to continue adjusting to new data
    */
   public zoomIn(): void {
     // Zoom centered on the middle of the chart
     const centerPoint = new Vector2(this.graphWidth / 2, this.graphHeight / 2);
-    this.zoom(this.zoomFactor, centerPoint);
+    this.zoom(this.zoomFactor, centerPoint, false);
   }
 
   /**
    * Zoom out centered on the graph
+   * Note: Does not disable auto-rescaling, allowing the graph to continue adjusting to new data
    */
   public zoomOut(): void {
     // Zoom out centered on the middle of the chart
     const centerPoint = new Vector2(this.graphWidth / 2, this.graphHeight / 2);
-    this.zoom(1 / this.zoomFactor, centerPoint);
+    this.zoom(1 / this.zoomFactor, centerPoint, false);
   }
 
   /**
    * Pan the graph in a given direction by 10% of the current range
+   * Note: Does not disable auto-rescaling, allowing the graph to continue adjusting to new data
    */
   public pan(direction: 'left' | 'right' | 'up' | 'down'): void {
-    this.dataManager.setManuallyZoomed(true);
-
     const currentXRange = this.chartTransform.modelXRange;
     const currentYRange = this.chartTransform.modelYRange;
 
