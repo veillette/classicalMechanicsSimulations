@@ -70,8 +70,9 @@ export default class ConfigurableGraph extends Node {
   private readonly dataManager: GraphDataManager;
   private readonly interactionHandler: GraphInteractionHandler;
 
-  // Rescale button
+  // Control buttons
   private readonly rescaleButton: Node;
+  private readonly controlButtonsPanel: Node;
 
   /**
    * @param availableProperties - List of properties that can be plotted
@@ -246,50 +247,100 @@ export default class ConfigurableGraph extends Node {
     titlePanel.bottom = -5;
     this.graphContentNode.addChild(titlePanel);
 
-    // Create rescale button
+    // Create control buttons panel with rescale, zoom, and pan buttons
     const buttonSize = 24;
     const buttonPadding = 4;
-    const rescaleText = new Text('↻', {
-      font: new PhetFont({ size: 16, weight: 'bold' }),
-      fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+    const buttonSpacing = 2;
+
+    // Helper function to create a button
+    const createButton = (label: string, onClick: () => void): Node => {
+      const buttonText = new Text(label, {
+        font: new PhetFont({ size: 14, weight: 'bold' }),
+        fill: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+      });
+
+      const buttonBackground = new Rectangle(0, 0, buttonSize, buttonSize, 3, 3, {
+        fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
+        stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
+        lineWidth: 1,
+        cursor: 'pointer',
+      });
+
+      const button = new Node({
+        children: [buttonBackground, buttonText],
+      });
+
+      // Center the text in the button
+      buttonText.center = buttonBackground.center;
+
+      // Add hover effect
+      button.addInputListener({
+        enter: () => {
+          buttonBackground.opacity = 0.8;
+        },
+        exit: () => {
+          buttonBackground.opacity = 1.0;
+        },
+      });
+
+      // Add click handler
+      button.addInputListener(new FireListener({
+        fire: onClick,
+      }));
+
+      return button;
+    };
+
+    // Create rescale button
+    this.rescaleButton = createButton('↻', () => {
+      // Reset manual zoom flag and rescale to fit data
+      this.dataManager.setManuallyZoomed(false);
+      this.dataManager.updateAxisRanges();
     });
 
-    const rescaleButtonBackground = new Rectangle(0, 0, buttonSize, buttonSize, 3, 3, {
-      fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
-      stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 1,
-      cursor: 'pointer',
+    // Create zoom buttons (will be wired up after interactionHandler is created)
+    const zoomInButton = createButton('+', () => {
+      this.interactionHandler.zoomIn();
     });
 
-    this.rescaleButton = new Node({
-      children: [rescaleButtonBackground, rescaleText],
+    const zoomOutButton = createButton('−', () => {
+      this.interactionHandler.zoomOut();
+    });
+
+    // Create pan buttons (will be wired up after interactionHandler is created)
+    const panLeftButton = createButton('←', () => {
+      this.interactionHandler.pan('left');
+    });
+
+    const panRightButton = createButton('→', () => {
+      this.interactionHandler.pan('right');
+    });
+
+    const panUpButton = createButton('↑', () => {
+      this.interactionHandler.pan('up');
+    });
+
+    const panDownButton = createButton('↓', () => {
+      this.interactionHandler.pan('down');
+    });
+
+    // Create HBox to hold all buttons
+    this.controlButtonsPanel = new HBox({
+      children: [
+        this.rescaleButton,
+        zoomInButton,
+        zoomOutButton,
+        panLeftButton,
+        panRightButton,
+        panUpButton,
+        panDownButton,
+      ],
+      spacing: buttonSpacing,
       left: buttonPadding,
       top: buttonPadding,
     });
 
-    // Center the text in the button
-    rescaleText.center = rescaleButtonBackground.center;
-
-    // Add hover effect
-    this.rescaleButton.addInputListener({
-      enter: () => {
-        rescaleButtonBackground.opacity = 0.8;
-      },
-      exit: () => {
-        rescaleButtonBackground.opacity = 1.0;
-      },
-    });
-
-    // Add click handler
-    this.rescaleButton.addInputListener(new FireListener({
-      fire: () => {
-        // Reset manual zoom flag and rescale to fit data
-        this.dataManager.setManuallyZoomed(false);
-        this.dataManager.updateAxisRanges();
-      },
-    }));
-
-    this.graphContentNode.addChild(this.rescaleButton);
+    this.graphContentNode.addChild(this.controlButtonsPanel);
 
     // Update labels when axes change and announce using voicing
     const a11yStrings = StringManager.getInstance().getAccessibilityStrings();
