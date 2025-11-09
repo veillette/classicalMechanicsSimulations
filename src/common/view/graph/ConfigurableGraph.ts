@@ -38,6 +38,8 @@ export default class ConfigurableGraph extends Node {
   private readonly chartRectangle: ChartRectangle;
   private graphWidth: number;
   private graphHeight: number;
+  private readonly initialWidth: number;
+  private readonly initialHeight: number;
 
   // Drag and resize UI components
   private readonly headerBar;
@@ -97,6 +99,8 @@ export default class ConfigurableGraph extends Node {
     this.availableProperties = availableProperties;
     this.graphWidth = width;
     this.graphHeight = height;
+    this.initialWidth = width;
+    this.initialHeight = height;
 
     // Properties to track current axis selections
     this.xPropertyProperty = new Property(initialXProperty);
@@ -520,5 +524,21 @@ export default class ConfigurableGraph extends Node {
    */
   public getGraphVisibleProperty(): BooleanProperty {
     return this.graphVisibleProperty;
+  }
+
+  /**
+   * Reset the graph to its initial state
+   */
+  public reset(): void {
+    // Reset visibility property to initial value (false)
+    this.graphVisibleProperty.reset();
+
+    // Reset graph size to initial dimensions if it has been resized
+    if (this.graphWidth !== this.initialWidth || this.graphHeight !== this.initialHeight) {
+      this.resizeGraph(this.initialWidth, this.initialHeight);
+    }
+
+    // Clear all data
+    this.clearData();
   }
 }

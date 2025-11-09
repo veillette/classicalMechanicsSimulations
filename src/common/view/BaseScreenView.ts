@@ -552,9 +552,9 @@ export abstract class BaseScreenView<
     this.showForceProperty.reset();
     this.showAccelerationProperty.reset();
 
-    // Clear graph data if graph exists
+    // Reset graph to initial state (visibility, size, and data) if graph exists
     if (this.configurableGraph) {
-      this.configurableGraph.clearData();
+      this.configurableGraph.reset();
     }
 
     // Subclasses can override to add custom reset behavior
