@@ -47,7 +47,7 @@ export class PendulumLabProtractorNode extends Node {
     options?: PendulumLabProtractorNodeOptions
   ) {
     // Use color property for pendulum-specific elements
-    const pendulumColorProperty = ClassicalMechanicsColors.mass2FillColorProperty;
+    const pendulumColorProperty = ClassicalMechanicsColors.mass1FillColorProperty;
 
     // Central dashed reference line (vertical line from pivot)
     const maxLength = modelViewTransform.modelToViewDeltaX(

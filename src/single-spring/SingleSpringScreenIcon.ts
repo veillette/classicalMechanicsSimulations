@@ -61,8 +61,8 @@ export class SingleSpringScreenIcon extends ScreenIcon {
 
     // Create the mass - a simple rectangle
     const mass = new Rectangle(0, 0, MASS_WIDTH, MASS_HEIGHT, {
-      fill: "#4A90E2",
-      stroke: "#2E5C8A",
+      fill: "#64AAFF",
+      stroke: "#468CDC",
       lineWidth: MASS_STROKE_WIDTH,
       centerX: 0,
       top: SPRING_HEIGHT + SPRING_TO_MASS_SPACING,

@@ -94,7 +94,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       {
         angleProperty: this.model.angleProperty,
         isDraggingProperty: this.isDraggingProperty,
-        color: ClassicalMechanicsColors.mass2FillColorProperty.value.toCSS(),
+        color: ClassicalMechanicsColors.mass1FillColorProperty.value.toCSS(),
         lengthProperty: this.model.lengthProperty,
       },
       this.modelViewTransform
@@ -126,8 +126,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
 
     // Bob (size will be updated based on mass value)
     this.bobNode = new Circle(20, {
-      fill: ClassicalMechanicsColors.mass2FillColorProperty,
-      stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
+      fill: ClassicalMechanicsColors.mass1FillColorProperty,
+      stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
       // Add focus highlight for accessibility

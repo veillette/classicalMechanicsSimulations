@@ -60,8 +60,8 @@ export class PendulumScreenIcon extends ScreenIcon {
 
     // Create the bob (pendulum mass)
     const bob = new Circle(BOB_RADIUS, {
-      fill: "#4A90E2",
-      stroke: "#2E5C8A",
+      fill: "#64AAFF",
+      stroke: "#468CDC",
       lineWidth: BOB_STROKE_WIDTH,
       centerX: rodEndX,
       centerY: rodEndY,
