@@ -69,8 +69,6 @@ export default class GraphInteractionHandler {
   private readonly onResize: (width: number, height: number) => void;
 
   // For axis controls
-  private readonly xTickLabelSet: TickLabelSet;
-  private readonly yTickLabelSet: TickLabelSet;
   private readonly xAxisInteractionRegion: Rectangle;
   private readonly yAxisInteractionRegion: Rectangle;
   private graphWidth: number;
@@ -90,8 +88,6 @@ export default class GraphInteractionHandler {
     this.graphNode = uiElements.graphNode;
     this.isDraggingProperty = uiState.isDraggingProperty;
     this.isResizingProperty = uiState.isResizingProperty;
-    this.xTickLabelSet = uiElements.xTickLabelSet;
-    this.yTickLabelSet = uiElements.yTickLabelSet;
     this.xAxisInteractionRegion = uiElements.xAxisInteractionRegion;
     this.yAxisInteractionRegion = uiElements.yAxisInteractionRegion;
     this.graphWidth = dimensions.width;
