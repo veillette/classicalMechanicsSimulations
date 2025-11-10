@@ -86,6 +86,15 @@
       "adaptiveEuler": "Variable-step 2nd order method. Fast and adaptive, good for smooth problems.",
       "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums."
     },
+    "nominalTimeStep": "Nominal Time Step",
+    "nominalTimeStepDescription": "Set the target time step for numerical integration. Smaller values increase accuracy but may slow down the simulation.",
+    "timeSteps": {
+      "verySmall": "0.1 ms (Very Small)",
+      "small": "0.5 ms (Small)",
+      "default": "1 ms (Default)",
+      "medium": "5 ms (Medium)",
+      "large": "10 ms (Large)"
+    },
     "springVisualization": "Spring Visualization",
     "springVisualizationDescription": "Choose the visual style for rendering springs in the simulation",
     "springTypes": {

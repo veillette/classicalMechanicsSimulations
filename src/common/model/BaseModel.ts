@@ -14,6 +14,7 @@ import { AdaptiveRK45Solver } from "./AdaptiveRK45Solver.js";
 import { AdaptiveEulerSolver } from "./AdaptiveEulerSolver.js";
 import { ModifiedMidpointSolver } from "./ModifiedMidpointSolver.js";
 import SolverType from "./SolverType.js";
+import NominalTimeStep from "./NominalTimeStep.js";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 
@@ -40,8 +41,13 @@ export abstract class BaseModel {
     this.solver = this.createSolver(ClassicalMechanicsPreferences.solverTypeProperty.value);
 
     // Listen for solver type changes and recreate solver
-    ClassicalMechanicsPreferences.solverTypeProperty.link((solverType) => {
+    ClassicalMechanicsPreferences.solverTypeProperty.link((solverType: SolverType) => {
       this.solver = this.createSolver(solverType);
+    });
+
+    // Listen for nominal time step changes and update the solver
+    ClassicalMechanicsPreferences.nominalTimeStepProperty.link((nominalTimeStep: NominalTimeStep) => {
+      this.solver.setFixedTimeStep(nominalTimeStep.value);
     });
   }
 
@@ -49,18 +55,25 @@ export abstract class BaseModel {
    * Create a solver instance based on the solver type.
    */
   private createSolver(solverType: SolverType): ODESolver {
+    let solver: ODESolver;
+
     if (solverType === SolverType.RK4) {
-      return new RungeKuttaSolver();
+      solver = new RungeKuttaSolver();
     } else if (solverType === SolverType.ADAPTIVE_RK45) {
-      return new AdaptiveRK45Solver();
+      solver = new AdaptiveRK45Solver();
     } else if (solverType === SolverType.ADAPTIVE_EULER) {
-      return new AdaptiveEulerSolver();
+      solver = new AdaptiveEulerSolver();
     } else if (solverType === SolverType.MODIFIED_MIDPOINT) {
-      return new ModifiedMidpointSolver();
+      solver = new ModifiedMidpointSolver();
     } else {
       // Default to RK4
-      return new RungeKuttaSolver();
+      solver = new RungeKuttaSolver();
     }
+
+    // Apply the current nominal time step preference
+    solver.setFixedTimeStep(ClassicalMechanicsPreferences.nominalTimeStepProperty.value.value);
+
+    return solver;
   }
 
   /**
