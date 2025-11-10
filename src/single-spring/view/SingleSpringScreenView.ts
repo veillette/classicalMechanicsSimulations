@@ -323,6 +323,16 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         unit: "J",
       },
       {
+        name: propertyNames.springPotentialEnergyStringProperty,
+        property: this.model.springPotentialEnergyProperty,
+        unit: "J",
+      },
+      {
+        name: propertyNames.gravitationalPotentialEnergyStringProperty,
+        property: this.model.gravitationalPotentialEnergyProperty,
+        unit: "J",
+      },
+      {
         name: propertyNames.totalEnergyStringProperty,
         property: this.model.totalEnergyProperty,
         unit: "J",
