@@ -68,6 +68,10 @@ export default class ConfigurableGraph extends Node {
   private readonly xTickLabelSet: TickLabelSet;
   private readonly yTickLabelSet: TickLabelSet;
 
+  // Invisible interaction regions for axis controls
+  private readonly xAxisInteractionRegion: Rectangle;
+  private readonly yAxisInteractionRegion: Rectangle;
+
   // Module instances
   private readonly dataManager: GraphDataManager;
   private readonly interactionHandler: GraphInteractionHandler;
@@ -184,6 +188,38 @@ export default class ConfigurableGraph extends Node {
         }),
     });
     this.graphContentNode.addChild(this.yTickLabelSet);
+
+    // Create invisible interaction regions for axis controls
+    // These regions capture mouse/touch events across the entire tick label area,
+    // not just on the text labels themselves
+    const axisInteractionWidth = 60; // Width for Y-axis region (left side)
+    const axisInteractionHeight = 30; // Height for X-axis region (bottom)
+
+    // Y-axis interaction region (left side of graph, covering full height)
+    this.yAxisInteractionRegion = new Rectangle(
+      -axisInteractionWidth,
+      0,
+      axisInteractionWidth,
+      height,
+      {
+        fill: 'transparent',
+        pickable: true,
+      }
+    );
+    this.graphContentNode.addChild(this.yAxisInteractionRegion);
+
+    // X-axis interaction region (bottom of graph, covering full width)
+    this.xAxisInteractionRegion = new Rectangle(
+      0,
+      height,
+      width,
+      axisInteractionHeight,
+      {
+        fill: 'transparent',
+        pickable: true,
+      }
+    );
+    this.graphContentNode.addChild(this.xAxisInteractionRegion);
 
     // Create line plot
     this.linePlot = new LinePlot(this.chartTransform, [], {
@@ -391,6 +427,8 @@ export default class ConfigurableGraph extends Node {
         graphNode: this,
         xTickLabelSet: this.xTickLabelSet,
         yTickLabelSet: this.yTickLabelSet,
+        xAxisInteractionRegion: this.xAxisInteractionRegion,
+        yAxisInteractionRegion: this.yAxisInteractionRegion,
       },
       {
         width: this.graphWidth,
@@ -466,6 +504,12 @@ export default class ConfigurableGraph extends Node {
     // Update chart transform
     this.chartTransform.setViewWidth(newWidth);
     this.chartTransform.setViewHeight(newHeight);
+
+    // Update invisible interaction regions
+    const axisInteractionWidth = 60;
+    const axisInteractionHeight = 30;
+    this.yAxisInteractionRegion.setRect(-axisInteractionWidth, 0, axisInteractionWidth, newHeight);
+    this.xAxisInteractionRegion.setRect(0, newHeight, newWidth, axisInteractionHeight);
 
     // Update axis labels positions
     this.xAxisLabelNode.centerX = newWidth / 2;

@@ -40,6 +40,8 @@ export interface GraphUIElements {
   graphNode: Node;
   xTickLabelSet: TickLabelSet;
   yTickLabelSet: TickLabelSet;
+  xAxisInteractionRegion: Rectangle;
+  yAxisInteractionRegion: Rectangle;
 }
 
 /**
@@ -69,6 +71,8 @@ export default class GraphInteractionHandler {
   // For axis controls
   private readonly xTickLabelSet: TickLabelSet;
   private readonly yTickLabelSet: TickLabelSet;
+  private readonly xAxisInteractionRegion: Rectangle;
+  private readonly yAxisInteractionRegion: Rectangle;
   private graphWidth: number;
   private graphHeight: number;
 
@@ -88,6 +92,8 @@ export default class GraphInteractionHandler {
     this.isResizingProperty = uiState.isResizingProperty;
     this.xTickLabelSet = uiElements.xTickLabelSet;
     this.yTickLabelSet = uiElements.yTickLabelSet;
+    this.xAxisInteractionRegion = uiElements.xAxisInteractionRegion;
+    this.yAxisInteractionRegion = uiElements.yAxisInteractionRegion;
     this.graphWidth = dimensions.width;
     this.graphHeight = dimensions.height;
     this.onResize = onResize;
@@ -317,7 +323,7 @@ export default class GraphInteractionHandler {
     let initialYRange: Range | null = null;
     let singleTouchStartY: number | null = null;
 
-    this.yTickLabelSet.addInputListener({
+    this.yAxisInteractionRegion.addInputListener({
       down: (event) => {
         if (event.pointer.type === 'touch') {
           const globalPoint = event.pointer.point;
@@ -450,14 +456,14 @@ export default class GraphInteractionHandler {
       },
     });
 
-    this.yTickLabelSet.addInputListener(mouseDragListener);
+    this.yAxisInteractionRegion.addInputListener(mouseDragListener);
 
-    // Make Y-axis tick labels pickable so they can receive touch input
-    this.yTickLabelSet.pickable = true;
-    this.yTickLabelSet.cursor = 'ns-resize';
+    // Make Y-axis interaction region pickable so it can receive input
+    this.yAxisInteractionRegion.pickable = true;
+    this.yAxisInteractionRegion.cursor = 'ns-resize';
 
     // Add mouse wheel support for Y-axis zooming (zoom vertically only)
-    this.yTickLabelSet.addInputListener({
+    this.yAxisInteractionRegion.addInputListener({
       wheel: (event) => {
         event.handle();
         const delta = event.domEvent!.deltaY;
@@ -499,7 +505,7 @@ export default class GraphInteractionHandler {
     let initialXRange: Range | null = null;
     let singleTouchStartX: number | null = null;
 
-    this.xTickLabelSet.addInputListener({
+    this.xAxisInteractionRegion.addInputListener({
       down: (event) => {
         if (event.pointer.type === 'touch') {
           const globalPoint = event.pointer.point;
@@ -632,14 +638,14 @@ export default class GraphInteractionHandler {
       },
     });
 
-    this.xTickLabelSet.addInputListener(mouseDragListener);
+    this.xAxisInteractionRegion.addInputListener(mouseDragListener);
 
-    // Make X-axis tick labels pickable so they can receive touch input
-    this.xTickLabelSet.pickable = true;
-    this.xTickLabelSet.cursor = 'ew-resize';
+    // Make X-axis interaction region pickable so it can receive input
+    this.xAxisInteractionRegion.pickable = true;
+    this.xAxisInteractionRegion.cursor = 'ew-resize';
 
     // Add mouse wheel support for X-axis zooming (zoom horizontally only)
-    this.xTickLabelSet.addInputListener({
+    this.xAxisInteractionRegion.addInputListener({
       wheel: (event) => {
         event.handle();
         const delta = event.domEvent!.deltaY;
