@@ -86,13 +86,17 @@
       "rk4": "RK4 (Runge-Kutta 4th Order)",
       "adaptiveRK45": "Adaptive RK45",
       "adaptiveEuler": "Adaptive Euler-Heun",
-      "modifiedMidpoint": "Modified Midpoint"
+      "modifiedMidpoint": "Modified Midpoint",
+      "forestRuthPEFRL": "PEFRL (Forest-Ruth 4th Order)",
+      "dormandPrince87": "RK8(7) (Dormand-Prince 8th Order)"
     },
     "solverDescriptions": {
       "rk4": "Fixed-step 4th order method. Accurate and stable for most problems.",
       "adaptiveRK45": "Variable-step 5th order method. Automatic error control, best for complex systems.",
       "adaptiveEuler": "Variable-step 2nd order method. Fast and adaptive, good for smooth problems.",
-      "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums."
+      "modifiedMidpoint": "Fixed-step 2nd order method. Excellent for oscillatory systems like springs and pendulums.",
+      "forestRuthPEFRL": "Fixed-step 4th order symplectic method. Optimized for minimal energy error in conservative systems.",
+      "dormandPrince87": "Variable-step 8th order method. Very high accuracy for smooth problems, requires more computation."
     },
     "nominalTimeStep": "Nominal Time Step",
     "nominalTimeStepDescription": "Set the target time step for numerical integration. Smaller values increase accuracy but may slow down the simulation.",

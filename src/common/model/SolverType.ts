@@ -9,6 +9,8 @@ export default class SolverType extends EnumerationValue {
   public static readonly ADAPTIVE_RK45 = new SolverType();
   public static readonly ADAPTIVE_EULER = new SolverType();
   public static readonly MODIFIED_MIDPOINT = new SolverType();
+  public static readonly FOREST_RUTH_PEFRL = new SolverType();
+  public static readonly DORMAND_PRINCE_87 = new SolverType();
 
   public static readonly enumeration = new Enumeration(SolverType);
 }

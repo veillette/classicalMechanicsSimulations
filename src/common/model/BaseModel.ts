@@ -13,6 +13,8 @@ import { RungeKuttaSolver } from "./RungeKuttaSolver.js";
 import { AdaptiveRK45Solver } from "./AdaptiveRK45Solver.js";
 import { AdaptiveEulerSolver } from "./AdaptiveEulerSolver.js";
 import { ModifiedMidpointSolver } from "./ModifiedMidpointSolver.js";
+import { ForestRuthPEFRLSolver } from "./ForestRuthPEFRLSolver.js";
+import { DormandPrince87Solver } from "./DormandPrince87Solver.js";
 import SolverType from "./SolverType.js";
 import NominalTimeStep from "./NominalTimeStep.js";
 import { TimeSpeed } from "scenerystack/scenery-phet";
@@ -65,6 +67,10 @@ export abstract class BaseModel {
       solver = new AdaptiveEulerSolver();
     } else if (solverType === SolverType.MODIFIED_MIDPOINT) {
       solver = new ModifiedMidpointSolver();
+    } else if (solverType === SolverType.FOREST_RUTH_PEFRL) {
+      solver = new ForestRuthPEFRLSolver();
+    } else if (solverType === SolverType.DORMAND_PRINCE_87) {
+      solver = new DormandPrince87Solver();
     } else {
       // Default to RK4
       solver = new RungeKuttaSolver();

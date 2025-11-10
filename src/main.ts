@@ -262,6 +262,44 @@ onReadyToLaunch(() => {
                         }),
                         tandemName: "modifiedMidpointRadioButton",
                       },
+                      {
+                        value: SolverType.FOREST_RUTH_PEFRL,
+                        createNode: () => new VBox({
+                          align: "left",
+                          spacing: 4,
+                          children: [
+                            new Text(solverNames.forestRuthPEFRLStringProperty, {
+                              font: new PhetFont(14),
+                              fill: "black",
+                            }),
+                            new Text(solverDescriptions.forestRuthPEFRLStringProperty, {
+                              font: new PhetFont(11),
+                              fill: "rgb(80,80,80)",
+                              maxWidth: 280,
+                            }),
+                          ],
+                        }),
+                        tandemName: "forestRuthPEFRLRadioButton",
+                      },
+                      {
+                        value: SolverType.DORMAND_PRINCE_87,
+                        createNode: () => new VBox({
+                          align: "left",
+                          spacing: 4,
+                          children: [
+                            new Text(solverNames.dormandPrince87StringProperty, {
+                              font: new PhetFont(14),
+                              fill: "black",
+                            }),
+                            new Text(solverDescriptions.dormandPrince87StringProperty, {
+                              font: new PhetFont(11),
+                              fill: "rgb(80,80,80)",
+                              maxWidth: 280,
+                            }),
+                          ],
+                        }),
+                        tandemName: "dormandPrince87RadioButton",
+                      },
                     ],
                     {
                       spacing: 12,
