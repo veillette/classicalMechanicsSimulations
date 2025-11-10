@@ -41,6 +41,8 @@ export class DoublePendulumModel extends BaseModel {
   public readonly dampingProperty: NumberProperty;
 
   // Computed values
+  public readonly angularAcceleration1Property: TReadOnlyProperty<number>;
+  public readonly angularAcceleration2Property: TReadOnlyProperty<number>;
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
   public readonly potentialEnergyProperty: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
@@ -61,6 +63,64 @@ export class DoublePendulumModel extends BaseModel {
     this.mass2Property = new NumberProperty(1.0); // kg
     this.gravityProperty = new NumberProperty(9.8); // m/s²
     this.dampingProperty = new NumberProperty(0.0); // N*m*s (default: no damping for chaos)
+
+    // Computed angular accelerations (derived from Lagrangian mechanics)
+    this.angularAcceleration1Property = new DerivedProperty(
+      [
+        this.angle1Property,
+        this.angle2Property,
+        this.angularVelocity1Property,
+        this.angularVelocity2Property,
+        this.mass1Property,
+        this.mass2Property,
+        this.length1Property,
+        this.length2Property,
+        this.gravityProperty,
+        this.dampingProperty,
+      ],
+      (theta1, theta2, omega1, omega2, m1, m2, L1, L2, g, b) => {
+        const delta = theta2 - theta1;
+        const cosDelta = Math.cos(delta);
+        const sinDelta = Math.sin(delta);
+        const denom1 = (m1 + m2) * L1 - m2 * L1 * cosDelta * cosDelta;
+        const num1 =
+          m2 * L1 * omega1 * omega1 * sinDelta * cosDelta +
+          m2 * g * Math.sin(theta2) * cosDelta +
+          m2 * L2 * omega2 * omega2 * sinDelta -
+          (m1 + m2) * g * Math.sin(theta1) -
+          b * omega1;
+        return num1 / denom1;
+      },
+    );
+
+    this.angularAcceleration2Property = new DerivedProperty(
+      [
+        this.angle1Property,
+        this.angle2Property,
+        this.angularVelocity1Property,
+        this.angularVelocity2Property,
+        this.mass1Property,
+        this.mass2Property,
+        this.length1Property,
+        this.length2Property,
+        this.gravityProperty,
+        this.dampingProperty,
+      ],
+      (theta1, theta2, omega1, omega2, m1, m2, L1, L2, g, b) => {
+        const delta = theta2 - theta1;
+        const cosDelta = Math.cos(delta);
+        const sinDelta = Math.sin(delta);
+        const denom1 = (m1 + m2) * L1 - m2 * L1 * cosDelta * cosDelta;
+        const denom2 = (L2 / L1) * denom1;
+        const num2 =
+          -m2 * L2 * omega2 * omega2 * sinDelta * cosDelta +
+          (m1 + m2) * g * Math.sin(theta1) * cosDelta -
+          (m1 + m2) * L1 * omega1 * omega1 * sinDelta -
+          (m1 + m2) * g * Math.sin(theta2) -
+          b * omega2;
+        return num2 / denom2;
+      },
+    );
 
     // Compute kinetic energy (complex due to coupling between pendulums)
     // KE = (1/2) * (m1 + m2) * L1² * ω1² + (1/2) * m2 * L2² * ω2² + m2 * L1 * L2 * ω1 * ω2 * cos(θ1 - θ2)

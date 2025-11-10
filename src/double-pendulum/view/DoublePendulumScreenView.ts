@@ -401,6 +401,16 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         unit: "rad/s",
       },
       {
+        name: propertyNames.angularAcceleration1StringProperty,
+        property: this.model.angularAcceleration1Property,
+        unit: "rad/s²",
+      },
+      {
+        name: propertyNames.angularAcceleration2StringProperty,
+        property: this.model.angularAcceleration2Property,
+        unit: "rad/s²",
+      },
+      {
         name: propertyNames.kineticEnergyStringProperty,
         property: this.model.kineticEnergyProperty,
         unit: "J",

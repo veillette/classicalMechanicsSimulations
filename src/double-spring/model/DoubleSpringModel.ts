@@ -42,6 +42,8 @@ export class DoubleSpringModel extends BaseModel {
   public readonly naturalLength2Property: NumberProperty;
 
   // Computed values
+  public readonly acceleration1Property: TReadOnlyProperty<number>;
+  public readonly acceleration2Property: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
   public constructor() {
@@ -64,6 +66,17 @@ export class DoubleSpringModel extends BaseModel {
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
     this.naturalLength1Property = new NumberProperty(0.8); // meters
     this.naturalLength2Property = new NumberProperty(0.8); // meters
+
+    // Computed accelerations
+    this.acceleration1Property = new DerivedProperty(
+      [this.position1Property, this.position2Property, this.velocity1Property, this.mass1Property, this.springConstant1Property, this.springConstant2Property, this.damping1Property, this.gravityProperty],
+      (x1, x2, v1, m1, k1, k2, b1, g) => (-k1 * x1 + k2 * (x2 - x1) - b1 * v1 + m1 * g) / m1,
+    );
+
+    this.acceleration2Property = new DerivedProperty(
+      [this.position1Property, this.position2Property, this.velocity2Property, this.mass2Property, this.springConstant2Property, this.damping2Property, this.gravityProperty],
+      (x1, x2, v2, m2, k2, b2, g) => (-k2 * (x2 - x1) - b2 * v2 + m2 * g) / m2,
+    );
 
     // Compute total energy (including gravitational potential energy)
     this.totalEnergyProperty = new DerivedProperty(

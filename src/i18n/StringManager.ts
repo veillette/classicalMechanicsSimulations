@@ -191,12 +191,18 @@ export class StringManager {
     velocityStringProperty: ReadOnlyProperty<string>;
     velocity1StringProperty: ReadOnlyProperty<string>;
     velocity2StringProperty: ReadOnlyProperty<string>;
+    accelerationStringProperty: ReadOnlyProperty<string>;
+    acceleration1StringProperty: ReadOnlyProperty<string>;
+    acceleration2StringProperty: ReadOnlyProperty<string>;
     angleStringProperty: ReadOnlyProperty<string>;
     angularVelocityStringProperty: ReadOnlyProperty<string>;
     angle1StringProperty: ReadOnlyProperty<string>;
     angle2StringProperty: ReadOnlyProperty<string>;
     angularVelocity1StringProperty: ReadOnlyProperty<string>;
     angularVelocity2StringProperty: ReadOnlyProperty<string>;
+    angularAccelerationStringProperty: ReadOnlyProperty<string>;
+    angularAcceleration1StringProperty: ReadOnlyProperty<string>;
+    angularAcceleration2StringProperty: ReadOnlyProperty<string>;
     kineticEnergyStringProperty: ReadOnlyProperty<string>;
     potentialEnergyStringProperty: ReadOnlyProperty<string>;
     totalEnergyStringProperty: ReadOnlyProperty<string>;
@@ -209,12 +215,18 @@ export class StringManager {
       velocityStringProperty: this.stringProperties.graph.properties.velocityStringProperty,
       velocity1StringProperty: this.stringProperties.graph.properties.velocity1StringProperty,
       velocity2StringProperty: this.stringProperties.graph.properties.velocity2StringProperty,
+      accelerationStringProperty: this.stringProperties.graph.properties.accelerationStringProperty,
+      acceleration1StringProperty: this.stringProperties.graph.properties.acceleration1StringProperty,
+      acceleration2StringProperty: this.stringProperties.graph.properties.acceleration2StringProperty,
       angleStringProperty: this.stringProperties.graph.properties.angleStringProperty,
       angularVelocityStringProperty: this.stringProperties.graph.properties.angularVelocityStringProperty,
       angle1StringProperty: this.stringProperties.graph.properties.angle1StringProperty,
       angle2StringProperty: this.stringProperties.graph.properties.angle2StringProperty,
       angularVelocity1StringProperty: this.stringProperties.graph.properties.angularVelocity1StringProperty,
       angularVelocity2StringProperty: this.stringProperties.graph.properties.angularVelocity2StringProperty,
+      angularAccelerationStringProperty: this.stringProperties.graph.properties.angularAccelerationStringProperty,
+      angularAcceleration1StringProperty: this.stringProperties.graph.properties.angularAcceleration1StringProperty,
+      angularAcceleration2StringProperty: this.stringProperties.graph.properties.angularAcceleration2StringProperty,
       kineticEnergyStringProperty: this.stringProperties.graph.properties.kineticEnergyStringProperty,
       potentialEnergyStringProperty: this.stringProperties.graph.properties.potentialEnergyStringProperty,
       totalEnergyStringProperty: this.stringProperties.graph.properties.totalEnergyStringProperty,
