@@ -32,7 +32,7 @@ const ClassicalMechanicsPreferences = {
    * The nominal (target) time step for numerical integration in seconds.
    * For adaptive solvers, this is the initial/target step size.
    * For fixed-step solvers, this is the actual step size used.
-   * Options: 0.1ms, 0.5ms, 1ms (default), 5ms, 10ms
+   * Options: 0.01ms, 0.1ms, 0.5ms, 1ms (default), 5ms
    */
   nominalTimeStepProperty: new EnumerationProperty(NominalTimeStep.DEFAULT),
 

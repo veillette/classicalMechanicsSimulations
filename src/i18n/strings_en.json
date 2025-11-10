@@ -89,11 +89,11 @@
     "nominalTimeStep": "Nominal Time Step",
     "nominalTimeStepDescription": "Set the target time step for numerical integration. Smaller values increase accuracy but may slow down the simulation.",
     "timeSteps": {
-      "verySmall": "0.1 ms (Very Small)",
-      "small": "0.5 ms (Small)",
-      "default": "1 ms (Default)",
-      "medium": "5 ms (Medium)",
-      "large": "10 ms (Large)"
+      "finest": "0.01 ms",
+      "verySmall": "0.1 ms",
+      "small": "0.5 ms",
+      "default": "1 ms",
+      "medium": "5 ms"
     },
     "springVisualization": "Spring Visualization",
     "springVisualizationDescription": "Choose the visual style for rendering springs in the simulation",

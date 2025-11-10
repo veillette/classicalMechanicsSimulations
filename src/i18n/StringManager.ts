@@ -322,18 +322,18 @@ export class StringManager {
    * Get time step option string properties
    */
   public getTimeStepNames(): {
+    finestStringProperty: ReadOnlyProperty<string>;
     verySmallStringProperty: ReadOnlyProperty<string>;
     smallStringProperty: ReadOnlyProperty<string>;
     defaultStringProperty: ReadOnlyProperty<string>;
     mediumStringProperty: ReadOnlyProperty<string>;
-    largeStringProperty: ReadOnlyProperty<string>;
   } {
     return {
+      finestStringProperty: this.stringProperties.preferences.timeSteps.finestStringProperty,
       verySmallStringProperty: this.stringProperties.preferences.timeSteps.verySmallStringProperty,
       smallStringProperty: this.stringProperties.preferences.timeSteps.smallStringProperty,
       defaultStringProperty: this.stringProperties.preferences.timeSteps.defaultStringProperty,
       mediumStringProperty: this.stringProperties.preferences.timeSteps.mediumStringProperty,
-      largeStringProperty: this.stringProperties.preferences.timeSteps.largeStringProperty,
     };
   }
 

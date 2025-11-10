@@ -104,6 +104,14 @@ onReadyToLaunch(() => {
               // Time step combo box
               const timeStepComboBoxItems = [
                 {
+                  value: NominalTimeStep.FINEST,
+                  createNode: () => new Text(timeStepNames.finestStringProperty, {
+                    font: new PhetFont(14),
+                    fill: "black",
+                  }),
+                  tandemName: "finestTimeStepItem",
+                },
+                {
                   value: NominalTimeStep.VERY_SMALL,
                   createNode: () => new Text(timeStepNames.verySmallStringProperty, {
                     font: new PhetFont(14),
@@ -134,14 +142,6 @@ onReadyToLaunch(() => {
                     fill: "black",
                   }),
                   tandemName: "mediumTimeStepItem",
-                },
-                {
-                  value: NominalTimeStep.LARGE,
-                  createNode: () => new Text(timeStepNames.largeStringProperty, {
-                    font: new PhetFont(14),
-                    fill: "black",
-                  }),
-                  tandemName: "largeTimeStepItem",
                 },
               ];
 

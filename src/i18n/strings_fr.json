@@ -89,11 +89,11 @@
     "nominalTimeStep": "Pas de Temps Nominal",
     "nominalTimeStepDescription": "Définir le pas de temps cible pour l'intégration numérique. Des valeurs plus petites augmentent la précision mais peuvent ralentir la simulation.",
     "timeSteps": {
-      "verySmall": "0,1 ms (Très Petit)",
-      "small": "0,5 ms (Petit)",
-      "default": "1 ms (Par Défaut)",
-      "medium": "5 ms (Moyen)",
-      "large": "10 ms (Grand)"
+      "finest": "0,01 ms",
+      "verySmall": "0,1 ms",
+      "small": "0,5 ms",
+      "default": "1 ms",
+      "medium": "5 ms"
     },
     "springVisualization": "Visualisation du Ressort",
     "springVisualizationDescription": "Choisir le style visuel pour le rendu des ressorts dans la simulation",
