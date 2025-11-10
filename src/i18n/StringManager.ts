@@ -241,6 +241,8 @@ export class StringManager {
     autoPauseDescriptionStringProperty: ReadOnlyProperty<string>;
     solverMethodStringProperty: ReadOnlyProperty<string>;
     solverDescriptionStringProperty: ReadOnlyProperty<string>;
+    nominalTimeStepStringProperty: ReadOnlyProperty<string>;
+    nominalTimeStepDescriptionStringProperty: ReadOnlyProperty<string>;
     springVisualizationStringProperty: ReadOnlyProperty<string>;
     springVisualizationDescriptionStringProperty: ReadOnlyProperty<string>;
   } {
@@ -249,6 +251,8 @@ export class StringManager {
       autoPauseDescriptionStringProperty: this.stringProperties.preferences.autoPauseDescriptionStringProperty,
       solverMethodStringProperty: this.stringProperties.preferences.solverMethodStringProperty,
       solverDescriptionStringProperty: this.stringProperties.preferences.solverDescriptionStringProperty,
+      nominalTimeStepStringProperty: this.stringProperties.preferences.nominalTimeStepStringProperty,
+      nominalTimeStepDescriptionStringProperty: this.stringProperties.preferences.nominalTimeStepDescriptionStringProperty,
       springVisualizationStringProperty: this.stringProperties.preferences.springVisualizationStringProperty,
       springVisualizationDescriptionStringProperty: this.stringProperties.preferences.springVisualizationDescriptionStringProperty,
     };
@@ -311,6 +315,25 @@ export class StringManager {
       adaptiveRK45StringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveRK45StringProperty,
       adaptiveEulerStringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveEulerStringProperty,
       modifiedMidpointStringProperty: this.stringProperties.preferences.solverDescriptions.modifiedMidpointStringProperty,
+    };
+  }
+
+  /**
+   * Get time step option string properties
+   */
+  public getTimeStepNames(): {
+    finestStringProperty: ReadOnlyProperty<string>;
+    verySmallStringProperty: ReadOnlyProperty<string>;
+    smallStringProperty: ReadOnlyProperty<string>;
+    defaultStringProperty: ReadOnlyProperty<string>;
+    mediumStringProperty: ReadOnlyProperty<string>;
+  } {
+    return {
+      finestStringProperty: this.stringProperties.preferences.timeSteps.finestStringProperty,
+      verySmallStringProperty: this.stringProperties.preferences.timeSteps.verySmallStringProperty,
+      smallStringProperty: this.stringProperties.preferences.timeSteps.smallStringProperty,
+      defaultStringProperty: this.stringProperties.preferences.timeSteps.defaultStringProperty,
+      mediumStringProperty: this.stringProperties.preferences.timeSteps.mediumStringProperty,
     };
   }
 

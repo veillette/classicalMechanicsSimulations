@@ -86,6 +86,15 @@
       "adaptiveEuler": "Méthode à pas variable d'ordre 2. Rapide et adaptative, bonne pour les problèmes lisses.",
       "modifiedMidpoint": "Méthode à pas fixe d'ordre 2. Excellente pour les systèmes oscillatoires comme les ressorts et les pendules."
     },
+    "nominalTimeStep": "Pas de Temps Nominal",
+    "nominalTimeStepDescription": "Définir le pas de temps cible pour l'intégration numérique. Des valeurs plus petites augmentent la précision mais peuvent ralentir la simulation.",
+    "timeSteps": {
+      "finest": "0,01 ms",
+      "verySmall": "0,1 ms",
+      "small": "0,5 ms",
+      "default": "1 ms",
+      "medium": "5 ms"
+    },
     "springVisualization": "Visualisation du Ressort",
     "springVisualizationDescription": "Choisir le style visuel pour le rendu des ressorts dans la simulation",
     "springTypes": {

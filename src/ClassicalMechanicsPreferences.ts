@@ -9,6 +9,7 @@ import { BooleanProperty, EnumerationProperty } from "scenerystack/axon";
 import classicalMechanics from "./ClassicalMechanicsNamespace.js";
 import SolverType from "./common/model/SolverType.js";
 import SpringVisualizationType from "./common/view/SpringVisualizationType.js";
+import NominalTimeStep from "./common/model/NominalTimeStep.js";
 
 /**
  * Preferences for the Classical Mechanics Simulations
@@ -26,6 +27,14 @@ const ClassicalMechanicsPreferences = {
    * Options: RK4, Adaptive RK45, Adaptive Euler, Modified Midpoint
    */
   solverTypeProperty: new EnumerationProperty(SolverType.RK4),
+
+  /**
+   * The nominal (target) time step for numerical integration in seconds.
+   * For adaptive solvers, this is the initial/target step size.
+   * For fixed-step solvers, this is the actual step size used.
+   * Options: 0.01ms, 0.1ms, 0.5ms, 1ms (default), 5ms
+   */
+  nominalTimeStepProperty: new EnumerationProperty(NominalTimeStep.DEFAULT),
 
   /**
    * The spring visualization type to use for rendering springs.

@@ -18,8 +18,8 @@ window.katex = katex;
 
 import { onReadyToLaunch, Sim, PreferencesModel } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
-import { VBox, Text, HStrut } from "scenerystack/scenery";
-import { Checkbox, VerticalAquaRadioButtonGroup } from "scenerystack/sun";
+import { VBox, Text, HStrut, HBox, Node } from "scenerystack/scenery";
+import { Checkbox, VerticalAquaRadioButtonGroup, ComboBox } from "scenerystack/sun";
 import { PhetFont } from "scenerystack/scenery-phet";
 import { SingleSpringScreen } from "./single-spring/SingleSpringScreen.js";
 import { DoubleSpringScreen } from "./double-spring/DoubleSpringScreen.js";
@@ -34,6 +34,7 @@ import ClassicalMechanicsColors from "./ClassicalMechanicsColors.js";
 import ClassicalMechanicsPreferences from "./ClassicalMechanicsPreferences.js";
 import SolverType from "./common/model/SolverType.js";
 import SpringVisualizationType from "./common/view/SpringVisualizationType.js";
+import NominalTimeStep from "./common/model/NominalTimeStep.js";
 import ClassicalMechanicsAudioPreferencesNode from "./common/view/ClassicalMechanicsAudioPreferencesNode.js";
 import { KeyboardShortcutsNode } from "./common/view/KeyboardShortcutsNode.js";
 import SimulationAnnouncer from "./common/util/SimulationAnnouncer.js";
@@ -47,6 +48,7 @@ onReadyToLaunch(() => {
   const preferencesLabels = stringManager.getPreferencesLabels();
   const solverNames = stringManager.getSolverNames();
   const solverDescriptions = stringManager.getSolverDescriptions();
+  const timeStepNames = stringManager.getTimeStepNames();
   const springTypeNames = stringManager.getSpringTypeNames();
   const springTypeDescriptions = stringManager.getSpringTypeDescriptions();
 
@@ -96,109 +98,200 @@ onReadyToLaunch(() => {
                 ],
               });
 
-              // Solver method preference
-              const solverRadioButtonGroup = new VerticalAquaRadioButtonGroup(
-                ClassicalMechanicsPreferences.solverTypeProperty,
-                [
-                  {
-                    value: SolverType.RK4,
-                    createNode: () => new VBox({
-                      align: "left",
-                      spacing: 4,
-                      children: [
-                        new Text(solverNames.rk4StringProperty, {
-                          font: new PhetFont(14),
-                          fill: "black",
-                        }),
-                        new Text(solverDescriptions.rk4StringProperty, {
-                          font: new PhetFont(11),
-                          fill: "rgb(80,80,80)",
-                          maxWidth: 550,
-                        }),
-                      ],
-                    }),
-                    tandemName: "rk4RadioButton",
-                  },
-                  {
-                    value: SolverType.ADAPTIVE_RK45,
-                    createNode: () => new VBox({
-                      align: "left",
-                      spacing: 4,
-                      children: [
-                        new Text(solverNames.adaptiveRK45StringProperty, {
-                          font: new PhetFont(14),
-                          fill: "black",
-                        }),
-                        new Text(solverDescriptions.adaptiveRK45StringProperty, {
-                          font: new PhetFont(11),
-                          fill: "rgb(80,80,80)",
-                          maxWidth: 550,
-                        }),
-                      ],
-                    }),
-                    tandemName: "adaptiveRK45RadioButton",
-                  },
-                  {
-                    value: SolverType.ADAPTIVE_EULER,
-                    createNode: () => new VBox({
-                      align: "left",
-                      spacing: 4,
-                      children: [
-                        new Text(solverNames.adaptiveEulerStringProperty, {
-                          font: new PhetFont(14),
-                          fill: "black",
-                        }),
-                        new Text(solverDescriptions.adaptiveEulerStringProperty, {
-                          font: new PhetFont(11),
-                          fill: "rgb(80,80,80)",
-                          maxWidth: 550,
-                        }),
-                      ],
-                    }),
-                    tandemName: "adaptiveEulerRadioButton",
-                  },
-                  {
-                    value: SolverType.MODIFIED_MIDPOINT,
-                    createNode: () => new VBox({
-                      align: "left",
-                      spacing: 4,
-                      children: [
-                        new Text(solverNames.modifiedMidpointStringProperty, {
-                          font: new PhetFont(14),
-                          fill: "black",
-                        }),
-                        new Text(solverDescriptions.modifiedMidpointStringProperty, {
-                          font: new PhetFont(11),
-                          fill: "rgb(80,80,80)",
-                          maxWidth: 550,
-                        }),
-                      ],
-                    }),
-                    tandemName: "modifiedMidpointRadioButton",
-                  },
-                ],
+              // Create a listParent for the combo box
+              const comboBoxListParent = new Node();
+
+              // Time step combo box
+              const timeStepComboBoxItems = [
                 {
-                  spacing: 12,
-                  radioButtonOptions: {
-                    radius: 8,
-                  },
+                  value: NominalTimeStep.FINEST,
+                  createNode: () => new Text(timeStepNames.finestStringProperty, {
+                    font: new PhetFont(14),
+                    fill: "black",
+                  }),
+                  tandemName: "finestTimeStepItem",
                 },
+                {
+                  value: NominalTimeStep.VERY_SMALL,
+                  createNode: () => new Text(timeStepNames.verySmallStringProperty, {
+                    font: new PhetFont(14),
+                    fill: "black",
+                  }),
+                  tandemName: "verySmallTimeStepItem",
+                },
+                {
+                  value: NominalTimeStep.SMALL,
+                  createNode: () => new Text(timeStepNames.smallStringProperty, {
+                    font: new PhetFont(14),
+                    fill: "black",
+                  }),
+                  tandemName: "smallTimeStepItem",
+                },
+                {
+                  value: NominalTimeStep.DEFAULT,
+                  createNode: () => new Text(timeStepNames.defaultStringProperty, {
+                    font: new PhetFont(14),
+                    fill: "black",
+                  }),
+                  tandemName: "defaultTimeStepItem",
+                },
+                {
+                  value: NominalTimeStep.MEDIUM,
+                  createNode: () => new Text(timeStepNames.mediumStringProperty, {
+                    font: new PhetFont(14),
+                    fill: "black",
+                  }),
+                  tandemName: "mediumTimeStepItem",
+                },
+              ];
+
+              const timeStepComboBox = new ComboBox(
+                ClassicalMechanicsPreferences.nominalTimeStepProperty,
+                timeStepComboBoxItems,
+                comboBoxListParent,
+                {
+                  cornerRadius: 5,
+                  xMargin: 8,
+                  yMargin: 4,
+                }
               );
 
+              // Time step section (right column)
+              const timeStepSection = new VBox({
+                align: "left",
+                spacing: 8,
+                children: [
+                  new Text(preferencesLabels.nominalTimeStepStringProperty, {
+                    font: new PhetFont({ size: 14, weight: "bold" }),
+                    fill: "black",
+                  }),
+                  new Text(preferencesLabels.nominalTimeStepDescriptionStringProperty, {
+                    font: new PhetFont(11),
+                    fill: "rgb(80,80,80)",
+                    maxWidth: 280,
+                  }),
+                  timeStepComboBox,
+                ],
+              });
+
+              // Solver method section (left column) - reduced maxWidth for descriptions
+              const solverMethodColumn = new VBox({
+                align: "left",
+                spacing: 8,
+                children: [
+                  new Text(preferencesLabels.solverMethodStringProperty, {
+                    font: new PhetFont({ size: 14, weight: "bold" }),
+                    fill: "black",
+                  }),
+                  new VerticalAquaRadioButtonGroup(
+                    ClassicalMechanicsPreferences.solverTypeProperty,
+                    [
+                      {
+                        value: SolverType.RK4,
+                        createNode: () => new VBox({
+                          align: "left",
+                          spacing: 4,
+                          children: [
+                            new Text(solverNames.rk4StringProperty, {
+                              font: new PhetFont(14),
+                              fill: "black",
+                            }),
+                            new Text(solverDescriptions.rk4StringProperty, {
+                              font: new PhetFont(11),
+                              fill: "rgb(80,80,80)",
+                              maxWidth: 280,
+                            }),
+                          ],
+                        }),
+                        tandemName: "rk4RadioButton",
+                      },
+                      {
+                        value: SolverType.ADAPTIVE_RK45,
+                        createNode: () => new VBox({
+                          align: "left",
+                          spacing: 4,
+                          children: [
+                            new Text(solverNames.adaptiveRK45StringProperty, {
+                              font: new PhetFont(14),
+                              fill: "black",
+                            }),
+                            new Text(solverDescriptions.adaptiveRK45StringProperty, {
+                              font: new PhetFont(11),
+                              fill: "rgb(80,80,80)",
+                              maxWidth: 280,
+                            }),
+                          ],
+                        }),
+                        tandemName: "adaptiveRK45RadioButton",
+                      },
+                      {
+                        value: SolverType.ADAPTIVE_EULER,
+                        createNode: () => new VBox({
+                          align: "left",
+                          spacing: 4,
+                          children: [
+                            new Text(solverNames.adaptiveEulerStringProperty, {
+                              font: new PhetFont(14),
+                              fill: "black",
+                            }),
+                            new Text(solverDescriptions.adaptiveEulerStringProperty, {
+                              font: new PhetFont(11),
+                              fill: "rgb(80,80,80)",
+                              maxWidth: 280,
+                            }),
+                          ],
+                        }),
+                        tandemName: "adaptiveEulerRadioButton",
+                      },
+                      {
+                        value: SolverType.MODIFIED_MIDPOINT,
+                        createNode: () => new VBox({
+                          align: "left",
+                          spacing: 4,
+                          children: [
+                            new Text(solverNames.modifiedMidpointStringProperty, {
+                              font: new PhetFont(14),
+                              fill: "black",
+                            }),
+                            new Text(solverDescriptions.modifiedMidpointStringProperty, {
+                              font: new PhetFont(11),
+                              fill: "rgb(80,80,80)",
+                              maxWidth: 280,
+                            }),
+                          ],
+                        }),
+                        tandemName: "modifiedMidpointRadioButton",
+                      },
+                    ],
+                    {
+                      spacing: 12,
+                      radioButtonOptions: {
+                        radius: 8,
+                      },
+                    },
+                  ),
+                ],
+              });
+
+              // Combine solver method and time step in two columns
               const solverSection = new VBox({
                 align: "left",
                 spacing: 12,
                 children: [
-                  new Text(preferencesLabels.solverMethodStringProperty, {
-                    font: new PhetFont({ size: 16, weight: "bold" }),
-                    fill: "black",
-                  }),
                   new Text(preferencesLabels.solverDescriptionStringProperty, {
                     font: new PhetFont(12),
                     fill: "black",
                     maxWidth: 600,
                   }),
-                  solverRadioButtonGroup,
+                  new HBox({
+                    align: "top",
+                    spacing: 30,
+                    children: [
+                      solverMethodColumn,
+                      timeStepSection,
+                    ],
+                  }),
+                  comboBoxListParent, // Add the combo box list parent to the scene graph
                 ],
               });
 
