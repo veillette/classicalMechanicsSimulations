@@ -17,7 +17,7 @@ export default class NominalTimeStep extends EnumerationValue {
   // The time step value in seconds
   public readonly value: number;
 
-  private constructor(value: number) {
+  public constructor(value: number) {
     super();
     this.value = value;
   }
