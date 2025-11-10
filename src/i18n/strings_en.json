@@ -68,6 +68,8 @@
       "angularAcceleration2": "Ang. Acceleration 2",
       "kineticEnergy": "Kinetic Energy",
       "potentialEnergy": "Potential Energy",
+      "springPotentialEnergy": "Potential Energy (Spring)",
+      "gravitationalPotentialEnergy": "Potential Energy (Gravity)",
       "totalEnergy": "Total Energy",
       "time": "Time"
     }

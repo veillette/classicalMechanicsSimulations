@@ -39,6 +39,8 @@ export class SingleSpringModel extends BaseModel {
   public readonly accelerationProperty: TReadOnlyProperty<number>;
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
   public readonly potentialEnergyProperty: TReadOnlyProperty<number>;
+  public readonly springPotentialEnergyProperty: TReadOnlyProperty<number>;
+  public readonly gravitationalPotentialEnergyProperty: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
 
   public constructor() {
@@ -72,6 +74,18 @@ export class SingleSpringModel extends BaseModel {
     this.potentialEnergyProperty = new DerivedProperty(
       [this.positionProperty, this.springConstantProperty, this.massProperty, this.gravityProperty],
       (x, k, m, g) => 0.5 * k * x * x - m * g * x, // Spring PE + Gravitational PE (taking downward as positive)
+    );
+
+    // Spring potential energy only
+    this.springPotentialEnergyProperty = new DerivedProperty(
+      [this.positionProperty, this.springConstantProperty],
+      (x, k) => 0.5 * k * x * x,
+    );
+
+    // Gravitational potential energy only
+    this.gravitationalPotentialEnergyProperty = new DerivedProperty(
+      [this.positionProperty, this.massProperty, this.gravityProperty],
+      (x, m, g) => -m * g * x, // Negative because downward is positive and PE decreases going down
     );
 
     this.totalEnergyProperty = new DerivedProperty(

@@ -205,6 +205,8 @@ export class StringManager {
     angularAcceleration2StringProperty: ReadOnlyProperty<string>;
     kineticEnergyStringProperty: ReadOnlyProperty<string>;
     potentialEnergyStringProperty: ReadOnlyProperty<string>;
+    springPotentialEnergyStringProperty: ReadOnlyProperty<string>;
+    gravitationalPotentialEnergyStringProperty: ReadOnlyProperty<string>;
     totalEnergyStringProperty: ReadOnlyProperty<string>;
     timeStringProperty: ReadOnlyProperty<string>;
   } {
@@ -229,6 +231,8 @@ export class StringManager {
       angularAcceleration2StringProperty: this.stringProperties.graph.properties.angularAcceleration2StringProperty,
       kineticEnergyStringProperty: this.stringProperties.graph.properties.kineticEnergyStringProperty,
       potentialEnergyStringProperty: this.stringProperties.graph.properties.potentialEnergyStringProperty,
+      springPotentialEnergyStringProperty: this.stringProperties.graph.properties.springPotentialEnergyStringProperty,
+      gravitationalPotentialEnergyStringProperty: this.stringProperties.graph.properties.gravitationalPotentialEnergyStringProperty,
       totalEnergyStringProperty: this.stringProperties.graph.properties.totalEnergyStringProperty,
       timeStringProperty: this.stringProperties.graph.properties.timeStringProperty,
     };

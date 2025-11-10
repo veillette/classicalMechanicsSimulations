@@ -68,6 +68,8 @@
       "angularAcceleration2": "Accél. Angulaire 2",
       "kineticEnergy": "Énergie Cinétique",
       "potentialEnergy": "Énergie Potentielle",
+      "springPotentialEnergy": "Énergie Potentielle (Ressort)",
+      "gravitationalPotentialEnergy": "Énergie Potentielle (Gravité)",
       "totalEnergy": "Énergie Totale",
       "time": "Temps"
     }
