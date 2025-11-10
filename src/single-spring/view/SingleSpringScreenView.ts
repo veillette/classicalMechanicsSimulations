@@ -308,6 +308,11 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         unit: "m/s",
       },
       {
+        name: propertyNames.accelerationStringProperty,
+        property: this.model.accelerationProperty,
+        unit: "m/s²",
+      },
+      {
         name: propertyNames.kineticEnergyStringProperty,
         property: this.model.kineticEnergyProperty,
         unit: "J",

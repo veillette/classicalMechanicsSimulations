@@ -367,6 +367,16 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         unit: "m/s",
       },
       {
+        name: propertyNames.acceleration1StringProperty,
+        property: this.model.acceleration1Property,
+        unit: "m/s²",
+      },
+      {
+        name: propertyNames.acceleration2StringProperty,
+        property: this.model.acceleration2Property,
+        unit: "m/s²",
+      },
+      {
         name: propertyNames.totalEnergyStringProperty,
         property: this.model.totalEnergyProperty,
         unit: "J",

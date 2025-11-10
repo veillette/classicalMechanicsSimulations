@@ -38,6 +38,7 @@ export class PendulumModel extends BaseModel {
   public readonly dampingProperty: NumberProperty;
 
   // Computed values
+  public readonly angularAccelerationProperty: TReadOnlyProperty<number>;
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
   public readonly potentialEnergyProperty: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
@@ -54,6 +55,16 @@ export class PendulumModel extends BaseModel {
     this.massProperty = new NumberProperty(1.0); // kg
     this.gravityProperty = new NumberProperty(9.8); // m/s²
     this.dampingProperty = new NumberProperty(0.1); // N*m*s
+
+    // Computed angular acceleration
+    // α = -(g/L)*sin(θ) - (b/mL²)*ω
+    this.angularAccelerationProperty = new DerivedProperty(
+      [this.angleProperty, this.angularVelocityProperty, this.massProperty, this.lengthProperty, this.gravityProperty, this.dampingProperty],
+      (theta, omega, m, L, g, b) => {
+        const I = m * L * L; // rotational inertia
+        return -(g / L) * Math.sin(theta) - (b / I) * omega;
+      },
+    );
 
     // Computed energies
     // KE = (1/2) * I * ω² = (1/2) * m * L² * ω²

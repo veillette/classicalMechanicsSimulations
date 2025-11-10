@@ -36,6 +36,7 @@ export class SingleSpringModel extends BaseModel {
   public readonly naturalLengthProperty: NumberProperty;
 
   // Computed values
+  public readonly accelerationProperty: TReadOnlyProperty<number>;
   public readonly kineticEnergyProperty: TReadOnlyProperty<number>;
   public readonly potentialEnergyProperty: TReadOnlyProperty<number>;
   public readonly totalEnergyProperty: TReadOnlyProperty<number>;
@@ -54,6 +55,12 @@ export class SingleSpringModel extends BaseModel {
     this.dampingProperty = new NumberProperty(0.1); // N*s/m
     this.gravityProperty = new NumberProperty(9.8); // m/s^2
     this.naturalLengthProperty = new NumberProperty(1.0); // meters
+
+    // Computed acceleration
+    this.accelerationProperty = new DerivedProperty(
+      [this.positionProperty, this.velocityProperty, this.massProperty, this.springConstantProperty, this.dampingProperty, this.gravityProperty],
+      (x, v, m, k, b, g) => (-k * x - b * v + m * g) / m,
+    );
 
     // Computed energies
     this.kineticEnergyProperty = new DerivedProperty(
