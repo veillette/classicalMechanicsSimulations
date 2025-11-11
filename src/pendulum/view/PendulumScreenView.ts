@@ -317,7 +317,7 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.setupScreenSummary();
 
     // pdom - Add bob to play area for proper PDOM organization
-    this.playAreaNode.addChild(this.bobNode);
+    this.pdomPlayAreaNode.addChild(this.bobNode);
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();

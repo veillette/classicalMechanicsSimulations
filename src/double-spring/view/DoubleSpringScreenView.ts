@@ -419,8 +419,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.setupScreenSummary();
 
     // pdom - Add masses to play area for proper PDOM organization
-    this.playAreaNode.addChild(this.mass1Node);
-    this.playAreaNode.addChild(this.mass2Node);
+    this.pdomPlayAreaNode.addChild(this.mass1Node);
+    this.pdomPlayAreaNode.addChild(this.mass2Node);
 
     // Listen for preset changes to apply configuration
     this.presetProperty.link((preset) => {

@@ -475,8 +475,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.setupScreenSummary();
 
     // pdom - Add bobs to play area for proper PDOM organization
-    this.playAreaNode.addChild(this.bob1Node);
-    this.playAreaNode.addChild(this.bob2Node);
+    this.pdomPlayAreaNode.addChild(this.bob1Node);
+    this.pdomPlayAreaNode.addChild(this.bob2Node);
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
