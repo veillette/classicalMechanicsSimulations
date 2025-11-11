@@ -11,8 +11,6 @@ import {
 import { ODESolver } from "./ODESolver.js";
 import { RungeKuttaSolver } from "./RungeKuttaSolver.js";
 import { AdaptiveRK45Solver } from "./AdaptiveRK45Solver.js";
-import { AdaptiveEulerSolver } from "./AdaptiveEulerSolver.js";
-import { ModifiedMidpointSolver } from "./ModifiedMidpointSolver.js";
 import { ForestRuthPEFRLSolver } from "./ForestRuthPEFRLSolver.js";
 import { DormandPrince87Solver } from "./DormandPrince87Solver.js";
 import SolverType from "./SolverType.js";
@@ -63,10 +61,6 @@ export abstract class BaseModel {
       solver = new RungeKuttaSolver();
     } else if (solverType === SolverType.ADAPTIVE_RK45) {
       solver = new AdaptiveRK45Solver();
-    } else if (solverType === SolverType.ADAPTIVE_EULER) {
-      solver = new AdaptiveEulerSolver();
-    } else if (solverType === SolverType.MODIFIED_MIDPOINT) {
-      solver = new ModifiedMidpointSolver();
     } else if (solverType === SolverType.FOREST_RUTH_PEFRL) {
       solver = new ForestRuthPEFRLSolver();
     } else if (solverType === SolverType.DORMAND_PRINCE_87) {
