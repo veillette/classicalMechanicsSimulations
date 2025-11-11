@@ -43,7 +43,7 @@
  * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { affirm } from "scenerystack/phet-core";
+import { assert } from "scenerystack";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
@@ -65,7 +65,7 @@ export class ForestRuthPEFRLSolver implements ODESolver {
    * @param dt - Fixed timestep in seconds (must be positive and finite)
    */
   public setFixedTimeStep(dt: number): void {
-    affirm(isFinite(dt) && dt > 0, 'dt must be finite and positive');
+    assert && assert(isFinite(dt) && dt > 0, 'dt must be finite and positive');
     this.fixedTimeStep = dt;
   }
 
@@ -96,11 +96,11 @@ export class ForestRuthPEFRLSolver implements ODESolver {
     dt: number,
   ): void {
     // Validate inputs
-    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
-    affirm(state.length % 2 === 0, 'state length must be even for symplectic integration');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
-    affirm(isFinite(time), 'time must be finite');
-    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+    assert && assert(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    assert && assert(state.length % 2 === 0, 'state length must be even for symplectic integration');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(isFinite(time), 'time must be finite');
+    assert && assert(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
 
     const n = state.length;
     const halfN = Math.floor(n / 2);
@@ -199,11 +199,11 @@ export class ForestRuthPEFRLSolver implements ODESolver {
     dt: number,
   ): number {
     // Validate inputs
-    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
-    affirm(state.length % 2 === 0, 'state length must be even for symplectic integration');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
-    affirm(isFinite(time), 'time must be finite');
-    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+    assert && assert(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    assert && assert(state.length % 2 === 0, 'state length must be even for symplectic integration');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(isFinite(time), 'time must be finite');
+    assert && assert(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
 
     // Handle the case where dt is smaller than or equal to fixedTimeStep
     if (dt <= this.fixedTimeStep) {
