@@ -1,6 +1,17 @@
 /**
  * Base model class for all physics simulations.
  * Provides common functionality for time control, stepping, and physics integration.
+ *
+ * This abstract class implements the Template Method pattern, where subclasses must
+ * implement getState(), setState(), and getDerivatives() to define their specific physics.
+ *
+ * Responsibilities:
+ * - Manages time control (play/pause, time speed, manual stepping)
+ * - Handles ODE solver selection and configuration
+ * - Coordinates physics integration via strategy pattern (ODESolver)
+ * - Provides common reset functionality for time-related properties
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
 import {
@@ -8,6 +19,7 @@ import {
   BooleanProperty,
   EnumerationProperty,
 } from "scenerystack/axon";
+import { affirm } from "scenerystack/phet-core";
 import { ODESolver } from "./ODESolver.js";
 import { RungeKuttaSolver } from "./RungeKuttaSolver.js";
 import { AdaptiveRK45Solver } from "./AdaptiveRK45Solver.js";
@@ -17,6 +29,7 @@ import SolverType from "./SolverType.js";
 import NominalTimeStep from "./NominalTimeStep.js";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 
 /**
  * Abstract base class that all physics models should extend.
@@ -96,6 +109,9 @@ export abstract class BaseModel {
    * @param forceStep - If true, step even when paused (for manual stepping)
    */
   public step(dt: number, forceStep: boolean = false): void {
+    // Validate input
+    affirm(isFinite(dt), 'dt must be finite');
+
     // Only step if playing (unless forced for manual stepping)
     if (!this.isPlayingProperty.value && !forceStep) {
       return;
@@ -115,13 +131,21 @@ export abstract class BaseModel {
     // Get the current state from the subclass
     const state = this.getState();
 
-    // Use RK4 solver with automatic sub-stepping
+    // Validate state array returned by subclass
+    affirm(Array.isArray(state), 'state must be an array');
+    affirm(state.length > 0, 'state array must not be empty');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+
+    // Use solver with automatic sub-stepping
     const newTime = this.solver.step(
       state,
       this.getDerivatives.bind(this),
       this.timeProperty.value,
       adjustedDt,
     );
+
+    // Validate computed time
+    affirm(isFinite(newTime), 'newTime must be finite');
 
     // Update the state in the subclass
     this.setState(state);
@@ -180,3 +204,6 @@ export abstract class BaseModel {
    */
   public abstract reset(): void;
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('BaseModel', BaseModel);

@@ -1,18 +1,28 @@
 /**
  * A node for displaying physics vectors (velocity, acceleration, force, etc.).
- * Displays an arrow with a label.
+ * Displays an arrow with optional label that scales with vector magnitude.
+ *
+ * Features:
+ * - Automatically hides vectors below minimum magnitude threshold
+ * - Scales arrow length based on model units
+ * - Positions label at arrow tip
+ * - Supports dynamic visibility control
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { Node, Text, type TColor } from "scenerystack/scenery";
+import { Node, Text, type TColor, type NodeOptions } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { Vector2 } from "scenerystack/dot";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import { PhetFont } from "scenerystack";
+import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 
-export type VectorNodeOptions = {
-  /**
-   * The color of the vector arrow
-   */
+/**
+ * Self options for VectorNode - options specific to vector visualization.
+ */
+type SelfOptions = {
+  /** The color of the vector arrow */
   color: TColor;
 
   /**
@@ -21,24 +31,16 @@ export type VectorNodeOptions = {
    */
   scale: number;
 
-  /**
-   * Optional label to display next to the vector
-   */
+  /** Optional label to display next to the vector */
   label?: string | TReadOnlyProperty<string>;
 
-  /**
-   * Line width of the arrow
-   */
+  /** Line width of the arrow */
   lineWidth?: number;
 
-  /**
-   * Head width of the arrow
-   */
+  /** Head width of the arrow */
   headWidth?: number;
 
-  /**
-   * Head height of the arrow
-   */
+  /** Head height of the arrow */
   headHeight?: number;
 
   /**
@@ -46,7 +48,13 @@ export type VectorNodeOptions = {
    * Vectors smaller than this won't be shown
    */
   minMagnitude?: number;
-}
+};
+
+/**
+ * Options for VectorNode constructor.
+ * Combines self options with parent NodeOptions.
+ */
+export type VectorNodeOptions = SelfOptions & NodeOptions;
 
 /**
  * A node that displays a physics vector as an arrow
@@ -149,3 +157,6 @@ export class VectorNode extends Node {
     this.updateArrow(); // Re-evaluate visibility
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('VectorNode', VectorNode);
