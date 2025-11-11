@@ -723,7 +723,6 @@ export abstract class BaseScreenView<
         yMargin: PANEL_MARGIN_Y,
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-        lineWidth: 1,
         cornerRadius: 5,
       },
     );

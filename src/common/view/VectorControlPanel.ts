@@ -116,7 +116,6 @@ export class VectorControlPanel extends Panel {
       yMargin: 8,
       fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 1,
       cornerRadius: 5,
     });
 

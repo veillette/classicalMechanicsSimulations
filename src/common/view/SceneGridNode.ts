@@ -48,7 +48,6 @@ export class SceneGridNode extends Node {
     // Grid lines (regular grid)
     this.gridPath = new Path(null, {
       stroke: ClassicalMechanicsColors.sceneGridColorProperty,
-      lineWidth: 1,
     });
     this.addChild(this.gridPath);
 
@@ -104,7 +103,6 @@ export class SceneGridNode extends Node {
         tailWidth: 2,
         fill: ClassicalMechanicsColors.textColorProperty,
         stroke: ClassicalMechanicsColors.textColorProperty,
-        lineWidth: 1,
       }
     );
     indicatorNode.addChild(arrow);

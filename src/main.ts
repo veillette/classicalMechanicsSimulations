@@ -84,7 +84,6 @@ onReadyToLaunch(() => {
                     ClassicalMechanicsPreferences.autoPauseWhenTabHiddenProperty,
                     new Text(preferencesLabels.autoPauseWhenTabHiddenStringProperty, {
                       font: new PhetFont(16),
-                      fill: "black",
                     }),
                     {
                       boxWidth: 16,
@@ -92,7 +91,6 @@ onReadyToLaunch(() => {
                   ),
                   new Text(preferencesLabels.autoPauseDescriptionStringProperty, {
                     font: new PhetFont(12),
-                    fill: "black",
                     maxWidth: 600,
                   }),
                 ],
@@ -107,7 +105,6 @@ onReadyToLaunch(() => {
                   value: NominalTimeStep.FINEST,
                   createNode: () => new Text(timeStepNames.finestStringProperty, {
                     font: new PhetFont(14),
-                    fill: "black",
                   }),
                   tandemName: "finestTimeStepItem",
                 },
@@ -115,7 +112,6 @@ onReadyToLaunch(() => {
                   value: NominalTimeStep.VERY_SMALL,
                   createNode: () => new Text(timeStepNames.verySmallStringProperty, {
                     font: new PhetFont(14),
-                    fill: "black",
                   }),
                   tandemName: "verySmallTimeStepItem",
                 },
@@ -123,7 +119,6 @@ onReadyToLaunch(() => {
                   value: NominalTimeStep.SMALL,
                   createNode: () => new Text(timeStepNames.smallStringProperty, {
                     font: new PhetFont(14),
-                    fill: "black",
                   }),
                   tandemName: "smallTimeStepItem",
                 },
@@ -131,7 +126,6 @@ onReadyToLaunch(() => {
                   value: NominalTimeStep.DEFAULT,
                   createNode: () => new Text(timeStepNames.defaultStringProperty, {
                     font: new PhetFont(14),
-                    fill: "black",
                   }),
                   tandemName: "defaultTimeStepItem",
                 },
@@ -139,7 +133,6 @@ onReadyToLaunch(() => {
                   value: NominalTimeStep.MEDIUM,
                   createNode: () => new Text(timeStepNames.mediumStringProperty, {
                     font: new PhetFont(14),
-                    fill: "black",
                   }),
                   tandemName: "mediumTimeStepItem",
                 },
@@ -163,7 +156,6 @@ onReadyToLaunch(() => {
                 children: [
                   new Text(preferencesLabels.nominalTimeStepStringProperty, {
                     font: new PhetFont({ size: 14, weight: "bold" }),
-                    fill: "black",
                   }),
                   new Text(preferencesLabels.nominalTimeStepDescriptionStringProperty, {
                     font: new PhetFont(11),
@@ -181,7 +173,6 @@ onReadyToLaunch(() => {
                 children: [
                   new Text(preferencesLabels.solverMethodStringProperty, {
                     font: new PhetFont({ size: 14, weight: "bold" }),
-                    fill: "black",
                   }),
                   new VerticalAquaRadioButtonGroup(
                     ClassicalMechanicsPreferences.solverTypeProperty,
@@ -194,7 +185,6 @@ onReadyToLaunch(() => {
                           children: [
                             new Text(solverNames.rk4StringProperty, {
                               font: new PhetFont(14),
-                              fill: "black",
                             }),
                             new Text(solverDescriptions.rk4StringProperty, {
                               font: new PhetFont(11),
@@ -213,7 +203,6 @@ onReadyToLaunch(() => {
                           children: [
                             new Text(solverNames.adaptiveRK45StringProperty, {
                               font: new PhetFont(14),
-                              fill: "black",
                             }),
                             new Text(solverDescriptions.adaptiveRK45StringProperty, {
                               font: new PhetFont(11),
@@ -232,7 +221,6 @@ onReadyToLaunch(() => {
                           children: [
                             new Text(solverNames.forestRuthPEFRLStringProperty, {
                               font: new PhetFont(14),
-                              fill: "black",
                             }),
                             new Text(solverDescriptions.forestRuthPEFRLStringProperty, {
                               font: new PhetFont(11),
@@ -251,7 +239,6 @@ onReadyToLaunch(() => {
                           children: [
                             new Text(solverNames.dormandPrince87StringProperty, {
                               font: new PhetFont(14),
-                              fill: "black",
                             }),
                             new Text(solverDescriptions.dormandPrince87StringProperty, {
                               font: new PhetFont(11),
@@ -280,7 +267,6 @@ onReadyToLaunch(() => {
                 children: [
                   new Text(preferencesLabels.solverDescriptionStringProperty, {
                     font: new PhetFont(12),
-                    fill: "black",
                     maxWidth: 600,
                   }),
                   new HBox({
@@ -307,7 +293,6 @@ onReadyToLaunch(() => {
                       children: [
                         new Text(springTypeNames.classicStringProperty, {
                           font: new PhetFont(14),
-                          fill: "black",
                         }),
                         new Text(springTypeDescriptions.classicStringProperty, {
                           font: new PhetFont(11),
@@ -326,7 +311,6 @@ onReadyToLaunch(() => {
                       children: [
                         new Text(springTypeNames.parametricStringProperty, {
                           font: new PhetFont(14),
-                          fill: "black",
                         }),
                         new Text(springTypeDescriptions.parametricStringProperty, {
                           font: new PhetFont(11),
@@ -352,11 +336,9 @@ onReadyToLaunch(() => {
                 children: [
                   new Text(preferencesLabels.springVisualizationStringProperty, {
                     font: new PhetFont({ size: 16, weight: "bold" }),
-                    fill: "black",
                   }),
                   new Text(preferencesLabels.springVisualizationDescriptionStringProperty, {
                     font: new PhetFont(12),
-                    fill: "black",
                     maxWidth: 600,
                   }),
                   springVisualizationRadioButtonGroup,
