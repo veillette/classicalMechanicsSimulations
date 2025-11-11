@@ -82,7 +82,7 @@ export class ParameterControlPanel extends Panel {
         delta: paramConfig.delta,
         numberDisplayOptions: {
           decimalPlaces: paramConfig.decimalPlaces,
-          valuePattern: `{0} ${paramConfig.unit}`,
+          valuePattern: `{{value}} ${paramConfig.unit}`,
         },
         titleNodeOptions: {
           fill: ClassicalMechanicsColors.textColorProperty,

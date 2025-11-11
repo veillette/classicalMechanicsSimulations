@@ -745,7 +745,7 @@ export abstract class BaseScreenView<
         delta: parameter.delta,
         numberDisplayOptions: {
           decimalPlaces: parameter.decimalPlaces,
-          valuePattern: `{0} ${parameter.units}`,
+          valuePattern: `{{value}} ${parameter.units}`,
         },
         titleNodeOptions: {
           fill: ClassicalMechanicsColors.textColorProperty,

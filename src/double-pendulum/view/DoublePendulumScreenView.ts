@@ -16,6 +16,7 @@ import {
   RichText,
 } from "scenerystack/scenery";
 import { PhetFont, FormulaNode } from "scenerystack/scenery-phet";
+import { StringUtils } from "scenerystack";
 import { Range, Vector2 } from "scenerystack/dot";
 import { DragListener } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
@@ -71,11 +72,16 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   private readonly force2VectorNode: VectorNode;
   private readonly acceleration2VectorNode: VectorNode;
 
+  // Accessibility strings
+  private readonly a11yStrings: ReturnType<StringManager['getAccessibilityStrings']>;
+  private readonly stringManager: StringManager;
+
   public constructor(model: DoublePendulumModel, options?: ScreenViewOptions) {
     super(model, options);
 
     // Get accessibility strings for announcements
-    const a11yStrings = this.getA11yStrings();
+    this.stringManager = StringManager.getInstance();
+    this.a11yStrings = this.stringManager.getAccessibilityStrings();
 
     // Get available presets
     this.presets = DoublePendulumPresets.getPresets();
@@ -231,7 +237,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         translateNode: false,
         start: () => {
           this.isDraggingProperty.value = true;
-          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingUpperBobStringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(this.a11yStrings.draggingUpperBobStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -243,8 +249,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         },
         end: () => {
           this.isDraggingProperty.value = false;
-          const angleDegrees = (this.model.angle1Property.value * 180 / Math.PI).toFixed(1);
-          const template = a11yStrings.upperBobReleasedAtStringProperty.value;
+          const angleDegrees = StringUtils.toFixedNumberLTR(this.model.angle1Property.value * 180 / Math.PI, 1);
+          const template = this.a11yStrings.upperBobReleasedAtStringProperty.value;
           const announcement = template.replace('{{angle}}', angleDegrees);
           SimulationAnnouncer.announceDragInteraction(announcement);
         },
@@ -257,7 +263,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         translateNode: false,
         start: () => {
           this.isDraggingProperty.value = true;
-          SimulationAnnouncer.announceDragInteraction(a11yStrings.draggingLowerBobStringProperty.value);
+          SimulationAnnouncer.announceDragInteraction(this.a11yStrings.draggingLowerBobStringProperty.value);
         },
         drag: (event) => {
           const parentPoint = this.globalToLocalPoint(event.pointer.point);
@@ -279,8 +285,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
         },
         end: () => {
           this.isDraggingProperty.value = false;
-          const angleDegrees = (this.model.angle2Property.value * 180 / Math.PI).toFixed(1);
-          const template = a11yStrings.lowerBobReleasedAtStringProperty.value;
+          const angleDegrees = StringUtils.toFixedNumberLTR(this.model.angle2Property.value * 180 / Math.PI, 1);
+          const template = this.a11yStrings.lowerBobReleasedAtStringProperty.value;
           const announcement = template.replace('{{angle}}', angleDegrees);
           SimulationAnnouncer.announceDragInteraction(announcement);
         },
@@ -365,30 +371,41 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
 
     // Add accessibility announcements for parameter changes
     this.model.length1Property.lazyLink((length) => {
-      SimulationAnnouncer.announceParameterChange(`Upper pendulum length changed to ${length.toFixed(1)} meters`);
+      const template = this.a11yStrings.lengthChangedStringProperty.value;
+      const announcement = 'Upper pendulum: ' + template.replace('{{value}}', StringUtils.toFixedNumberLTR(length, 1));
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.length2Property.lazyLink((length) => {
-      SimulationAnnouncer.announceParameterChange(`Lower pendulum length changed to ${length.toFixed(1)} meters`);
+      const template = this.a11yStrings.lengthChangedStringProperty.value;
+      const announcement = 'Lower pendulum: ' + template.replace('{{value}}', StringUtils.toFixedNumberLTR(length, 1));
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.mass1Property.lazyLink((mass) => {
-      SimulationAnnouncer.announceParameterChange(`Upper bob mass changed to ${mass.toFixed(1)} kilograms`);
+      const template = this.a11yStrings.massChangedStringProperty.value;
+      const announcement = 'Upper bob: ' + template.replace('{{value}}', StringUtils.toFixedNumberLTR(mass, 1));
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.mass2Property.lazyLink((mass) => {
-      SimulationAnnouncer.announceParameterChange(`Lower bob mass changed to ${mass.toFixed(1)} kilograms`);
+      const template = this.a11yStrings.massChangedStringProperty.value;
+      const announcement = 'Lower bob: ' + template.replace('{{value}}', StringUtils.toFixedNumberLTR(mass, 1));
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.gravityProperty.lazyLink((gravity) => {
-      SimulationAnnouncer.announceParameterChange(`Gravity changed to ${gravity.toFixed(1)} meters per second squared`);
+      const template = this.a11yStrings.gravityChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', StringUtils.toFixedNumberLTR(gravity, 1));
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.dampingProperty.lazyLink((damping) => {
-      SimulationAnnouncer.announceParameterChange(`Damping changed to ${damping.toFixed(2)}`);
+      const template = this.a11yStrings.dampingChangedStringProperty.value;
+      const announcement = template.replace('{{value}}', StringUtils.toFixedNumberLTR(damping, 2));
+      SimulationAnnouncer.announceParameterChange(announcement);
     });
 
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
 
     // Create configurable graph with available properties
-    const stringManager = StringManager.getInstance();
-    const propertyNames = stringManager.getGraphPropertyNames();
+    const propertyNames = this.stringManager.getGraphPropertyNames();
     const availableProperties: PlottableProperty[] = [
       {
         name: propertyNames.angle1StringProperty,
@@ -506,9 +523,8 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
   }
 
   private createControlPanel(): Node {
-    const stringManager = StringManager.getInstance();
-    const controlLabels = stringManager.getControlLabels();
-    const presetLabels = stringManager.getPresetLabels();
+    const controlLabels = this.stringManager.getControlLabels();
+    const presetLabels = this.stringManager.getPresetLabels();
 
     return new ParameterControlPanel({
       presetProperty: this.presetProperty,
@@ -948,8 +964,7 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     }
 
     // Announce preset change
-    const a11yStrings = this.getA11yStrings();
-    const template = a11yStrings.presetAppliedStringProperty.value;
+    const template = this.a11yStrings.presetAppliedStringProperty.value;
     const announcement = template.replace('{{preset}}', preset.nameProperty.value);
     SimulationAnnouncer.announceDragInteraction(announcement);
 
