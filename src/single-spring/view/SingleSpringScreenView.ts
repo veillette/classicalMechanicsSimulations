@@ -161,16 +161,22 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     });
 
     // Mass block (size will be updated based on mass value)
+    // pdom - Will be added to playAreaNode later for proper PDOM structure
     this.massNode = new Rectangle(-25, -25, 50, 50, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
-      // Add focus highlight for accessibility
+      // pdom - Add PDOM properties for Interactive Description
+      tagName: "div",
+      ariaRole: "application",
+      accessibleName: "Mass Block",
+      helpText: "Drag to change the spring displacement. Use keyboard shortcuts to control the simulation.",
+      focusable: true,
       focusHighlight: "invisible",
     });
-    this.addChild(this.massNode);
+    // Note: massNode is added to playAreaNode later in constructor
 
     // Center of mass reference line (horizontal line across mass)
     this.massReferenceLine = new Line(0, 0, 0, 0, {
@@ -358,6 +364,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Position graph beneath vector panel
     this.positionConfigurableGraph(this.vectorPanel!);
 
+    // pdom - Setup screen summary for Interactive Description
+    this.setupScreenSummary();
+
+    // pdom - Add mass to play area for proper PDOM organization
+    this.playAreaNode.addChild(this.massNode);
+
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -444,6 +456,36 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Update the new spring node to match current state
     this.updateSpringAppearance(this.model.springConstantProperty.value);
     this.updateVisualization(this.model.positionProperty.value);
+  }
+
+  /**
+   * pdom - Create the screen summary content for accessibility
+   */
+  protected createScreenSummaryContent(): Node {
+    const stringManager = StringManager.getInstance();
+    const summaryStrings = stringManager.getSingleSpringScreenSummaryStrings();
+
+    // pdom - Create screen summary structure
+    return new Node({
+      children: [
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.overviewStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.playAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.controlAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.interactionHintStringProperty,
+        }),
+      ],
+    });
   }
 
   /**

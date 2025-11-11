@@ -125,15 +125,21 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.addChild(this.rodNode);
 
     // Bob (size will be updated based on mass value)
+    // pdom - Will be added to playAreaNode later for proper PDOM structure
     this.bobNode = new Circle(20, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
-      // Add focus highlight for accessibility
+      // pdom - Add PDOM properties for Interactive Description
+      tagName: "div",
+      ariaRole: "application",
+      accessibleName: "Pendulum Bob",
+      helpText: "Drag to change the pendulum angle. Use keyboard shortcuts to control the simulation.",
+      focusable: true,
       focusHighlight: "invisible",
     });
-    this.addChild(this.bobNode);
+    // Note: bobNode is added to playAreaNode later in constructor
 
     // Center of mass reference dot (small circle at center of bob)
     this.bobReferenceDot = new Circle(3, {
@@ -291,6 +297,12 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     // Position graph beneath vector panel
     this.positionConfigurableGraph(this.vectorPanel!);
 
+    // pdom - Setup screen summary for Interactive Description
+    this.setupScreenSummary();
+
+    // pdom - Add bob to play area for proper PDOM organization
+    this.playAreaNode.addChild(this.bobNode);
+
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -407,6 +419,36 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
           fill: ClassicalMechanicsColors.textColorProperty,
         }),
         variablesList,
+      ],
+    });
+  }
+
+  /**
+   * pdom - Create the screen summary content for accessibility
+   */
+  protected createScreenSummaryContent(): Node {
+    const stringManager = StringManager.getInstance();
+    const summaryStrings = stringManager.getPendulumScreenSummaryStrings();
+
+    // pdom - Create screen summary structure
+    return new Node({
+      children: [
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.overviewStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.playAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.controlAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.interactionHintStringProperty,
+        }),
       ],
     });
   }

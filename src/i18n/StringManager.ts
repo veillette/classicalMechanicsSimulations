@@ -741,6 +741,82 @@ export class StringManager {
   }
 
   /**
+   * Get screen summary strings for Single Spring
+   */
+  public getSingleSpringScreenSummaryStrings(): {
+    titleStringProperty: ReadOnlyProperty<string>;
+    overviewStringProperty: ReadOnlyProperty<string>;
+    playAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    controlAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    interactionHintStringProperty: ReadOnlyProperty<string>;
+  } {
+    return {
+      titleStringProperty: this.stringProperties.screenSummary.singleSpring.titleStringProperty,
+      overviewStringProperty: this.stringProperties.screenSummary.singleSpring.overviewStringProperty,
+      playAreaDescriptionStringProperty: this.stringProperties.screenSummary.singleSpring.playAreaDescriptionStringProperty,
+      controlAreaDescriptionStringProperty: this.stringProperties.screenSummary.singleSpring.controlAreaDescriptionStringProperty,
+      interactionHintStringProperty: this.stringProperties.screenSummary.singleSpring.interactionHintStringProperty,
+    };
+  }
+
+  /**
+   * Get screen summary strings for Double Spring
+   */
+  public getDoubleSpringScreenSummaryStrings(): {
+    titleStringProperty: ReadOnlyProperty<string>;
+    overviewStringProperty: ReadOnlyProperty<string>;
+    playAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    controlAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    interactionHintStringProperty: ReadOnlyProperty<string>;
+  } {
+    return {
+      titleStringProperty: this.stringProperties.screenSummary.doubleSpring.titleStringProperty,
+      overviewStringProperty: this.stringProperties.screenSummary.doubleSpring.overviewStringProperty,
+      playAreaDescriptionStringProperty: this.stringProperties.screenSummary.doubleSpring.playAreaDescriptionStringProperty,
+      controlAreaDescriptionStringProperty: this.stringProperties.screenSummary.doubleSpring.controlAreaDescriptionStringProperty,
+      interactionHintStringProperty: this.stringProperties.screenSummary.doubleSpring.interactionHintStringProperty,
+    };
+  }
+
+  /**
+   * Get screen summary strings for Pendulum
+   */
+  public getPendulumScreenSummaryStrings(): {
+    titleStringProperty: ReadOnlyProperty<string>;
+    overviewStringProperty: ReadOnlyProperty<string>;
+    playAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    controlAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    interactionHintStringProperty: ReadOnlyProperty<string>;
+  } {
+    return {
+      titleStringProperty: this.stringProperties.screenSummary.pendulum.titleStringProperty,
+      overviewStringProperty: this.stringProperties.screenSummary.pendulum.overviewStringProperty,
+      playAreaDescriptionStringProperty: this.stringProperties.screenSummary.pendulum.playAreaDescriptionStringProperty,
+      controlAreaDescriptionStringProperty: this.stringProperties.screenSummary.pendulum.controlAreaDescriptionStringProperty,
+      interactionHintStringProperty: this.stringProperties.screenSummary.pendulum.interactionHintStringProperty,
+    };
+  }
+
+  /**
+   * Get screen summary strings for Double Pendulum
+   */
+  public getDoublePendulumScreenSummaryStrings(): {
+    titleStringProperty: ReadOnlyProperty<string>;
+    overviewStringProperty: ReadOnlyProperty<string>;
+    playAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    controlAreaDescriptionStringProperty: ReadOnlyProperty<string>;
+    interactionHintStringProperty: ReadOnlyProperty<string>;
+  } {
+    return {
+      titleStringProperty: this.stringProperties.screenSummary.doublePendulum.titleStringProperty,
+      overviewStringProperty: this.stringProperties.screenSummary.doublePendulum.overviewStringProperty,
+      playAreaDescriptionStringProperty: this.stringProperties.screenSummary.doublePendulum.playAreaDescriptionStringProperty,
+      controlAreaDescriptionStringProperty: this.stringProperties.screenSummary.doublePendulum.controlAreaDescriptionStringProperty,
+      interactionHintStringProperty: this.stringProperties.screenSummary.doublePendulum.interactionHintStringProperty,
+    };
+  }
+
+  /**
    * Get all raw string properties
    * This can be used if direct access is needed to a specific string property
    */
