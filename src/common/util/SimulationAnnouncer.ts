@@ -10,6 +10,10 @@
 import { Utterance } from "scenerystack/utterance-queue";
 import { voicingUtteranceQueue } from "scenerystack/scenery";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import {
+  PARAMETER_CHANGE_ANNOUNCEMENT_DELAY,
+  GRAPH_CHANGE_ANNOUNCEMENT_DELAY,
+} from "./AccessibilityDelayConstants.js";
 
 /**
  * SimulationAnnouncer - Singleton class for managing voicing announcements
@@ -37,12 +41,12 @@ class SimulationAnnouncer {
 
     this.parameterChangeUtterance = new Utterance({
       priority: 1, // Default priority
-      alertStableDelay: 300, // Wait 300ms for rapid changes to stabilize
+      alertStableDelay: PARAMETER_CHANGE_ANNOUNCEMENT_DELAY, // Wait for rapid changes to stabilize
     });
 
     this.graphChangeUtterance = new Utterance({
       priority: 1, // Default priority
-      alertStableDelay: 200,
+      alertStableDelay: GRAPH_CHANGE_ANNOUNCEMENT_DELAY,
     });
 
     this.dragInteractionUtterance = new Utterance({
