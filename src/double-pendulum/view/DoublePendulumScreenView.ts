@@ -186,7 +186,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       tagName: "div",
       ariaRole: "application",
       accessibleName: "Upper Pendulum Bob",
-      helpText: "Drag to change the angle of the upper pendulum. Use keyboard shortcuts to control the simulation.",
       focusable: true,
       focusHighlight: "invisible",
     });
@@ -210,7 +209,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
       tagName: "div",
       ariaRole: "application",
       accessibleName: "Lower Pendulum Bob",
-      helpText: "Drag to change the angle of the lower pendulum. Use keyboard shortcuts to control the simulation.",
       focusable: true,
       focusHighlight: "invisible",
     });
