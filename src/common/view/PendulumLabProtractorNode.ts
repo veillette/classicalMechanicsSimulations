@@ -12,7 +12,7 @@ import { Vector2 } from "scenerystack/dot";
 import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
-import { PhetFont } from "scenerystack";
+import { PhetFont, StringUtils } from "scenerystack";
 
 // Constants for protractor appearance
 const LINE_LENGTH_DEFAULT = 3.6;
@@ -154,7 +154,7 @@ export class PendulumLabProtractorNode extends Node {
       const angle = pendulumData.angleProperty.value;
       const degrees = angle * 180 / Math.PI;
 
-      degreesText.string = `${Math.abs(degrees).toFixed(0)}°`;
+      degreesText.string = `${StringUtils.toFixedNumberLTR(Math.abs(degrees), 0)}°`;
 
       // Position text based on which side of vertical the pendulum is on
       if (angle < 0) {

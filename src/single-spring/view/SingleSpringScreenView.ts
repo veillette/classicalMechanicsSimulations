@@ -7,6 +7,7 @@ import { type ScreenViewOptions, ScreenSummaryContent } from "scenerystack/sim";
 import { SingleSpringModel } from "../model/SingleSpringModel.js";
 import { Rectangle, Line, VBox, Node, Text, RichText } from "scenerystack/scenery";
 import { FormulaNode, PhetFont } from "scenerystack/scenery-phet";
+import { StringUtils } from "scenerystack";
 import { Range } from "scenerystack/dot";
 import { SpringNode } from "../../common/view/SpringNode.js";
 import { ParametricSpringNode } from "../../common/view/ParametricSpringNode.js";
@@ -76,10 +77,10 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       (template, position, velocity, springConstant, energy) => {
         const force = -springConstant * position; // Spring force F = -kx
         return template
-          .replace('{{position}}', position.toFixed(2))
-          .replace('{{velocity}}', velocity.toFixed(2))
-          .replace('{{force}}', force.toFixed(2))
-          .replace('{{energy}}', energy.toFixed(2));
+          .replace('{{position}}', StringUtils.toFixedNumberLTR(position, 2))
+          .replace('{{velocity}}', StringUtils.toFixedNumberLTR(velocity, 2))
+          .replace('{{force}}', StringUtils.toFixedNumberLTR(force, 2))
+          .replace('{{energy}}', StringUtils.toFixedNumberLTR(energy, 2));
       }
     );
 
@@ -208,7 +209,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
           this.model.velocityProperty.value = 0;
         },
         end: () => {
-          const position = this.model.positionProperty.value.toFixed(2);
+          const position = StringUtils.toFixedNumberLTR(this.model.positionProperty.value, 2);
           const template = a11yStrings.massReleasedAtStringProperty.value;
           const announcement = template.replace('{{position}}', position);
           SimulationAnnouncer.announceDragInteraction(announcement);
@@ -271,22 +272,22 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     // Add accessibility announcements for parameter changes
     this.model.massProperty.lazyLink((mass) => {
       const template = a11yStrings.massChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', mass.toFixed(1));
+      const announcement = template.replace('{{value}}', StringUtils.toFixedNumberLTR(mass, 1));
       SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.springConstantProperty.lazyLink((springConstant) => {
       const template = a11yStrings.springConstantChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', springConstant.toFixed(0));
+      const announcement = template.replace('{{value}}', StringUtils.toFixedNumberLTR(springConstant, 0));
       SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.dampingProperty.lazyLink((damping) => {
       const template = a11yStrings.dampingChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', damping.toFixed(1));
+      const announcement = template.replace('{{value}}', StringUtils.toFixedNumberLTR(damping, 1));
       SimulationAnnouncer.announceParameterChange(announcement);
     });
     this.model.gravityProperty.lazyLink((gravity) => {
       const template = a11yStrings.gravityChangedStringProperty.value;
-      const announcement = template.replace('{{value}}', gravity.toFixed(1));
+      const announcement = template.replace('{{value}}', StringUtils.toFixedNumberLTR(gravity, 1));
       SimulationAnnouncer.announceParameterChange(announcement);
     });
 
