@@ -3,7 +3,7 @@
  * Provides common functionality including time controls and reset button.
  */
 
-import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
+import { ScreenView, type ScreenViewOptions, ScreenSummaryContent } from "scenerystack/sim";
 import {
   TimeControlNode,
   ResetAllButton,
@@ -133,11 +133,6 @@ export abstract class BaseScreenView<
   protected vectorPanel: Node | null = null;
   protected toolsPanel: Node | null = null;
 
-  // pdom - PDOM structural nodes for Interactive Description
-  protected readonly screenSummaryNode: Node;
-  protected readonly playAreaNode: Node;
-  protected readonly controlAreaNode: Node;
-
   protected constructor(model: T, options?: BaseScreenViewOptions) {
     super(options);
     this.model = model;
@@ -146,37 +141,6 @@ export abstract class BaseScreenView<
     this.showVelocityProperty = new BooleanProperty(options?.showVelocity ?? false);
     this.showForceProperty = new BooleanProperty(options?.showForce ?? false);
     this.showAccelerationProperty = new BooleanProperty(options?.showAcceleration ?? false);
-
-    // pdom - Create PDOM structure (Screen Summary, Play Area, Control Area)
-    // This follows PhET's standard PDOM organization for screen views
-    this.screenSummaryNode = new Node({
-      tagName: "section",
-      labelTagName: "h2",
-      labelContent: "Screen Summary",
-    });
-    this.addChild(this.screenSummaryNode);
-
-    this.playAreaNode = new Node({
-      tagName: "section",
-      labelTagName: "h2",
-      labelContent: "Play Area",
-    });
-    this.addChild(this.playAreaNode);
-
-    this.controlAreaNode = new Node({
-      tagName: "section",
-      labelTagName: "h2",
-      labelContent: "Control Area",
-    });
-    this.addChild(this.controlAreaNode);
-
-    // pdom - Set PDOM order to ensure correct navigation order
-    // (Screen Summary -> Play Area -> Control Area)
-    this.pdomOrder = [
-      this.screenSummaryNode,
-      this.playAreaNode,
-      this.controlAreaNode,
-    ];
 
     // Set up Page Visibility API to handle tab switching
     this.setupPageVisibilityListener();
@@ -416,8 +380,11 @@ export abstract class BaseScreenView<
    * Call this early in the subclass constructor after the screen-specific setup.
    */
   protected setupScreenSummary(): void {
-    const summaryContent = this.createScreenSummaryContent();
-    this.screenSummaryNode.addChild(summaryContent);
+    const contentNode = this.createScreenSummaryContent();
+    // Wrap the Node in a ScreenSummaryContent instance
+    const screenSummaryContent = new ScreenSummaryContent({});
+    screenSummaryContent.addChild(contentNode);
+    this.setScreenSummaryContent(screenSummaryContent);
   }
 
   /**

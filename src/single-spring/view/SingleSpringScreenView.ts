@@ -368,7 +368,7 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
     this.setupScreenSummary();
 
     // pdom - Add mass to play area for proper PDOM organization
-    this.playAreaNode.addChild(this.massNode);
+    this.pdomPlayAreaNode.addChild(this.massNode);
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
