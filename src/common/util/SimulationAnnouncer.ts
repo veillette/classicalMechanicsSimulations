@@ -14,6 +14,7 @@ import {
   PARAMETER_CHANGE_ANNOUNCEMENT_DELAY,
   GRAPH_CHANGE_ANNOUNCEMENT_DELAY,
 } from "./AccessibilityDelayConstants.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 /**
  * SimulationAnnouncer - Singleton class for managing voicing announcements
@@ -128,6 +129,9 @@ class SimulationAnnouncer {
   }
 
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('SimulationAnnouncer', SimulationAnnouncer);
 
 // Export singleton instance for convenience
 export default SimulationAnnouncer.getInstance();
