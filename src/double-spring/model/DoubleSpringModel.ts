@@ -15,6 +15,7 @@ import {
   DerivedProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
+import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
@@ -51,31 +52,60 @@ export class DoubleSpringModel extends BaseModel {
 
     // Initialize state
     // Start at equilibrium: x1_eq ≈ 0.98 m, x2_eq ≈ 1.47 m (with k=20 N/m)
-    this.position1Property = new NumberProperty(1.0); // meters (positive downward from natural length)
-    this.velocity1Property = new NumberProperty(0.0); // m/s
-    this.position2Property = new NumberProperty(1.5); // meters (positive downward from natural length)
-    this.velocity2Property = new NumberProperty(0.0); // m/s
+    this.position1Property = new NumberProperty(1.0, {
+      range: new Range(-5, 5)
+    });
+
+    this.velocity1Property = new NumberProperty(0.0);
+
+    this.position2Property = new NumberProperty(1.5, {
+      range: new Range(-5, 5)
+    });
+
+    this.velocity2Property = new NumberProperty(0.0);
 
     // Initialize parameters
-    this.mass1Property = new NumberProperty(1.0); // kg
-    this.mass2Property = new NumberProperty(1.0); // kg
-    this.springConstant1Property = new NumberProperty(20.0); // N/m (increased from 10 to keep masses on screen)
-    this.springConstant2Property = new NumberProperty(20.0); // N/m (increased from 10 to keep masses on screen)
-    this.damping1Property = new NumberProperty(0.0); // N*s/m (no damping initially)
-    this.damping2Property = new NumberProperty(0.0); // N*s/m (no damping initially)
-    this.gravityProperty = new NumberProperty(9.8); // m/s^2
-    this.naturalLength1Property = new NumberProperty(0.8); // meters
-    this.naturalLength2Property = new NumberProperty(0.8); // meters
+    this.mass1Property = new NumberProperty(1.0, {
+      range: new Range(0.1, 5.0)
+    });
+
+    this.mass2Property = new NumberProperty(1.0, {
+      range: new Range(0.1, 5.0)
+    });
+
+    this.springConstant1Property = new NumberProperty(20.0, {
+      range: new Range(1.0, 50.0)
+    });
+
+    this.springConstant2Property = new NumberProperty(20.0, {
+      range: new Range(1.0, 50.0)
+    });
+
+    this.damping1Property = new NumberProperty(0.0, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.damping2Property = new NumberProperty(0.0, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.gravityProperty = new NumberProperty(9.8, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.naturalLength1Property = new NumberProperty(0.8);
+
+    this.naturalLength2Property = new NumberProperty(0.8);
 
     // Computed accelerations
     this.acceleration1Property = new DerivedProperty(
       [this.position1Property, this.position2Property, this.velocity1Property, this.mass1Property, this.springConstant1Property, this.springConstant2Property, this.damping1Property, this.gravityProperty],
-      (x1, x2, v1, m1, k1, k2, b1, g) => (-k1 * x1 + k2 * (x2 - x1) - b1 * v1 + m1 * g) / m1,
+      (x1, x2, v1, m1, k1, k2, b1, g) => (-k1 * x1 + k2 * (x2 - x1) - b1 * v1 + m1 * g) / m1
     );
 
     this.acceleration2Property = new DerivedProperty(
       [this.position1Property, this.position2Property, this.velocity2Property, this.mass2Property, this.springConstant2Property, this.damping2Property, this.gravityProperty],
-      (x1, x2, v2, m2, k2, b2, g) => (-k2 * (x2 - x1) - b2 * v2 + m2 * g) / m2,
+      (x1, x2, v2, m2, k2, b2, g) => (-k2 * (x2 - x1) - b2 * v2 + m2 * g) / m2
     );
 
     // Compute total energy (including gravitational potential energy)
@@ -97,7 +127,7 @@ export class DoubleSpringModel extends BaseModel {
         const pe1 = 0.5 * k1 * x1 * x1 - m1 * g * x1; // Spring 1 PE + Gravitational PE for mass 1
         const pe2 = 0.5 * k2 * (x2 - x1) * (x2 - x1) - m2 * g * x2; // Spring 2 PE + Gravitational PE for mass 2
         return ke1 + ke2 + pe1 + pe2;
-      },
+      }
     );
 
     // Initialize state mapper with properties in state order

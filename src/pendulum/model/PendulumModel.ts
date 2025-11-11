@@ -20,6 +20,7 @@ import {
   DerivedProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
+import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
@@ -47,14 +48,28 @@ export class PendulumModel extends BaseModel {
     super();
 
     // Initialize state (start at 45 degrees)
-    this.angleProperty = new NumberProperty(Math.PI / 4); // radians
-    this.angularVelocityProperty = new NumberProperty(0.0); // rad/s
+    this.angleProperty = new NumberProperty(Math.PI / 4, {
+      range: new Range(-Math.PI, Math.PI)
+    });
+
+    this.angularVelocityProperty = new NumberProperty(0.0);
 
     // Initialize parameters
-    this.lengthProperty = new NumberProperty(2.0); // meters
-    this.massProperty = new NumberProperty(1.0); // kg
-    this.gravityProperty = new NumberProperty(9.8); // m/s²
-    this.dampingProperty = new NumberProperty(0.1); // N*m*s
+    this.lengthProperty = new NumberProperty(2.0, {
+      range: new Range(0.5, 5.0)
+    });
+
+    this.massProperty = new NumberProperty(1.0, {
+      range: new Range(0.1, 5.0)
+    });
+
+    this.gravityProperty = new NumberProperty(9.8, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.dampingProperty = new NumberProperty(0.1, {
+      range: new Range(0.0, 2.0)
+    });
 
     // Computed angular acceleration
     // α = -(g/L)*sin(θ) - (b/mL²)*ω
@@ -63,14 +78,14 @@ export class PendulumModel extends BaseModel {
       (theta, omega, m, L, g, b) => {
         const I = m * L * L; // rotational inertia
         return -(g / L) * Math.sin(theta) - (b / I) * omega;
-      },
+      }
     );
 
     // Computed energies
     // KE = (1/2) * I * ω² = (1/2) * m * L² * ω²
     this.kineticEnergyProperty = new DerivedProperty(
       [this.angularVelocityProperty, this.massProperty, this.lengthProperty],
-      (omega, m, L) => 0.5 * m * L * L * omega * omega,
+      (omega, m, L) => 0.5 * m * L * L * omega * omega
     );
 
     // PE = m * g * h, where h = L * (1 - cos(θ))
@@ -82,12 +97,12 @@ export class PendulumModel extends BaseModel {
         this.gravityProperty,
         this.lengthProperty,
       ],
-      (theta, m, g, L) => m * g * L * (1 - Math.cos(theta)),
+      (theta, m, g, L) => m * g * L * (1 - Math.cos(theta))
     );
 
     this.totalEnergyProperty = new DerivedProperty(
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
-      (ke, pe) => ke + pe,
+      (ke, pe) => ke + pe
     );
 
     // Initialize state mapper with properties in state order

@@ -17,6 +17,7 @@ import {
   DerivedProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
+import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
@@ -48,49 +49,64 @@ export class SingleSpringModel extends BaseModel {
 
     // Initialize state
     // Start at equilibrium position: x_eq = m*g/k = 1.0*9.8/20.0 = 0.49 m
-    this.positionProperty = new NumberProperty(0.5); // meters (positive downward from natural length)
-    this.velocityProperty = new NumberProperty(0.0); // m/s
+    this.positionProperty = new NumberProperty(0.5, {
+      range: new Range(-5, 5)
+    });
+
+    this.velocityProperty = new NumberProperty(0.0);
 
     // Initialize parameters
-    this.massProperty = new NumberProperty(3.0); // kg
-    this.springConstantProperty = new NumberProperty(20.0); // N/m (increased from 10 to keep mass on screen)
-    this.dampingProperty = new NumberProperty(0.1); // N*s/m
-    this.gravityProperty = new NumberProperty(9.8); // m/s^2
-    this.naturalLengthProperty = new NumberProperty(1.0); // meters
+    this.massProperty = new NumberProperty(3.0, {
+      range: new Range(0.1, 5.0)
+    });
+
+    this.springConstantProperty = new NumberProperty(20.0, {
+      range: new Range(1.0, 50.0)
+    });
+
+    this.dampingProperty = new NumberProperty(0.1, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.gravityProperty = new NumberProperty(9.8, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.naturalLengthProperty = new NumberProperty(1.0);
 
     // Computed acceleration
     this.accelerationProperty = new DerivedProperty(
       [this.positionProperty, this.velocityProperty, this.massProperty, this.springConstantProperty, this.dampingProperty, this.gravityProperty],
-      (x, v, m, k, b, g) => (-k * x - b * v + m * g) / m,
+      (x, v, m, k, b, g) => (-k * x - b * v + m * g) / m
     );
 
     // Computed energies
     this.kineticEnergyProperty = new DerivedProperty(
       [this.velocityProperty, this.massProperty],
-      (v, m) => 0.5 * m * v * v,
+      (v, m) => 0.5 * m * v * v
     );
 
     // Potential energy includes both spring and gravitational components
     this.potentialEnergyProperty = new DerivedProperty(
       [this.positionProperty, this.springConstantProperty, this.massProperty, this.gravityProperty],
-      (x, k, m, g) => 0.5 * k * x * x - m * g * x, // Spring PE + Gravitational PE (taking downward as positive)
+      (x, k, m, g) => 0.5 * k * x * x - m * g * x // Spring PE + Gravitational PE (taking downward as positive)
     );
 
     // Spring potential energy only
     this.springPotentialEnergyProperty = new DerivedProperty(
       [this.positionProperty, this.springConstantProperty],
-      (x, k) => 0.5 * k * x * x,
+      (x, k) => 0.5 * k * x * x
     );
 
     // Gravitational potential energy only
     this.gravitationalPotentialEnergyProperty = new DerivedProperty(
       [this.positionProperty, this.massProperty, this.gravityProperty],
-      (x, m, g) => -m * g * x, // Negative because downward is positive and PE decreases going down
+      (x, m, g) => -m * g * x // Negative because downward is positive and PE decreases going down
     );
 
     this.totalEnergyProperty = new DerivedProperty(
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
-      (ke, pe) => ke + pe,
+      (ke, pe) => ke + pe
     );
 
     // Initialize state mapper with properties in state order

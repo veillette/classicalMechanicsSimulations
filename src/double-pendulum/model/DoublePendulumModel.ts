@@ -19,6 +19,7 @@ import {
   DerivedProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
+import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
 
@@ -51,18 +52,42 @@ export class DoublePendulumModel extends BaseModel {
     super();
 
     // Initialize state (both start at 90 degrees)
-    this.angle1Property = new NumberProperty(Math.PI / 2); // radians
-    this.angularVelocity1Property = new NumberProperty(0.0); // rad/s
-    this.angle2Property = new NumberProperty(Math.PI / 2); // radians
-    this.angularVelocity2Property = new NumberProperty(0.0); // rad/s
+    this.angle1Property = new NumberProperty(Math.PI / 2, {
+      range: new Range(-Math.PI, Math.PI)
+    });
+
+    this.angularVelocity1Property = new NumberProperty(0.0);
+
+    this.angle2Property = new NumberProperty(Math.PI / 2, {
+      range: new Range(-Math.PI, Math.PI)
+    });
+
+    this.angularVelocity2Property = new NumberProperty(0.0);
 
     // Initialize parameters
-    this.length1Property = new NumberProperty(1.5); // meters
-    this.length2Property = new NumberProperty(1.5); // meters
-    this.mass1Property = new NumberProperty(1.0); // kg
-    this.mass2Property = new NumberProperty(1.0); // kg
-    this.gravityProperty = new NumberProperty(9.8); // m/s²
-    this.dampingProperty = new NumberProperty(0.0); // N*m*s (default: no damping for chaos)
+    this.length1Property = new NumberProperty(1.5, {
+      range: new Range(0.5, 5.0)
+    });
+
+    this.length2Property = new NumberProperty(1.5, {
+      range: new Range(0.5, 5.0)
+    });
+
+    this.mass1Property = new NumberProperty(1.0, {
+      range: new Range(0.1, 5.0)
+    });
+
+    this.mass2Property = new NumberProperty(1.0, {
+      range: new Range(0.1, 5.0)
+    });
+
+    this.gravityProperty = new NumberProperty(9.8, {
+      range: new Range(0.0, 20.0)
+    });
+
+    this.dampingProperty = new NumberProperty(0.0, {
+      range: new Range(0.0, 2.0)
+    });
 
     // Computed angular accelerations (derived from Lagrangian mechanics)
     this.angularAcceleration1Property = new DerivedProperty(
@@ -90,7 +115,7 @@ export class DoublePendulumModel extends BaseModel {
           (m1 + m2) * g * Math.sin(theta1) -
           b * omega1;
         return num1 / denom1;
-      },
+      }
     );
 
     this.angularAcceleration2Property = new DerivedProperty(
@@ -119,7 +144,7 @@ export class DoublePendulumModel extends BaseModel {
           (m1 + m2) * g * Math.sin(theta2) -
           b * omega2;
         return num2 / denom2;
-      },
+      }
     );
 
     // Compute kinetic energy (complex due to coupling between pendulums)
@@ -141,7 +166,7 @@ export class DoublePendulumModel extends BaseModel {
         const ke_coupling =
           m2 * L1 * L2 * omega1 * omega2 * Math.cos(theta1 - theta2);
         return ke1 + ke2 + ke_coupling;
-      },
+      }
     );
 
     // Compute potential energy
@@ -161,13 +186,13 @@ export class DoublePendulumModel extends BaseModel {
         const y1 = -L1 * Math.cos(theta1);
         const y2 = y1 - L2 * Math.cos(theta2);
         return (m1 + m2) * g * y1 + m2 * g * y2;
-      },
+      }
     );
 
     // Total energy = KE + PE
     this.totalEnergyProperty = new DerivedProperty(
       [this.kineticEnergyProperty, this.potentialEnergyProperty],
-      (ke, pe) => ke + pe,
+      (ke, pe) => ke + pe
     );
 
     // Initialize state mapper with properties in state order
