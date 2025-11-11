@@ -288,5 +288,35 @@
       "details": "Upper bob at {{angle1}} degrees, lower bob at {{angle2}} degrees. Angular velocities {{angularVelocity1}} and {{angularVelocity2}} radians per second. Total energy {{energy}} joules.",
       "hint": "Drag either bob to set initial conditions. Even tiny differences create wildly different outcomes. Press play and watch the chaotic dance. Try the motion trail to see the complex path."
     }
+  },
+  "screenSummary": {
+    "singleSpring": {
+      "title": "Single Spring Oscillator",
+      "overview": "This screen simulates a mass attached to a spring. The mass oscillates up and down when displaced from equilibrium position.",
+      "playAreaDescription": "The Play Area contains a vertical spring attached to a wall at the top, with a mass block attached at the bottom. You can drag the mass up or down to set the initial position.",
+      "controlAreaDescription": "The Control Area contains sliders to adjust mass, spring constant, damping coefficient, and gravity. There are also preset configurations, vector visualization controls, measurement tools, and a configurable graph.",
+      "interactionHint": "Drag the mass block to displace it from equilibrium, then press play to watch the oscillation. Try different parameters to explore damped and undamped oscillations."
+    },
+    "doubleSpring": {
+      "title": "Double Spring Oscillator",
+      "overview": "This screen simulates two masses connected by springs in a vertical arrangement. The system exhibits complex coupled oscillations and normal modes.",
+      "playAreaDescription": "The Play Area shows two spring-mass systems connected vertically. The top spring is fixed to a wall, with mass 1 attached. Mass 2 is connected below mass 1 by a second spring. You can drag either mass to set initial conditions.",
+      "controlAreaDescription": "The Control Area provides separate controls for each mass and spring, including mass values, spring constants, and damping coefficients. There are also presets demonstrating symmetric and asymmetric oscillation modes, visualization controls, and graphing options.",
+      "interactionHint": "Drag the masses to different positions to explore coupled motion. Try dragging them in the same direction for symmetric mode, or opposite directions for antisymmetric mode."
+    },
+    "pendulum": {
+      "title": "Simple Pendulum",
+      "overview": "This screen simulates a simple pendulum consisting of a bob suspended from a fixed pivot point. The pendulum demonstrates periodic motion and nonlinear behavior at large angles.",
+      "playAreaDescription": "The Play Area shows a pendulum with a rod connecting a pivot point at the top to a bob that swings back and forth. You can drag the bob to change the angle from vertical.",
+      "controlAreaDescription": "The Control Area includes sliders for pendulum length, bob mass, damping coefficient, and gravitational acceleration. There are presets showing different behaviors, tools including a protractor to measure angle, and a graph to track motion over time.",
+      "interactionHint": "Drag the pendulum bob to set the starting angle, then press play to watch it swing. Try small angles for simple harmonic motion, or large angles to see nonlinear effects."
+    },
+    "doublePendulum": {
+      "title": "Double Pendulum",
+      "overview": "This screen simulates a double pendulum - a chaotic system where two pendulum segments are connected end-to-end. This system demonstrates sensitive dependence on initial conditions, where tiny changes lead to dramatically different outcomes.",
+      "playAreaDescription": "The Play Area displays two connected pendulum segments. The upper segment pivots from a fixed point at the top. The lower segment pivots from the bottom of the upper segment. You can drag either bob to set initial angles.",
+      "controlAreaDescription": "The Control Area has separate controls for each pendulum segment including length, mass, damping, and gravity. Presets demonstrate energy transfer and chaotic behavior. A motion trail option visualizes the complex path of the lower bob.",
+      "interactionHint": "Drag either pendulum bob to set initial conditions, then press play. Try releasing from nearly the same position multiple times - you'll see wildly different motions each time due to chaos."
+    }
   }
 }

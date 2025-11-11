@@ -172,16 +172,22 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     });
 
     // Mass 1 (size will be updated based on mass value)
+    // pdom - Will be added to playAreaNode later for proper PDOM structure
     this.mass1Node = new Rectangle(-20, -20, 40, 40, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
-      // Add focus highlight for accessibility
+      // pdom - Add PDOM properties for Interactive Description
+      tagName: "div",
+      ariaRole: "application",
+      accessibleName: "Mass 1",
+      helpText: "Drag to change the position of the first mass. Use keyboard shortcuts to control the simulation.",
+      focusable: true,
       focusHighlight: "invisible",
     });
-    this.addChild(this.mass1Node);
+    // Note: mass1Node is added to playAreaNode later in constructor
 
     // Center of mass reference line for mass 1
     this.mass1ReferenceLine = new Line(0, 0, 0, 0, {
@@ -192,16 +198,22 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.addChild(this.mass1ReferenceLine);
 
     // Mass 2 (size will be updated based on mass value)
+    // pdom - Will be added to playAreaNode later for proper PDOM structure
     this.mass2Node = new Rectangle(-20, -20, 40, 40, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cornerRadius: 3,
       cursor: "pointer",
-      // Add focus highlight for accessibility
+      // pdom - Add PDOM properties for Interactive Description
+      tagName: "div",
+      ariaRole: "application",
+      accessibleName: "Mass 2",
+      helpText: "Drag to change the position of the second mass. Use keyboard shortcuts to control the simulation.",
+      focusable: true,
       focusHighlight: "invisible",
     });
-    this.addChild(this.mass2Node);
+    // Note: mass2Node is added to playAreaNode later in constructor
 
     // Center of mass reference line for mass 2
     this.mass2ReferenceLine = new Line(0, 0, 0, 0, {
@@ -398,6 +410,13 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     // Position graph beneath vector panel
     this.positionConfigurableGraph(this.vectorPanel!);
 
+    // pdom - Setup screen summary for Interactive Description
+    this.setupScreenSummary();
+
+    // pdom - Add masses to play area for proper PDOM organization
+    this.playAreaNode.addChild(this.mass1Node);
+    this.playAreaNode.addChild(this.mass2Node);
+
     // Listen for preset changes to apply configuration
     this.presetProperty.link((preset) => {
       if (preset !== "Custom" && !this.isApplyingPreset) {
@@ -444,6 +463,9 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
 
     // Apply the first preset immediately
     this.applyPreset(this.presets[0]);
+
+    // pdom - Note: setupScreenSummary and adding masses to playAreaNode
+    // are done after graph positioning but before setupCommonControls
 
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
@@ -578,6 +600,36 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
     this.updateSpring1Appearance(this.model.springConstant1Property.value);
     this.updateSpring2Appearance(this.model.springConstant2Property.value);
     this.updateVisualization();
+  }
+
+  /**
+   * pdom - Create the screen summary content for accessibility
+   */
+  protected createScreenSummaryContent(): Node {
+    const stringManager = StringManager.getInstance();
+    const summaryStrings = stringManager.getDoubleSpringScreenSummaryStrings();
+
+    // pdom - Create screen summary structure
+    return new Node({
+      children: [
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.overviewStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.playAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.controlAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.interactionHintStringProperty,
+        }),
+      ],
+    });
   }
 
   /**

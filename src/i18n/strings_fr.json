@@ -279,5 +279,35 @@
       "details": "Pendule supérieur à {{angle1}} degrés, pendule inférieur à {{angle2}} degrés. Vitesses angulaires {{angularVelocity1}} et {{angularVelocity2}} radians par seconde. Énergie totale {{energy}} joules.",
       "hint": "Faites glisser l'un ou l'autre pendule pour définir les conditions initiales. Même de minuscules différences créent des résultats radicalement différents. Appuyez sur lecture et regardez la danse chaotique. Essayez la traînée de mouvement pour voir le chemin complexe."
     }
+  },
+  "screenSummary": {
+    "singleSpring": {
+      "title": "Oscillateur à Ressort Simple",
+      "overview": "Cet écran simule une masse attachée à un ressort. La masse oscille de haut en bas lorsqu'elle est déplacée de sa position d'équilibre.",
+      "playAreaDescription": "La zone de lecture contient un ressort vertical fixé au mur en haut, avec un bloc de masse attaché en bas. Vous pouvez faire glisser la masse vers le haut ou vers le bas pour définir la position initiale.",
+      "controlAreaDescription": "La zone de contrôle contient des curseurs pour ajuster la masse, la constante du ressort, le coefficient d'amortissement et la gravité. Il y a également des configurations prédéfinies, des contrôles de visualisation de vecteurs, des outils de mesure et un graphique configurable.",
+      "interactionHint": "Faites glisser le bloc de masse pour le déplacer de l'équilibre, puis appuyez sur lecture pour regarder l'oscillation. Essayez différents paramètres pour explorer les oscillations amorties et non amorties."
+    },
+    "doubleSpring": {
+      "title": "Oscillateur à Ressorts Doubles",
+      "overview": "Cet écran simule deux masses connectées par des ressorts dans un arrangement vertical. Le système présente des oscillations couplées complexes et des modes normaux.",
+      "playAreaDescription": "La zone de lecture montre deux systèmes masse-ressort connectés verticalement. Le ressort supérieur est fixé à un mur, avec la masse 1 attachée. La masse 2 est connectée sous la masse 1 par un deuxième ressort. Vous pouvez faire glisser chaque masse pour définir les conditions initiales.",
+      "controlAreaDescription": "La zone de contrôle fournit des contrôles séparés pour chaque masse et ressort, y compris les valeurs de masse, les constantes de ressort et les coefficients d'amortissement. Il y a également des préréglages démontrant les modes d'oscillation symétriques et asymétriques, des contrôles de visualisation et des options graphiques.",
+      "interactionHint": "Faites glisser les masses vers différentes positions pour explorer le mouvement couplé. Essayez de les faire glisser dans la même direction pour le mode symétrique, ou dans des directions opposées pour le mode antisymétrique."
+    },
+    "pendulum": {
+      "title": "Pendule Simple",
+      "overview": "Cet écran simule un pendule simple composé d'un pendule suspendu à un point de pivot fixe. Le pendule démontre un mouvement périodique et un comportement non linéaire à grands angles.",
+      "playAreaDescription": "La zone de lecture montre un pendule avec une tige reliant un point de pivot en haut à un pendule qui se balance d'avant en arrière. Vous pouvez faire glisser le pendule pour changer l'angle par rapport à la verticale.",
+      "controlAreaDescription": "La zone de contrôle comprend des curseurs pour la longueur du pendule, la masse du pendule, le coefficient d'amortissement et l'accélération gravitationnelle. Il y a des préréglages montrant différents comportements, des outils incluant un rapporteur pour mesurer l'angle, et un graphique pour suivre le mouvement au fil du temps.",
+      "interactionHint": "Faites glisser le pendule pour définir l'angle de départ, puis appuyez sur lecture pour le regarder se balancer. Essayez de petits angles pour le mouvement harmonique simple, ou de grands angles pour voir les effets non linéaires."
+    },
+    "doublePendulum": {
+      "title": "Double Pendule",
+      "overview": "Cet écran simule un double pendule - un système chaotique où deux segments de pendule sont connectés bout à bout. Ce système démontre une dépendance sensible aux conditions initiales, où de minuscules changements conduisent à des résultats radicalement différents.",
+      "playAreaDescription": "La zone de lecture affiche deux segments de pendule connectés. Le segment supérieur pivote à partir d'un point fixe en haut. Le segment inférieur pivote à partir du bas du segment supérieur. Vous pouvez faire glisser l'un ou l'autre pendule pour définir les angles initiaux.",
+      "controlAreaDescription": "La zone de contrôle dispose de contrôles séparés pour chaque segment de pendule, y compris la longueur, la masse, l'amortissement et la gravité. Les préréglages démontrent le transfert d'énergie et le comportement chaotique. Une option de traînée de mouvement visualise le chemin complexe du pendule inférieur.",
+      "interactionHint": "Faites glisser l'un ou l'autre pendule pour définir les conditions initiales, puis appuyez sur lecture. Essayez de relâcher depuis presque la même position plusieurs fois - vous verrez des mouvements radicalement différents à chaque fois en raison du chaos."
+    }
   }
 }

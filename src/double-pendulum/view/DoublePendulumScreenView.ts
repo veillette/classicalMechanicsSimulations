@@ -170,15 +170,21 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.addChild(this.rod2Node);
 
     // Bob 1 (size will be updated based on mass value)
+    // pdom - Will be added to playAreaNode later for proper PDOM structure
     this.bob1Node = new Circle(15, {
       fill: ClassicalMechanicsColors.mass1FillColorProperty,
       stroke: ClassicalMechanicsColors.mass1StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
-      // Add focus highlight for accessibility
+      // pdom - Add PDOM properties for Interactive Description
+      tagName: "div",
+      ariaRole: "application",
+      accessibleName: "Upper Pendulum Bob",
+      helpText: "Drag to change the angle of the upper pendulum. Use keyboard shortcuts to control the simulation.",
+      focusable: true,
       focusHighlight: "invisible",
     });
-    this.addChild(this.bob1Node);
+    // Note: bob1Node is added to playAreaNode later in constructor
 
     // Center of mass reference dot for bob 1 (small circle at center of bob)
     this.bob1ReferenceDot = new Circle(3, {
@@ -188,15 +194,21 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.addChild(this.bob1ReferenceDot);
 
     // Bob 2 (size will be updated based on mass value)
+    // pdom - Will be added to playAreaNode later for proper PDOM structure
     this.bob2Node = new Circle(15, {
       fill: ClassicalMechanicsColors.mass2FillColorProperty,
       stroke: ClassicalMechanicsColors.mass2StrokeColorProperty,
       lineWidth: 2,
       cursor: "pointer",
-      // Add focus highlight for accessibility
+      // pdom - Add PDOM properties for Interactive Description
+      tagName: "div",
+      ariaRole: "application",
+      accessibleName: "Lower Pendulum Bob",
+      helpText: "Drag to change the angle of the lower pendulum. Use keyboard shortcuts to control the simulation.",
+      focusable: true,
       focusHighlight: "invisible",
     });
-    this.addChild(this.bob2Node);
+    // Note: bob2Node is added to playAreaNode later in constructor
 
     // Center of mass reference dot for bob 2 (small circle at center of bob)
     this.bob2ReferenceDot = new Circle(3, {
@@ -444,6 +456,13 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     // Position graph beneath vector panel
     this.positionConfigurableGraph(this.vectorPanel!);
 
+    // pdom - Setup screen summary for Interactive Description
+    this.setupScreenSummary();
+
+    // pdom - Add bobs to play area for proper PDOM organization
+    this.playAreaNode.addChild(this.bob1Node);
+    this.playAreaNode.addChild(this.bob2Node);
+
     // Setup common controls (time controls, reset button, info button, keyboard shortcuts)
     this.setupCommonControls();
 
@@ -550,6 +569,36 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
           decimalPlaces: 2,
           unit: "N·m·s",
         },
+      ],
+    });
+  }
+
+  /**
+   * pdom - Create the screen summary content for accessibility
+   */
+  protected createScreenSummaryContent(): Node {
+    const stringManager = StringManager.getInstance();
+    const summaryStrings = stringManager.getDoublePendulumScreenSummaryStrings();
+
+    // pdom - Create screen summary structure
+    return new Node({
+      children: [
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.overviewStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.playAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.controlAreaDescriptionStringProperty,
+        }),
+        new Node({
+          tagName: "p",
+          innerContent: summaryStrings.interactionHintStringProperty,
+        }),
       ],
     });
   }
