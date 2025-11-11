@@ -26,7 +26,7 @@
  * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { affirm } from "scenerystack/phet-core";
+import { assert } from "scenerystack";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
@@ -52,7 +52,7 @@ export class AdaptiveRK45Solver implements ODESolver {
    * @param dt - Time step in seconds (must be positive and finite)
    */
   public setFixedTimeStep(dt: number): void {
-    affirm(isFinite(dt) && dt > 0, 'dt must be finite and positive');
+    assert && assert(isFinite(dt) && dt > 0, 'dt must be finite and positive');
     this.fixedTimeStep = dt;
     this.maxStepSize = dt;
   }
@@ -81,10 +81,10 @@ export class AdaptiveRK45Solver implements ODESolver {
     dt: number,
   ): { error: number; newState: number[] } {
     // Validate inputs
-    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
-    affirm(isFinite(time), 'time must be finite');
-    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+    assert && assert(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(isFinite(time), 'time must be finite');
+    assert && assert(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
 
     const n = state.length;
 
@@ -167,8 +167,8 @@ export class AdaptiveRK45Solver implements ODESolver {
     }
 
     // Validate computed results
-    affirm(isFinite(maxError), 'computed error must be finite');
-    affirm(state5.every(v => isFinite(v)), 'all computed state values must be finite');
+    assert && assert(isFinite(maxError), 'computed error must be finite');
+    assert && assert(state5.every(v => isFinite(v)), 'all computed state values must be finite');
 
     return { error: maxError, newState: state5 };
   }
@@ -197,10 +197,10 @@ export class AdaptiveRK45Solver implements ODESolver {
     dt: number,
   ): number {
     // Validate inputs
-    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
-    affirm(isFinite(time), 'time must be finite');
-    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+    assert && assert(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(isFinite(time), 'time must be finite');
+    assert && assert(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
 
     let currentTime = time;
     let remainingTime = dt;

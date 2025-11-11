@@ -19,7 +19,7 @@ import {
   BooleanProperty,
   EnumerationProperty,
 } from "scenerystack/axon";
-import { affirm } from "scenerystack/phet-core";
+import { assert } from "scenerystack";
 import { ODESolver } from "./ODESolver.js";
 import { RungeKuttaSolver } from "./RungeKuttaSolver.js";
 import { AdaptiveRK45Solver } from "./AdaptiveRK45Solver.js";
@@ -110,7 +110,7 @@ export abstract class BaseModel {
    */
   public step(dt: number, forceStep: boolean = false): void {
     // Validate input
-    affirm(isFinite(dt), 'dt must be finite');
+    assert && assert(isFinite(dt), 'dt must be finite');
 
     // Only step if playing (unless forced for manual stepping)
     if (!this.isPlayingProperty.value && !forceStep) {
@@ -132,9 +132,9 @@ export abstract class BaseModel {
     const state = this.getState();
 
     // Validate state array returned by subclass
-    affirm(Array.isArray(state), 'state must be an array');
-    affirm(state.length > 0, 'state array must not be empty');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(Array.isArray(state), 'state must be an array');
+    assert && assert(state.length > 0, 'state array must not be empty');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
 
     // Use solver with automatic sub-stepping
     const newTime = this.solver.step(
@@ -145,7 +145,7 @@ export abstract class BaseModel {
     );
 
     // Validate computed time
-    affirm(isFinite(newTime), 'newTime must be finite');
+    assert && assert(isFinite(newTime), 'newTime must be finite');
 
     // Update the state in the subclass
     this.setState(state);

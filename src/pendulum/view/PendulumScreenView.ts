@@ -30,9 +30,9 @@ import {
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
 import {
-import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
   SPACING_LARGE,
 } from "../../common/view/UILayoutConstants.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class PendulumScreenView extends BaseScreenView<PendulumModel> {
   private readonly bobNode: Circle;

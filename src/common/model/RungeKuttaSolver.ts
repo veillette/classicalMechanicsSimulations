@@ -16,7 +16,7 @@
  * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { affirm } from "scenerystack/phet-core";
+import { assert } from "scenerystack";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 
@@ -64,10 +64,10 @@ export class RungeKuttaSolver implements ODESolver {
     dt: number,
   ): void {
     // Validate inputs
-    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
-    affirm(isFinite(time), 'time must be finite');
-    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+    assert && assert(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(isFinite(time), 'time must be finite');
+    assert && assert(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
 
     const n = state.length;
 

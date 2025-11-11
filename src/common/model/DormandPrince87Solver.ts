@@ -37,7 +37,7 @@
  * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { affirm } from "scenerystack/phet-core";
+import { assert } from "scenerystack";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
@@ -70,7 +70,7 @@ export class DormandPrince87Solver implements ODESolver {
    * @param dt - Time step in seconds (must be positive and finite)
    */
   public setFixedTimeStep(dt: number): void {
-    affirm(isFinite(dt) && dt > 0, 'dt must be finite and positive');
+    assert && assert(isFinite(dt) && dt > 0, 'dt must be finite and positive');
     this.fixedTimeStep = dt;
     this.maxStepSize = dt;
   }
@@ -303,10 +303,10 @@ export class DormandPrince87Solver implements ODESolver {
     dt: number,
   ): number {
     // Validate inputs
-    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
-    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
-    affirm(isFinite(time), 'time must be finite');
-    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+    assert && assert(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    assert && assert(state.every(v => isFinite(v)), 'all state values must be finite');
+    assert && assert(isFinite(time), 'time must be finite');
+    assert && assert(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
 
     let currentTime = time;
     let remainingTime = dt;
