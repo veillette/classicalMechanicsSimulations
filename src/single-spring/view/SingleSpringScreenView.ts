@@ -62,8 +62,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
     super(model, {
       ...options,
-      showVelocity: true,
-      showForce: true,
+      showVelocity: false,
+      showForce: false,
       showAcceleration: false,
     });
 

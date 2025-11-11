@@ -70,8 +70,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
     super(model, {
       ...options,
-      showVelocity: true,
-      showForce: true,
+      showVelocity: false,
+      showForce: false,
       showAcceleration: false,
     });
 
