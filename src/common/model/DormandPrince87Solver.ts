@@ -2,23 +2,42 @@
  * Dormand-Prince 8(7) adaptive solver - very high accuracy 8th order method.
  *
  * This solver uses an 8th order Runge-Kutta method with an embedded 7th order
- * solution for error estimation. It requires 13 function evaluations per step
- * and is one of the most accurate general-purpose ODE solvers available.
+ * solution for error estimation. It requires 13 function evaluations per step,
+ * making it the most expensive but also most accurate solver in this library.
  *
- * Reference: Dormand, J.R., and Prince, P.J. (1981).
+ * Algorithm Details:
+ * - 13-stage Runge-Kutta method
+ * - Embedded 7th and 8th order formulas
+ * - Error estimate: |y8 - y7|
+ * - Adaptive step size control based on tolerance
+ * - Default tolerance: 1e-8 (very tight for high precision)
+ *
+ * Performance Trade-offs:
+ * - 13 function evaluations per step (vs 4 for RK4, 6 for RK45/PEFRL)
+ * - More overhead but fewer total steps for smooth problems
+ * - Best efficiency when high accuracy is required
+ * - Can be 2-3x slower than RK4 for typical physics simulations
+ *
+ * Reference:
+ * Dormand, J.R., and Prince, P.J. (1981).
  * "High order embedded Runge-Kutta formulae"
  * Journal of Computational and Applied Mathematics, 7(1), 67-75.
  *
- * Benefits:
- * - Very high accuracy (8th order)
- * - Automatic step size control
- * - Excellent for smooth, well-behaved problems
- * - Efficient for problems requiring high precision
+ * Best Used For:
+ * - High-precision scientific calculations
+ * - Smooth, well-behaved dynamics
+ * - Validating results from lower-order methods
+ * - Problems requiring error < 1e-8
  *
- * Best used for: Smooth dynamics, high-precision calculations, and problems
- * where accuracy is more important than speed.
+ * Not Recommended For:
+ * - Real-time simulations (too slow)
+ * - Stiff problems
+ * - Highly oscillatory or chaotic systems
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
+import { affirm } from "scenerystack/phet-core";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
@@ -48,8 +67,10 @@ export class DormandPrince87Solver implements ODESolver {
 
   /**
    * Set the initial/maximum timestep for integration.
+   * @param dt - Time step in seconds (must be positive and finite)
    */
   public setFixedTimeStep(dt: number): void {
+    affirm(isFinite(dt) && dt > 0, 'dt must be finite and positive');
     this.fixedTimeStep = dt;
     this.maxStepSize = dt;
   }
@@ -264,7 +285,16 @@ export class DormandPrince87Solver implements ODESolver {
   }
 
   /**
-   * Perform adaptive Dormand-Prince 8(7) integration.
+   * Perform adaptive Dormand-Prince 8(7) integration with automatic step size control.
+   *
+   * Uses very tight tolerance (default 1e-8) for high-precision integration.
+   * Automatically adjusts step size to maintain accuracy.
+   *
+   * @param state - State vector (modified in place)
+   * @param derivativeFn - Function to compute derivatives
+   * @param time - Initial time
+   * @param dt - Time interval to integrate
+   * @returns Final time after integration
    */
   public step(
     state: number[],
@@ -272,6 +302,12 @@ export class DormandPrince87Solver implements ODESolver {
     time: number,
     dt: number,
   ): number {
+    // Validate inputs
+    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    affirm(isFinite(time), 'time must be finite');
+    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+
     let currentTime = time;
     let remainingTime = dt;
     let currentStepSize = Math.min(this.fixedTimeStep, dt);
