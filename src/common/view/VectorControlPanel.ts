@@ -1,9 +1,15 @@
 /**
  * Control panel for vector visualization options.
  * Displays checkboxes for velocity, force, and acceleration vectors.
+ *
+ * Each checkbox includes a small arrow icon in the corresponding vector color
+ * for easy visual identification. Vectors are displayed as arrows on the
+ * simulation objects when enabled.
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { Panel } from "scenerystack/sun";
+import { Panel, type PanelOptions } from "scenerystack/sun";
 import { VBox, HBox, Text } from "scenerystack/scenery";
 import { Checkbox } from "scenerystack/sun";
 import { BooleanProperty, type ReadOnlyProperty } from "scenerystack/axon";
@@ -27,13 +33,22 @@ export interface VectorConfig {
 }
 
 /**
- * Options for the VectorControlPanel
+ * Self options for VectorControlPanel - options specific to this component.
  */
-type VectorControlPanelOptions = {
+type SelfOptions = {
+  /** Velocity vector configuration */
   velocity: VectorConfig;
+  /** Force vector configuration */
   force: VectorConfig;
+  /** Acceleration vector configuration */
   acceleration: VectorConfig;
 };
+
+/**
+ * Options for VectorControlPanel constructor.
+ * Combines self options with parent PanelOptions.
+ */
+export type VectorControlPanelOptions = SelfOptions & PanelOptions;
 
 export class VectorControlPanel extends Panel {
   public constructor(options: VectorControlPanelOptions) {

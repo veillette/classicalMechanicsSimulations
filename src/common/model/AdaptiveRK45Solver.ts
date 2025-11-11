@@ -1,15 +1,32 @@
 /**
  * Adaptive Runge-Kutta-Fehlberg (RK45) solver with automatic step size control.
  *
- * This solver uses a 4th-order and 5th-order method to estimate the error and
- * automatically adjusts the timestep to maintain a specified tolerance.
+ * This solver uses the Cash-Karp variant of RK45, which provides embedded 4th and 5th order
+ * formulas. The difference between these solutions is used to estimate the local truncation
+ * error and automatically adjust the step size to maintain accuracy within tolerance.
+ *
+ * Algorithm Details:
+ * - Uses 6 function evaluations per step
+ * - Provides embedded 4th and 5th order solutions
+ * - Error estimate: |y5 - y4| where y5 is 5th order, y4 is 4th order
+ * - Step size adaptation: increases when error < tolerance/10, decreases when error > tolerance
+ * - Safety bounds: minStepSize ≤ dt ≤ maxStepSize
  *
  * Benefits:
- * - More efficient than fixed-step RK4 for many problems
- * - Automatically adapts to solution behavior
- * - Can handle stiff problems better with appropriate tolerance
+ * - More efficient than fixed-step RK4 for smooth solutions (fewer steps needed)
+ * - Automatically adapts to solution behavior (increases dt in smooth regions)
+ * - Maintains accuracy without manual tuning of timestep
+ * - Provides error estimate for monitoring numerical accuracy
+ *
+ * Trade-offs:
+ * - More complex than fixed-step methods
+ * - Overhead of error computation and step size adjustment
+ * - May not be ideal for highly oscillatory or chaotic systems
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
+import { affirm } from "scenerystack/phet-core";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
@@ -32,8 +49,10 @@ export class AdaptiveRK45Solver implements ODESolver {
 
   /**
    * Set the initial/maximum timestep for integration.
+   * @param dt - Time step in seconds (must be positive and finite)
    */
   public setFixedTimeStep(dt: number): void {
+    affirm(isFinite(dt) && dt > 0, 'dt must be finite and positive');
     this.fixedTimeStep = dt;
     this.maxStepSize = dt;
   }
@@ -47,6 +66,13 @@ export class AdaptiveRK45Solver implements ODESolver {
 
   /**
    * Perform one RK45 step with error estimation.
+   * Uses Cash-Karp coefficients for embedded 4th/5th order formulas.
+   *
+   * @param state - Current state vector
+   * @param derivativeFn - Function to compute derivatives
+   * @param time - Current time
+   * @param dt - Step size to attempt
+   * @returns Object containing error estimate and new state (5th order solution)
    */
   private stepOnce(
     state: number[],
@@ -54,6 +80,12 @@ export class AdaptiveRK45Solver implements ODESolver {
     time: number,
     dt: number,
   ): { error: number; newState: number[] } {
+    // Validate inputs
+    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    affirm(isFinite(time), 'time must be finite');
+    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+
     const n = state.length;
 
     // Ensure arrays are large enough
@@ -134,11 +166,29 @@ export class AdaptiveRK45Solver implements ODESolver {
       maxError = Math.max(maxError, this.error[i]);
     }
 
+    // Validate computed results
+    affirm(isFinite(maxError), 'computed error must be finite');
+    affirm(state5.every(v => isFinite(v)), 'all computed state values must be finite');
+
     return { error: maxError, newState: state5 };
   }
 
   /**
-   * Perform adaptive RK45 integration.
+   * Perform adaptive RK45 integration over the requested time interval.
+   * Automatically subdivides the interval based on error estimates.
+   *
+   * Algorithm:
+   * 1. Attempt a step with current step size
+   * 2. Estimate local truncation error
+   * 3. If error < tolerance: accept step, possibly increase step size
+   * 4. If error > tolerance: reject step, decrease step size
+   * 5. Repeat until full interval integrated
+   *
+   * @param state - State vector (modified in place)
+   * @param derivativeFn - Function to compute derivatives
+   * @param time - Initial time
+   * @param dt - Time interval to integrate (can be negative for backward integration)
+   * @returns Final time after integration
    */
   public step(
     state: number[],
@@ -146,6 +196,12 @@ export class AdaptiveRK45Solver implements ODESolver {
     time: number,
     dt: number,
   ): number {
+    // Validate inputs
+    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    affirm(isFinite(time), 'time must be finite');
+    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+
     let currentTime = time;
     let remainingTime = dt;
     let currentStepSize = Math.min(this.fixedTimeStep, dt);

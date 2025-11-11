@@ -1,9 +1,14 @@
 /**
  * Control panel for visualization tools.
  * Displays checkboxes for grid, distance tool, protractor, and stopwatch.
+ *
+ * This component provides a consistent UI for toggling measurement and visualization
+ * tools across all simulation screens. Tools can be configured per screen.
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { Panel } from "scenerystack/sun";
+import { Panel, type PanelOptions } from "scenerystack/sun";
 import { VBox, HBox, Text } from "scenerystack/scenery";
 import { Checkbox } from "scenerystack/sun";
 import { BooleanProperty, type ReadOnlyProperty } from "scenerystack/axon";
@@ -27,15 +32,26 @@ export interface ToolConfig {
 }
 
 /**
- * Options for the ToolsControlPanel
+ * Self options for ToolsControlPanel - options specific to this component.
  */
-export type ToolsControlPanelOptions = {
+type SelfOptions = {
+  /** Grid visualization configuration */
   grid: ToolConfig;
+  /** Distance tool (measuring tape) configuration */
   distance: ToolConfig;
+  /** Stopwatch configuration */
   stopwatch: ToolConfig;
-  protractor?: ToolConfig; // Optional for spring screens
-  graph?: ToolConfig; // Optional - for configurable graph
+  /** Optional protractor configuration (not available on all screens) */
+  protractor?: ToolConfig;
+  /** Optional graph configuration */
+  graph?: ToolConfig;
 };
+
+/**
+ * Options for ToolsControlPanel constructor.
+ * Combines self options with parent PanelOptions.
+ */
+export type ToolsControlPanelOptions = SelfOptions & PanelOptions;
 
 export class ToolsControlPanel extends Panel {
   public constructor(options: ToolsControlPanelOptions) {

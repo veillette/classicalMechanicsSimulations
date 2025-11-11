@@ -1,9 +1,14 @@
 /**
  * Control panel for simulation parameter controls.
  * Provides a standardized panel with preset selector and parameter controls.
+ *
+ * This component follows the composition pattern, creating a vertical layout
+ * containing a preset selector at the top and parameter sliders below.
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
-import { Panel } from "scenerystack/sun";
+import { Panel, type PanelOptions } from "scenerystack/sun";
 import { VBox, HBox, Text, Node, TColor } from "scenerystack/scenery";
 import { Property, TReadOnlyProperty, NumberProperty } from "scenerystack/axon";
 import { Range } from "scenerystack/dot";
@@ -36,9 +41,9 @@ export interface ParameterControlConfig {
 }
 
 /**
- * Options for the ParameterControlPanel
+ * Self options for ParameterControlPanel - options specific to this component.
  */
-export interface ParameterControlPanelOptions {
+type SelfOptions = {
   /** Property holding the current preset selection */
   presetProperty: Property<PresetOption>;
   /** Array of available presets */
@@ -51,7 +56,13 @@ export interface ParameterControlPanelOptions {
   listParent: Node;
   /** Array of parameter controls to display */
   parameters: ParameterControlConfig[];
-}
+};
+
+/**
+ * Options for ParameterControlPanel constructor.
+ * Combines self options with parent PanelOptions.
+ */
+export type ParameterControlPanelOptions = SelfOptions & PanelOptions;
 
 /**
  * A standardized panel for simulation parameters with preset selector.
