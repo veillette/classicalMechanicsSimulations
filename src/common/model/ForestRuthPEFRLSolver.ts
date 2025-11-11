@@ -1,23 +1,49 @@
 /**
  * Position Extended Forest-Ruth Like (PEFRL) solver - optimized 4th order symplectic integrator.
  *
- * This solver is specifically designed for Hamiltonian systems and provides excellent energy
- * conservation properties. It uses carefully chosen coefficients to minimize energy drift
- * over long integration periods.
+ * This solver is specifically designed for Hamiltonian (energy-conserving) systems and provides
+ * exceptional long-term energy conservation. It uses carefully optimized coefficients (ξ, λ, χ)
+ * to minimize phase space error and energy drift over extended integrations.
  *
- * Reference: Omelyan, I.P., Mryglod, I.M., and Folk, R. (2002).
+ * Symplectic Property:
+ * - Preserves the symplectic structure of Hamiltonian systems
+ * - Bounded energy error (does not accumulate over time)
+ * - No artificial damping or energy injection
+ * - Ideal for long-duration simulations of conservative systems
+ *
+ * Algorithm Structure:
+ * The PEFRL method uses a composition of position and momentum updates:
+ * x(t+dt) = x(t) + ξ*v*dt + (1-2λ)*v*dt/2 + ξ*v*dt
+ * v(t+dt) = v(t) + χ*a*dt + (1-2(χ+λ))*a*dt + χ*a*dt
+ * where ξ, λ, χ are optimized coefficients
+ *
+ * Performance Characteristics:
+ * - 4th order accuracy: O(dt^4) local error
+ * - 6 function evaluations per step (more than RK4's 4)
+ * - Overhead pays off for long simulations requiring energy conservation
+ * - Energy error ~10^-14 per step for typical systems
+ *
+ * Reference:
+ * Omelyan, I.P., Mryglod, I.M., and Folk, R. (2002).
  * "Optimized Forest-Ruth- and Suzuki-like algorithms for integration of motion in many-body systems"
  * Computer Physics Communications, 146, 188-202.
  *
- * Benefits:
- * - Minimal energy error for Hamiltonian systems
- * - 4th order accurate
- * - Excellent long-term stability
- * - Fixed timestep method optimized for oscillatory systems
+ * Best Used For:
+ * - Spring-mass systems (undamped or lightly damped)
+ * - Pendulum systems
+ * - Orbital mechanics
+ * - Molecular dynamics
+ * - Any Hamiltonian system requiring long-term stability
  *
- * Best used for: Spring systems, pendulums, orbital mechanics, and other conservative systems.
+ * Not Recommended For:
+ * - Highly dissipative systems (use RK4 or adaptive methods instead)
+ * - Systems with discontinuities
+ * - Non-conservative force fields
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
+import { affirm } from "scenerystack/phet-core";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
 import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
@@ -36,9 +62,10 @@ export class ForestRuthPEFRLSolver implements ODESolver {
 
   /**
    * Set the fixed timestep for integration.
-   * @param dt - Fixed timestep in seconds
+   * @param dt - Fixed timestep in seconds (must be positive and finite)
    */
   public setFixedTimeStep(dt: number): void {
+    affirm(isFinite(dt) && dt > 0, 'dt must be finite and positive');
     this.fixedTimeStep = dt;
   }
 
@@ -54,6 +81,9 @@ export class ForestRuthPEFRLSolver implements ODESolver {
    * This method assumes the state vector is organized as [positions..., velocities...]
    * for proper symplectic integration.
    *
+   * Important: State vector must have even length (half positions, half velocities)
+   * for symplectic methods to work correctly.
+   *
    * @param state - Current state vector (will be modified in place)
    * @param derivativeFn - Function that computes derivatives
    * @param time - Current time
@@ -65,6 +95,13 @@ export class ForestRuthPEFRLSolver implements ODESolver {
     time: number,
     dt: number,
   ): void {
+    // Validate inputs
+    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    affirm(state.length % 2 === 0, 'state length must be even for symplectic integration');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    affirm(isFinite(time), 'time must be finite');
+    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+
     const n = state.length;
     const halfN = Math.floor(n / 2);
 
@@ -144,10 +181,15 @@ export class ForestRuthPEFRLSolver implements ODESolver {
   /**
    * Perform PEFRL integration for a variable timestep by taking multiple fixed steps.
    *
+   * This method automatically subdivides large timesteps into fixedTimeStep increments
+   * to maintain numerical stability and accuracy. Symplectic methods perform best with
+   * consistent step sizes.
+   *
    * @param state - Current state vector (will be modified in place)
+   *                 Must be organized as [positions..., velocities...]
    * @param derivativeFn - Function that computes derivatives
    * @param time - Current time
-   * @param dt - Requested time step
+   * @param dt - Requested time step (can be larger than fixedTimeStep)
    * @returns The new time after integration
    */
   public step(
@@ -156,6 +198,13 @@ export class ForestRuthPEFRLSolver implements ODESolver {
     time: number,
     dt: number,
   ): number {
+    // Validate inputs
+    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    affirm(state.length % 2 === 0, 'state length must be even for symplectic integration');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    affirm(isFinite(time), 'time must be finite');
+    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+
     // Handle the case where dt is smaller than or equal to fixedTimeStep
     if (dt <= this.fixedTimeStep) {
       this.stepOnce(state, derivativeFn, time, dt);
