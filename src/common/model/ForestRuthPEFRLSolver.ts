@@ -19,6 +19,7 @@
  */
 
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class ForestRuthPEFRLSolver implements ODESolver {
   // PEFRL coefficients optimized for minimal energy error
@@ -175,3 +176,6 @@ export class ForestRuthPEFRLSolver implements ODESolver {
     return currentTime;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('ForestRuthPEFRLSolver', ForestRuthPEFRLSolver);

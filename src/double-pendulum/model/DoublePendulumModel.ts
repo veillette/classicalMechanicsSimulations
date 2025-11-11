@@ -22,6 +22,7 @@ import {
 import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class DoublePendulumModel extends BaseModel {
   // State variables
@@ -293,3 +294,6 @@ export class DoublePendulumModel extends BaseModel {
     this.resetCommon(); // Reset time-related properties from base class
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DoublePendulumModel', DoublePendulumModel);

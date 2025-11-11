@@ -10,6 +10,7 @@ import { Property, DerivedProperty, type TReadOnlyProperty } from "scenerystack/
 import type { PlottableProperty } from "./PlottableProperty.js";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 import { PhetFont } from "scenerystack/scenery-phet";
+import classicalMechanics from '../../../ClassicalMechanicsNamespace.js';
 
 export default class GraphControlsPanel {
   private readonly availableProperties: PlottableProperty[];
@@ -133,3 +134,6 @@ export default class GraphControlsPanel {
     headerBar.setRect(0, -30, newWidth, 30);
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('GraphControlsPanel', GraphControlsPanel);

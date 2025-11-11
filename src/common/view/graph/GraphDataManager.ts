@@ -8,6 +8,7 @@ import { Range } from "scenerystack/dot";
 import { Node, Circle } from "scenerystack/scenery";
 import type { ChartTransform, LinePlot, GridLineSet, TickMarkSet, TickLabelSet } from "scenerystack/bamboo";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
+import classicalMechanics from '../../../ClassicalMechanicsNamespace.js';
 
 /**
  * Configuration for grid lines, tick marks, and tick labels
@@ -269,3 +270,6 @@ export default class GraphDataManager {
     return this.dataPoints.length;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('GraphDataManager', GraphDataManager);

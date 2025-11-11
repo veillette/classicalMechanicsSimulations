@@ -28,6 +28,7 @@ import { PhetFont } from "scenerystack/scenery-phet";
 import GraphDataManager from "./GraphDataManager.js";
 import GraphInteractionHandler from "./GraphInteractionHandler.js";
 import GraphControlsPanel from "./GraphControlsPanel.js";
+import classicalMechanics from '../../../ClassicalMechanicsNamespace.js';
 
 export default class ConfigurableGraph extends Node {
   private readonly availableProperties: PlottableProperty[];
@@ -581,3 +582,6 @@ export default class ConfigurableGraph extends Node {
     this.clearData();
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('ConfigurableGraph', ConfigurableGraph);

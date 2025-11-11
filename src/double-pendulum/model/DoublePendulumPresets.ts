@@ -5,6 +5,7 @@
 
 import { Preset } from "../../common/model/Preset.js";
 import { StringManager } from "../../i18n/StringManager.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class DoublePendulumPresets {
   public static getPresets(): Preset[] {
@@ -71,3 +72,6 @@ export class DoublePendulumPresets {
     ];
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DoublePendulumPresets', DoublePendulumPresets);

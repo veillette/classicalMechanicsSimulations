@@ -6,6 +6,7 @@ import { VectorNode } from "./VectorNode.js";
 import { PhetColorScheme } from "scenerystack/scenery-phet";
 import { BooleanProperty } from "scenerystack/axon";
 import {
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
   VELOCITY_VECTOR_SCALE,
   FORCE_VECTOR_SCALE,
   ACCELERATION_VECTOR_SCALE,
@@ -73,3 +74,6 @@ export class VectorNodeFactory {
     );
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('VectorNodeFactory', VectorNodeFactory);

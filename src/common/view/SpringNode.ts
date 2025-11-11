@@ -11,6 +11,7 @@ import { Color, ReadOnlyProperty } from "scenerystack";
 import { Shape } from "scenerystack/kite";
 import { Vector2 } from "scenerystack/dot";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 type SpringNodeOptions = NodeOptions & {
   frontColorProperty?: ReadOnlyProperty<Color>;
@@ -183,3 +184,6 @@ export class SpringNode extends Node {
     }
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('SpringNode', SpringNode);

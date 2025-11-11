@@ -5,6 +5,7 @@
 
 import { ScreenIcon } from "scenerystack/sim";
 import { Node, Circle, Line, Rectangle } from "scenerystack/scenery";
+import classicalMechanics from '../ClassicalMechanicsNamespace.js';
 
 export class DoublePendulumScreenIcon extends ScreenIcon {
   public constructor() {
@@ -112,3 +113,6 @@ export class DoublePendulumScreenIcon extends ScreenIcon {
     });
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DoublePendulumScreenIcon', DoublePendulumScreenIcon);

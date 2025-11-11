@@ -40,6 +40,7 @@ import {
   FONT_SIZE_SCREEN_TITLE,
 } from "../../common/view/FontSizeConstants.js";
 import {
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
   SPACING_LARGE,
 } from "../../common/view/UILayoutConstants.js";
 
@@ -969,3 +970,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.isApplyingPreset = false;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DoublePendulumScreenView', DoublePendulumScreenView);

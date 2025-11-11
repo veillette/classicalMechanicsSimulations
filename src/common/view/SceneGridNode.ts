@@ -16,6 +16,7 @@ import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { PhetFont } from "scenerystack";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 type SceneGridNodeOptions = NodeOptions & {
   gridSpacing?: number; // spacing in model coordinates (meters)
   scaleLabelProperty: TReadOnlyProperty<string>; // label for the scale indicator
@@ -174,3 +175,6 @@ export class SceneGridNode extends Node {
     this.originPath.shape = originShape;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('SceneGridNode', SceneGridNode);

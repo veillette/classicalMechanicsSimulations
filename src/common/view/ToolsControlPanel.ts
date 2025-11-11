@@ -12,6 +12,7 @@ import { PhetFont } from "scenerystack";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 /**
  * Configuration for a single tool
@@ -186,3 +187,6 @@ export class ToolsControlPanel extends Panel {
     }
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('ToolsControlPanel', ToolsControlPanel);

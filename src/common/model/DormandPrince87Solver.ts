@@ -20,6 +20,7 @@
  */
 
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class DormandPrince87Solver implements ODESolver {
   // Temporary arrays for the 13 stages
@@ -304,3 +305,6 @@ export class DormandPrince87Solver implements ODESolver {
     return currentTime;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DormandPrince87Solver', DormandPrince87Solver);

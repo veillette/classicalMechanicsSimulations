@@ -13,6 +13,7 @@ import { createPresetSelector, PresetOption } from "./PresetSelectorFactory.js";
 import { Preset } from "../model/Preset.js";
 import { FONT_SIZE_SECONDARY_LABEL } from "./FontSizeConstants.js";
 import { SPACING_SMALL, SPACING_MEDIUM, PANEL_MARGIN_X, PANEL_MARGIN_Y } from "./UILayoutConstants.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 /**
  * Configuration for a single parameter control
@@ -121,3 +122,6 @@ export class ParameterControlPanel extends Panel {
     });
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('ParameterControlPanel', ParameterControlPanel);

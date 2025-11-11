@@ -15,6 +15,7 @@ import { Tandem } from "scenerystack/tandem";
 import type { TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
 import { StringManager } from "../../i18n/StringManager.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
   public constructor(tandem: Tandem) {
@@ -115,3 +116,6 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
     ];
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('ClassicalMechanicsAudioPreferencesNode', ClassicalMechanicsAudioPreferencesNode);

@@ -13,6 +13,7 @@ import { ModelViewTransform2 } from "scenerystack/phetcommon";
 import { type TReadOnlyProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { PhetFont, StringUtils } from "scenerystack";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 // Constants for protractor appearance
 const LINE_LENGTH_DEFAULT = 3.6;
@@ -195,3 +196,6 @@ export class PendulumLabProtractorNode extends Node {
     });
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('PendulumLabProtractorNode', PendulumLabProtractorNode);

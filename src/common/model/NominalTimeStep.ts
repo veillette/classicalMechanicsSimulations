@@ -4,6 +4,7 @@
  */
 
 import { Enumeration, EnumerationValue } from "scenerystack/phet-core";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export default class NominalTimeStep extends EnumerationValue {
   public static readonly FINEST = new NominalTimeStep(0.00001); // 0.01 ms
@@ -22,3 +23,6 @@ export default class NominalTimeStep extends EnumerationValue {
     this.value = value;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('NominalTimeStep', NominalTimeStep);
