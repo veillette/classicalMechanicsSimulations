@@ -169,6 +169,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       cursor: "pointer",
       // Add focus highlight for accessibility
       focusHighlight: "invisible",
+      touchAreaDilation: 8,
+      mouseAreaDilation: 4,
     });
     this.addChild(this.massNode);
 

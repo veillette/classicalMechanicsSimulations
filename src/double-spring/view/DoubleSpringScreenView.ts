@@ -180,6 +180,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       cursor: "pointer",
       // Add focus highlight for accessibility
       focusHighlight: "invisible",
+      touchAreaDilation: 8,
+      mouseAreaDilation: 4,
     });
     this.addChild(this.mass1Node);
 
@@ -200,6 +202,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       cursor: "pointer",
       // Add focus highlight for accessibility
       focusHighlight: "invisible",
+      touchAreaDilation: 8,
+      mouseAreaDilation: 4,
     });
     this.addChild(this.mass2Node);
 

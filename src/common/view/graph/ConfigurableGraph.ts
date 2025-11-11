@@ -200,6 +200,8 @@ export default class ConfigurableGraph extends Node {
       {
         fill: 'transparent',
         pickable: true,
+        touchAreaDilation: 5,
+        mouseAreaDilation: 3,
       }
     );
     this.graphContentNode.addChild(this.yAxisInteractionRegion);
@@ -213,6 +215,8 @@ export default class ConfigurableGraph extends Node {
       {
         fill: 'transparent',
         pickable: true,
+        touchAreaDilation: 5,
+        mouseAreaDilation: 3,
       }
     );
     this.graphContentNode.addChild(this.xAxisInteractionRegion);
@@ -299,6 +303,8 @@ export default class ConfigurableGraph extends Node {
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
         cursor: 'pointer',
+        touchAreaDilation: 3,
+        mouseAreaDilation: 2,
       });
 
       const button = new Node({

@@ -132,6 +132,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       cursor: "pointer",
       // Add focus highlight for accessibility
       focusHighlight: "invisible",
+      touchAreaDilation: 10,
+      mouseAreaDilation: 5,
     });
     this.addChild(this.bobNode);
 
