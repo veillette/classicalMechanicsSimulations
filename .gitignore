@@ -21,9 +21,3 @@ tsconfig.tsbuildinfo
 *.njsproj
 *.sln
 *.sw?
-
-*.md
-
-# Reference repositories (not part of our project)
-myphysicslab/
-reference-dopplerEffect/

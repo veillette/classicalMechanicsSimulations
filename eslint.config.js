@@ -30,8 +30,6 @@ export default [
     ignores: [
       "dist/",
       "node_modules/",
-      "myphysicslab/",
-      "reference-dopplerEffect",
-    ],
+      ],
   },
 ];
