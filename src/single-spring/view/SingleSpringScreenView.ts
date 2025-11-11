@@ -60,7 +60,12 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
   private readonly accelerationVectorNode: VectorNode;
 
   public constructor(model: SingleSpringModel, options?: ScreenViewOptions) {
-    super(model, options);
+    super(model, {
+      ...options,
+      showVelocity: false,
+      showForce: false,
+      showAcceleration: false,
+    });
 
     // Setup screen summary content for voicing
     const voicingStrings = StringManager.getInstance().getSingleSpringVoicingStrings();
@@ -222,11 +227,6 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
         this.switchSpringVisualization(springType);
       }
     );
-
-    // Initialize vector visibility properties (from base class)
-    this.showVelocityProperty.setInitialValue(true);
-    this.showForceProperty.setInitialValue(true);
-    this.showAccelerationProperty.setInitialValue(false);
 
     // Create vector nodes using factory
     const vectors = VectorNodeFactory.createVectorNodes();

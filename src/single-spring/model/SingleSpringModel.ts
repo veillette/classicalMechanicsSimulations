@@ -47,24 +47,24 @@ export class SingleSpringModel extends BaseModel {
   public constructor() {
     super();
 
-    // Initialize state
-    // Start at equilibrium position: x_eq = m*g/k = 1.0*9.8/20.0 = 0.49 m
-    this.positionProperty = new NumberProperty(0.5, {
+    // Initialize state to match first preset ("Heavy and Slow")
+    // Position matches first preset initial displacement
+    this.positionProperty = new NumberProperty(1.0, {
       range: new Range(-5, 5)
     });
 
     this.velocityProperty = new NumberProperty(0.0);
 
-    // Initialize parameters
-    this.massProperty = new NumberProperty(3.0, {
+    // Initialize parameters to match first preset ("Heavy and Slow")
+    this.massProperty = new NumberProperty(5.0, {
       range: new Range(0.1, 5.0)
     });
 
-    this.springConstantProperty = new NumberProperty(20.0, {
+    this.springConstantProperty = new NumberProperty(15.0, {
       range: new Range(1.0, 50.0)
     });
 
-    this.dampingProperty = new NumberProperty(0.1, {
+    this.dampingProperty = new NumberProperty(0.5, {
       range: new Range(0.0, 20.0)
     });
 

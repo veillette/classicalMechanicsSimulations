@@ -50,8 +50,8 @@ export class DoubleSpringModel extends BaseModel {
   public constructor() {
     super();
 
-    // Initialize state
-    // Start at equilibrium: x1_eq ≈ 0.98 m, x2_eq ≈ 1.47 m (with k=20 N/m)
+    // Initialize state to match first preset ("Symmetric")
+    // Positions match first preset initial displacement
     this.position1Property = new NumberProperty(1.0, {
       range: new Range(-5, 5)
     });
@@ -64,7 +64,7 @@ export class DoubleSpringModel extends BaseModel {
 
     this.velocity2Property = new NumberProperty(0.0);
 
-    // Initialize parameters
+    // Initialize parameters to match first preset ("Symmetric")
     this.mass1Property = new NumberProperty(1.0, {
       range: new Range(0.1, 5.0)
     });
@@ -73,19 +73,19 @@ export class DoubleSpringModel extends BaseModel {
       range: new Range(0.1, 5.0)
     });
 
-    this.springConstant1Property = new NumberProperty(20.0, {
+    this.springConstant1Property = new NumberProperty(15.0, {
       range: new Range(1.0, 50.0)
     });
 
-    this.springConstant2Property = new NumberProperty(20.0, {
+    this.springConstant2Property = new NumberProperty(15.0, {
       range: new Range(1.0, 50.0)
     });
 
-    this.damping1Property = new NumberProperty(0.0, {
+    this.damping1Property = new NumberProperty(0.1, {
       range: new Range(0.0, 20.0)
     });
 
-    this.damping2Property = new NumberProperty(0.0, {
+    this.damping2Property = new NumberProperty(0.1, {
       range: new Range(0.0, 20.0)
     });
 

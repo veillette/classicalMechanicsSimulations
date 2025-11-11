@@ -61,6 +61,16 @@ export type TimeControllableModel = {
 }
 
 /**
+ * Options for BaseScreenView constructor.
+ * Extends ScreenViewOptions with vector visibility defaults.
+ */
+export type BaseScreenViewOptions = ScreenViewOptions & {
+  showVelocity?: boolean;
+  showForce?: boolean;
+  showAcceleration?: boolean;
+}
+
+/**
  * Type definition for control panel parameters.
  * Used to configure NumberControl instances with standard styling.
  */
@@ -100,9 +110,9 @@ export abstract class BaseScreenView<
   protected stopwatchNode: StopwatchNode | null = null;
 
   // Vector visualization properties (available to all screens)
-  protected showVelocityProperty: BooleanProperty = new BooleanProperty(false);
-  protected showForceProperty: BooleanProperty = new BooleanProperty(false);
-  protected showAccelerationProperty: BooleanProperty = new BooleanProperty(false);
+  protected showVelocityProperty: BooleanProperty;
+  protected showForceProperty: BooleanProperty;
+  protected showAccelerationProperty: BooleanProperty;
 
   // Graph component (available to all screens)
   protected configurableGraph: ConfigurableGraph | null = null;
@@ -123,9 +133,14 @@ export abstract class BaseScreenView<
   protected vectorPanel: Node | null = null;
   protected toolsPanel: Node | null = null;
 
-  protected constructor(model: T, options?: ScreenViewOptions) {
+  protected constructor(model: T, options?: BaseScreenViewOptions) {
     super(options);
     this.model = model;
+
+    // Initialize vector visualization properties with provided initial values
+    this.showVelocityProperty = new BooleanProperty(options?.showVelocity ?? false);
+    this.showForceProperty = new BooleanProperty(options?.showForce ?? false);
+    this.showAccelerationProperty = new BooleanProperty(options?.showAcceleration ?? false);
 
     // Set up Page Visibility API to handle tab switching
     this.setupPageVisibilityListener();
