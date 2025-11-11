@@ -49,6 +49,10 @@ import {
   PANEL_MARGIN_X,
   PANEL_MARGIN_Y,
 } from "./UILayoutConstants.js";
+import {
+  GRAPH_LEFT_MARGIN,
+  GRAPH_TO_VECTOR_PANEL_SPACING,
+} from "./DialogAndPanelConstants.js";
 
 /**
  * Interface that all models must implement to work with BaseScreenView
@@ -335,13 +339,10 @@ export abstract class BaseScreenView<
    * @param vectorPanel - The vector control panel node to position beneath
    */
   protected positionConfigurableGraph(vectorPanel: Node): void {
-    const GRAPH_LEFT_MARGIN = 10;
-    const VECTOR_PANEL_TO_GRAPH_SPACING = 10;
-
     if (this.configurableGraph) {
       this.configurableGraph.left = this.layoutBounds.minX + GRAPH_LEFT_MARGIN;
       this.configurableGraph.top =
-        vectorPanel.bottom + VECTOR_PANEL_TO_GRAPH_SPACING;
+        vectorPanel.bottom + GRAPH_TO_VECTOR_PANEL_SPACING;
     }
   }
 
