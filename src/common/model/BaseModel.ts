@@ -33,8 +33,10 @@ export abstract class BaseModel {
 
   protected constructor() {
     // Initialize time control properties
-    this.timeProperty = new NumberProperty(0.0); // seconds
+    this.timeProperty = new NumberProperty(0.0);
+
     this.isPlayingProperty = new BooleanProperty(true);
+
     this.timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
 
     // Create initial physics solver based on preference
