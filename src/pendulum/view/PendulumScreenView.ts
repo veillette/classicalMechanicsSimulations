@@ -138,6 +138,8 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
       helpText: "Drag to change the pendulum angle. Use keyboard shortcuts to control the simulation.",
       focusable: true,
       focusHighlight: "invisible",
+      touchAreaDilation: 10,
+      mouseAreaDilation: 5,
     });
     // Note: bobNode is added to playAreaNode later in constructor
 

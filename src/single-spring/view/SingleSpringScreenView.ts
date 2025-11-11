@@ -175,6 +175,8 @@ export class SingleSpringScreenView extends BaseScreenView<SingleSpringModel> {
       helpText: "Drag to change the spring displacement. Use keyboard shortcuts to control the simulation.",
       focusable: true,
       focusHighlight: "invisible",
+      touchAreaDilation: 8,
+      mouseAreaDilation: 4,
     });
     // Note: massNode is added to playAreaNode later in constructor
 

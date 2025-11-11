@@ -186,6 +186,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       helpText: "Drag to change the position of the first mass. Use keyboard shortcuts to control the simulation.",
       focusable: true,
       focusHighlight: "invisible",
+      touchAreaDilation: 8,
+      mouseAreaDilation: 4,
     });
     // Note: mass1Node is added to playAreaNode later in constructor
 
@@ -212,6 +214,8 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
       helpText: "Drag to change the position of the second mass. Use keyboard shortcuts to control the simulation.",
       focusable: true,
       focusHighlight: "invisible",
+      touchAreaDilation: 8,
+      mouseAreaDilation: 4,
     });
     // Note: mass2Node is added to playAreaNode later in constructor
 
