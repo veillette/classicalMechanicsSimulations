@@ -280,16 +280,12 @@ export class StringManager {
   public getSolverNames(): {
     rk4StringProperty: ReadOnlyProperty<string>;
     adaptiveRK45StringProperty: ReadOnlyProperty<string>;
-    adaptiveEulerStringProperty: ReadOnlyProperty<string>;
-    modifiedMidpointStringProperty: ReadOnlyProperty<string>;
     forestRuthPEFRLStringProperty: ReadOnlyProperty<string>;
     dormandPrince87StringProperty: ReadOnlyProperty<string>;
   } {
     return {
       rk4StringProperty: this.stringProperties.preferences.solvers.rk4StringProperty,
       adaptiveRK45StringProperty: this.stringProperties.preferences.solvers.adaptiveRK45StringProperty,
-      adaptiveEulerStringProperty: this.stringProperties.preferences.solvers.adaptiveEulerStringProperty,
-      modifiedMidpointStringProperty: this.stringProperties.preferences.solvers.modifiedMidpointStringProperty,
       forestRuthPEFRLStringProperty: this.stringProperties.preferences.solvers.forestRuthPEFRLStringProperty,
       dormandPrince87StringProperty: this.stringProperties.preferences.solvers.dormandPrince87StringProperty,
     };
@@ -327,16 +323,12 @@ export class StringManager {
   public getSolverDescriptions(): {
     rk4StringProperty: ReadOnlyProperty<string>;
     adaptiveRK45StringProperty: ReadOnlyProperty<string>;
-    adaptiveEulerStringProperty: ReadOnlyProperty<string>;
-    modifiedMidpointStringProperty: ReadOnlyProperty<string>;
     forestRuthPEFRLStringProperty: ReadOnlyProperty<string>;
     dormandPrince87StringProperty: ReadOnlyProperty<string>;
   } {
     return {
       rk4StringProperty: this.stringProperties.preferences.solverDescriptions.rk4StringProperty,
       adaptiveRK45StringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveRK45StringProperty,
-      adaptiveEulerStringProperty: this.stringProperties.preferences.solverDescriptions.adaptiveEulerStringProperty,
-      modifiedMidpointStringProperty: this.stringProperties.preferences.solverDescriptions.modifiedMidpointStringProperty,
       forestRuthPEFRLStringProperty: this.stringProperties.preferences.solverDescriptions.forestRuthPEFRLStringProperty,
       dormandPrince87StringProperty: this.stringProperties.preferences.solverDescriptions.dormandPrince87StringProperty,
     };

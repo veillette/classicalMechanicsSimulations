@@ -225,44 +225,6 @@ onReadyToLaunch(() => {
                         tandemName: "adaptiveRK45RadioButton",
                       },
                       {
-                        value: SolverType.ADAPTIVE_EULER,
-                        createNode: () => new VBox({
-                          align: "left",
-                          spacing: 4,
-                          children: [
-                            new Text(solverNames.adaptiveEulerStringProperty, {
-                              font: new PhetFont(14),
-                              fill: "black",
-                            }),
-                            new Text(solverDescriptions.adaptiveEulerStringProperty, {
-                              font: new PhetFont(11),
-                              fill: "rgb(80,80,80)",
-                              maxWidth: 280,
-                            }),
-                          ],
-                        }),
-                        tandemName: "adaptiveEulerRadioButton",
-                      },
-                      {
-                        value: SolverType.MODIFIED_MIDPOINT,
-                        createNode: () => new VBox({
-                          align: "left",
-                          spacing: 4,
-                          children: [
-                            new Text(solverNames.modifiedMidpointStringProperty, {
-                              font: new PhetFont(14),
-                              fill: "black",
-                            }),
-                            new Text(solverDescriptions.modifiedMidpointStringProperty, {
-                              font: new PhetFont(11),
-                              fill: "rgb(80,80,80)",
-                              maxWidth: 280,
-                            }),
-                          ],
-                        }),
-                        tandemName: "modifiedMidpointRadioButton",
-                      },
-                      {
                         value: SolverType.FOREST_RUTH_PEFRL,
                         createNode: () => new VBox({
                           align: "left",
@@ -430,12 +392,6 @@ onReadyToLaunch(() => {
           break;
         case SolverType.ADAPTIVE_RK45:
           solverName = solverNames.adaptiveRK45StringProperty.value;
-          break;
-        case SolverType.ADAPTIVE_EULER:
-          solverName = solverNames.adaptiveEulerStringProperty.value;
-          break;
-        case SolverType.MODIFIED_MIDPOINT:
-          solverName = solverNames.modifiedMidpointStringProperty.value;
           break;
       }
       const template = a11yStrings.solverChangedStringProperty.value;
