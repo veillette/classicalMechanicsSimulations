@@ -68,7 +68,12 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
   private readonly acceleration2VectorNode: VectorNode;
 
   public constructor(model: DoubleSpringModel, options?: ScreenViewOptions) {
-    super(model, options);
+    super(model, {
+      ...options,
+      showVelocity: true,
+      showForce: true,
+      showAcceleration: false,
+    });
 
     // Get available presets
     this.presets = DoubleSpringPresets.getPresets();
@@ -293,11 +298,6 @@ export class DoubleSpringScreenView extends BaseScreenView<DoubleSpringModel> {
         this.switchSpringVisualization(springType);
       }
     );
-
-    // Initialize vector visibility properties (from base class)
-    this.showVelocityProperty.setInitialValue(true);
-    this.showForceProperty.setInitialValue(true);
-    this.showAccelerationProperty.setInitialValue(false);
 
     // Create vector nodes using factory
     const vectors1 = VectorNodeFactory.createVectorNodes("₁");
