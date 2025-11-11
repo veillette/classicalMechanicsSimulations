@@ -133,8 +133,6 @@ export default class ConfigurableGraph extends Node {
     this.chartRectangle = new ChartRectangle(this.chartTransform, {
       fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 1,
-      cornerRadius: 0,
     });
     this.graphContentNode.addChild(this.chartRectangle);
 
@@ -157,7 +155,6 @@ export default class ConfigurableGraph extends Node {
       edge: "min",
       extent: 8,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 1,
     });
     this.graphContentNode.addChild(this.xTickMarkSet);
 
@@ -165,7 +162,6 @@ export default class ConfigurableGraph extends Node {
       edge: "min",
       extent: 8,
       stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-      lineWidth: 1,
     });
     this.graphContentNode.addChild(this.yTickMarkSet);
 
@@ -302,7 +298,6 @@ export default class ConfigurableGraph extends Node {
       const buttonBackground = new Rectangle(0, 0, buttonSize, buttonSize, 3, 3, {
         fill: ClassicalMechanicsColors.controlPanelBackgroundColorProperty,
         stroke: ClassicalMechanicsColors.controlPanelStrokeColorProperty,
-        lineWidth: 1,
         cursor: 'pointer',
       });
 

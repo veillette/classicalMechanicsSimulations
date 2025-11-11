@@ -184,7 +184,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.bob1ReferenceDot = new Circle(3, {
       fill: ClassicalMechanicsColors.textColorProperty,
       stroke: "white",
-      lineWidth: 1,
     });
     this.addChild(this.bob1ReferenceDot);
 
@@ -203,7 +202,6 @@ export class DoublePendulumScreenView extends BaseScreenView<DoublePendulumModel
     this.bob2ReferenceDot = new Circle(3, {
       fill: ClassicalMechanicsColors.textColorProperty,
       stroke: "white",
-      lineWidth: 1,
     });
     this.addChild(this.bob2ReferenceDot);
 

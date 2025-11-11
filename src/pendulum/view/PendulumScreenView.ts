@@ -139,7 +139,6 @@ export class PendulumScreenView extends BaseScreenView<PendulumModel> {
     this.bobReferenceDot = new Circle(3, {
       fill: ClassicalMechanicsColors.textColorProperty,
       stroke: "white",
-      lineWidth: 1,
     });
     this.addChild(this.bobReferenceDot);
 

@@ -31,7 +31,6 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
     // Header for sim-specific voicing options
     const header = new Text(audioStrings.simVoicingOptionsStringProperty as unknown as TReadOnlyProperty<string>, {
       font: new PhetFont({ size: 16, weight: "bold" }),
-      fill: "black",
       maxWidth: 350,
     });
 
@@ -40,7 +39,6 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
       ClassicalMechanicsPreferences.announceParameterChangesProperty,
       new Text(audioStrings.announceParameterChangesStringProperty as unknown as TReadOnlyProperty<string>, {
         font: new PhetFont(16),
-        fill: "black",
         maxWidth: 350,
       }),
       {
@@ -64,7 +62,6 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
       ClassicalMechanicsPreferences.announceStateChangesProperty,
       new Text(audioStrings.announceStateChangesStringProperty as unknown as TReadOnlyProperty<string>, {
         font: new PhetFont(16),
-        fill: "black",
         maxWidth: 350,
       }),
       {
@@ -88,7 +85,6 @@ export default class ClassicalMechanicsAudioPreferencesNode extends VBox {
       ClassicalMechanicsPreferences.announceDragInteractionsProperty,
       new Text(audioStrings.announceDragInteractionsStringProperty as unknown as TReadOnlyProperty<string>, {
         font: new PhetFont(16),
-        fill: "black",
         maxWidth: 350,
       }),
       {
