@@ -12,6 +12,7 @@ import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
 import { PhetFont } from "scenerystack";
 import SimulationAnnouncer from "../util/SimulationAnnouncer.js";
 import ClassicalMechanicsPreferences from "../../ClassicalMechanicsPreferences.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 /**
  * Configuration for a single vector type (velocity, force, or acceleration)
@@ -148,3 +149,6 @@ export class VectorControlPanel extends Panel {
     });
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('VectorControlPanel', VectorControlPanel);

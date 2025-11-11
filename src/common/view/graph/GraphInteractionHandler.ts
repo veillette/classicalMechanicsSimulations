@@ -14,6 +14,7 @@ import type { ChartRectangle, ChartTransform, TickLabelSet } from "scenerystack/
 import { BooleanProperty } from "scenerystack/axon";
 import ClassicalMechanicsColors from "../../../ClassicalMechanicsColors.js";
 import type GraphDataManager from "./GraphDataManager.js";
+import classicalMechanics from '../../../ClassicalMechanicsNamespace.js';
 
 /**
  * Configuration for the chart and its data management
@@ -966,3 +967,6 @@ export default class GraphInteractionHandler {
     this.dataManager.updateTrail();
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('GraphInteractionHandler', GraphInteractionHandler);

@@ -6,6 +6,7 @@
 import { TwoColumnKeyboardHelpContent, KeyboardHelpSection, KeyboardHelpSectionRow } from "scenerystack/scenery-phet";
 import { TextKeyNode } from "scenerystack/scenery-phet";
 import { StringManager } from "../../i18n/StringManager.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class KeyboardShortcutsNode extends TwoColumnKeyboardHelpContent {
   public constructor() {
@@ -61,3 +62,6 @@ export class KeyboardShortcutsNode extends TwoColumnKeyboardHelpContent {
     });
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('KeyboardShortcutsNode', KeyboardShortcutsNode);

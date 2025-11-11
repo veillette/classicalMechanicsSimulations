@@ -8,6 +8,7 @@
 import { LocalizedString, ReadOnlyProperty } from "scenerystack";
 import strings_en from "./strings_en.json";
 import strings_fr from "./strings_fr.json";
+import classicalMechanics from '../ClassicalMechanicsNamespace.js';
 
 /**
  * Manages all localized strings for the simulation
@@ -824,3 +825,6 @@ export class StringManager {
     return this.stringProperties;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('StringManager', StringManager);

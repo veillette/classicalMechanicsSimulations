@@ -1,6 +1,21 @@
 /**
  * Base class for all screen views in the classical mechanics simulations.
  * Provides common functionality including time controls and reset button.
+ *
+ * This abstract class follows the Template Method pattern and provides:
+ * - Time control UI (play/pause, speed control, manual stepping)
+ * - Common measurement tools (stopwatch, measuring tape, protractor)
+ * - Grid visualization
+ * - Vector visualization controls
+ * - Configurable graph system
+ * - Preset management infrastructure
+ * - Accessibility features (keyboard shortcuts, screen reader support)
+ *
+ * Subclasses must implement:
+ * - createInfoDialogContent() - simulation-specific information dialog
+ * - createScreenSummaryContent() - accessibility description
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
 import { ScreenView, type ScreenViewOptions, ScreenSummaryContent } from "scenerystack/sim";
@@ -49,6 +64,7 @@ import {
   PANEL_MARGIN_X,
   PANEL_MARGIN_Y,
 } from "./UILayoutConstants.js";
+import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 import {
   GRAPH_LEFT_MARGIN,
   GRAPH_TO_VECTOR_PANEL_SPACING,
@@ -65,14 +81,23 @@ export type TimeControllableModel = {
 }
 
 /**
- * Options for BaseScreenView constructor.
- * Extends ScreenViewOptions with vector visibility defaults.
+ * Self options for BaseScreenView - options specific to this class.
+ * These control the initial visibility state of vector visualizations.
  */
-export type BaseScreenViewOptions = ScreenViewOptions & {
+type SelfOptions = {
+  /** Initial visibility of velocity vectors */
   showVelocity?: boolean;
+  /** Initial visibility of force vectors */
   showForce?: boolean;
+  /** Initial visibility of acceleration vectors */
   showAcceleration?: boolean;
-}
+};
+
+/**
+ * Options for BaseScreenView constructor.
+ * Combines self options with parent ScreenViewOptions.
+ */
+export type BaseScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 /**
  * Type definition for control panel parameters.
@@ -917,3 +942,6 @@ export abstract class BaseScreenView<
     }
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('BaseScreenView', BaseScreenView);

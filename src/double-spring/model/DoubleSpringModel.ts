@@ -18,6 +18,7 @@ import {
 import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class DoubleSpringModel extends BaseModel {
   // State variables for mass 1
@@ -210,3 +211,6 @@ export class DoubleSpringModel extends BaseModel {
     this.resetCommon(); // Reset time-related properties from base class
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DoubleSpringModel', DoubleSpringModel);

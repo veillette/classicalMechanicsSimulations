@@ -11,6 +11,7 @@
  */
 
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class AdaptiveRK45Solver implements ODESolver {
   // Temporary arrays to avoid reallocation
@@ -178,3 +179,6 @@ export class AdaptiveRK45Solver implements ODESolver {
     return currentTime;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('AdaptiveRK45Solver', AdaptiveRK45Solver);

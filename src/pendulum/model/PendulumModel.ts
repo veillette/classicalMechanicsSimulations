@@ -13,6 +13,11 @@
  * State variables:
  * - angle (θ) - angle from vertical in radians
  * - angularVelocity (ω) - angular velocity in rad/s
+ *
+ * This model demonstrates nonlinear oscillation. For small angles, the motion is approximately
+ * simple harmonic. For large angles, the nonlinearity of sin(θ) becomes significant.
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
 import {
@@ -23,6 +28,7 @@ import {
 import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
+import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 
 export class PendulumModel extends BaseModel {
   // State variables
@@ -167,3 +173,6 @@ export class PendulumModel extends BaseModel {
     this.resetCommon(); // Reset time-related properties from base class
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('PendulumModel', PendulumModel);

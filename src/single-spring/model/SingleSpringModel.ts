@@ -10,6 +10,12 @@
  * State variables:
  * - position (x) - displacement from natural length (positive downward)
  * - velocity (v)
+ *
+ * This model demonstrates damped harmonic oscillation with optional gravitational offset.
+ * The spring constant k determines the oscillation frequency, the damping coefficient b
+ * controls energy dissipation, and gravity g provides a constant downward force.
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
 import {
@@ -20,6 +26,7 @@ import {
 import { Range } from "scenerystack/dot";
 import { BaseModel } from "../../common/model/BaseModel.js";
 import { StatePropertyMapper } from "../../common/model/StatePropertyMapper.js";
+import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 
 export class SingleSpringModel extends BaseModel {
   // State variables
@@ -171,3 +178,6 @@ export class SingleSpringModel extends BaseModel {
     this.resetCommon(); // Reset time-related properties from base class
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('SingleSpringModel', SingleSpringModel);

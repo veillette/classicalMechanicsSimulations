@@ -6,6 +6,7 @@
 import { ScreenIcon } from "scenerystack/sim";
 import { Node, Rectangle, Path } from "scenerystack/scenery";
 import { Shape } from "scenerystack/kite";
+import classicalMechanics from '../ClassicalMechanicsNamespace.js';
 
 export class SingleSpringScreenIcon extends ScreenIcon {
   public constructor() {
@@ -87,3 +88,6 @@ export class SingleSpringScreenIcon extends ScreenIcon {
     });
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('SingleSpringScreenIcon', SingleSpringScreenIcon);

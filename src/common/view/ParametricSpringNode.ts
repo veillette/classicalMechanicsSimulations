@@ -22,6 +22,7 @@ import { Shape } from "scenerystack/kite";
 import { Vector2 } from "scenerystack/dot";
 import { LinearGradient } from "scenerystack/scenery";
 import ClassicalMechanicsColors from "../../ClassicalMechanicsColors.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 type ParametricSpringNodeOptions = NodeOptions & {
   frontColorProperty?: ReadOnlyProperty<Color>;
@@ -333,3 +334,6 @@ export class ParametricSpringNode extends Node {
     }
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('ParametricSpringNode', ParametricSpringNode);

@@ -5,6 +5,7 @@
 
 import { Preset } from "../../common/model/Preset.js";
 import { StringManager } from "../../i18n/StringManager.js";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 export class DoubleSpringPresets {
   public static getPresets(): Preset[] {
@@ -71,3 +72,6 @@ export class DoubleSpringPresets {
     ];
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('DoubleSpringPresets', DoubleSpringPresets);

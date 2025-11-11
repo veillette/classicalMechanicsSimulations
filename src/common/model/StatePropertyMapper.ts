@@ -4,6 +4,7 @@
  */
 
 import { NumberProperty } from "scenerystack/axon";
+import classicalMechanics from '../../ClassicalMechanicsNamespace.js';
 
 /**
  * Maps between property values and state vectors, providing:
@@ -65,3 +66,6 @@ export class StatePropertyMapper {
     return this.properties.length;
   }
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('StatePropertyMapper', StatePropertyMapper);

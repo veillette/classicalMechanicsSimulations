@@ -6,11 +6,19 @@
  *
  * Where y is the state vector and f is the derivative function.
  *
+ * The RK4 method is a fourth-order accurate method that provides a good balance between
+ * accuracy and computational cost. It evaluates the derivative function four times per
+ * step to achieve fourth-order convergence.
+ *
  * The solver uses fixed timesteps for better numerical stability and can automatically
  * sub-step when the requested timestep is larger than the fixed timestep.
+ *
+ * @author Martin Veillette (PhET Interactive Simulations)
  */
 
+import { affirm } from "scenerystack/phet-core";
 import { ODESolver, DerivativeFunction } from "./ODESolver.js";
+import classicalMechanics from "../../ClassicalMechanicsNamespace.js";
 
 export class RungeKuttaSolver implements ODESolver {
   // Temporary arrays to avoid reallocation
@@ -55,6 +63,12 @@ export class RungeKuttaSolver implements ODESolver {
     time: number,
     dt: number,
   ): void {
+    // Validate inputs
+    affirm(Array.isArray(state) && state.length > 0, 'state must be a non-empty array');
+    affirm(state.every(v => isFinite(v)), 'all state values must be finite');
+    affirm(isFinite(time), 'time must be finite');
+    affirm(isFinite(dt) && dt !== 0, 'dt must be finite and non-zero');
+
     const n = state.length;
 
     // Ensure arrays are large enough
@@ -133,3 +147,6 @@ export class RungeKuttaSolver implements ODESolver {
   }
 
 }
+
+// Register with namespace for debugging accessibility
+classicalMechanics.register('RungeKuttaSolver', RungeKuttaSolver);
