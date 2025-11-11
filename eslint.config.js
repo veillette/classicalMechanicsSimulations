@@ -17,6 +17,13 @@ export default [
           varsIgnorePattern: "^_",
         },
       ],
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        {
+          allowShortCircuit: true, // Allow assert && assert(...) pattern
+          allowTernary: true,
+        },
+      ],
     },
   },
   {
