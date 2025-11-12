@@ -375,6 +375,12 @@ onReadyToLaunch(() => {
         case SolverType.ADAPTIVE_RK45:
           solverName = solverNames.adaptiveRK45StringProperty.value;
           break;
+        case SolverType.FOREST_RUTH_PEFRL:
+          solverName = solverNames.forestRuthPEFRLStringProperty.value;
+          break;
+        case SolverType.DORMAND_PRINCE_87:
+          solverName = solverNames.dormandPrince87StringProperty.value;
+          break;
       }
       const template = a11yStrings.solverChangedStringProperty.value;
       const announcement = template.replace('{{solver}}', solverName);
