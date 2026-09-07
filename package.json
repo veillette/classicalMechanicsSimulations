@@ -42,7 +42,7 @@
     "prepare": "git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git config core.hooksPath .githooks || true"
   },
   "dependencies": {
-    "katex": "^0.18.4",
+    "katex": "^0.18.5",
     "scenerystack": "^3.0.0"
   },
   "devDependencies": {
